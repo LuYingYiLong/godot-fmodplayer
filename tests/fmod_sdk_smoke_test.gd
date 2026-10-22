@@ -1,4 +1,4 @@
-extends SceneTree
+extends RefCounted
 
 const EFFECT_CLASSES: Array[StringName] = [
 	&"FmodAudioEffectAmplify",
@@ -23,7 +23,7 @@ const EFFECT_CLASSES: Array[StringName] = [
 var _read_count: int
 
 
-func _initialize() -> void:
+func run() -> bool:
 	var system: FmodSystem = FmodServer.get_main_system()
 	assert(is_instance_valid(system))
 	assert(system.get_version()["version"] == "2.4.0")
@@ -87,7 +87,7 @@ func _initialize() -> void:
 	channel.stop()
 	oscillator.release()
 	print("FMOD_SDK_SMOKE: FMOD 2.04 SDK, DSP effects and script callback passed")
-	quit()
+	return true
 
 
 func _read_audio(samples: PackedFloat32Array, _frames: int, _channels: int) -> Dictionary:

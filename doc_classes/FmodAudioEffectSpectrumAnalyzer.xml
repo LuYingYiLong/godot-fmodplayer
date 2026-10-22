@@ -6,11 +6,18 @@
 	<description>
 		FmodAudioEffectSpectrumAnalyzer analyzes the frequency content of audio passing through an audio bus in real-time using Fast Fourier Transform (FFT). This is essential for creating audio visualizations such as spectrum analyzers, equalizer displays, or reactive audio effects.
 		The effect processes incoming audio and provides frequency magnitude data that can be queried using [method get_magnitude_for_frequency_range]. You can analyze specific frequency ranges (e.g., bass, midrange, treble) independently.
+		Queries reuse a spectrum snapshot while the bus DSP clock is unchanged. The next audio block automatically refreshes the snapshot, including when manually mixing multiple blocks in one game frame. Changing [member fft_size] or attaching the effect to another bus invalidates the snapshot.
 		The [member fft_size] determines the frequency resolution: larger FFT sizes provide finer frequency detail but require more processing and have worse time resolution. The [member buffer_length] affects how much audio history is kept for analysis.
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="update_spectrum">
+			<return type="void" />
+			<description>
+				Forces a fresh spectrum snapshot even if the bus DSP clock has not advanced. Magnitude, bin count, RMS and centroid queries otherwise share the current snapshot.
+			</description>
+		</method>
 		<method name="get_magnitude_for_frequency_range" qualifiers="const">
 			<return type="Vector2" />
 			<param index="0" name="begin" type="float" />

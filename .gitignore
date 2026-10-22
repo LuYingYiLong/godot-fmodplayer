@@ -383,3 +383,13 @@ src/thirdparty/fmod/
 compile_commands.json
 custom.py
 AGENTS.md
+
+# Godot imports, caches and locally staged test binaries
+.godot/
+*.import
+/tests/bin/
+/tests/logs/
+
+# Local profiling sessions and reports
+*.diagsession
+/profiling_*.json

@@ -36,6 +36,11 @@ namespace godot {
 		float current_rms = 0.0f;
 		float current_centroid = 0.0f;
 		float sample_rate = 48000.0f;
+		uint64_t snapshot_dsp_clock = 0;
+		bool snapshot_valid = false;
+
+		void _invalidate_snapshot();
+		void _refresh_spectrum(bool p_force);
 
 	public:
 		FmodAudioEffectSpectrumAnalyzer();

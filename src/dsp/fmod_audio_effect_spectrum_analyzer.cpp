@@ -73,11 +73,12 @@ namespace godot {
 	void FmodAudioEffectSpectrumAnalyzer::apply_to(Ref<FmodChannelGroup> p_bus) {
 		ERR_FAIL_COND_MSG(p_bus.is_null(), "Invalid bus");
 
-		if (bus == p_bus && !dsp_chain.is_empty()) {
-			remove_from_bus(p_bus);
+		if (bus.is_valid()) {
+			remove_from_bus(bus);
 		}
 
 		bus = p_bus;
+		_invalidate_snapshot();
 		sample_rate = _get_system_sample_rate();
 
 		Ref<FmodSystem> system = FmodServer::get_singleton()->get_main_system();
@@ -102,6 +103,11 @@ namespace godot {
 	void FmodAudioEffectSpectrumAnalyzer::remove_from_bus(Ref<FmodChannelGroup> p_bus) {
 		FmodAudioEffect::remove_from_bus(p_bus);
 		fft_dsp.unref();
+		_invalidate_snapshot();
+	}
+
+	void FmodAudioEffectSpectrumAnalyzer::_invalidate_snapshot() {
+		snapshot_valid = false;
 		spectrum_data.clear();
 		current_rms = 0.0f;
 		current_centroid = 0.0f;
@@ -117,6 +123,9 @@ namespace godot {
 
 	void FmodAudioEffectSpectrumAnalyzer::set_fft_size(FFTSize p_fft_size) {
 		if (p_fft_size >= FFT_SIZE_256 && p_fft_size < FFT_SIZE_MAX) {
+			if (fft_size != p_fft_size) {
+				_invalidate_snapshot();
+			}
 			fft_size = p_fft_size;
 			if (fft_dsp.is_valid()) {
 				fft_dsp->set_parameter_int(FMOD_DSP_FFT_WINDOWSIZE, _fft_size_to_value(fft_size));
@@ -129,7 +138,20 @@ namespace godot {
 	}
 
 	void FmodAudioEffectSpectrumAnalyzer::update_spectrum() {
+		_refresh_spectrum(true);
+	}
+
+	void FmodAudioEffectSpectrumAnalyzer::_refresh_spectrum(bool p_force) {
 		if (fft_dsp.is_null() || fft_dsp->dsp == nullptr) {
+			return;
+		}
+
+		// Use the audio clock rather than a Godot frame counter: manual/NRT
+		// mixing can advance several audio blocks within the same game frame.
+		unsigned long long dsp_clock = 0;
+		const bool clock_valid = bus.is_valid() && bus->channel_group &&
+			bus->channel_group->getDSPClock(&dsp_clock, nullptr) == FMOD_OK;
+		if (!p_force && clock_valid && snapshot_valid && snapshot_dsp_clock == dsp_clock) {
 			return;
 		}
 
@@ -148,15 +170,13 @@ namespace godot {
 		}
 
 		spectrum_data.resize(fft_data->length);
+		Vector2* spectrum = spectrum_data.ptrw();
+		const float* left_spectrum = fft_data->spectrum[0];
+		const float* right_spectrum = fft_data->numchannels > 1 ? fft_data->spectrum[1] : nullptr;
 		for (int i = 0; i < fft_data->length; i++) {
-			float left = (fft_data->spectrum[0] != nullptr) ? fft_data->spectrum[0][i] : 0.0f;
-			float right = left;
-
-			if (fft_data->numchannels > 1 && fft_data->spectrum[1] != nullptr) {
-				right = fft_data->spectrum[1][i];
-			}
-
-			spectrum_data.write[i] = Vector2(left, right);
+			const float left = left_spectrum ? left_spectrum[i] : 0.0f;
+			const float right = right_spectrum ? right_spectrum[i] : left;
+			spectrum[i] = Vector2(left, right);
 		}
 
 		float value = 0.0f;
@@ -167,20 +187,24 @@ namespace godot {
 		if (fft_dsp->dsp->getParameterFloat(FMOD_DSP_FFT_SPECTRAL_CENTROID, &value, nullptr, 0) == FMOD_OK) {
 			current_centroid = value;
 		}
+		// Retain the clock read before copying. If the mixer advances during
+		// the copy, the next getter refreshes instead of caching under a newer clock.
+		snapshot_dsp_clock = dsp_clock;
+		snapshot_valid = clock_valid;
 	}
 
 	int FmodAudioEffectSpectrumAnalyzer::get_bin_count() const {
-		const_cast<FmodAudioEffectSpectrumAnalyzer*>(this)->update_spectrum();
+		const_cast<FmodAudioEffectSpectrumAnalyzer*>(this)->_refresh_spectrum(false);
 		return spectrum_data.size();
 	}
 
 	float FmodAudioEffectSpectrumAnalyzer::get_rms() const {
-		const_cast<FmodAudioEffectSpectrumAnalyzer*>(this)->update_spectrum();
+		const_cast<FmodAudioEffectSpectrumAnalyzer*>(this)->_refresh_spectrum(false);
 		return current_rms;
 	}
 
 	float FmodAudioEffectSpectrumAnalyzer::get_centroid() const {
-		const_cast<FmodAudioEffectSpectrumAnalyzer*>(this)->update_spectrum();
+		const_cast<FmodAudioEffectSpectrumAnalyzer*>(this)->_refresh_spectrum(false);
 		return current_centroid;
 	}
 
@@ -191,34 +215,41 @@ namespace godot {
 			p_end = temp;
 		}
 
-		const_cast<FmodAudioEffectSpectrumAnalyzer*>(this)->update_spectrum();
+		const_cast<FmodAudioEffectSpectrumAnalyzer*>(this)->_refresh_spectrum(false);
 
 		if (spectrum_data.is_empty() || p_begin == p_end) {
 			return Vector2();
 		}
 
-		float nyquist = MAX(sample_rate * 0.5f, 1.0f);
 		int num_bins = spectrum_data.size();
+		// FMOD returns the full FFT window, including its mirrored half.
+		// Each bin spans sample_rate / num_bins Hz, not Nyquist / num_bins.
+		const float bin_hz = MAX(sample_rate, 1.0f) / num_bins;
+		const int last_positive_bin = num_bins / 2;
 
-		int begin_bin = static_cast<int>(std::floor((MAX(p_begin, 0.0f) / nyquist) * num_bins));
-		int end_bin = static_cast<int>(std::ceil((MAX(p_end, 0.0f) / nyquist) * num_bins));
+		int begin_bin = static_cast<int>(std::floor(MAX(p_begin, 0.0f) / bin_hz));
+		int end_bin = static_cast<int>(std::ceil(MAX(p_end, 0.0f) / bin_hz));
 
-		begin_bin = CLAMP(begin_bin, 0, num_bins - 1);
-		end_bin = CLAMP(end_bin, 0, num_bins - 1);
+		begin_bin = CLAMP(begin_bin, 0, last_positive_bin);
+		end_bin = CLAMP(end_bin, 0, last_positive_bin);
 
 		Vector2 max_magnitude;
 		Vector2 avg_magnitude;
 		int count = 0;
+		const Vector2* spectrum = spectrum_data.ptr();
 
 		for (int i = begin_bin; i <= end_bin; i++) {
-			Vector2 magnitude = spectrum_data[i];
-			max_magnitude.x = MAX(max_magnitude.x, magnitude.x);
-			max_magnitude.y = MAX(max_magnitude.y, magnitude.y);
-			avg_magnitude += magnitude;
+			const Vector2& magnitude = spectrum[i];
+			if (p_mode == MAGNITUDE_MAX) {
+				max_magnitude.x = MAX(max_magnitude.x, magnitude.x);
+				max_magnitude.y = MAX(max_magnitude.y, magnitude.y);
+			} else {
+				avg_magnitude += magnitude;
+			}
 			count++;
 		}
 
-		if (count > 0) {
+		if (p_mode != MAGNITUDE_MAX && count > 0) {
 			avg_magnitude /= static_cast<float>(count);
 		}
 
@@ -232,8 +263,9 @@ namespace godot {
 
 		sample_rate = p_sample_rate > 0.0f ? p_sample_rate : sample_rate;
 		spectrum_data.resize(num_bins);
+		Vector2* data = spectrum_data.ptrw();
 		for (int i = 0; i < num_bins; i++) {
-			spectrum_data.write[i] = Vector2(spectrum[i], spectrum[i]);
+			data[i] = Vector2(spectrum[i], spectrum[i]);
 		}
 	}
 
