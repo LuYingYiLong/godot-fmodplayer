@@ -31,7 +31,7 @@ func _ready() -> void:
 
 func _run() -> void:
 	var summary: String = "FMOD tests\n\n"
-	if _suite not in ["all", "spectrum", "profile",]:
+	if _suite not in ["all", "spectrum", "profile", "reverb",]:
 		_finish_failure("Unknown test suite: " + _suite)
 		return
 	if _suite in ["all", "spectrum",]:
@@ -44,6 +44,16 @@ func _run() -> void:
 			_finish_failure("FMOD SDK smoke test failed")
 			return
 		summary += "FMOD SDK smoke test: passed\n"
+	if _suite in ["all", "reverb",]:
+		var reverb_profile: RefCounted = CPU_PROFILE.new()
+		if not reverb_profile.render_reverb_reference(_output_dir):
+			_finish_failure("Reverb output/tail regression failed")
+			return
+		summary += "Reverb output/tail regression: passed\n"
+		if _suite == "reverb":
+			var reverb_results: Array[Dictionary] = reverb_profile.run_reverb(_output_dir.path_join("reverb_timings.json"), _quick)
+			for result: Dictionary in reverb_results:
+				summary += "%s: %.3f us/block\n" % [result["name"], result["median_us_per_update"]]
 	if _suite in ["all", "profile",]:
 		var results: Array[Dictionary] = CPU_PROFILE.new().run(_output_dir.path_join("timings.json"), _quick)
 		for result: Dictionary in results:

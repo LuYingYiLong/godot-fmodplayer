@@ -1,0 +1,63 @@
+[gd_scene format=3 uid="uid://bto84iuntkj2l"]
+
+[sub_resource type="GDScript" id="GDScript_ifow5"]
+resource_name = "player"
+script/source = "extends CharacterBody3D
+
+
+const SPEED = 5.0
+const JUMP_VELOCITY = 4.5
+
+
+func _physics_process(delta: float) -> void:
+	# Add the gravity.
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+
+	# Handle jump.
+	if Input.is_action_just_pressed(\"ui_accept\") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
+
+	# Get the input direction and handle the movement/deceleration.
+	# As good practice, you should replace UI actions with custom gameplay actions.
+	var input_dir := Input.get_vector(\"ui_left\", \"ui_right\", \"ui_up\", \"ui_down\")
+	var direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	if direction:
+		velocity.x = direction.x * SPEED
+		velocity.z = direction.z * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+		velocity.z = move_toward(velocity.z, 0, SPEED)
+
+	move_and_slide()
+"
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wvhbo"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_wvhbo"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_wvhbo"]
+size = Vector2(100, 100)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_6bcqh"]
+data = PackedVector3Array(50, 0, 50, -50, 0, 50, 50, 0, -50, -50, 0, 50, -50, 0, -50, 50, 0, -50)
+
+[node name="ReverbTest" type="Node3D" unique_id=1910008776]
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=608202817]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+script = SubResource("GDScript_ifow5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D" unique_id=1806654231]
+shape = SubResource("CapsuleShape3D_wvhbo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D" unique_id=2024548343]
+mesh = SubResource("CapsuleMesh_wvhbo")
+
+[node name="Floor" type="MeshInstance3D" parent="." unique_id=1151454288]
+mesh = SubResource("PlaneMesh_wvhbo")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor" unique_id=1646849316]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D" unique_id=81912051]
+shape = SubResource("ConcavePolygonShape3D_6bcqh")

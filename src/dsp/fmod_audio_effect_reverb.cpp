@@ -60,6 +60,7 @@ namespace godot {
 		struct GodotReverbComb {
 			std::vector<float> buffer;
 			int pos = 0;
+			int size_limit = 0;
 			int extra_spread_frames = 0;
 			float feedback = 0.0f;
 			float damp = 0.0f;
@@ -69,6 +70,7 @@ namespace godot {
 		struct GodotReverbAllPass {
 			std::vector<float> buffer;
 			int pos = 0;
+			int size_limit = 0;
 			int extra_spread_frames = 0;
 		};
 
@@ -82,12 +84,19 @@ namespace godot {
 			float extra_spread_base = 0.0f;
 			float hpf_h1 = 0.0f;
 			float hpf_h2 = 0.0f;
+			GodotReverbParameters cached_parameters;
+			bool parameters_valid = false;
+			int predelay_frames = 10;
+			float hp_a1 = 0.0f;
+			float hp_a2 = 0.0f;
+			float hp_b1 = 0.0f;
 
 			static float _undenormalize(float p_value) {
 				return std::fabs(p_value) < 0.000000000000001f ? 0.0f : p_value;
 			}
 
 			void _configure_buffers() {
+				parameters_valid = false;
 				for (int i = 0; i < GODOT_REVERB_MAX_COMBS; i++) {
 					GodotReverbComb& c = comb[i];
 					c.extra_spread_frames = static_cast<int>(std::lround(extra_spread_base * mix_rate));
@@ -118,14 +127,36 @@ namespace godot {
 				static constexpr float room_scale = 0.28f;
 				static constexpr float room_offset = 0.7f;
 
-				for (int i = 0; i < GODOT_REVERB_MAX_COMBS; i++) {
-					GodotReverbComb& c = comb[i];
-					c.feedback = CLAMP(room_offset + p_params.room_size * room_scale, room_offset, room_offset + room_scale);
-
+				if (!parameters_valid || p_params.room_size != cached_parameters.room_size || p_params.damping != cached_parameters.damping) {
+					const float feedback = CLAMP(room_offset + p_params.room_size * room_scale, room_offset, room_offset + room_scale);
 					float auxdmp = p_params.damping / 2.0f + 0.5f;
 					auxdmp *= auxdmp;
-					c.damp = std::exp(-GODOT_REVERB_TAU * auxdmp * 10000.0f / static_cast<float>(mix_rate));
+					const float damp = std::exp(-GODOT_REVERB_TAU * auxdmp * 10000.0f / static_cast<float>(mix_rate));
+					for (GodotReverbComb& c : comb) {
+						c.feedback = feedback;
+						c.damp = damp;
+					}
 				}
+				if (!parameters_valid || p_params.spread != cached_parameters.spread) {
+					for (GodotReverbComb& c : comb) {
+						c.size_limit = std::max(static_cast<int>(c.buffer.size()) - static_cast<int>(std::lround(static_cast<float>(c.extra_spread_frames) * (1.0f - p_params.spread))), 1);
+					}
+					for (GodotReverbAllPass& a : allpass) {
+						a.size_limit = std::max(static_cast<int>(a.buffer.size()) - static_cast<int>(std::lround(static_cast<float>(a.extra_spread_frames) * (1.0f - p_params.spread))), 1);
+					}
+				}
+				if (!parameters_valid || p_params.predelay != cached_parameters.predelay) {
+					predelay_frames = static_cast<int>(std::lround((p_params.predelay / 1000.0f) * mix_rate));
+					predelay_frames = std::min(std::max(predelay_frames, 10), static_cast<int>(echo_buffer.size()) - 1);
+				}
+				if ((!parameters_valid || p_params.highpass != cached_parameters.highpass) && p_params.highpass > 0.0f) {
+					const float hpaux = std::exp(-GODOT_REVERB_TAU * p_params.highpass * 6000.0f / static_cast<float>(mix_rate));
+					hp_a1 = (1.0f + hpaux) / 2.0f;
+					hp_a2 = -(1.0f + hpaux) / 2.0f;
+					hp_b1 = hpaux;
+				}
+				cached_parameters = p_params;
+				parameters_valid = true;
 			}
 
 		public:
@@ -151,77 +182,90 @@ namespace godot {
 
 				_update_parameters(p_params);
 
-				int predelay_frames = static_cast<int>(std::lround((p_params.predelay / 1000.0f) * mix_rate));
-				predelay_frames = std::max(predelay_frames, 10);
-				predelay_frames = std::min(predelay_frames, static_cast<int>(echo_buffer.size()) - 1);
-
-				for (int i = 0; i < p_frames; i++) {
-					if (echo_buffer_pos >= static_cast<int>(echo_buffer.size())) {
-						echo_buffer_pos = 0;
+				const int echo_size = static_cast<int>(echo_buffer.size());
+				float* echo = echo_buffer.data();
+				float* input = input_buffer.data();
+				int write_pos = echo_buffer_pos >= echo_size ? 0 : echo_buffer_pos;
+				int read_pos = write_pos - predelay_frames;
+				if (read_pos < 0) read_pos += echo_size;
+				int offset = 0;
+				while (offset < p_frames) {
+					if (write_pos >= echo_size) write_pos = 0;
+					if (read_pos >= echo_size) read_pos = 0;
+					const int count = std::min(p_frames - offset, std::min(echo_size - write_pos, echo_size - read_pos));
+					for (int j = 0; j < count; j++) {
+						const float source = p_src ? p_src[offset + j] : 0.0f;
+						const float in = _undenormalize(echo[read_pos + j] * p_params.predelay_feedback + source);
+						echo[write_pos + j] = in;
+						input[offset + j] = in;
+						p_dst[offset + j] = 0.0f;
 					}
-
-					int read_pos = echo_buffer_pos - predelay_frames;
-					while (read_pos < 0) {
-						read_pos += static_cast<int>(echo_buffer.size());
-					}
-
-					const float source = p_src ? p_src[i] : 0.0f;
-					float in = _undenormalize(echo_buffer[static_cast<size_t>(read_pos)] * p_params.predelay_feedback + source);
-					echo_buffer[static_cast<size_t>(echo_buffer_pos)] = in;
-					input_buffer[static_cast<size_t>(i)] = in;
-					p_dst[i] = 0.0f;
-					echo_buffer_pos++;
+					write_pos += count;
+					read_pos += count;
+					offset += count;
 				}
+				echo_buffer_pos = write_pos;
 
 				if (p_params.highpass > 0.0f) {
-					float hpaux = std::exp(-GODOT_REVERB_TAU * p_params.highpass * 6000.0f / static_cast<float>(mix_rate));
-					float hp_a1 = (1.0f + hpaux) / 2.0f;
-					float hp_a2 = -(1.0f + hpaux) / 2.0f;
-					float hp_b1 = hpaux;
-
+					float h1 = hpf_h1;
+					float h2 = hpf_h2;
 					for (int i = 0; i < p_frames; i++) {
-						float in = input_buffer[static_cast<size_t>(i)];
-						input_buffer[static_cast<size_t>(i)] = in * hp_a1 + hpf_h1 * hp_a2 + hpf_h2 * hp_b1;
-						hpf_h2 = input_buffer[static_cast<size_t>(i)];
-						hpf_h1 = in;
+						const float in = input[i];
+						input[i] = in * hp_a1 + h1 * hp_a2 + h2 * hp_b1;
+						h2 = input[i];
+						h1 = in;
 					}
+					hpf_h1 = h1;
+					hpf_h2 = h2;
 				}
 
 				for (int i = 0; i < GODOT_REVERB_MAX_COMBS; i++) {
 					GodotReverbComb& c = comb[i];
-					int size_limit = static_cast<int>(c.buffer.size()) - static_cast<int>(std::lround(static_cast<float>(c.extra_spread_frames) * (1.0f - p_params.spread)));
-					size_limit = std::max(size_limit, 1);
-
-					for (int j = 0; j < p_frames; j++) {
-						if (c.pos >= size_limit) {
-							c.pos = 0;
+					const float feedback = c.feedback;
+					const float damp = c.damp;
+					const float undamped = 1.0f - damp;
+					float history = c.damp_h;
+					float* buffer = c.buffer.data();
+					int pos = c.pos;
+					int processed = 0;
+					while (processed < p_frames) {
+						if (pos >= c.size_limit) pos = 0;
+						const int count = std::min(p_frames - processed, c.size_limit - pos);
+						for (int j = 0; j < count; j++) {
+							float out = _undenormalize(buffer[pos + j] * feedback);
+							out = out * undamped + history * damp;
+							history = out;
+							buffer[pos + j] = input[processed + j] + out;
+							p_dst[processed + j] += out;
 						}
-
-						float out = _undenormalize(c.buffer[static_cast<size_t>(c.pos)] * c.feedback);
-						out = out * (1.0f - c.damp) + c.damp_h * c.damp;
-						c.damp_h = out;
-						c.buffer[static_cast<size_t>(c.pos)] = input_buffer[static_cast<size_t>(j)] + out;
-						p_dst[j] += out;
-						c.pos++;
+						pos += count;
+						processed += count;
 					}
+					// Keep an end-of-block position equal to size_limit intact: a
+					// spread change can enlarge the ring before the next block.
+					c.pos = pos;
+					c.damp_h = history;
 				}
 
 				static constexpr float allpass_feedback = 0.7f;
 				for (int i = 0; i < GODOT_REVERB_MAX_ALLPASS; i++) {
 					GodotReverbAllPass& a = allpass[i];
-					int size_limit = static_cast<int>(a.buffer.size()) - static_cast<int>(std::lround(static_cast<float>(a.extra_spread_frames) * (1.0f - p_params.spread)));
-					size_limit = std::max(size_limit, 1);
-
-					for (int j = 0; j < p_frames; j++) {
-						if (a.pos >= size_limit) {
-							a.pos = 0;
+					float* buffer = a.buffer.data();
+					int pos = a.pos;
+					int processed = 0;
+					while (processed < p_frames) {
+						if (pos >= a.size_limit) pos = 0;
+						const int count = std::min(p_frames - processed, a.size_limit - pos);
+						for (int j = 0; j < count; j++) {
+							const float aux = buffer[pos + j];
+							const float value = _undenormalize(allpass_feedback * aux + p_dst[processed + j]);
+							buffer[pos + j] = value;
+							p_dst[processed + j] = aux - allpass_feedback * value;
 						}
-
-						float aux = a.buffer[static_cast<size_t>(a.pos)];
-						a.buffer[static_cast<size_t>(a.pos)] = _undenormalize(allpass_feedback * aux + p_dst[j]);
-						p_dst[j] = aux - allpass_feedback * a.buffer[static_cast<size_t>(a.pos)];
-						a.pos++;
+						pos += count;
+						processed += count;
 					}
+					a.pos = pos;
 				}
 
 				for (int i = 0; i < p_frames; i++) {

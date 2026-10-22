@@ -1,10 +1,11 @@
 param(
-    [ValidateSet('profile', 'spectrum', 'all')]
+    [ValidateSet('profile', 'spectrum', 'reverb', 'all')]
     [string]$Suite = 'all',
     [ValidatePattern('^[a-zA-Z0-9_-]+$')]
     [string]$Label = 'run',
     [string]$GodotPath = 'C:/Users/Administrator/Documents/Godot/Godot_v4.7.2-stable_win64.exe',
     [string]$FmodRuntime,
+    [string]$ExtensionBin,
     [switch]$PrepareOnly,
     [switch]$Import,
     [switch]$Quick
@@ -21,6 +22,8 @@ function Sync-TestFile([string]$SourcePath, [string]$TargetPath) {
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $testRoot = Join-Path $repoRoot 'tests'
 $binRoot = Join-Path $testRoot 'bin'
+if (-not $ExtensionBin) { $ExtensionBin = Join-Path $repoRoot 'addons/fmod_player/bin' }
+$ExtensionBin = [System.IO.Path]::GetFullPath($ExtensionBin)
 $runName = $Label + '_' + (Get-Date -Format 'yyyyMMdd_HHmmss_fff')
 $logRoot = Join-Path $testRoot ('logs/' + $runName)
 New-Item -ItemType Directory -Path $binRoot, $logRoot -Force | Out-Null
@@ -36,9 +39,17 @@ if (-not (Test-Path -LiteralPath $FmodRuntime)) {
 }
 foreach ($extension in @('.dll', '.pdb')) {
     $fileName = 'fmod_player.windows.template_debug.x86_64' + $extension
-    Sync-TestFile (Join-Path $repoRoot ('addons/fmod_player/bin/' + $fileName)) (Join-Path $binRoot $fileName)
+    Sync-TestFile (Join-Path $ExtensionBin $fileName) (Join-Path $binRoot $fileName)
 }
 Sync-TestFile $FmodRuntime (Join-Path $binRoot 'fmod.dll')
+$buildInfo = @{
+    suite = $Suite
+    quick = [bool]$Quick
+    extension_source = $ExtensionBin
+    dll_sha256 = (Get-FileHash -LiteralPath (Join-Path $binRoot 'fmod_player.windows.template_debug.x86_64.dll')).Hash
+    pdb_sha256 = (Get-FileHash -LiteralPath (Join-Path $binRoot 'fmod_player.windows.template_debug.x86_64.pdb')).Hash
+}
+$buildInfo | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $logRoot 'build.json') -Encoding utf8
 Push-Location $repoRoot
 try {
     if ($Import -or -not (Test-Path -LiteralPath (Join-Path $testRoot '.godot/extension_list.cfg'))) {

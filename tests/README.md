@@ -16,6 +16,8 @@
 ```powershell
 .\tools\run_tests.ps1 -Suite all
 .\tools\run_tests.ps1 -Suite spectrum
+.\tools\run_tests.ps1 -Suite reverb -Label reverb_before
+.\tools\run_tests.ps1 -Suite reverb -Label reverb_after
 .\tools\run_tests.ps1 -Suite profile -Label before
 .\tools\run_tests.ps1 -Suite profile -Label after
 ```
@@ -27,3 +29,13 @@
 测试使用 48 kHz 立体声、1024 帧音频块、无声非实时输出和 `MIX_FROM_UPDATE`。计时包含基础混音、脚本调用和查询开销；每项记录 5 次测量的中位数及范围，不代表实际游戏的 CPU 占比或实时音频期限。
 
 频谱回归检查同一音频块的重复读取、同一个 Godot 帧内多次混音后的刷新、强制刷新、FFT 窗口大小变化、移除和换总线，以及已知 440 Hz / 4 kHz 信号的频段映射。
+
+混响专用套件记录默认、高通和大房间三组耗时，并输出默认、高通、动态参数、暂停输入后尾音四组确定性 float32 音频。动态参数覆盖 spread 的增减、0/500 ms 预延迟、高通、阻尼、反馈和干湿切换；尾音还检查有限数值和能量衰减。`all` 套件也会运行这四组输出回归。
+
+前后运行目录可用以下命令对比，报告仍写入 `tests/logs`。对比工具同时检查逐样本输出是否完全一致：
+
+```powershell
+python tools/compare_reverb.py tests/logs/<优化前目录> tests/logs/<优化后目录>
+```
+
+要交替测试保留的旧 DLL/PDB，可用 `-ExtensionBin <本机旧二进制目录>` 指定来源。每次运行的 `build.json` 保存实际 DLL/PDB 哈希，便于核对前后版本；测试完成后使用默认来源再次准备，以恢复当前优化版。
