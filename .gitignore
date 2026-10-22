@@ -377,7 +377,9 @@ src/**/.sconsign.dblite
 .sconsign.dblite
 
 addons/bin/fmod.dll
+addons/fmod_player/bin/fmod.dll
 src/thirdparty/fmod/
 .vscode/
 compile_commands.json
+custom.py
 AGENTS.md

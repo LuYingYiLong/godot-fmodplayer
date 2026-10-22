@@ -73,7 +73,7 @@
 		<method name="get_info" qualifiers="const">
 			<return type="Dictionary" />
 			<description>
-				Returns information about the DSP including [code]name[/code], [code]version[/code], [code]config_width[/code], and [code]config_height[/code].
+				Returns information about the DSP including [code]name[/code], [code]version[/code], and [code]channels[/code]. With FMOD 2.04 or later, [code]mode[/code] identifies a filter (0) or generator (1). The legacy [code]config_width[/code] and [code]config_height[/code] keys remain available and are zero with FMOD 2.04 or later.
 			</description>
 		</method>
 		<method name="get_input" qualifiers="const">

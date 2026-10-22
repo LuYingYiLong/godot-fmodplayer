@@ -154,6 +154,7 @@
     <ClInclude Include="src\dsp\fmod_audio_effect_reverb.h" />
     <ClInclude Include="src\dsp\fmod_audio_effect_spectrum_analyzer.h" />
     <ClInclude Include="src\dsp\fmod_audio_effect_stereo_enhance.h" />
+    <ClInclude Include="src\dsp\fmod_dsp_process_compat.h" />
     <ClInclude Include="src\editor\fmod_audio_importer.h" />
     <ClInclude Include="src\editor\fmod_audio_preview_inspector.h" />
     <ClInclude Include="src\editor\fmod_audio_preview_property.h" />

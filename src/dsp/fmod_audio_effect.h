@@ -8,7 +8,7 @@
 namespace godot {
 	class FmodAudioEffect;
 	
-	// 自定义 DSP 状态数据 - 存储在 FMOD_DSP_STATE->instance 中
+	// 自定义 DSP 状态数据 - 存储在 FMOD_DSP_STATE->plugindata 中
 	struct CustomDSPState {
 		FmodAudioEffect* effect;										// 指向效果对象（非引用计数，仅用于 C++ 虚函数调用）
 		void* user_data;												// 子类自定义数据
@@ -32,10 +32,10 @@ namespace godot {
 		virtual void _on_dsp_create(FMOD_DSP_STATE* dsp_state);
 		virtual void _on_dsp_process(FMOD_DSP_STATE* dsp_state,
 			unsigned int length,
-			const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-			FMOD_DSP_BUFFER_ARRAY* outbufferarray,
+			const FmodDSPBufferArray* inbufferarray,
+			FmodDSPBufferArray* outbufferarray,
 			FMOD_BOOL inputsidle,
-			FMOD_DSP_PROCESS_OPERATION op);
+			FmodDSPProcessOperation op);
 		virtual void _on_dsp_release(FMOD_DSP_STATE* dsp_state);
 		
 	protected:
@@ -61,10 +61,10 @@ extern "C" {
 	FMOD_RESULT F_CALL fmod_custom_dsp_process_callback(
 		FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-		FMOD_DSP_BUFFER_ARRAY* outbufferarray,
+		const FmodDSPBufferArray* inbufferarray,
+		FmodDSPBufferArray* outbufferarray,
 		FMOD_BOOL inputsidle,
-		FMOD_DSP_PROCESS_OPERATION op
+		FmodDSPProcessOperation op
 	);
 	FMOD_RESULT F_CALL fmod_custom_dsp_release_callback(FMOD_DSP_STATE* dsp_state);
 }

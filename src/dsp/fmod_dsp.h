@@ -3,7 +3,7 @@
 
 #include "core/fmod_system.h"
 #include <godot_cpp/classes/ref_counted.hpp>
-#include <fmod_dsp.h>
+#include "dsp/fmod_dsp_process_compat.h"
 
 #include <mutex>
 #include <unordered_map>
@@ -219,7 +219,7 @@ namespace godot {
 		FMOD_RESULT _handle_release(FMOD_DSP_STATE* dsp_state);
 		FMOD_RESULT _handle_reset(FMOD_DSP_STATE* dsp_state);
 		FMOD_RESULT _handle_read(FMOD_DSP_STATE* dsp_state, float* inbuffer, float* outbuffer, unsigned int length, int inchannels, int* outchannels);
-		FMOD_RESULT _handle_process(FMOD_DSP_STATE* dsp_state, unsigned int length, const FMOD_DSP_BUFFER_ARRAY* inbufferarray, FMOD_DSP_BUFFER_ARRAY* outbufferarray, FMOD_BOOL inputsidle, FMOD_DSP_PROCESS_OPERATION op);
+		FMOD_RESULT _handle_process(FMOD_DSP_STATE* dsp_state, unsigned int length, const FmodDSPBufferArray* inbufferarray, FmodDSPBufferArray* outbufferarray, FMOD_BOOL inputsidle, FmodDSPProcessOperation op);
 		FMOD_RESULT _handle_setposition(FMOD_DSP_STATE* dsp_state, unsigned int pos);
 		FMOD_RESULT _handle_setparam_float(FMOD_DSP_STATE* dsp_state, int index, float value);
 		FMOD_RESULT _handle_setparam_int(FMOD_DSP_STATE* dsp_state, int index, int value);
@@ -272,10 +272,10 @@ extern "C" {
 	FMOD_RESULT F_CALL GD_FMOD_DSP_PROCESS_CALLBACK(
 		FMOD_DSP_STATE* dsp_state,                                                      // DSP 状态指针
 		unsigned int length,                                                            // 本次要处理的采样帧数
-		const FMOD_DSP_BUFFER_ARRAY* inbufferarray,                                     // 输入缓冲区数组
-		FMOD_DSP_BUFFER_ARRAY* outbufferarray,                                          // 输出缓冲区数组 (你需要填充它)
+		const FmodDSPBufferArray* inbufferarray,                                     // 输入缓冲区数组
+		FmodDSPBufferArray* outbufferarray,                                          // 输出缓冲区数组 (你需要填充它)
 		FMOD_BOOL inputsidle,
-		FMOD_DSP_PROCESS_OPERATION op
+		FmodDSPProcessOperation op
 	);
 
 	FMOD_RESULT F_CALL GD_FMOD_DSP_SETPOSITION_CALLBACK(

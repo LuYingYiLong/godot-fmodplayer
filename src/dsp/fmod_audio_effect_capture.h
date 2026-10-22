@@ -84,10 +84,10 @@ namespace godot {
 		virtual void _on_dsp_create(FMOD_DSP_STATE* dsp_state) override;
 		virtual void _on_dsp_process(FMOD_DSP_STATE* dsp_state,
 			unsigned int length,
-			const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-			FMOD_DSP_BUFFER_ARRAY* outbufferarray,
+			const FmodDSPBufferArray* inbufferarray,
+			FmodDSPBufferArray* outbufferarray,
 			FMOD_BOOL inputsidle,
-			FMOD_DSP_PROCESS_OPERATION op) override;
+			FmodDSPProcessOperation op) override;
 		virtual void _on_dsp_release(FMOD_DSP_STATE* dsp_state) override;
 
 	private:

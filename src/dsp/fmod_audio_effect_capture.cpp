@@ -33,12 +33,10 @@ namespace godot {
 		CaptureDSPUserData* capture_userdata = static_cast<CaptureDSPUserData*>(userdata);
 		if (!capture_userdata || capture_userdata->magic != CAPTURE_DSP_USERDATA_MAGIC) {
 			dsp_state->plugindata = nullptr;
-			dsp_state->instance = nullptr;
 			return FMOD_OK;
 		}
 
 		dsp_state->plugindata = capture_userdata;
-		dsp_state->instance = capture_userdata;
 		return FMOD_OK;
 	}
 
@@ -50,17 +48,16 @@ namespace godot {
 				delete userdata;
 			}
 			dsp_state->plugindata = nullptr;
-			dsp_state->instance = nullptr;
 		}
 		return FMOD_OK;
 	}
 
 	static FMOD_RESULT F_CALL capture_dsp_process_callback(FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-		FMOD_DSP_BUFFER_ARRAY* outbufferarray,
+		const FmodDSPBufferArray* inbufferarray,
+		FmodDSPBufferArray* outbufferarray,
 		FMOD_BOOL inputsidle,
-		FMOD_DSP_PROCESS_OPERATION op) {
+		FmodDSPProcessOperation op) {
 
 		static_cast<void>(inputsidle);
 
@@ -71,14 +68,14 @@ namespace godot {
 			return FMOD_ERR_INVALID_PARAM;
 		}
 
-		if (op == FMOD_DSP_PROCESS_QUERY) {
+		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
 			outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
 			outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
 			outbufferarray->speakermode = inbufferarray->speakermode;
 			return FMOD_OK;
 		}
 
-		if (op != FMOD_DSP_PROCESS_PERFORM) {
+		if (op != FMOD_PLAYER_DSP_PROCESS_PERFORM) {
 			return FMOD_OK;
 		}
 
@@ -228,23 +225,23 @@ namespace godot {
 		state->channels = 2;														// 默认立体声
 		
 		// 存储到 DSP 状态
-		dsp_state->instance = state;
+		dsp_state->plugindata = state;
 	}
 	
 	// 重写基类虚函数 - DSP 处理
 	void FmodAudioEffectCapture::_on_dsp_process(FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-		FMOD_DSP_BUFFER_ARRAY* outbufferarray,
+		const FmodDSPBufferArray* inbufferarray,
+		FmodDSPBufferArray* outbufferarray,
 		FMOD_BOOL inputsidle,
-		FMOD_DSP_PROCESS_OPERATION op) {
+		FmodDSPProcessOperation op) {
 		
 		// 安全检查：输入输出缓冲区数组
 		if (!inbufferarray || !outbufferarray) {
 			return;
 		}
 		
-		if (op == FMOD_DSP_PROCESS_QUERY) {
+		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
 			// 设置输出格式与输入相同
 			outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
 			outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
@@ -252,7 +249,7 @@ namespace godot {
 			return;
 		}
 		
-		if (op == FMOD_DSP_PROCESS_PERFORM) {
+		if (op == FMOD_PLAYER_DSP_PROCESS_PERFORM) {
 			// 安全检查：输入输出缓冲区
 			float* in = static_cast<float*>(inbufferarray->buffers[0]);
 			float* out = static_cast<float*>(outbufferarray->buffers[0]);
@@ -266,8 +263,8 @@ namespace godot {
 			memcpy(out, in, length * ch * sizeof(float));
 			
 			// 写入环形缓冲区
-			if (dsp_state->instance) {
-				CaptureDSPState* state = static_cast<CaptureDSPState*>(dsp_state->instance);
+			if (dsp_state->plugindata) {
+				CaptureDSPState* state = static_cast<CaptureDSPState*>(dsp_state->plugindata);
 				state->channels = 2;
 				
 				// 安全地访问环形缓冲区
@@ -303,10 +300,10 @@ namespace godot {
 	
 	// 重写基类虚函数 - DSP 释放
 	void FmodAudioEffectCapture::_on_dsp_release(FMOD_DSP_STATE* dsp_state) {
-		if (dsp_state->instance) {
-			CaptureDSPState* state = static_cast<CaptureDSPState*>(dsp_state->instance);
+		if (dsp_state->plugindata) {
+			CaptureDSPState* state = static_cast<CaptureDSPState*>(dsp_state->plugindata);
 			delete state;
-			dsp_state->instance = nullptr;
+			dsp_state->plugindata = nullptr;
 		}
 	}
 
@@ -402,11 +399,10 @@ namespace godot {
 			desc.pluginsdkversion = FMOD_PLUGIN_SDK_VERSION;
 			strncpy(desc.name, "GodotCaptureDSP", sizeof(desc.name) - 1);
 			desc.version = 1;
-			desc.numinputbuffers = 1;
-			desc.numoutputbuffers = 1;
+			fmod_configure_filter_description(desc);
 			desc.create = capture_dsp_create_callback;
 			desc.release = capture_dsp_release_callback;
-			desc.process = capture_dsp_process_callback;
+			desc.process = fmod_dsp_process_callback<capture_dsp_process_callback>();
 			initialized = true;
 		}
 

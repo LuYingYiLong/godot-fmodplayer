@@ -279,10 +279,10 @@ namespace godot {
 		static FMOD_RESULT _process_reverb_dsp(ReverbDSPUserData* userdata,
 			FMOD_DSP_STATE* dsp_state,
 			unsigned int length,
-			const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-			FMOD_DSP_BUFFER_ARRAY* outbufferarray,
+			const FmodDSPBufferArray* inbufferarray,
+			FmodDSPBufferArray* outbufferarray,
 			FMOD_BOOL inputsidle,
-			FMOD_DSP_PROCESS_OPERATION op) {
+			FmodDSPProcessOperation op) {
 
 			if (!inbufferarray || !outbufferarray || inbufferarray->numbuffers <= 0 || outbufferarray->numbuffers <= 0 ||
 				!inbufferarray->buffernumchannels || !outbufferarray->buffernumchannels ||
@@ -290,14 +290,14 @@ namespace godot {
 				return FMOD_ERR_INVALID_PARAM;
 			}
 
-			if (op == FMOD_DSP_PROCESS_QUERY) {
+			if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
 				outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
 				outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
 				outbufferarray->speakermode = inbufferarray->speakermode;
 				return FMOD_OK;
 			}
 
-			if (op != FMOD_DSP_PROCESS_PERFORM || !outbufferarray->buffers) {
+			if (op != FMOD_PLAYER_DSP_PROCESS_PERFORM || !outbufferarray->buffers) {
 				return FMOD_OK;
 			}
 
@@ -383,10 +383,10 @@ namespace godot {
 
 		static FMOD_RESULT F_CALL reverb_dsp_process_callback(FMOD_DSP_STATE* dsp_state,
 			unsigned int length,
-			const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-			FMOD_DSP_BUFFER_ARRAY* outbufferarray,
+			const FmodDSPBufferArray* inbufferarray,
+			FmodDSPBufferArray* outbufferarray,
 			FMOD_BOOL inputsidle,
-			FMOD_DSP_PROCESS_OPERATION op) {
+			FmodDSPProcessOperation op) {
 			return _process_reverb_dsp(_get_reverb_userdata(dsp_state), dsp_state, length, inbufferarray, outbufferarray, inputsidle, op);
 		}
 	}
@@ -482,11 +482,10 @@ namespace godot {
 			desc.pluginsdkversion = FMOD_PLUGIN_SDK_VERSION;
 			strncpy(desc.name, "GodotReverb", sizeof(desc.name) - 1);
 			desc.version = 1;
-			desc.numinputbuffers = 1;
-			desc.numoutputbuffers = 1;
+			fmod_configure_filter_description(desc);
 			desc.create = reverb_dsp_create_callback;
 			desc.release = reverb_dsp_release_callback;
-			desc.process = reverb_dsp_process_callback;
+			desc.process = fmod_dsp_process_callback<reverb_dsp_process_callback>();
 			initialized = true;
 		}
 
@@ -497,15 +496,15 @@ namespace godot {
 		CustomDSPState* state = new CustomDSPState();
 		state->effect = this;
 		state->user_data = new FmodReverbDSPRuntime();
-		dsp_state->instance = state;
+		dsp_state->plugindata = state;
 	}
 
 	void FmodAudioEffectReverb::_on_dsp_process(FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-		FMOD_DSP_BUFFER_ARRAY* outbufferarray,
+		const FmodDSPBufferArray* inbufferarray,
+		FmodDSPBufferArray* outbufferarray,
 		FMOD_BOOL inputsidle,
-		FMOD_DSP_PROCESS_OPERATION op) {
+		FmodDSPProcessOperation op) {
 
 		if (!inbufferarray || !outbufferarray || inbufferarray->numbuffers <= 0 || outbufferarray->numbuffers <= 0 ||
 			!inbufferarray->buffernumchannels || !outbufferarray->buffernumchannels ||
@@ -513,14 +512,14 @@ namespace godot {
 			return;
 		}
 
-		if (op == FMOD_DSP_PROCESS_QUERY) {
+		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
 			outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
 			outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
 			outbufferarray->speakermode = inbufferarray->speakermode;
 			return;
 		}
 
-		if (op != FMOD_DSP_PROCESS_PERFORM || !outbufferarray->buffers) {
+		if (op != FMOD_PLAYER_DSP_PROCESS_PERFORM || !outbufferarray->buffers) {
 			return;
 		}
 
@@ -533,7 +532,7 @@ namespace godot {
 			return;
 		}
 
-		CustomDSPState* state = static_cast<CustomDSPState*>(dsp_state ? dsp_state->instance : nullptr);
+		CustomDSPState* state = static_cast<CustomDSPState*>(dsp_state ? dsp_state->plugindata : nullptr);
 		FmodReverbDSPRuntime* runtime = state ? static_cast<FmodReverbDSPRuntime*>(state->user_data) : nullptr;
 		if (!runtime) {
 			const size_t sample_count = static_cast<size_t>(length) * static_cast<size_t>(output_channels);
@@ -584,15 +583,15 @@ namespace godot {
 	}
 
 	void FmodAudioEffectReverb::_on_dsp_release(FMOD_DSP_STATE* dsp_state) {
-		if (!dsp_state || !dsp_state->instance) {
+		if (!dsp_state || !dsp_state->plugindata) {
 			return;
 		}
 
-		CustomDSPState* state = static_cast<CustomDSPState*>(dsp_state->instance);
+		CustomDSPState* state = static_cast<CustomDSPState*>(dsp_state->plugindata);
 		delete static_cast<FmodReverbDSPRuntime*>(state->user_data);
 		state->user_data = nullptr;
 		delete state;
-		dsp_state->instance = nullptr;
+		dsp_state->plugindata = nullptr;
 	}
 
 	void FmodAudioEffectReverb::set_damping(float p_damping) {

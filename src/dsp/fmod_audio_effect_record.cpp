@@ -116,9 +116,9 @@ namespace godot {
 	static FMOD_RESULT _record_dsp_process(FmodAudioEffectRecordSharedState* p_state,
 		FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-		FMOD_DSP_BUFFER_ARRAY* outbufferarray,
-		FMOD_DSP_PROCESS_OPERATION op) {
+		const FmodDSPBufferArray* inbufferarray,
+		FmodDSPBufferArray* outbufferarray,
+		FmodDSPProcessOperation op) {
 
 		if (!inbufferarray || !outbufferarray ||
 			inbufferarray->numbuffers <= 0 || outbufferarray->numbuffers <= 0 ||
@@ -127,14 +127,14 @@ namespace godot {
 			return FMOD_ERR_INVALID_PARAM;
 		}
 
-		if (op == FMOD_DSP_PROCESS_QUERY) {
+		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
 			outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
 			outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
 			outbufferarray->speakermode = inbufferarray->speakermode;
 			return FMOD_OK;
 		}
 
-		if (op != FMOD_DSP_PROCESS_PERFORM) {
+		if (op != FMOD_PLAYER_DSP_PROCESS_PERFORM) {
 			return FMOD_OK;
 		}
 
@@ -208,7 +208,6 @@ namespace godot {
 				delete userdata;
 			}
 			dsp_state->plugindata = nullptr;
-			dsp_state->instance = nullptr;
 		}
 		return FMOD_OK;
 	}
@@ -219,10 +218,10 @@ namespace godot {
 
 	static FMOD_RESULT F_CALL record_dsp_process_callback(FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-		FMOD_DSP_BUFFER_ARRAY* outbufferarray,
+		const FmodDSPBufferArray* inbufferarray,
+		FmodDSPBufferArray* outbufferarray,
 		FMOD_BOOL inputsidle,
-		FMOD_DSP_PROCESS_OPERATION op) {
+		FmodDSPProcessOperation op) {
 
 		static_cast<void>(inputsidle);
 		return _record_dsp_process(_get_record_state_from_dsp(dsp_state), dsp_state, length, inbufferarray, outbufferarray, op);
@@ -314,11 +313,10 @@ namespace godot {
 			desc.pluginsdkversion = FMOD_PLUGIN_SDK_VERSION;
 			strncpy(desc.name, "RecordDSP", sizeof(desc.name) - 1);
 			desc.version = 1;
-			desc.numinputbuffers = 1;
-			desc.numoutputbuffers = 1;
+			fmod_configure_filter_description(desc);
 			desc.create = record_dsp_create_callback;
 			desc.release = record_dsp_release_callback;
-			desc.process = record_dsp_process_callback;
+			desc.process = fmod_dsp_process_callback<record_dsp_process_callback>();
 			initialized = true;
 		}
 
@@ -327,10 +325,10 @@ namespace godot {
 
 	void FmodAudioEffectRecord::_on_dsp_process(FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-		FMOD_DSP_BUFFER_ARRAY* outbufferarray,
+		const FmodDSPBufferArray* inbufferarray,
+		FmodDSPBufferArray* outbufferarray,
 		FMOD_BOOL inputsidle,
-		FMOD_DSP_PROCESS_OPERATION op) {
+		FmodDSPProcessOperation op) {
 
 		if (!inbufferarray || !outbufferarray || inbufferarray->numbuffers <= 0 || outbufferarray->numbuffers <= 0 ||
 			!inbufferarray->buffernumchannels || !outbufferarray->buffernumchannels ||
@@ -339,14 +337,14 @@ namespace godot {
 			return;
 		}
 
-		if (op == FMOD_DSP_PROCESS_QUERY) {
+		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
 			outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
 			outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
 			outbufferarray->speakermode = inbufferarray->speakermode;
 			return;
 		}
 
-		if (op != FMOD_DSP_PROCESS_PERFORM) {
+		if (op != FMOD_PLAYER_DSP_PROCESS_PERFORM) {
 			return;
 		}
 

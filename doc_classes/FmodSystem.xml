@@ -161,6 +161,7 @@
 				- [code]has_setposition[/code]: Whether the DSP has a setposition callback.
 				- [code]has_read[/code]: Whether the DSP has a read callback.
 				- [code]has_should_i_process[/code]: Whether the DSP has a shouldiprocess callback.
+				With FMOD 2.04 or later, the dictionary also includes [code]mode[/code] (filter = 0, generator = 1), [code]input_channels[/code], [code]output_channels[/code], and [code]default_cooldown[/code]. The legacy [code]has_read[/code] and [code]has_should_i_process[/code] values are false because these callbacks were removed from the FMOD API.
 			</description>
 		</method>
 		<method name="get_file_usage" qualifiers="const">

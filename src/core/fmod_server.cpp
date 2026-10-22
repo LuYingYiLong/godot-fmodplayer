@@ -288,7 +288,7 @@ namespace godot {
 			UtilityFunctions::print("                                             |___/           ");
 			Dictionary version = main_system->get_version();
 			UtilityFunctions::print_rich(
-				"[b][color=BLACK][bgcolor=WHITE]Fmod Completed.\tFmod Version: ", 
+				"[b][color=BLACK][bgcolor=WHITE]Fmod Completed.\tFmod Version: ",
 				version.get("version", "Unknow"),
 				"\tFmod Build Number: ",
 				version.get("build_number", "Unknow"),
@@ -455,12 +455,12 @@ namespace godot {
 		if (audio_bus_layout.is_valid()) {
 			audio_bus_layout->sync_from_audio_server_if_changed();
 		}
-		
+
 		// 更新监听者位置
 		SceneTree* tree = Object::cast_to<SceneTree>(Engine::get_singleton()->get_main_loop());
 		if (tree) {
 			Viewport* viewport = tree->get_root();
-			
+
 			if (Engine::get_singleton()->is_editor_hint()) {
 				EditorInterface* editor = EditorInterface::get_singleton();
 				if (editor) {
@@ -480,7 +480,7 @@ namespace godot {
 							);
 						}
 					}
-					
+
 					Viewport* editor_viewport_2d = editor->get_editor_viewport_2d();
 					if (editor_viewport_2d) {
 						Transform2D canvas_transform = editor_viewport_2d->get_global_canvas_transform();
@@ -493,7 +493,7 @@ namespace godot {
 					return;
 				}
 			}
-			
+
 			// 运行时或编辑器中未找到编辑器相机，使用游戏视口
 			if (viewport) {
 				Camera3D* camera_3d = viewport->get_camera_3d();

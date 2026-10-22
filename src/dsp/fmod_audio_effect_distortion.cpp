@@ -70,12 +70,11 @@ namespace godot {
 				delete userdata;
 			}
 			dsp_state->plugindata = nullptr;
-			dsp_state->instance = nullptr;
 		}
 		return FMOD_OK;
 	}
 
-	static void _distortion_copy_channel_format(const FMOD_DSP_BUFFER_ARRAY* inbufferarray, FMOD_DSP_BUFFER_ARRAY* outbufferarray) {
+	static void _distortion_copy_channel_format(const FmodDSPBufferArray* inbufferarray, FmodDSPBufferArray* outbufferarray) {
 		outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
 		outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
 		outbufferarray->speakermode = inbufferarray->speakermode;
@@ -109,10 +108,10 @@ namespace godot {
 
 	static FMOD_RESULT F_CALL distortion_dsp_process_callback(FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-		FMOD_DSP_BUFFER_ARRAY* outbufferarray,
+		const FmodDSPBufferArray* inbufferarray,
+		FmodDSPBufferArray* outbufferarray,
 		FMOD_BOOL inputsidle,
-		FMOD_DSP_PROCESS_OPERATION op) {
+		FmodDSPProcessOperation op) {
 
 		static_cast<void>(inputsidle);
 
@@ -123,12 +122,12 @@ namespace godot {
 			return FMOD_ERR_INVALID_PARAM;
 		}
 
-		if (op == FMOD_DSP_PROCESS_QUERY) {
+		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
 			_distortion_copy_channel_format(inbufferarray, outbufferarray);
 			return FMOD_OK;
 		}
 
-		if (op != FMOD_DSP_PROCESS_PERFORM) {
+		if (op != FMOD_PLAYER_DSP_PROCESS_PERFORM) {
 			return FMOD_OK;
 		}
 
@@ -313,11 +312,10 @@ namespace godot {
 			desc.pluginsdkversion = FMOD_PLUGIN_SDK_VERSION;
 			strncpy(desc.name, "GodotDistortionDSP", sizeof(desc.name) - 1);
 			desc.version = 1;
-			desc.numinputbuffers = 1;
-			desc.numoutputbuffers = 1;
+			fmod_configure_filter_description(desc);
 			desc.create = distortion_dsp_create_callback;
 			desc.release = distortion_dsp_release_callback;
-			desc.process = distortion_dsp_process_callback;
+			desc.process = fmod_dsp_process_callback<distortion_dsp_process_callback>();
 			initialized = true;
 		}
 

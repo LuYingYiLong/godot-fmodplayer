@@ -40,10 +40,10 @@ namespace godot {
 		virtual FMOD_DSP_DESCRIPTION* get_dsp_description() override;
 		virtual void _on_dsp_process(FMOD_DSP_STATE* dsp_state,
 			unsigned int length,
-			const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-			FMOD_DSP_BUFFER_ARRAY* outbufferarray,
+			const FmodDSPBufferArray* inbufferarray,
+			FmodDSPBufferArray* outbufferarray,
 			FMOD_BOOL inputsidle,
-			FMOD_DSP_PROCESS_OPERATION op) override;
+			FmodDSPProcessOperation op) override;
 
 		void set_recording_active(bool p_record);
 		bool is_recording_active() const;

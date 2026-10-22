@@ -151,6 +151,60 @@ Assign an FMOD audio stream resource, choose a bus, and press play.
 - **Build system:** SCons
 - **Audio runtime:** FMOD Core API SDK
 
+## Building From Source
+
+### Windows SDK Setup
+
+Copy the FMOD Core Windows SDK's `inc` folder to `src/thirdparty/fmod/inc`
+and its `lib/x64` files to `src/thirdparty/fmod/lib/x64`. The headers, import
+library, and runtime DLL must come from the same SDK release. The build does
+not bundle `fmod.dll`; users obtain it from their own FMOD SDK and place it in
+their project's `addons/fmod_player/bin` folder for local use.
+
+Run `scons platform=windows target=template_debug -j16` or use
+`target=template_release` for Release. FMOD 2.04's DSP API is supported through
+an adapter that preserves the existing effect processing and script callbacks.
+
+### Building Android From Source On Windows
+
+1. Install an Android SDK and NDK. Copy `custom.example.py` to `custom.py`,
+   then set `ANDROID_HOME` to the SDK root and `ndk_version` to the version
+   actually installed in its `ndk` folder. SCons reads this local configuration
+   even when an existing terminal has not picked up new environment variables.
+2. Extract the **FMOD Android SDK** and set `fmod_android_sdk` in `custom.py`
+   to its root folder or `api/core` folder. Use the Android SDK's matching
+   headers and native libraries; the Windows SDK alone is insufficient.
+   The default layout is `src/thirdparty/fmod/android/inc` and
+   `src/thirdparty/fmod/android/lib/<ABI>/libfmod.so` / `libfmodL.so`.
+3. Run `build_android.bat` to build arm64 Debug and Release libraries.
+   For another architecture, run e.g. `build_android.bat arch=x86_64` and add
+   the corresponding library entries to `fmod_player.gdextension` before export.
+   `build_all_platform.bat` builds Windows first and then Android, and stops
+   immediately if a build fails.
+
+For a single build, run `scons platform=android target=template_debug arch=arm64 -j16`.
+Command-line options override `custom.py`, which is ignored by Git.
+`FMOD_ANDROID_SDK` can also supply the default FMOD SDK path.
+
+These scripts build the native GDExtension libraries. To export an APK, install
+Godot's Android build template and run the plugin's **Configure FMOD Android
+Export** tool using the same FMOD Android SDK so the Java runtime and FMOD
+native libraries are included.
+
+The adapter regression test can be built in a Visual Studio developer terminal:
+
+```bat
+cl /nologo /std:c++17 /EHsc /Isrc /Isrc/thirdparty/fmod/inc tests/fmod_dsp_process_compat_test.cpp /Fe:%TEMP%/fmod_dsp_process_compat_test.exe /Fo:%TEMP%/fmod_dsp_process_compat_test.obj
+%TEMP%\fmod_dsp_process_compat_test.exe
+```
+
+For the Godot integration test, copy `tests/fmod_sdk_smoke_test.gd` into a test
+project containing the built addon and your locally obtained FMOD runtime. Set
+`audio/fmod/output_type` to `4` (NOSOUND_NRT) and
+`audio/fmod/init_flags/mix_from_update` to `true`, then run the script headlessly.
+It checks effect output, reverb tails, SDK metadata, and script callbacks. A
+successful run prints `FMOD_SDK_SMOKE` results and exits with code zero.
+
 ## Documentation
 
 Full documentation is available here:

@@ -517,6 +517,14 @@ namespace godot {
 	void FmodSystem::set_output(FmodOutputType output_type) {
 		ERR_FAIL_COND(!system);
 		auto fmod_output_type = static_cast<FMOD_OUTPUTTYPE>(output_type);
+#if FMOD_VERSION >= 0x00020400
+		// Preserve serialized Godot enum values after AUDIOWORKLETP was inserted.
+		if (output_type == FMOD_OUTPUT_TYPE_PHASE) {
+			fmod_output_type = FMOD_OUTPUTTYPE_PHASE;
+		} else if (output_type == FMOD_OUTPUT_TYPE_OHAUDIO) {
+			fmod_output_type = FMOD_OUTPUTTYPE_OHAUDIO;
+		}
+#endif
 		FMOD_ERR_CHECK(system->setOutput(fmod_output_type));
 	}
 
@@ -524,6 +532,17 @@ namespace godot {
 		ERR_FAIL_COND_V(!system, FMOD_OUTPUT_TYPE_UNKNOWN);
 		FMOD_OUTPUTTYPE fmod_output_type = FMOD_OUTPUTTYPE_UNKNOWN;
 		FMOD_ERR_CHECK_V(system->getOutput(&fmod_output_type), FMOD_OUTPUT_TYPE_UNKNOWN);
+#if FMOD_VERSION >= 0x00020400
+		if (fmod_output_type == FMOD_OUTPUTTYPE_PHASE) {
+			return FMOD_OUTPUT_TYPE_PHASE;
+		}
+		if (fmod_output_type == FMOD_OUTPUTTYPE_OHAUDIO) {
+			return FMOD_OUTPUT_TYPE_OHAUDIO;
+		}
+		if (fmod_output_type == FMOD_OUTPUTTYPE_AUDIOWORKLETP) {
+			return FMOD_OUTPUT_TYPE_UNKNOWN;
+		}
+#endif
 		FmodOutputType output_type = static_cast<FmodOutputType>(fmod_output_type);
 		return output_type;
 	}
@@ -1184,16 +1203,18 @@ namespace godot {
 		desc->pluginsdkversion = FMOD_PLUGIN_SDK_VERSION;
 		const CharString name_utf8 = name.utf8();
 		strncpy(desc->name, name_utf8.get_data(), sizeof(desc->name) - 1);
-		desc->numinputbuffers = 1;
-		desc->numoutputbuffers = 1;
+		fmod_configure_filter_description(*desc);
 
 		// 使用 fmod_dsp.cpp 中定义的回调函数
 		// 这些回调会通过 userdata 找到 FmodDSP 实例并调用 GDScript Callable
 		desc->create = GD_FMOD_DSP_CREATE_CALLBACK;
 		desc->release = GD_FMOD_DSP_RELEASE_CALLBACK;
 		desc->reset = GD_FMOD_DSP_RESET_CALLBACK;
+#if FMOD_VERSION < 0x00020400
 		desc->read = GD_FMOD_DSP_READ_CALLBACK;
-		desc->process = GD_FMOD_DSP_PROCESS_CALLBACK;
+		desc->shouldiprocess = GD_FMOD_DSP_SHOULDIPROCESS_CALLBACK;
+#endif
+		desc->process = fmod_dsp_process_callback<GD_FMOD_DSP_PROCESS_CALLBACK>();
 		desc->setposition = GD_FMOD_DSP_SETPOSITION_CALLBACK;
 		desc->setparameterfloat = GD_FMOD_DSP_SETPARAM_FLOAT_CALLBACK;
 		desc->setparameterint = GD_FMOD_DSP_SETPARAM_INT_CALLBACK;
@@ -1203,7 +1224,6 @@ namespace godot {
 		desc->getparameterint = GD_FMOD_DSP_GETPARAM_INT_CALLBACK;
 		desc->getparameterbool = GD_FMOD_DSP_GETPARAM_BOOL_CALLBACK;
 		desc->getparameterdata = GD_FMOD_DSP_GETPARAM_DATA_CALLBACK;
-		desc->shouldiprocess = GD_FMOD_DSP_SHOULDIPROCESS_CALLBACK;
 
 		return _create_dsp_from_description(desc);
 	}
@@ -1334,15 +1354,26 @@ namespace godot {
 		info["name"] = String::utf8(desc->name);
 		info["version"] = desc->version;
 		info["plugin_sdk_version"] = desc->pluginsdkversion;
+#if FMOD_VERSION >= 0x00020400
+		info["num_input_buffers"] = desc->mode == FMOD_DSP_MODE_FILTER ? 1 : 0;
+		info["num_output_buffers"] = 1;
+		info["mode"] = static_cast<int>(desc->mode);
+		info["input_channels"] = desc->inchannels;
+		info["output_channels"] = desc->outchannels;
+		info["default_cooldown"] = desc->defaultcooldown;
+		info["has_read"] = false;
+		info["has_should_i_process"] = false;
+#else
 		info["num_input_buffers"] = desc->numinputbuffers;
 		info["num_output_buffers"] = desc->numoutputbuffers;
+		info["has_read"] = (desc->read != nullptr);
+		info["has_should_i_process"] = (desc->shouldiprocess != nullptr);
+#endif
 		info["has_create"] = (desc->create != nullptr);
 		info["has_release"] = (desc->release != nullptr);
 		info["has_reset"] = (desc->reset != nullptr);
 		info["has_process"] = (desc->process != nullptr);
 		info["has_setposition"] = (desc->setposition != nullptr);
-		info["has_read"] = (desc->read != nullptr);
-		info["has_should_i_process"] = (desc->shouldiprocess != nullptr);
 		return info;
 	}
 

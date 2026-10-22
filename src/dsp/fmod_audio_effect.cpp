@@ -60,22 +60,22 @@ namespace godot {
 		// 基类默认实现 - 分配自定义状态
 		CustomDSPState* state = new CustomDSPState();
 		state->effect = this;
-		dsp_state->instance = state;
+		dsp_state->plugindata = state;
 	}
 	
 	void FmodAudioEffect::_on_dsp_process(FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-		FMOD_DSP_BUFFER_ARRAY* outbufferarray,
+		const FmodDSPBufferArray* inbufferarray,
+		FmodDSPBufferArray* outbufferarray,
 		FMOD_BOOL inputsidle,
-		FMOD_DSP_PROCESS_OPERATION op) {
+		FmodDSPProcessOperation op) {
 		// 基类默认实现 - 直接旁路
-		if (op == FMOD_DSP_PROCESS_QUERY) {
+		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
 			// 设置输出格式与输入相同
 			outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
 			outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
 			outbufferarray->speakermode = inbufferarray->speakermode;
-		} else if (op == FMOD_DSP_PROCESS_PERFORM) {
+		} else if (op == FMOD_PLAYER_DSP_PROCESS_PERFORM) {
 			// 直接拷贝输入到输出
 			int num_channels = inbufferarray->buffernumchannels[0];
 			memcpy(outbufferarray->buffers[0], inbufferarray->buffers[0], 
@@ -85,10 +85,10 @@ namespace godot {
 	
 	void FmodAudioEffect::_on_dsp_release(FMOD_DSP_STATE* dsp_state) {
 		// 基类默认实现 - 释放自定义状态
-		if (dsp_state->instance) {
-			CustomDSPState* state = static_cast<CustomDSPState*>(dsp_state->instance);
+		if (dsp_state->plugindata) {
+			CustomDSPState* state = static_cast<CustomDSPState*>(dsp_state->plugindata);
 			delete state;
-			dsp_state->instance = nullptr;
+			dsp_state->plugindata = nullptr;
 		}
 	}
 	
@@ -102,11 +102,10 @@ namespace godot {
 			desc.pluginsdkversion = FMOD_PLUGIN_SDK_VERSION;
 			strncpy(desc.name, "CustomEffect", sizeof(desc.name) - 1);
 			desc.version = 1;
-			desc.numinputbuffers = 1;
-			desc.numoutputbuffers = 1;
+			fmod_configure_filter_description(desc);
 			desc.create = fmod_custom_dsp_create_callback;
 			desc.release = fmod_custom_dsp_release_callback;
-			desc.process = fmod_custom_dsp_process_callback;
+			desc.process = fmod_dsp_process_callback<fmod_custom_dsp_process_callback>();
 			initialized = true;
 		}
 		return &desc;
@@ -155,7 +154,7 @@ extern "C" {
 		if (!userdata) {
 			// 分配一个空的自定义状态
 			godot::CustomDSPState* state = new godot::CustomDSPState();
-			dsp_state->instance = state;
+			dsp_state->plugindata = state;
 			return FMOD_OK;
 		}
 		
@@ -171,24 +170,24 @@ extern "C" {
 	FMOD_RESULT F_CALL fmod_custom_dsp_process_callback(
 		FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FMOD_DSP_BUFFER_ARRAY* inbufferarray,
-		FMOD_DSP_BUFFER_ARRAY* outbufferarray,
+		const FmodDSPBufferArray* inbufferarray,
+		FmodDSPBufferArray* outbufferarray,
 		FMOD_BOOL inputsidle,
-		FMOD_DSP_PROCESS_OPERATION op
+		FmodDSPProcessOperation op
 	) {
 		// 安全检查
 		if (!dsp_state || !inbufferarray || !outbufferarray) {
 			return FMOD_ERR_INVALID_PARAM;
 		}
 		
-		// 从 instance 获取自定义状态
-		if (!dsp_state->instance) {
+		// 从 plugindata 获取自定义状态
+		if (!dsp_state->plugindata) {
 			// 没有自定义状态，直接旁路
-			if (op == FMOD_DSP_PROCESS_QUERY) {
+			if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
 				outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
 				outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
 				outbufferarray->speakermode = inbufferarray->speakermode;
-			} else if (op == FMOD_DSP_PROCESS_PERFORM) {
+			} else if (op == FMOD_PLAYER_DSP_PROCESS_PERFORM) {
 				int num_channels = inbufferarray->buffernumchannels[0];
 				memcpy(outbufferarray->buffers[0], inbufferarray->buffers[0], 
 					length * num_channels * sizeof(float));
@@ -197,16 +196,16 @@ extern "C" {
 		}
 		
 		// 获取效果对象并调用虚函数
-		godot::CustomDSPState* state = static_cast<godot::CustomDSPState*>(dsp_state->instance);
+		godot::CustomDSPState* state = static_cast<godot::CustomDSPState*>(dsp_state->plugindata);
 		if (state->effect) {
 			state->effect->_on_dsp_process(dsp_state, length, inbufferarray, outbufferarray, inputsidle, op);
 		} else {
 			// 没有效果对象，直接旁路
-			if (op == FMOD_DSP_PROCESS_QUERY) {
+			if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
 				outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
 				outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
 				outbufferarray->speakermode = inbufferarray->speakermode;
-			} else if (op == FMOD_DSP_PROCESS_PERFORM) {
+			} else if (op == FMOD_PLAYER_DSP_PROCESS_PERFORM) {
 				int num_channels = inbufferarray->buffernumchannels[0];
 				memcpy(outbufferarray->buffers[0], inbufferarray->buffers[0], 
 					length * num_channels * sizeof(float));
@@ -221,18 +220,18 @@ extern "C" {
 			return FMOD_ERR_INVALID_PARAM;
 		}
 		
-		if (!dsp_state->instance) {
+		if (!dsp_state->plugindata) {
 			return FMOD_OK;
 		}
 		
 		// 获取效果对象并调用虚函数
-		godot::CustomDSPState* state = static_cast<godot::CustomDSPState*>(dsp_state->instance);
+		godot::CustomDSPState* state = static_cast<godot::CustomDSPState*>(dsp_state->plugindata);
 		if (state->effect) {
 			state->effect->_on_dsp_release(dsp_state);
 		} else {
 			// 没有效果对象，直接释放状态
 			delete state;
-			dsp_state->instance = nullptr;
+			dsp_state->plugindata = nullptr;
 		}
 		
 		return FMOD_OK;
