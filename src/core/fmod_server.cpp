@@ -543,10 +543,20 @@ namespace godot {
 
 	void FmodServer::reset_main_system(Ref<FmodSystem> p_system) {
 		ERR_FAIL_COND_MSG(p_system.is_null() || p_system->system_is_null(), "New system is null");
-		if (main_system.is_valid()) {
+		if (p_system == main_system) {
+			return;
+		}
+		// Bus groups and DSPs belong to the old system and must be released first.
+		if (audio_bus_layout.is_valid()) {
+			audio_bus_layout->clear();
+		}
+		if (main_system.is_valid() && !main_system->system_is_null()) {
 			main_system->release();
 		}
 		main_system = p_system;
+		if (audio_bus_layout.is_valid()) {
+			audio_bus_layout->sync_from_audio_server();
+		}
 	}
 
 	void FmodServer::_build_bus_layout() {

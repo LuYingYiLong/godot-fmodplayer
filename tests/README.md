@@ -5,11 +5,12 @@
 首次使用先在仓库根目录执行：
 
 ```powershell
-.\build_profile_windows.bat
-.\tools\run_tests.ps1 -PrepareOnly
+.\build_debug_to_test.bat
 ```
 
-准备脚本将本机编译的 DLL、PDB 和私有 SDK 中的 `fmod.dll` 同步到被忽略的 `tests/bin`。运行库不随测试项目提交。如果 SDK 不在默认位置，可传入 `-FmodRuntime "你的 SDK/api/core/lib/x64/fmod.dll"`。
+该脚本编译 `platform=windows target=template_debug arch=x86_64`，保留性能优化和 PDB 符号，然后将整个 `addons/fmod_player/` 复制到 `tests/addons/fmod_player/`，包括插件配置、导入器入口、工具脚本、翻译、图标、扩展描述文件和编译产物，并刷新 Godot 导入缓存。`fmod.dll` 从本机私有 SDK 补入插件的 `bin/`。测试插件副本整体由 Git 忽略，运行库不随项目提交。
+
+如果 SDK 不在默认位置，可执行 `.\build_debug_to_test.bat -FmodRuntime "你的 SDK/api/core/lib/x64/fmod.dll"`。已经编译好时，可用 `.\tools\run_tests.ps1 -PrepareOnly` 仅同步测试插件；`.\build_profile_windows.bat` 仍然只负责编译。
 
 命令行也直接运行这个 Godot 项目的主场景：
 
@@ -26,7 +27,9 @@
 
 所有运行日志和计时 JSON 都保存在 `tests/logs/<标签>_<时间>/`；直接按 F5 的运行日志保存在 `tests/logs/godot.log`，结果保存在该目录下的 `run_<时间>/`。优化构建日志位于 `tests/logs/build_profile.log`。缓存、日志、采样报告和本机二进制均由 `.gitignore` 排除。
 
-测试使用 48 kHz 立体声、1024 帧音频块、无声非实时输出和 `MIX_FROM_UPDATE`。计时包含基础混音、脚本调用和查询开销；每项记录 5 次测量的中位数及范围，不代表实际游戏的 CPU 占比或实时音频期限。
+项目默认使用正常音频输出，可在检查器中试听 FMOD 音频。打开 `scenes/reverb_test.tscn` 按 F6 可测试空间音频；播放器已绑定 `bgm_fire_extinguisher_all.mp3`。墙体的直接遮挡为 1.0，玩家在墙后可能听不到直达声，绕过墙体再比较。
+
+自动测试主场景在自己的运行进程中切换为 48 kHz 立体声、1024 帧音频块、无声非实时输出和 `MIX_FROM_UPDATE`，不修改项目设置。计时包含基础混音、脚本调用和查询开销；每项记录 5 次测量的中位数及范围，不代表实际游戏的 CPU 占比或实时音频期限。
 
 频谱回归检查同一音频块的重复读取、同一个 Godot 帧内多次混音后的刷新、强制刷新、FFT 窗口大小变化、移除和换总线，以及已知 440 Hz / 4 kHz 信号的频段映射。
 

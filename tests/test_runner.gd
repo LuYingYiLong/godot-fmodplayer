@@ -26,6 +26,7 @@ func _ready() -> void:
 		get_tree().quit(1)
 		return
 	$Output.text = "Running %s tests...\n%s" % [_suite, _output_dir]
+	_configure_offline_audio()
 	_run.call_deferred()
 
 
@@ -63,6 +64,17 @@ func _run() -> void:
 	print("TESTS_PASSED output=", _output_dir)
 	if DisplayServer.get_name() == "headless":
 		get_tree().quit()
+
+
+func _configure_offline_audio() -> void:
+	# 离线混音只用于自动测试，编辑器预览和其他场景使用正常音频输出
+	var system: FmodSystem = FmodSystem.create_system()
+	system.set_output(FmodSystem.FMOD_OUTPUT_TYPE_NOSOUND_NRT)
+	system.set_software_format(48000, FmodSystem.FMOD_SPEAKER_MODE_STEREO, 0)
+	system.set_dsp_buffer_size(1024, 4)
+	system.init(32, FmodSystem.FMOD_INIT_FLAG_MIX_FROM_UPDATE)
+	FmodServer.reset_main_system(system)
+	print("TEST_AUDIO_CONFIG output=", system.get_output(), " ", system.get_software_format())
 
 
 func _finish_failure(message: String) -> void:
