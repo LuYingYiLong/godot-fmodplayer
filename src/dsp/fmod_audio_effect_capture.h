@@ -2,70 +2,11 @@
 #define FMOD_AUDIO_EFFECT_CAPTURE_H
 
 #include "dsp/fmod_audio_effect.h"
+#include "dsp/fmod_capture_ring_buffer.h"
 #include <atomic>
 #include <mutex>
-#include <vector>
 
 namespace godot {
-	class AudioRingBuffer {
-	private:
-		std::vector<float> buffer;
-		size_t write_pos = 0;
-		size_t read_pos = 0;
-		size_t size = 0;
-
-	public:
-		void resize(size_t p_size) {
-			if (p_size < 16) {
-				p_size = 16;
-			}
-			buffer.resize(p_size);
-			size = p_size;
-			write_pos = 0;
-			read_pos = 0;
-		}
-
-		void clear() {
-			write_pos = 0;
-			read_pos = 0;
-		}
-
-		size_t space_left() const {
-			if (size == 0) return 0;
-			if (write_pos >= read_pos) {
-				return size - (write_pos - read_pos) - 1;
-			}
-			return (read_pos - write_pos) - 1;
-		}
-
-		size_t data_left() const {
-			if (size == 0) return 0;
-			if (write_pos >= read_pos) {
-				return write_pos - read_pos;
-			}
-			return size - (read_pos - write_pos);
-		}
-
-		size_t write(const float* data, size_t count) {
-			if (size == 0 || !data) return 0;
-			size_t to_write = MIN(count, space_left());
-			for (size_t i = 0; i < to_write; i++) {
-				buffer[write_pos] = data[i];
-				write_pos = (write_pos + 1) % size;
-			}
-			return to_write;
-		}
-
-		size_t read(float* data, size_t count) {
-			if (size == 0 || !data) return 0;
-			size_t to_read = MIN(count, data_left());
-			for (size_t i = 0; i < to_read; i++) {
-				data[i] = buffer[read_pos];
-				read_pos = (read_pos + 1) % size;
-			}
-			return to_read;
-		}
-	};
 
 	struct CaptureDSPState {
 		AudioRingBuffer* ring_buffer = nullptr;

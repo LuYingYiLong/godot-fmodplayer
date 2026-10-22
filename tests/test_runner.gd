@@ -3,10 +3,12 @@ extends Control
 const CPU_PROFILE: Script = preload("uid://dhqnw0413pkvm")
 const SPECTRUM_TEST: Script = preload("uid://wsi7yl1eksc4")
 const SDK_SMOKE_TEST: Script = preload("uid://c0i5v0a75fpfe")
+const CAPTURE_TEST: Script = preload("uid://dhyb1t6prj2bc")
 
 var _suite: String = "all"
 var _output_dir: String
 var _quick: bool
+var _capture_baseline: bool
 
 
 func _ready() -> void:
@@ -17,6 +19,8 @@ func _ready() -> void:
 			_output_dir = argument.trim_prefix("--output-dir=")
 		elif argument == "--quick":
 			_quick = true
+		elif argument == "--capture-baseline":
+			_capture_baseline = true
 	if _output_dir.is_empty():
 		var timestamp: String = Time.get_datetime_string_from_system().replace(":", "-")
 		_output_dir = ProjectSettings.globalize_path("res://logs/run_" + timestamp)
@@ -32,8 +36,11 @@ func _ready() -> void:
 
 func _run() -> void:
 	var summary: String = "FMOD tests\n\n"
-	if _suite not in ["all", "spectrum", "profile", "reverb",]:
+	if _suite not in ["all", "spectrum", "profile", "reverb", "capture",]:
 		_finish_failure("Unknown test suite: " + _suite)
+		return
+	if _capture_baseline and _suite != "capture":
+		_finish_failure("Capture baseline mode requires the capture suite")
 		return
 	if _suite in ["all", "spectrum",]:
 		if not SPECTRUM_TEST.new().run():
@@ -45,6 +52,15 @@ func _run() -> void:
 			_finish_failure("FMOD SDK smoke test failed")
 			return
 		summary += "FMOD SDK smoke test: passed\n"
+	if _suite in ["all", "capture",]:
+		if not CAPTURE_TEST.new().run(_output_dir, _capture_baseline):
+			_finish_failure("Capture regression failed")
+			return
+		summary += "Capture regression: baseline diagnostics completed\n" if _capture_baseline else "Capture regression: passed\n"
+		if _suite == "capture":
+			var capture_results: Array[Dictionary] = CPU_PROFILE.new().run_capture(_output_dir.path_join("capture_timings.json"), _quick)
+			for result: Dictionary in capture_results:
+				summary += "%s: %.3f us/block\n" % [result["name"], result["median_us_per_update"]]
 	if _suite in ["all", "reverb",]:
 		var reverb_profile: RefCounted = CPU_PROFILE.new()
 		if not reverb_profile.render_reverb_reference(_output_dir):

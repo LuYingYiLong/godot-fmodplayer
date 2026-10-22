@@ -2,6 +2,7 @@
 #include "core/fmod_server.h"
 #include "core/fmod_system.h"
 #include <fmod_errors.h>
+#include <cmath>
 #include <string.h>
 
 namespace godot {
@@ -52,7 +53,7 @@ namespace godot {
 		return FMOD_OK;
 	}
 
-	static FMOD_RESULT F_CALL capture_dsp_process_callback(FMOD_DSP_STATE* dsp_state,
+	static FMOD_RESULT capture_process(CaptureDSPState* state,
 		unsigned int length,
 		const FmodDSPBufferArray* inbufferarray,
 		FmodDSPBufferArray* outbufferarray,
@@ -90,34 +91,29 @@ namespace godot {
 			return FMOD_ERR_INVALID_PARAM;
 		}
 
-		memcpy(out, in, static_cast<size_t>(length) * static_cast<size_t>(channels) * sizeof(float));
+		if (out != in) {
+			memcpy(out, in, static_cast<size_t>(length) * static_cast<size_t>(channels) * sizeof(float));
+		}
 
-		CaptureDSPUserData* state = _get_capture_userdata(dsp_state);
 		if (!state || !state->ring_buffer || !state->buffer_mutex || !state->pushed_frames || !state->discarded_frames) {
 			return FMOD_OK;
 		}
 
 		std::lock_guard<std::mutex> lock(*state->buffer_mutex);
-		size_t samples_to_write = static_cast<size_t>(length) * 2;
-		size_t written = 0;
-		for (unsigned int i = 0; i < length; i++) {
-			float stereo[2];
-			if (channels == 1) {
-				stereo[0] = in[i];
-				stereo[1] = in[i];
-			} else {
-				stereo[0] = in[i * channels];
-				stereo[1] = in[i * channels + 1];
-			}
-			written += state->ring_buffer->write(stereo, 2);
-		}
+		const size_t written = state->ring_buffer->write(in, length, channels);
 
 		*state->pushed_frames += length;
-		if (written < samples_to_write) {
-			*state->discarded_frames += (samples_to_write - written) / 2;
+		if (written < length) {
+			*state->discarded_frames += length - written;
 		}
 
 		return FMOD_OK;
+	}
+
+	static FMOD_RESULT F_CALL capture_dsp_process_callback(FMOD_DSP_STATE* dsp_state,
+		unsigned int length, const FmodDSPBufferArray* inbufferarray,
+		FmodDSPBufferArray* outbufferarray, FMOD_BOOL inputsidle, FmodDSPProcessOperation op) {
+		return capture_process(_get_capture_userdata(dsp_state), length, inbufferarray, outbufferarray, inputsidle, op);
 	}
 
 	void FmodAudioEffectCapture::_bind_methods() {
@@ -138,34 +134,18 @@ namespace godot {
 	}
 
 	FmodAudioEffectCapture::~FmodAudioEffectCapture() {
-
+		// Stop callbacks before the derived class's buffer and mutex are destroyed.
+		if (bus.is_valid()) {
+			remove_from_bus(bus);
+		}
 	}
 	
 	void FmodAudioEffectCapture::_update_buffer_size() {
-		// 假设默认采样率为 48000Hz，立体声
-		// 实际采样率可以在 DSP 创建时获取
-		int sample_rate = 48000;
-		int channels = 2;
-		int new_size = static_cast<int>(buffer_length * sample_rate * channels);
-		
-		// 确保缓冲区大小至少有一些空间
-		if (new_size < 1024) {
-			new_size = 1024;
-		}
-		
-		// 限制最大缓冲区大小，防止内存溢出
-		const int max_size = sample_rate * channels * 10; // 最大10秒
-		if (new_size > max_size) {
-			new_size = max_size;
-		}
-		
-		buffer_size = new_size;
+		// Preserve the existing 48 kHz sizing policy, expressed in complete frames.
+		buffer_size = static_cast<int>(CLAMP(buffer_length * 48000.0, 512.0, 480000.0));
 		
 		std::lock_guard<std::mutex> lock(buffer_mutex);
-		// 如果 DSP 正在运行，这里可能会有竞争条件
-		// 但为了改变缓冲区大小，我们必须这样做
 		ring_buffer.resize(static_cast<size_t>(buffer_size));
-		ring_buffer.clear();
 	}
 
 	void FmodAudioEffectCapture::apply_to(Ref<FmodChannelGroup> p_bus) {
@@ -235,67 +215,8 @@ namespace godot {
 		FmodDSPBufferArray* outbufferarray,
 		FMOD_BOOL inputsidle,
 		FmodDSPProcessOperation op) {
-		
-		// 安全检查：输入输出缓冲区数组
-		if (!inbufferarray || !outbufferarray) {
-			return;
-		}
-		
-		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
-			// 设置输出格式与输入相同
-			outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
-			outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
-			outbufferarray->speakermode = inbufferarray->speakermode;
-			return;
-		}
-		
-		if (op == FMOD_PLAYER_DSP_PROCESS_PERFORM) {
-			// 安全检查：输入输出缓冲区
-			float* in = static_cast<float*>(inbufferarray->buffers[0]);
-			float* out = static_cast<float*>(outbufferarray->buffers[0]);
-			int ch = inbufferarray->buffernumchannels[0];
-			
-			if (!in || !out || ch <= 0) {
-				return;
-			}
-			
-			// 旁路输出 - 直接拷贝输入到输出（Capture 不改变音频）
-			memcpy(out, in, length * ch * sizeof(float));
-			
-			// 写入环形缓冲区
-			if (dsp_state->plugindata) {
-				CaptureDSPState* state = static_cast<CaptureDSPState*>(dsp_state->plugindata);
-				state->channels = 2;
-				
-				// 安全地访问环形缓冲区
-				if (state->ring_buffer && state->buffer_mutex && state->pushed_frames && state->discarded_frames) {
-					std::lock_guard<std::mutex> lock(*state->buffer_mutex);
-					
-					// 写入数据（交错格式）
-					size_t samples_to_write = static_cast<size_t>(length) * 2;
-					size_t written = 0;
-					for (unsigned int i = 0; i < length; i++) {
-						float stereo[2];
-						if (ch == 1) {
-							stereo[0] = in[i];
-							stereo[1] = in[i];
-						} else {
-							stereo[0] = in[i * ch];
-							stereo[1] = in[i * ch + 1];
-						}
-						written += state->ring_buffer->write(stereo, 2);
-					}
-					
-					// 更新统计
-					*state->pushed_frames += length;
-					
-					// 计算丢弃的采样
-					if (written < samples_to_write) {
-						*state->discarded_frames += (samples_to_write - written) / 2;
-					}
-				}
-			}
-		}
+		CaptureDSPState* state = dsp_state ? static_cast<CaptureDSPState*>(dsp_state->plugindata) : nullptr;
+		capture_process(state, length, inbufferarray, outbufferarray, inputsidle, op);
 	}
 	
 	// 重写基类虚函数 - DSP 释放
@@ -308,10 +229,9 @@ namespace godot {
 	}
 
 	bool FmodAudioEffectCapture::can_get_buffer(const int64_t frames) const {
+		if (frames < 0) return false;
 		std::lock_guard<std::mutex> lock(buffer_mutex);
-		int64_t available_samples = ring_buffer.data_left();
-		// 假设立体声（2声道）
-		return (available_samples / 2) >= frames;
+		return ring_buffer.data_left() >= static_cast<uint64_t>(frames);
 	}
 
 	void FmodAudioEffectCapture::clear_buffer() {
@@ -323,22 +243,23 @@ namespace godot {
 
 	PackedVector2Array FmodAudioEffectCapture::get_buffer(const int64_t frames) {
 		PackedVector2Array result;
-		
-		std::lock_guard<std::mutex> lock(buffer_mutex);
-		
-		size_t available_samples = ring_buffer.data_left();
-		int64_t available_frames = static_cast<int64_t>(available_samples / 2);		// 假设立体声
-		int64_t to_read = MIN(frames, available_frames);
-		
-		result.resize(static_cast<int>(to_read));
-		
-		for (int64_t i = 0; i < to_read; i++) {
-			float l, r;
-			ring_buffer.read(&l, 1);
-			ring_buffer.read(&r, 1);
-			result[i] = Vector2(l, r);
+		if (frames <= 0) return result;
+		size_t to_read;
+		{
+			std::lock_guard<std::mutex> lock(buffer_mutex);
+			to_read = static_cast<size_t>(std::min(static_cast<uint64_t>(frames), static_cast<uint64_t>(ring_buffer.data_left())));
 		}
-		
+		if (to_read == 0) return result;
+		// Allocation and packed-array setup must not hold up the audio callback.
+		ERR_FAIL_COND_V(result.resize(static_cast<int>(to_read)) != OK, result);
+		Vector2* destination = result.ptrw();
+		size_t read;
+		{
+			std::lock_guard<std::mutex> lock(buffer_mutex);
+			// Another reader, clear or resize may have changed availability.
+			read = ring_buffer.read(destination, to_read);
+		}
+		if (read < to_read) result.resize(static_cast<int>(read));
 		return result;
 	}
 
@@ -348,7 +269,7 @@ namespace godot {
 
 	int64_t FmodAudioEffectCapture::get_frames_available() const {
 		std::lock_guard<std::mutex> lock(buffer_mutex);
-		return static_cast<int64_t>(ring_buffer.data_left() / 2);					// 假设立体声
+		return static_cast<int64_t>(ring_buffer.data_left());
 	}
 
 	int64_t FmodAudioEffectCapture::get_pushed_frames() const {
@@ -356,7 +277,7 @@ namespace godot {
 	}
 
 	void FmodAudioEffectCapture::set_buffer_length(double p_buffer_length) {
-		ERR_FAIL_COND_MSG(p_buffer_length <= 0, "Buffer length must be positive");
+		ERR_FAIL_COND_MSG(!std::isfinite(p_buffer_length) || p_buffer_length <= 0, "Buffer length must be finite and positive");
 		buffer_length = p_buffer_length;
 		_update_buffer_size();
 	}

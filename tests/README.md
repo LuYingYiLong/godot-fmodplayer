@@ -17,6 +17,7 @@
 ```powershell
 .\tools\run_tests.ps1 -Suite all
 .\tools\run_tests.ps1 -Suite spectrum
+.\tools\run_tests.ps1 -Suite capture -Label capture_after
 .\tools\run_tests.ps1 -Suite reverb -Label reverb_before
 .\tools\run_tests.ps1 -Suite reverb -Label reverb_after
 .\tools\run_tests.ps1 -Suite profile -Label before
@@ -42,3 +43,17 @@ python tools/compare_reverb.py tests/logs/<优化前目录> tests/logs/<优化�
 ```
 
 要交替测试保留的旧 DLL/PDB，可用 `-ExtensionBin <本机旧二进制目录>` 指定来源。每次运行的 `build.json` 保存实际 DLL/PDB 哈希，便于核对前后版本；测试完成后使用默认来源再次准备，以恢复当前优化版。
+
+Capture 专用套件检查左右不同的确定性信号、分段读取、环绕、缓冲溢出后的声道对齐、完整帧丢弃计数、奇数帧容量、清空、调整容量、重新绑定、单声道复制、多声道截取和资源释放。非溢出输出写入 `capture_steady.f32`；`all` 套件也运行这些回归。
+
+Capture 的缓冲现在按完整立体声帧计数，48 kHz 下 0.1 秒可保存 4800 帧。缓冲满时保留已有数据，丢弃无法容纳的新帧，`get_discarded_frames()` 按完整帧统计。
+
+Capture 性能测试包含空载、持续溢出、只写入（每块清空以保持可写）、每块读取、每 8 块批量读取五种情况。前后对比使用相同脚本和编译选项，比较工具同时验证非溢出输出逐位一致，以及新版全部回归通过：
+
+```powershell
+.\tools\run_tests.ps1 -Suite capture -CaptureBaseline -ExtensionBin <旧 DLL/PDB 目录> -Label capture_before
+.\tools\run_tests.ps1 -Suite capture -Label capture_after
+python tools/compare_capture.py tests/logs/<优化前目录> tests/logs/<优化后目录>
+```
+
+`-CaptureBaseline` 只用于旧版基线，允许已知的溢出容量、计数和声道错位检查失败，其他检查仍必须通过。正常运行不传此参数。报告默认保存在 `tests/logs/capture_comparison.json`。底层帧缓冲另有 `fmod_capture_ring_test.cpp`，覆盖单声道、立体声、多声道和 20000 次随机队列操作，可分别编译 float/double 精度运行。

@@ -64,6 +64,28 @@ func run(output_path: String, quick: bool = false) -> Array[Dictionary]:
 	return _results
 
 
+func run_capture(output_path: String, quick: bool = false) -> Array[Dictionary]:
+	_output_path = output_path
+	_trial_usec = 10000 if quick else 200000
+	_results.clear()
+	_system = FmodServer.get_main_system()
+	assert(_system.get_output() == FmodSystem.FMOD_OUTPUT_TYPE_NOSOUND_NRT)
+	_bus = _system.get_master_channel_group()
+	var oscillator: FmodDSP = _system.create_dsp_by_type(FmodDSP.DSP_TYPE_OSCILLATOR)
+	oscillator.set_parameter_float(1, 440.0)
+	var channel: FmodChannel = _system.play_dsp(oscillator, _bus)
+	_measure("Baseline", null)
+	var full: FmodAudioEffectCapture = FmodAudioEffectCapture.new()
+	full.buffer_length = 0.1
+	_measure("CaptureOverflow", full)
+	_measure("CaptureWriteOnly", FmodAudioEffectCapture.new(), -3)
+	_measure("CaptureReadEveryBlock", FmodAudioEffectCapture.new(), -1)
+	_measure("CaptureReadEvery8Blocks", FmodAudioEffectCapture.new(), -2)
+	channel.stop()
+	oscillator.release()
+	return _results
+
+
 func run_reverb(output_path: String, quick: bool = false) -> Array[Dictionary]:
 	_output_path = output_path
 	_trial_usec = 10000 if quick else 300000
@@ -193,11 +215,13 @@ func _measure(label: String, effect: FmodAudioEffect, queries: int = 0) -> void:
 		var start: int = Time.get_ticks_usec()
 		while elapsed < _trial_usec and updates < 4096:
 			for batch: int in range(32):
+				if queries == -3:
+					capture.clear_buffer()
 				_system.update()
 				if queries > 0:
 					for band: int in range(queries):
 						_checksum += analyzer.get_magnitude_for_frequency_range(frequency_bounds[band], frequency_bounds[band + 1]).x
-				elif queries == -1:
+				elif queries == -1 or (queries == -2 and batch % 8 == 7):
 					var frames: PackedVector2Array = capture.get_buffer(capture.get_frames_available())
 					if not frames.is_empty():
 						_checksum += frames[0].x

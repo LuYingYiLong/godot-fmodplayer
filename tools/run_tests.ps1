@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('profile', 'spectrum', 'reverb', 'all')]
+    [ValidateSet('profile', 'spectrum', 'reverb', 'capture', 'all')]
     [string]$Suite = 'all',
     [ValidatePattern('^[a-zA-Z0-9_-]+$')]
     [string]$Label = 'run',
@@ -8,10 +8,12 @@ param(
     [string]$ExtensionBin,
     [switch]$PrepareOnly,
     [switch]$Import,
-    [switch]$Quick
+    [switch]$Quick,
+    [switch]$CaptureBaseline
 )
 
 $ErrorActionPreference = 'Stop'
+if ($CaptureBaseline -and $Suite -ne 'capture') { throw '-CaptureBaseline requires -Suite capture' }
 function Get-TestFileHash([string]$Path) {
     $stream = [System.IO.File]::OpenRead($Path)
     $sha256 = [System.Security.Cryptography.SHA256]::Create()
@@ -80,6 +82,7 @@ Sync-TestFile $FmodRuntime (Join-Path $binRoot 'fmod.dll')
 $buildInfo = @{
     suite = $Suite
     quick = [bool]$Quick
+    capture_baseline = [bool]$CaptureBaseline
     extension_source = $ExtensionBin
     dll_sha256 = Get-TestFileHash (Join-Path $binRoot 'fmod_player.windows.template_debug.x86_64.dll')
     pdb_sha256 = Get-TestFileHash (Join-Path $binRoot 'fmod_player.windows.template_debug.x86_64.pdb')
@@ -102,6 +105,7 @@ try {
     if (-not $PrepareOnly) {
         $testArguments = @('--headless', '--path', $testRoot, '--log-file', (Join-Path $logRoot 'godot.log'), '--', "--suite=$Suite", "--output-dir=$logRoot")
         if ($Quick) { $testArguments += '--quick' }
+        if ($CaptureBaseline) { $testArguments += '--capture-baseline' }
         Invoke-TestGodot $testArguments (Join-Path $logRoot 'console.log')
         if (-not (Select-String -LiteralPath (Join-Path $logRoot 'godot.log') -SimpleMatch 'TESTS_PASSED' -Quiet)) {
             throw "Test completion marker missing; see $logRoot"
