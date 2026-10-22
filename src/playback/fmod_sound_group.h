@@ -15,7 +15,7 @@ namespace godot {
 		~FmodSoundGroup();
 
 		enum Behavior {
-			BEHAVIOR_FAIL,											// 调用 FmodSystem::play_sound 时，过剩的声音会失败
+			BEHAVIOR_FAIL,												// 调用 FmodSystem::play_sound 时，过剩的声音会失败
 			BEHAVIOR_MUTE,												// 多余的声音会从静音开始，当足够多的声音停止时才会变得可听见
 			BEHAVIOR_STEAL_LOWEST,										// 过多的声音会从乐队中最安静的声音中被窃取
 			BEHAVIOR_MAX,												// 最大 SoundGroup 行为数量
