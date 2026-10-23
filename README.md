@@ -5,7 +5,7 @@
 <h1 align="center">Godot-FmodPlayer</h1>
 
 <p align="center">
-  <b>FMOD Core API audio playback, mixing, DSP, and 3D spatial tools for Godot 4.</b>
+  <b>FMOD Core API playback, mixing, DSP, and 3D audio for Godot 4.</b>
 </p>
 
 <p align="center">
@@ -26,204 +26,91 @@
   </a>
 </p>
 
-<p align="center">
-  A Godot 4 GDExtension plugin for developers who want low-level FMOD playback<br>
-  without giving up Godot-style nodes, resources, buses, inspectors, and editor workflows.
-</p>
+## Features
 
----
-
-## Why This Plugin?
-
-Godot-FmodPlayer is built around the **FMOD Core API**, not FMOD Studio. It is aimed at projects that need direct control over sounds, channels, channel groups, DSP graphs, streamed audio, 3D spatial playback, and runtime mixing.
-
-Use it when you want:
-
-- FMOD's mature decoder, mixer, and DSP runtime inside Godot.
-- Godot-friendly nodes such as `FmodAudioStreamPlayer`, `FmodAudioStreamPlayer2D`, and `FmodAudioStreamPlayer3D`.
-- Editor tools for importing, previewing, inspecting, and testing FMOD audio resources.
-- A bus layout that follows Godot's `AudioServer` while routing playback through FMOD.
-- Advanced 3D audio features such as geometry occlusion and spatial reverb zones.
-
-> Looking for FMOD Studio event/bank workflows? This project intentionally focuses on **FMOD Core API**. For Studio API integration, see [fmod-gdextension](https://github.com/utopia-rise/fmod-gdextension).
-
-## Highlights
-
-### Godot-Native Workflow
-
-- Import audio as FMOD stream resources directly in the editor.
-- Preview FMOD audio resources from the inspector.
-- Use custom icons, 3D gizmos, and editor tools for FMOD nodes.
-- Configure FMOD system options from `Project Settings`.
-- Use a helper tool to prepare Android export templates for FMOD runtime files.
-
-### Playback And Loading
-
-- Play common FMOD-supported formats: MP3, WAV, OGG Vorbis, FLAC, AIFF, MIDI, MOD, XM, S3M, IT, and more.
-- Load from `res://`, `user://`, absolute file paths, memory buffers, and Godot PCK resources.
-- Choose streaming or sample loading modes depending on memory and latency needs.
-- Use advanced stream settings for special formats, subsounds, tracks, and FMOD create flags.
-
-### Mixing And Routing
-
-- Synchronize FMOD buses with Godot's audio bus layout.
-- Route players to named buses.
-- Use channel groups and sound groups for grouped playback control.
-- Adjust volume, pitch, pan, mute, solo, bypass, and DSP parameters at runtime.
-- Monitor FMOD CPU and file usage in Godot's Performance panel.
-
-### DSP Effects
-
-Godot-FmodPlayer includes FMOD-backed effects designed to feel familiar to Godot users:
-
-| Effect | Use Case |
-|--------|----------|
-| Amplify | Gain and volume adjustment |
-| Filter | Low-pass, high-pass, band-pass filtering |
-| EQ / EQ6 / EQ10 / EQ21 | Graphic and multi-band equalization |
-| Chorus | Modulated stereo thickening |
-| Delay | Echo, taps, and feedback delay |
-| Distortion | Drive, clipping, and saturation |
-| Phaser | Sweeping phase modulation |
-| Pitch Shift | Real-time pitch manipulation |
-| Reverb | Godot-like room reverb mapping |
-| Compressor | Dynamic range compression |
-| Hard Limiter | Peak control |
-| Stereo Enhance | Stereo width shaping |
-| Panner | Stereo positioning |
-| Spectrum Analyzer | Real-time frequency visualization |
-| Capture | Runtime sample capture |
-| Record | Bus recording and waveform snapshots |
-
-### 3D Audio
-
-- `FmodAudioStreamPlayer3D` for spatial playback.
-- Listener updates from the active Godot camera.
-- Distance attenuation and rolloff controls.
-- `FmodGeometryInstance3D` for FMOD geometry occlusion.
-- MeshInstance3D editor tools for quickly creating FMOD geometry.
-- `FmodReverbZone3D` for localized environmental reverb.
-- Editor gizmos for spatial audio debugging.
+- Playback nodes: `FmodAudioStreamPlayer`, `FmodAudioStreamPlayer2D`, and `FmodAudioStreamPlayer3D`.
+- Audio import and inspector preview, with streaming and sample loading from files, memory, and Godot PCK resources.
+- Bus synchronization with Godot's `AudioServer`, named bus routing, and channel group controls.
+- DSP effects: gain, filter, EQ6/10/21, chorus, delay, distortion, phaser, pitch shift, reverb, compressor, limiter, stereo enhancement, and panning.
+- Spectrum analysis, sample capture, and bus recording with waveform snapshots.
+- 3D audio with camera-based listeners, distance attenuation, geometry occlusion, and reverb zones.
+- Editor gizmos, geometry tools, project settings, performance monitors, and Android export setup.
 
 ## Quick Start
 
-### 1. Install The Plugin
-
-Recommended: install Godot-FmodPlayer from the Godot Asset Library:
-
-**[Godot Asset Library - Godot-FmodPlayer](https://godotengine.org/asset-library/asset/4905)**
-
-You can also download a release from GitHub or build the GDExtension from source if you need the latest development version.
-
-### 2. Enable The Plugin
-
-Open your Godot project and enable:
-
-```text
-Project > Project Settings > Plugins > FMOD Player
-```
-
-### 3. Play Audio
-
-Add one of the player nodes:
-
-- `FmodAudioStreamPlayer`
-- `FmodAudioStreamPlayer2D`
-- `FmodAudioStreamPlayer3D`
-
-Assign an FMOD audio stream resource, choose a bus, and press play.
+1. Install from the [Godot Asset Library](https://godotengine.org/asset-library/asset/4905) or copy `addons/fmod_player` from a [GitHub release](https://github.com/LuYingYiLong/Godot-FmodPlayer/releases) into your project.
+2. On Windows, copy `api/core/lib/x64/fmod.dll` from the matching [FMOD Core SDK](https://www.fmod.com/download) into `addons/fmod_player/bin`.
+3. Enable **FMOD Player** under **Project > Project Settings > Plugins**.
+4. Import audio as an FMOD audio resource, assign it to a player node, choose a bus, and enable `auto_play` or call `play()`.
 
 ## Platform Support
 
-| Platform | Status | Notes |
-|----------|--------|-------|
-| Windows x86_64 | Supported | Main development target |
-| Android arm64 / arm32 / x86 / x86_64 | Supported | Requires FMOD Android runtime setup |
-| macOS | Experimental | Build script support exists, FMOD linking may need local adjustment |
-| iOS | Experimental | Static library workflow may need project-specific setup |
-
-## Requirements
-
-- **Godot:** 4.1 or later
-- **Language:** C++17 or newer
-- **Windows compiler:** Visual Studio 2022 / MSVC v145+
-- **Android compiler:** Android NDK
-- **Build system:** SCons
-- **Audio runtime:** FMOD Core API SDK
+| Platform | Status |
+|----------|--------|
+| Windows x86_64 | Supported |
+| Android | arm64 builds; other ABIs available through `build_android.bat` |
+| macOS / iOS | Experimental; requires local SDK and linking setup |
 
 ## Building From Source
 
-### Windows SDK Setup
+Requires Godot 4.1+, a C++17 compiler, SCons, and the FMOD Core SDK. Windows builds use MSVC; Android builds use the Android NDK.
 
-Copy the FMOD Core Windows SDK's `inc` folder to `src/thirdparty/fmod/inc`
-and its `lib/x64` files to `src/thirdparty/fmod/lib/x64`. The headers, import
-library, and runtime DLL must come from the same SDK release. The build does
-not bundle `fmod.dll`; users obtain it from their own FMOD SDK and place it in
-their project's `addons/fmod_player/bin` folder for local use.
+Initialize the bindings:
 
-Run `scons platform=windows target=template_debug -j16` or use
-`target=template_release` for Release. FMOD 2.04's DSP API is supported through
-an adapter that preserves the existing effect processing and script callbacks.
-
-### Building Android From Source On Windows
-
-1. Install an Android SDK and NDK. Copy `custom.example.py` to `custom.py`,
-   then set `ANDROID_HOME` to the SDK root and `ndk_version` to the version
-   actually installed in its `ndk` folder. SCons reads this local configuration
-   even when an existing terminal has not picked up new environment variables.
-2. Extract the **FMOD Android SDK** and set `fmod_android_sdk` in `custom.py`
-   to its root folder or `api/core` folder. Use the Android SDK's matching
-   headers and native libraries; the Windows SDK alone is insufficient.
-   The default layout is `src/thirdparty/fmod/android/inc` and
-   `src/thirdparty/fmod/android/lib/<ABI>/libfmod.so` / `libfmodL.so`.
-3. Run `build_android.bat` to build arm64 Debug and Release libraries.
-   For another architecture, run e.g. `build_android.bat arch=x86_64` and add
-   the corresponding library entries to `fmod_player.gdextension` before export.
-   `build_all_platform.bat` builds Windows first and then Android, and stops
-   immediately if a build fails.
-
-For a single build, run `scons platform=android target=template_debug arch=arm64 -j16`.
-Command-line options override `custom.py`, which is ignored by Git.
-`FMOD_ANDROID_SDK` can also supply the default FMOD SDK path.
-
-These scripts build the native GDExtension libraries. To export an APK, install
-Godot's Android build template and run the plugin's **Configure FMOD Android
-Export** tool using the same FMOD Android SDK so the Java runtime and FMOD
-native libraries are included.
-
-The adapter regression test can be built in a Visual Studio developer terminal:
-
-```bat
-cl /nologo /std:c++17 /EHsc /Isrc /Isrc/thirdparty/fmod/inc tests/fmod_dsp_process_compat_test.cpp /Fe:%TEMP%/fmod_dsp_process_compat_test.exe /Fo:%TEMP%/fmod_dsp_process_compat_test.obj
-%TEMP%\fmod_dsp_process_compat_test.exe
+```sh
+git submodule update --init --recursive
 ```
 
-For the Godot integration test, copy `tests/fmod_sdk_smoke_test.gd` into a test
-project containing the built addon and your locally obtained FMOD runtime. Set
-`audio/fmod/output_type` to `4` (NOSOUND_NRT) and
-`audio/fmod/init_flags/mix_from_update` to `true`, then run the script headlessly.
-It checks effect output, reverb tails, SDK metadata, and script callbacks. A
-successful run prints `FMOD_SDK_SMOKE` results and exits with code zero.
+### Windows
+
+Copy the Windows SDK's `api/core/inc` folder to `src/thirdparty/fmod/inc` and its `api/core/lib/x64` files to `src/thirdparty/fmod/lib/x64`. Use headers and libraries from the same SDK release.
+
+```bat
+scons platform=windows target=template_debug arch=x86_64 -j16
+scons platform=windows target=template_release arch=x86_64 -j16
+```
+
+Place your SDK's `fmod.dll` in the project's `addons/fmod_player/bin` folder.
+
+### Android
+
+Install the Android SDK and NDK, then extract the FMOD Android SDK. Create `custom.py` in the repository root with your local paths and installed NDK version:
+
+```python
+ANDROID_HOME = r"C:\path\to\Android\Sdk"
+ndk_version = "your-installed-version"
+fmod_android_sdk = r"C:\path\to\FMOD Android SDK"
+```
+
+`fmod_android_sdk` accepts the full SDK root or its `api/core` folder. The default location is `src/thirdparty/fmod/android`, containing `inc/` and `lib/<ABI>/`.
+
+```bat
+build_android.bat
+```
+
+This builds arm64 Debug and Release libraries. Pass `arch=x86_64`, `arch=x86_32`, or `arch=arm32` for another architecture, and add its library entries to `fmod_player.gdextension`. `build_all_platform.bat` builds Windows and Android.
+
+For APK export, install Godot's Android build template and run **Configure FMOD Android Export** with the same FMOD Android SDK to include the Java and native runtime files.
+
+Local configuration stays in `custom.py`, which is ignored by Git. SCons command-line arguments override it; `FMOD_ANDROID_SDK` supplies an alternative default SDK path.
+
+## Tests
+
+From the repository root:
+
+```powershell
+.\build_debug_to_test.bat
+.\tools\run_tests.ps1 -Suite all -Quick
+```
+
+The build script copies the complete addon into `tests/addons/fmod_player`. Logs and performance reports go to `tests/logs`.
+
+Open `tests/project.godot` to run the tests in Godot. See [tests/README.md](tests/README.md) for individual suites and performance comparisons.
 
 ## Documentation
 
-Full documentation is available here:
-
-**[godot-fmodplayerdocs.readthedocs.io](https://godot-fmodplayerdocs.readthedocs.io/en/latest/)**
-
-The documentation includes setup guides, API references, usage examples, and platform-specific export notes.
+[Setup guides, API reference, and examples](https://godot-fmodplayerdocs.readthedocs.io/en/latest/)
 
 ## License
 
-This repository is licensed under the MIT License. See [LICENSE.txt](LICENSE.txt).
-
-FMOD is proprietary software by Firelight Technologies Pty Ltd. You must obtain the appropriate FMOD license for your project from [fmod.com](https://www.fmod.com).
-
-## Acknowledgments
-
-- [FMOD](https://www.fmod.com/) by Firelight Technologies Pty Ltd
-
-<p align="center">
-  <sub>FMOD is a trademark of Firelight Technologies Pty Ltd.<br>
-  This plugin is not officially affiliated with or endorsed by Firelight Technologies.</sub>
-</p>
+Godot-FmodPlayer uses the [MIT License](LICENSE.txt). FMOD is licensed separately by [Firelight Technologies](https://www.fmod.com); obtain an FMOD license for your project.
