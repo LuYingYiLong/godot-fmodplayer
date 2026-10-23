@@ -60,6 +60,15 @@ public partial class FmodAudioEffectSpectrumAnalyzer : FmodAudioEffect
 	/// <returns>The wrapper instance linked to the underlying GDExtension "FmodAudioEffectSpectrumAnalyzer" type.</returns>
 	public new static FmodAudioEffectSpectrumAnalyzer Instantiate() => Bind(ClassDB.Instantiate(NativeName).As<GodotObject>());
 
+	public bool ImmediateMode
+	{
+		get => Call("get_immediate_mode").As<bool>();
+		set => Call("set_immediate_mode", [value]);
+	}
+
+	public void SetImmediateMode(bool enabled) => Call("set_immediate_mode", [enabled]);
+	public bool GetImmediateMode() => ImmediateMode;
+
 	public enum FftSizeEnum
 	{
 		Size256 = 0,

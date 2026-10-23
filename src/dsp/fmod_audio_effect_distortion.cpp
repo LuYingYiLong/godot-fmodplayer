@@ -74,12 +74,6 @@ namespace godot {
 		return FMOD_OK;
 	}
 
-	static void _distortion_copy_channel_format(const FmodDSPBufferArray* inbufferarray, FmodDSPBufferArray* outbufferarray) {
-		outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
-		outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
-		outbufferarray->speakermode = inbufferarray->speakermode;
-	}
-
 	static float _distortion_process_sample(float sample, int mode, float drive, float atan_mult, float atan_div, float lofi_mult) {
 		switch (mode) {
 			case FmodAudioEffectDistortion::MODE_CLIP: {
@@ -108,37 +102,21 @@ namespace godot {
 
 	static FMOD_RESULT F_CALL distortion_dsp_process_callback(FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FmodDSPBufferArray* inbufferarray,
-		FmodDSPBufferArray* outbufferarray,
-		FMOD_BOOL inputsidle,
-		FmodDSPProcessOperation op) {
+		const FMOD_DSP_BUFFER* inbufferarray,
+		const FMOD_DSP_BUFFER* outbufferarray) {
 
-		static_cast<void>(inputsidle);
-
-		if (!inbufferarray || !outbufferarray ||
-			inbufferarray->numbuffers <= 0 || outbufferarray->numbuffers <= 0 ||
-			!inbufferarray->buffernumchannels || !outbufferarray->buffernumchannels ||
-			!inbufferarray->bufferchannelmask || !outbufferarray->bufferchannelmask) {
+		if (!inbufferarray || !outbufferarray) {
 			return FMOD_ERR_INVALID_PARAM;
 		}
 
-		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
-			_distortion_copy_channel_format(inbufferarray, outbufferarray);
-			return FMOD_OK;
-		}
-
-		if (op != FMOD_PLAYER_DSP_PROCESS_PERFORM) {
-			return FMOD_OK;
-		}
-
-		if (!inbufferarray->buffers || !outbufferarray->buffers) {
+		if (!inbufferarray->buffer || !outbufferarray->buffer) {
 			return FMOD_ERR_INVALID_PARAM;
 		}
 
-		const int input_channels = inbufferarray->buffernumchannels[0];
-		const int output_channels = outbufferarray->buffernumchannels[0];
-		const float* in_buffer = static_cast<const float*>(inbufferarray->buffers[0]);
-		float* out_buffer = static_cast<float*>(outbufferarray->buffers[0]);
+		const int input_channels = inbufferarray->numchannels;
+		const int output_channels = outbufferarray->numchannels;
+		const float* in_buffer = static_cast<const float*>(inbufferarray->buffer);
+		float* out_buffer = static_cast<float*>(outbufferarray->buffer);
 		if (!in_buffer || !out_buffer || input_channels <= 0 || output_channels <= 0) {
 			return FMOD_ERR_INVALID_PARAM;
 		}
@@ -225,7 +203,7 @@ namespace godot {
 
 		ClassDB::bind_method(D_METHOD("set_oversample", "oversample"), &FmodAudioEffectDistortion::set_oversample);
 		ClassDB::bind_method(D_METHOD("get_oversample"), &FmodAudioEffectDistortion::get_oversample);
-		
+
 		ADD_PROPERTY(PropertyInfo(Variant::INT, "mode", PROPERTY_HINT_ENUM, "Clip,ATan,LoFi,Overdrive,Wave Shape,BitCrush"), "set_mode", "get_mode");
 		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "pre_gain", PROPERTY_HINT_RANGE, "-60,60,0.01,suffix:dB"), "set_pre_gain", "get_pre_gain");
 		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "drive", PROPERTY_HINT_RANGE, "0,1,0.01"), "set_drive", "get_drive");
@@ -315,7 +293,7 @@ namespace godot {
 			fmod_configure_filter_description(desc);
 			desc.create = distortion_dsp_create_callback;
 			desc.release = distortion_dsp_release_callback;
-			desc.process = fmod_dsp_process_callback<distortion_dsp_process_callback>();
+			desc.process = distortion_dsp_process_callback;
 			initialized = true;
 		}
 

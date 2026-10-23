@@ -129,7 +129,8 @@ namespace godot {
 
 		_append_import_option(options, "flags", default_flags, PROPERTY_HINT_FLAGS, "Stream,Sample,Loop,Loop Bidi,2D,3D");
 
-		_append_import_option(options, "advanced/suggested_sound_type", FmodSound::FMOD_SOUND_TYPE_UNKNOWN, PROPERTY_HINT_ENUM, "Unknown,AIFF,ASF,DLS,FLAC,FSB,IT,MIDI,MOD,MPEG,OGGVORBIS,PLAYLIST,RAW,S3M,USER,WAV,XM,XMA,AUDIOQUEUE,AT9,VORBIS,MEDIA_FOUNDATION,MEDIACODEC,FADPCM,OPUS,MAX", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED);
+		_append_import_option(options, "advanced/resampler_method", FmodSystem::FMOD_RESAMPLER_DEFAULT, PROPERTY_HINT_ENUM, "Default,No Interpolation,Linear,Cubic,Spline");
+		_append_import_option(options, "advanced/suggested_sound_type", FmodSound::FMOD_SOUND_TYPE_UNKNOWN, PROPERTY_HINT_ENUM, "Unknown,AIFF,ASF,DLS,FLAC,FSB,IT,MIDI,MOD,MPEG,OGGVORBIS,PLAYLIST,RAW,S3M,USER,WAV,XM,XMA,AUDIOQUEUE,AT9,VORBIS,MEDIACODEC,FADPCM,OPUS,MAX", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED);
 		_append_import_option(options, "advanced/length_override", 0, PROPERTY_HINT_RANGE, "0,2147483647,1,or_greater,suffix:bytes");
 		_append_import_option(options, "advanced/file_offset", 0, PROPERTY_HINT_RANGE, "0,2147483647,1,or_greater,suffix:bytes");
 		_append_import_option(options, "advanced/decode_buffer_size", 0, PROPERTY_HINT_RANGE, "0,1000000,1,or_greater,suffix:samples");
@@ -216,6 +217,9 @@ namespace godot {
 		}
 		if (p_options.has("advanced/inclusion_list")) {
 			stream->set_inclusion_list(p_options["advanced/inclusion_list"]);
+		}
+		if (p_options.has("advanced/resampler_method")) {
+			stream->set_resampler_method(static_cast<FmodSystem::FmodResamplerMethod>(static_cast<int>(p_options["advanced/resampler_method"])));
 		}
 		if (p_options.has("advanced/suggested_sound_type")) {
 			stream->set_suggested_sound_type(static_cast<FmodSound::FmodSoundType>(static_cast<int>(p_options["advanced/suggested_sound_type"])));

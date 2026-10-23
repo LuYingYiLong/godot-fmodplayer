@@ -40,6 +40,9 @@ namespace godot {
 	}
 
 	void FmodAudioEffectSpectrumAnalyzer::_bind_methods() {
+		ClassDB::bind_method(D_METHOD("set_immediate_mode", "enabled"), &FmodAudioEffectSpectrumAnalyzer::set_immediate_mode);
+		ClassDB::bind_method(D_METHOD("get_immediate_mode"), &FmodAudioEffectSpectrumAnalyzer::get_immediate_mode);
+		ADD_PROPERTY(PropertyInfo(Variant::BOOL, "immediate_mode"), "set_immediate_mode", "get_immediate_mode");
 		BIND_ENUM_CONSTANT(FFT_SIZE_256);
 		BIND_ENUM_CONSTANT(FFT_SIZE_512);
 		BIND_ENUM_CONSTANT(FFT_SIZE_1024);
@@ -95,6 +98,7 @@ namespace godot {
 		fft_dsp->set_parameter_float(FMOD_DSP_FFT_BAND_STOP_FREQ, sample_rate * 0.5f);
 		fft_dsp->set_parameter_int(FMOD_DSP_FFT_DOWNMIX, FMOD_DSP_FFT_DOWNMIX_NONE);
 		fft_dsp->set_parameter_int(FMOD_DSP_FFT_CHANNEL, -1);
+		fft_dsp->set_parameter_bool(FMOD_DSP_FFT_IMMEDIATE_MODE, immediate_mode);
 
 		bus->add_dsp(-1, fft_dsp);
 		dsp_chain.push_back(fft_dsp);
@@ -115,6 +119,19 @@ namespace godot {
 
 	void FmodAudioEffectSpectrumAnalyzer::set_buffer_length(float p_buffer_length) {
 		buffer_length = CLAMP(p_buffer_length, 0.1f, 10.0f);
+	}
+
+	void FmodAudioEffectSpectrumAnalyzer::set_immediate_mode(bool p_enabled) {
+		if (immediate_mode == p_enabled) return;
+		immediate_mode = p_enabled;
+		if (fft_dsp.is_valid()) {
+			fft_dsp->set_parameter_bool(FMOD_DSP_FFT_IMMEDIATE_MODE, immediate_mode);
+		}
+		_invalidate_snapshot();
+	}
+
+	bool FmodAudioEffectSpectrumAnalyzer::get_immediate_mode() const {
+		return immediate_mode;
 	}
 
 	float FmodAudioEffectSpectrumAnalyzer::get_buffer_length() const {

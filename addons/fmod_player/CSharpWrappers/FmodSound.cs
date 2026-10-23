@@ -83,11 +83,10 @@ public partial class FmodSound : RefCounted
 		Audioqueue = 18,
 		At9 = 19,
 		Vorbis = 20,
-		MediaFoundation = 21,
-		Mediacodec = 22,
-		Fadpcm = 23,
-		Opus = 24,
-		Max = 25,
+		Mediacodec = 21,
+		Fadpcm = 22,
+		Opus = 23,
+		Max = 24,
 	}
 
 	public enum FmodSoundFormat

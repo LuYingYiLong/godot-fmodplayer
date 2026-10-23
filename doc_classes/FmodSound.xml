@@ -284,19 +284,16 @@
 		<constant name="FMOD_SOUND_TYPE_VORBIS" value="20" enum="FmodSoundType">
 			Raw Vorbis codec data.
 		</constant>
-		<constant name="FMOD_SOUND_TYPE_MEDIA_FOUNDATION" value="21" enum="FmodSoundType">
-			Windows Media Foundation codec.
-		</constant>
-		<constant name="FMOD_SOUND_TYPE_MEDIACODEC" value="22" enum="FmodSoundType">
+		<constant name="FMOD_SOUND_TYPE_MEDIACODEC" value="21" enum="FmodSoundType">
 			Android MediaCodec.
 		</constant>
-		<constant name="FMOD_SOUND_TYPE_FADPCM" value="23" enum="FmodSoundType">
+		<constant name="FMOD_SOUND_TYPE_FADPCM" value="22" enum="FmodSoundType">
 			FMOD ADPCM compression format.
 		</constant>
-		<constant name="FMOD_SOUND_TYPE_OPUS" value="24" enum="FmodSoundType">
+		<constant name="FMOD_SOUND_TYPE_OPUS" value="23" enum="FmodSoundType">
 			Opus audio codec.
 		</constant>
-		<constant name="FMOD_SOUND_TYPE_MAX" value="25" enum="FmodSoundType">
+		<constant name="FMOD_SOUND_TYPE_MAX" value="24" enum="FmodSoundType">
 			Maximum value for bounds checking.
 		</constant>
 		<constant name="FMOD_SOUND_FORMAT_NONE" value="0" enum="FmodSoundFormat">

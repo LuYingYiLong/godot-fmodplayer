@@ -68,8 +68,22 @@
 				Returns [code]true[/code] if the internal [FmodSound] has already been created.
 			</description>
 		</method>
+		<method name="set_resampler_method">
+			<return type="void" />
+			<param index="0" name="method" type="int" enum="FmodSystem.FmodResamplerMethod" />
+			<description>
+				Sets the per-sound FMOD resampler. Invalidates the cached sound so the next playback uses the new method.
+			</description>
+		</method>
+		<method name="get_resampler_method">
+			<return type="int" />
+			<description>
+				Returns the per-sound resampler.
+			</description>
+		</method>
 	</methods>
 	<members>
+		<member name="resampler_method" type="int" setter="set_resampler_method" getter="get_resampler_method" enum="FmodSystem.FmodResamplerMethod" default="0">Per-sound resampler; Default follows the system setting.</member>
 		<member name="audio_data" type="PackedByteArray" setter="set_audio_data" getter="get_audio_data" default="PackedByteArray()">
 			The raw audio data loaded from file. This is typically set by the audio importer or by [method load_from_file]. The data is stored in memory and used to create the FMOD sound object when [method get_sound] is called.
 		</member>

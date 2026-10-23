@@ -10,6 +10,7 @@ func run() -> bool:
 	var initial_dsp_count: int = master.get_num_dsps()
 	var process_frame: int = Engine.get_process_frames()
 	var analyzer: FmodAudioEffectSpectrumAnalyzer = FmodAudioEffectSpectrumAnalyzer.new()
+	analyzer.immediate_mode = true
 	_expect(analyzer.get_bin_count() == 0, "Unattached analyzer should have no bins")
 	_expect(analyzer.get_rms() == 0.0, "Unattached analyzer should have zero RMS")
 	var oscillator: FmodDSP = system.create_dsp_by_type(FmodDSP.DSP_TYPE_OSCILLATOR)
@@ -72,7 +73,8 @@ func run() -> bool:
 
 
 func _mix(system: FmodSystem) -> void:
-	for iteration: int in range(32):
+	# 让振荡器的频率平滑过渡完成，避免把过渡频谱误判为缓存过期
+	for iteration: int in range(64):
 		system.update()
 
 

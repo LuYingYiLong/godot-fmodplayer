@@ -40,10 +40,8 @@ namespace godot {
 		virtual FMOD_DSP_DESCRIPTION* get_dsp_description() override;
 		virtual void _on_dsp_process(FMOD_DSP_STATE* dsp_state,
 			unsigned int length,
-			const FmodDSPBufferArray* inbufferarray,
-			FmodDSPBufferArray* outbufferarray,
-			FMOD_BOOL inputsidle,
-			FmodDSPProcessOperation op) override;
+			const FMOD_DSP_BUFFER* inbufferarray,
+			const FMOD_DSP_BUFFER* outbufferarray) override;
 
 		void set_recording_active(bool p_record);
 		bool is_recording_active() const;
@@ -55,7 +53,6 @@ namespace godot {
 		PackedVector2Array get_waveform_snapshot(int p_width = 512, float p_seconds = 5.0f) const;
 
 		void _add_samples(const float* buffer, unsigned int length, int channels);
-		FMOD_RESULT _on_dsp_read(FMOD_DSP_STATE* dsp_state, float* inbuffer, float* outbuffer, unsigned int length, int inchannels, int* outchannels);
 	};
 }
 

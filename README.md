@@ -39,7 +39,7 @@
 ## Quick Start
 
 1. Install from the [Godot Asset Library](https://godotengine.org/asset-library/asset/4905) or copy `addons/fmod_player` from a [GitHub release](https://github.com/LuYingYiLong/Godot-FmodPlayer/releases) into your project.
-2. On Windows, copy `api/core/lib/x64/fmod.dll` from the matching [FMOD Core SDK](https://www.fmod.com/download) into `addons/fmod_player/bin`.
+2. On Windows, copy `api/core/lib/x64/fmod.dll` from the matching FMOD 2.04 [Core SDK](https://www.fmod.com/download) into `addons/fmod_player/bin`.
 3. Enable **FMOD Player** under **Project > Project Settings > Plugins**.
 4. Import audio as an FMOD audio resource, assign it to a player node, choose a bus, and enable `auto_play` or call `play()`.
 
@@ -53,7 +53,7 @@
 
 ## Building From Source
 
-Requires Godot 4.1+, a C++17 compiler, SCons, and the FMOD Core SDK. Windows builds use MSVC; Android builds use the Android NDK.
+Requires Godot 4.1+, a C++17 compiler, SCons, and the FMOD Core SDK 2.04. Windows builds use MSVC; Android builds use the Android NDK.
 
 Initialize the bindings:
 
@@ -93,6 +93,16 @@ This builds arm64 Debug and Release libraries. Pass `arch=x86_64`, `arch=x86_32`
 For APK export, install Godot's Android build template and run **Configure FMOD Android Export** with the same FMOD Android SDK to include the Java and native runtime files.
 
 Local configuration stays in `custom.py`, which is ignored by Git. SCons command-line arguments override it; `FMOD_ANDROID_SDK` supplies an alternative default SDK path.
+
+## FMOD 2.04 API
+
+- Use `set_input_channel_format()` / `get_input_channel_format()` for DSP input formats.
+- Custom DSPs use `set_process_callback()`: `(samples, frames, input_channels, output_channels) -> Dictionary`, returning `{"output": samples}`. Offline NRT outputs run script callbacks on the main thread.
+- `create_dsp()` accepts filter/generator mode, cooldown, and channel counts. `create_dsp_connection()` and `add_input_preallocated()` support connections configured before attachment.
+- Sound creation and `FmodAudioStream.resampler_method` accept per-sound resampling settings.
+- `read` / `shouldiprocess` callbacks, `MIX_FROM_UPDATE`, and `MEDIA_FOUNDATION` were removed. Output and sound type enums follow FMOD 2.04 numbering; update saved numeric values when migrating.
+
+See the [FMOD 2.04 changes](https://www.fmod.com/docs/2.04/api/welcome-whats-new-204.html).
 
 ## Tests
 

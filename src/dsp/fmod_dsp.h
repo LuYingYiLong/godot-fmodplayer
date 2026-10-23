@@ -3,7 +3,7 @@
 
 #include "core/fmod_system.h"
 #include <godot_cpp/classes/ref_counted.hpp>
-#include "dsp/fmod_dsp_process_compat.h"
+#include "dsp/fmod_dsp_helpers.h"
 
 #include <mutex>
 #include <unordered_map>
@@ -26,7 +26,6 @@ namespace godot {
 		Callable _create_callback;
 		Callable _release_callback;
 		Callable _reset_callback;
-		Callable _read_callback;
 		Callable _process_callback;
 		Callable _setposition_callback;
 		Callable _setparam_float_callback;
@@ -37,7 +36,6 @@ namespace godot {
 		Callable _getparam_int_callback;
 		Callable _getparam_bool_callback;
 		Callable _getparam_data_callback;
-		Callable _shouldiprocess_callback;
 
 	protected:
 		static void _bind_methods();
@@ -45,6 +43,13 @@ namespace godot {
 	public:
 		FmodDSP();
 		~FmodDSP();
+
+		enum FmodDSPMode {
+			DSP_MODE_FILTER = FMOD_DSP_MODE_FILTER,
+			DSP_MODE_GENERATOR = FMOD_DSP_MODE_GENERATOR,
+		};
+
+		static constexpr int64_t DSP_COOLDOWN_INFINITE = FMOD_DSP_COOLDOWN_INFINITE;
 
 		enum FmodDSPType {
 			DSP_TYPE_UNKNOWN,                                                           // 它是通过非 FMOD 插件创建的，目的不明
@@ -110,6 +115,7 @@ namespace godot {
 			Ref<FmodDSP> target_dsp,
 			unsigned int type = 0
 		);                                                                              // 在这个对象上添加一个 DSP 单元作为输入
+		Ref<FmodDSPConnection> add_input_preallocated(Ref<FmodDSP> target_dsp, Ref<FmodDSPConnection> connection);
 		Dictionary get_input(const int index) const;                                    // 在输入列表中指定索引处获取 DSP 单元
 		Dictionary get_output(const int index) const;                                   // 在输出列表中指定索引处检索 DSP 单元
 		int get_num_inputs() const;                                                     // 获取输入列表中的 DSP 单元数量
@@ -121,11 +127,11 @@ namespace godot {
 		);                                                                              // 断开指定的输入 DSP
 
 		// Channel 格式
-		void set_channel_format(
+		void set_input_channel_format(
 			const int numchannels,
 			FmodSystem::FmodSpeakerMode speakermode
 		);                                                                              // 设置该 DSP 处理时接收的 PCM 输入格式
-		Dictionary get_channel_format() const;                                          // 获取该 DSP 处理时接收的 PCM 输入格式
+		Dictionary get_input_channel_format() const;                                          // 获取该 DSP 处理时接收的 PCM 输入格式
 		Dictionary get_output_channel_format(
 			const int inchannels,
 			FmodSystem::FmodSpeakerMode inspeakermode
@@ -178,8 +184,6 @@ namespace godot {
 		void set_reset_callback(const Callable &p_callback);
 		Callable get_reset_callback() const;
 
-		void set_read_callback(const Callable &p_callback);
-		Callable get_read_callback() const;
 
 		void set_process_callback(const Callable &p_callback);
 		Callable get_process_callback() const;
@@ -211,15 +215,12 @@ namespace godot {
 		void set_getparam_data_callback(const Callable &p_callback);
 		Callable get_getparam_data_callback() const;
 
-		void set_shouldiprocess_callback(const Callable &p_callback);
-		Callable get_shouldiprocess_callback() const;
 
 		// 内部处理函数
 		FMOD_RESULT _handle_create(FMOD_DSP_STATE* dsp_state);
 		FMOD_RESULT _handle_release(FMOD_DSP_STATE* dsp_state);
 		FMOD_RESULT _handle_reset(FMOD_DSP_STATE* dsp_state);
-		FMOD_RESULT _handle_read(FMOD_DSP_STATE* dsp_state, float* inbuffer, float* outbuffer, unsigned int length, int inchannels, int* outchannels);
-		FMOD_RESULT _handle_process(FMOD_DSP_STATE* dsp_state, unsigned int length, const FmodDSPBufferArray* inbufferarray, FmodDSPBufferArray* outbufferarray, FMOD_BOOL inputsidle, FmodDSPProcessOperation op);
+		FMOD_RESULT _handle_process(FMOD_DSP_STATE* dsp_state, unsigned int length, const FMOD_DSP_BUFFER* input, const FMOD_DSP_BUFFER* output);
 		FMOD_RESULT _handle_setposition(FMOD_DSP_STATE* dsp_state, unsigned int pos);
 		FMOD_RESULT _handle_setparam_float(FMOD_DSP_STATE* dsp_state, int index, float value);
 		FMOD_RESULT _handle_setparam_int(FMOD_DSP_STATE* dsp_state, int index, int value);
@@ -229,7 +230,6 @@ namespace godot {
 		FMOD_RESULT _handle_getparam_int(FMOD_DSP_STATE* dsp_state, int index, int* value, char* valuestr);
 		FMOD_RESULT _handle_getparam_bool(FMOD_DSP_STATE* dsp_state, int index, FMOD_BOOL* value, char* valuestr);
 		FMOD_RESULT _handle_getparam_data(FMOD_DSP_STATE* dsp_state, int index, void** data, unsigned int* length, char* valuestr);
-		FMOD_RESULT _handle_shouldiprocess(FMOD_DSP_STATE* dsp_state, FMOD_BOOL inputsidle, unsigned int length, FMOD_CHANNELMASK inmask, int inchannels, FMOD_SPEAKERMODE speakermode);
 		void _release_getparam_data(void* p_data);
 	};
 }
@@ -260,23 +260,8 @@ extern "C" {
 		FMOD_DSP_STATE* dsp_state
 	);
 
-	FMOD_RESULT F_CALL GD_FMOD_DSP_READ_CALLBACK(
-		FMOD_DSP_STATE* dsp_state,
-		float* inbuffer,
-		float* outbuffer,
-		unsigned int length,
-		int inchannels,
-		int* outchannels
-	);
 
-	FMOD_RESULT F_CALL GD_FMOD_DSP_PROCESS_CALLBACK(
-		FMOD_DSP_STATE* dsp_state,                                                      // DSP 状态指针
-		unsigned int length,                                                            // 本次要处理的采样帧数
-		const FmodDSPBufferArray* inbufferarray,                                     // 输入缓冲区数组
-		FmodDSPBufferArray* outbufferarray,                                          // 输出缓冲区数组 (你需要填充它)
-		FMOD_BOOL inputsidle,
-		FmodDSPProcessOperation op
-	);
+	FMOD_RESULT F_CALL GD_FMOD_DSP_PROCESS_CALLBACK(FMOD_DSP_STATE* dsp_state, unsigned int length, const FMOD_DSP_BUFFER* input, const FMOD_DSP_BUFFER* output);
 
 	FMOD_RESULT F_CALL GD_FMOD_DSP_SETPOSITION_CALLBACK(
 		FMOD_DSP_STATE* dsp_state,
@@ -337,14 +322,6 @@ extern "C" {
 		char* valuestr
 	);
 
-	FMOD_RESULT F_CALL GD_FMOD_DSP_SHOULDIPROCESS_CALLBACK(
-		FMOD_DSP_STATE* dsp_state,
-		FMOD_BOOL inputsidle,
-		unsigned int length,
-		FMOD_CHANNELMASK inmask,
-		int inchannels,
-		FMOD_SPEAKERMODE speakermode
-	);
 
 	FMOD_RESULT F_CALL GD_FMOD_DSP_SYSTEM_REGISTER_CALLBACK(
 		FMOD_DSP_STATE* dsp_state
@@ -363,5 +340,6 @@ extern "C" {
 VARIANT_ENUM_CAST(FmodDSP::FmodDSPType);
 VARIANT_ENUM_CAST(FmodDSP::FmodDSPParameterDataType);
 
-#endif // !FMOD_DSP_H
+VARIANT_ENUM_CAST(FmodDSP::FmodDSPMode);
 
+#endif // !FMOD_DSP_H

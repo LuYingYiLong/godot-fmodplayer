@@ -26,8 +26,12 @@
 		<method name="create_dsp">
 			<return type="FmodDSP" />
 			<param index="0" name="name" type="String" />
+			<param index="1" name="mode" type="int" enum="FmodDSP.FmodDSPMode" default="0" />
+			<param index="2" name="default_cooldown" type="int" default="4294967295" />
+			<param index="3" name="input_channels" type="int" default="0" />
+			<param index="4" name="output_channels" type="int" default="0" />
 			<description>
-				Creates a custom DSP (Digital Signal Processor) effect with the specified name. The created DSP can be inserted into the signal chain to process audio in real-time.
+				Creates a custom FMOD 2.04 filter or generator. Cooldown is measured in sample frames. A channel count of zero follows the input/system format. Set the sample callback using [method FmodDSP.set_process_callback].
 			</description>
 		</method>
 		<method name="create_dsp_by_type">
@@ -41,6 +45,7 @@
 			<return type="FmodSound" />
 			<param index="0" name="path" type="String" />
 			<param index="1" name="mode" type="int" default="0" />
+			<param index="2" name="resampler_method" type="int" enum="FmodSystem.FmodResamplerMethod" default="0" />
 			<description>
 				Creates a [FmodSound] from a file path. If the path starts with [code]res://[/code], it will use [method create_sound_from_res] internally.
 				The mode parameter specifies creation options using [enum FmodMode] flags, such as looping behavior ([constant FMOD_MODE_LOOP_NORMAL]), 3D positioning ([constant FMOD_MODE_3D]), or streaming ([constant FMOD_MODE_CREATESTREAM]).
@@ -50,6 +55,7 @@
 			<return type="FmodSound" />
 			<param index="0" name="data" type="PackedByteArray" />
 			<param index="1" name="mode" type="int" default="0" />
+			<param index="2" name="resampler_method" type="int" enum="FmodSystem.FmodResamplerMethod" default="0" />
 			<description>
 				Creates a [FmodSound] from audio data loaded in memory. The data array must remain valid while the sound is in use. This is useful for loading sounds from encrypted files or network streams.
 				The mode parameter specifies creation options using [enum FmodMode] flags.
@@ -59,6 +65,7 @@
 			<return type="FmodSound" />
 			<param index="0" name="path" type="String" />
 			<param index="1" name="mode" type="int" default="0" />
+			<param index="2" name="resampler_method" type="int" enum="FmodSystem.FmodResamplerMethod" default="0" />
 			<description>
 				Creates a [FmodSound] from a Godot resource path (starting with [code]res://[/code]). The file is loaded through Godot's file system and then passed to FMOD.
 				The mode parameter specifies creation options using [enum FmodMode] flags.
@@ -68,6 +75,7 @@
 			<return type="FmodSound" />
 			<param index="0" name="path" type="String" />
 			<param index="1" name="mode" type="int" default="0" />
+			<param index="2" name="resampler_method" type="int" enum="FmodSystem.FmodResamplerMethod" default="0" />
 			<description>
 				Creates a streaming [FmodSound] from a file. Streams decode audio data on-the-fly, which is memory-efficient for large files like background music.
 				The mode parameter specifies creation options using [enum FmodMode] flags.
@@ -152,16 +160,12 @@
 				- [code]name[/code]: Name of the DSP.
 				- [code]version[/code]: Plugin version number.
 				- [code]plugin_sdk_version[/code]: FMOD Plugin SDK version.
-				- [code]num_input_buffers[/code]: Number of input buffers.
-				- [code]num_output_buffers[/code]: Number of output buffers.
 				- [code]has_create[/code]: Whether the DSP has a create callback.
 				- [code]has_release[/code]: Whether the DSP has a release callback.
 				- [code]has_reset[/code]: Whether the DSP has a reset callback.
 				- [code]has_process[/code]: Whether the DSP has a process callback.
 				- [code]has_setposition[/code]: Whether the DSP has a setposition callback.
-				- [code]has_read[/code]: Whether the DSP has a read callback.
-				- [code]has_should_i_process[/code]: Whether the DSP has a shouldiprocess callback.
-				With FMOD 2.04 or later, the dictionary also includes [code]mode[/code] (filter = 0, generator = 1), [code]input_channels[/code], [code]output_channels[/code], and [code]default_cooldown[/code]. The legacy [code]has_read[/code] and [code]has_should_i_process[/code] values are false because these callbacks were removed from the FMOD API.
+				Also includes [code]mode[/code], [code]input_channels[/code], [code]output_channels[/code], and [code]default_cooldown[/code] (sample frames).
 			</description>
 		</method>
 		<method name="get_file_usage" qualifiers="const">
@@ -381,7 +385,7 @@
 			<return type="void" />
 			<description>
 				Updates the FMOD System. This should be called regularly (typically every frame) to process streams, 3D positioning, and non-realtime output modes.
-				When using [constant FMOD_INIT_FLAG_STREAM_FROM_UPDATE] or [constant FMOD_INIT_FLAG_MIX_FROM_UPDATE], this method is even more critical as it drives the audio processing.
+				[constant FMOD_INIT_FLAG_STREAM_FROM_UPDATE] decodes streams during update. NRT outputs also perform mixing during update.
 			</description>
 		</method>
 		<method name="set_software_channels">
@@ -974,6 +978,13 @@
 				The channel group will return to normal routing to the master output.
 			</description>
 		</method>
+		<method name="create_dsp_connection">
+			<return type="FmodDSPConnection" />
+			<param index="0" name="type" type="int" enum="FmodDSPConnection.FmodDSPConnectionType" default="0" />
+			<description>
+				Creates a connection for [method FmodDSP.add_input_preallocated]. Configure the mix or matrix before attaching it. The FMOD system owns the connection; disconnecting it invalidates the handle.
+			</description>
+		</method>
 	</methods>
 	<constants>
 		<constant name="FMOD_INIT_FLAG_NORMAL" value="0" enum="FmodInitFlags">
@@ -981,9 +992,6 @@
 		</constant>
 		<constant name="FMOD_INIT_FLAG_STREAM_FROM_UPDATE" value="1" enum="FmodInitFlags">
 			No stream thread is created internally. Streams are driven from [method update]. Useful for non-realtime outputs.
-		</constant>
-		<constant name="FMOD_INIT_FLAG_MIX_FROM_UPDATE" value="2" enum="FmodInitFlags">
-			No mixer thread is created internally. Mixing is driven from [method update]. Only applicable for polling-based output modes.
 		</constant>
 		<constant name="FMOD_INIT_FLAG_3D_RIGHTHANDED" value="4" enum="FmodInitFlags">
 			3D calculations use right-handed coordinates instead of the default left-handed coordinates.
@@ -1078,13 +1086,14 @@
 		<constant name="FMOD_OUTPUT_TYPE_AUDIOWORKLET" value="19" enum="FmodOutputType">
 			Web Audio Worklet output for improved HTML5 audio performance.
 		</constant>
-		<constant name="FMOD_OUTPUT_TYPE_PHASE" value="20" enum="FmodOutputType">
-			Xbox Phase output.
+		<constant name="FMOD_OUTPUT_TYPE_AUDIOWORKLETP" value="20" enum="FmodOutputType">HTML5 AudioWorklet with pthread support.</constant>
+		<constant name="FMOD_OUTPUT_TYPE_PHASE" value="21" enum="FmodOutputType">
+			Apple PHASE output.
 		</constant>
-		<constant name="FMOD_OUTPUT_TYPE_OHAUDIO" value="21" enum="FmodOutputType">
+		<constant name="FMOD_OUTPUT_TYPE_OHAUDIO" value="22" enum="FmodOutputType">
 			OpenHarmony OHAudio output.
 		</constant>
-		<constant name="FMOD_OUTPUT_TYPE_MAX" value="22" enum="FmodOutputType">
+		<constant name="FMOD_OUTPUT_TYPE_MAX" value="23" enum="FmodOutputType">
 			Maximum output type value, used for bounds checking.
 		</constant>
 		<constant name="FMOD_OUTPUT_TYPE_FORCEINT" value="65536" enum="FmodOutputType">

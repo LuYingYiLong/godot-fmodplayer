@@ -39,6 +39,10 @@ namespace godot {
 	}
 
 	void FmodDSP::_bind_methods() {
+		BIND_ENUM_CONSTANT(DSP_MODE_FILTER);
+		BIND_ENUM_CONSTANT(DSP_MODE_GENERATOR);
+		BIND_CONSTANT(DSP_COOLDOWN_INFINITE);
+		ClassDB::bind_method(D_METHOD("add_input_preallocated", "target_dsp", "connection"), &FmodDSP::add_input_preallocated);
 		BIND_ENUM_CONSTANT(DSP_TYPE_UNKNOWN);
 		BIND_ENUM_CONSTANT(DSP_TYPE_MIXER);
 		BIND_ENUM_CONSTANT(DSP_TYPE_OSCILLATOR);
@@ -94,8 +98,8 @@ namespace godot {
 		ClassDB::bind_method(D_METHOD("disconnect_all", "inputs", "outputs"), &FmodDSP::disconnect_all);
 		ClassDB::bind_method(D_METHOD("disconnect_from", "target", "connection"), &FmodDSP::disconnect_from, DEFVAL(Ref<FmodDSPConnection>()));
 
-		ClassDB::bind_method(D_METHOD("set_channel_format", "numchannels", "speakermode"), &FmodDSP::set_channel_format);
-		ClassDB::bind_method(D_METHOD("get_channel_format"), &FmodDSP::get_channel_format);
+		ClassDB::bind_method(D_METHOD("set_input_channel_format", "numchannels", "speakermode"), &FmodDSP::set_input_channel_format);
+		ClassDB::bind_method(D_METHOD("get_input_channel_format"), &FmodDSP::get_input_channel_format);
 		ClassDB::bind_method(D_METHOD("get_output_channel_format", "inchannels", "inspeakermode"), &FmodDSP::get_output_channel_format);
 
 		ClassDB::bind_method(D_METHOD("get_metering_info"), &FmodDSP::get_metering_info);
@@ -137,8 +141,6 @@ namespace godot {
 		ClassDB::bind_method(D_METHOD("get_release_callback"), &FmodDSP::get_release_callback);
 		ClassDB::bind_method(D_METHOD("set_reset_callback", "callback"), &FmodDSP::set_reset_callback);
 		ClassDB::bind_method(D_METHOD("get_reset_callback"), &FmodDSP::get_reset_callback);
-		ClassDB::bind_method(D_METHOD("set_read_callback", "callback"), &FmodDSP::set_read_callback);
-		ClassDB::bind_method(D_METHOD("get_read_callback"), &FmodDSP::get_read_callback);
 		ClassDB::bind_method(D_METHOD("set_process_callback", "callback"), &FmodDSP::set_process_callback);
 		ClassDB::bind_method(D_METHOD("get_process_callback"), &FmodDSP::get_process_callback);
 		ClassDB::bind_method(D_METHOD("set_setposition_callback", "callback"), &FmodDSP::set_setposition_callback);
@@ -159,8 +161,6 @@ namespace godot {
 		ClassDB::bind_method(D_METHOD("get_getparam_bool_callback"), &FmodDSP::get_getparam_bool_callback);
 		ClassDB::bind_method(D_METHOD("set_getparam_data_callback", "callback"), &FmodDSP::set_getparam_data_callback);
 		ClassDB::bind_method(D_METHOD("get_getparam_data_callback"), &FmodDSP::get_getparam_data_callback);
-		ClassDB::bind_method(D_METHOD("set_shouldiprocess_callback", "callback"), &FmodDSP::set_shouldiprocess_callback);
-		ClassDB::bind_method(D_METHOD("get_shouldiprocess_callback"), &FmodDSP::get_shouldiprocess_callback);
 
 		ADD_PROPERTY(PropertyInfo(Variant::BOOL, "active"), "set_active", "get_active");
 		ADD_PROPERTY(PropertyInfo(Variant::BOOL, "bypass"), "set_bypass", "get_bypass");
@@ -229,6 +229,14 @@ namespace godot {
 		dsp_connection.instantiate();
 		dsp_connection->setup(dsp_connection_ptr);
 		return dsp_connection;
+	}
+
+	Ref<FmodDSPConnection> FmodDSP::add_input_preallocated(Ref<FmodDSP> target_dsp, Ref<FmodDSPConnection> connection) {
+		ERR_FAIL_COND_V(!dsp || target_dsp.is_null() || !target_dsp->dsp || connection.is_null() || !connection->dsp_connection, Ref<FmodDSPConnection>());
+		FMOD::DSPConnection* native = connection->dsp_connection;
+		FMOD_ERR_CHECK_V(dsp->addInputPreallocated(target_dsp->dsp, &native), Ref<FmodDSPConnection>());
+		connection->setup(native);
+		return connection;
 	}
 
 	Dictionary FmodDSP::get_input(const int index) const {
@@ -305,28 +313,18 @@ namespace godot {
 		FMOD_ERR_CHECK(dsp->disconnectFrom(target->dsp, connection_ptr));
 	}
 
-	void FmodDSP::set_channel_format(const int numchannels, FmodSystem::FmodSpeakerMode speakermode) {
+	void FmodDSP::set_input_channel_format(const int numchannels, FmodSystem::FmodSpeakerMode speakermode) {
 		ERR_FAIL_COND(!dsp);
 		ERR_FAIL_COND(numchannels <= 0);
 		FMOD_SPEAKERMODE to = static_cast<FMOD_SPEAKERMODE>(speakermode);
-#if FMOD_VERSION >= 0x00020400
 		FMOD_ERR_CHECK(dsp->setInputChannelFormat(numchannels, to));
-#else
-		FMOD_CHANNELMASK channelmask = FMOD_CHANNELMASK_MONO;
-		FMOD_ERR_CHECK(dsp->setChannelFormat(channelmask, numchannels, to));
-#endif
 	}
 
-	Dictionary FmodDSP::get_channel_format() const {
+	Dictionary FmodDSP::get_input_channel_format() const {
 		ERR_FAIL_COND_V(!dsp, Dictionary());
 		int numchannels = 0;
 		FMOD_SPEAKERMODE speakermode = FMOD_SPEAKERMODE_DEFAULT;
-#if FMOD_VERSION >= 0x00020400
 		FMOD_ERR_CHECK_V(dsp->getInputChannelFormat(&numchannels, &speakermode), Dictionary());
-#else
-		FMOD_CHANNELMASK channelmask = FMOD_CHANNELMASK_MONO;
-		FMOD_ERR_CHECK_V(dsp->getChannelFormat(&channelmask, &numchannels, &speakermode), Dictionary());
-#endif
 		Dictionary result;
 		result["num_channels"] = numchannels;
 		result["speaker_mode"] = static_cast<int>(speakermode);
@@ -339,13 +337,7 @@ namespace godot {
 		FMOD_SPEAKERMODE to = static_cast<FMOD_SPEAKERMODE>(inspeakermode);
 		int outchannels = 0;
 		FMOD_SPEAKERMODE outspeakermode = FMOD_SPEAKERMODE_DEFAULT;
-#if FMOD_VERSION >= 0x00020400
 		FMOD_ERR_CHECK_V(dsp->getOutputChannelFormat(inchannels, to, &outchannels, &outspeakermode), Dictionary());
-#else
-		FMOD_CHANNELMASK inmask = FMOD_CHANNELMASK_MONO;
-		FMOD_CHANNELMASK outmask = FMOD_CHANNELMASK_MONO;
-		FMOD_ERR_CHECK_V(dsp->getOutputChannelFormat(inmask, inchannels, to, &outmask, &outchannels, &outspeakermode), Dictionary());
-#endif
 		Dictionary result;
 		result["out_channels"] = outchannels;
 		result["out_speaker_mode"] = static_cast<int>(outspeakermode);
@@ -545,26 +537,16 @@ namespace godot {
 			info["default"] = desc->floatdesc.defaultval;
 
 			Dictionary mapping;
-#if FMOD_VERSION >= 0x00020400
 			const auto mapping_type = desc->floatdesc.mapping_type;
-#else
-			const auto mapping_type = desc->floatdesc.mapping.type;
-#endif
 			mapping["type"] = static_cast<int>(mapping_type);
 
 			// 只有当 mapping type 是 PIECEWISE_LINEAR 时才访问 piecewiselinearmapping
 			// 否则里面的指针可能是未初始化的垃圾值
 			if (mapping_type == FMOD_DSP_PARAMETER_FLOAT_MAPPING_TYPE_PIECEWISE_LINEAR) {
 				Dictionary piecewiselinearmapping;
-#if FMOD_VERSION >= 0x00020400
 				const int numpoints = desc->floatdesc.mapping_piecewiselinear_numpoints;
 				const float* pointparamvalues = desc->floatdesc.mapping_piecewiselinear_pointparamvalues;
 				const float* pointpositions = desc->floatdesc.mapping_piecewiselinear_pointpositions;
-#else
-				const int numpoints = desc->floatdesc.mapping.piecewiselinearmapping.numpoints;
-				const float* pointparamvalues = desc->floatdesc.mapping.piecewiselinearmapping.pointparamvalues;
-				const float* pointpositions = desc->floatdesc.mapping.piecewiselinearmapping.pointpositions;
-#endif
 				piecewiselinearmapping["numpoints"] = numpoints;
 
 				// 安全地访问指针，只有当 numpoints > 0 且指针不为 nullptr 时才访问
@@ -706,22 +688,14 @@ namespace godot {
 		ERR_FAIL_COND_V(!dsp, Dictionary());
 		char name[32] = { 0 };
 		unsigned int version = 0;
-		int channels = 0, configwidth = 0, configheight = 0;
-#if FMOD_VERSION >= 0x00020400
+		int channels = 0;
 		FMOD_DSP_MODE mode = FMOD_DSP_MODE_FILTER;
 		FMOD_ERR_CHECK_V(dsp->getInfo(name, &version, &channels, &mode), Dictionary());
-#else
-		FMOD_ERR_CHECK_V(dsp->getInfo(name, &version, &channels, &configwidth, &configheight), Dictionary());
-#endif
 		Dictionary info;
 		info["channels"] = channels;
-#if FMOD_VERSION >= 0x00020400
 		info["mode"] = static_cast<int>(mode);
-#endif
 		info["name"] = String::utf8(name);
 		info["version"] = static_cast<uint32_t>(version);
-		info["config_width"] = configwidth;
-		info["config_height"] = configheight;
 		return info;
 	}
 
@@ -770,14 +744,6 @@ namespace godot {
 
 	Callable FmodDSP::get_reset_callback() const {
 		return _reset_callback;
-	}
-
-	void FmodDSP::set_read_callback(const Callable& p_callback) {
-		_read_callback = p_callback;
-	}
-
-	Callable FmodDSP::get_read_callback() const {
-		return _read_callback;
 	}
 
 	void FmodDSP::set_process_callback(const Callable& p_callback) {
@@ -860,14 +826,6 @@ namespace godot {
 		return _getparam_data_callback;
 	}
 
-	void FmodDSP::set_shouldiprocess_callback(const Callable& p_callback) {
-		_shouldiprocess_callback = p_callback;
-	}
-
-	Callable FmodDSP::get_shouldiprocess_callback() const {
-		return _shouldiprocess_callback;
-	}
-
 	// 回调处理函数实现
 	FMOD_RESULT FmodDSP::_handle_create(FMOD_DSP_STATE* dsp_state) {
 		// 分配状态内存
@@ -929,108 +887,46 @@ namespace godot {
 		return FMOD_OK;
 	}
 
-	FMOD_RESULT FmodDSP::_handle_read(FMOD_DSP_STATE* dsp_state, float* inbuffer, float* outbuffer, unsigned int length, int inchannels, int* outchannels) {
-		ERR_FAIL_COND_V(!inbuffer || !outbuffer || !outchannels || inchannels <= 0, FMOD_ERR_INVALID_PARAM);
-		memcpy(outbuffer, inbuffer, length * inchannels * sizeof(float));
-		if (_read_callback.is_valid() && _is_main_thread()) {
-			// 将输入缓冲区转为 PackedFloat32Array
-			PackedFloat32Array in_array;
-			in_array.resize(length * inchannels);
-			memcpy(in_array.ptrw(), inbuffer, length * inchannels * sizeof(float));
-
-			const Variant ret = _read_callback.call(in_array, length, inchannels);
-			if (ret.get_type() == Variant::DICTIONARY) {
-				Dictionary result = ret;
-				if (result.has("output")) {
-					PackedFloat32Array out_array = result["output"];
-					const int max_samples = static_cast<int>(length) * inchannels;
-					const int copy_samples = MIN(static_cast<int>(out_array.size()), max_samples);
-					if (copy_samples > 0) {
-						memcpy(outbuffer, out_array.ptr(), copy_samples * sizeof(float));
-					}
-				}
-				if (result.has("result")) {
-					return static_cast<FMOD_RESULT>(int(result["result"]));
-				}
-			}
+	FMOD_RESULT FmodDSP::_handle_process(FMOD_DSP_STATE* state, unsigned int frames, const FMOD_DSP_BUFFER* input, const FMOD_DSP_BUFFER* output) {
+		FMOD_RESULT status = fmod_dsp_passthrough(frames, input, output);
+		if (status != FMOD_OK || !_process_callback.is_valid() || !_is_main_thread()) {
+			return status;
 		}
-		*outchannels = inchannels;
-		return FMOD_OK;
-	}
-
-	FMOD_RESULT FmodDSP::_handle_process(FMOD_DSP_STATE* dsp_state, unsigned int length, const FmodDSPBufferArray* inbufferarray, FmodDSPBufferArray* outbufferarray, FMOD_BOOL inputsidle, FmodDSPProcessOperation op) {
-		ERR_FAIL_COND_V(!inbufferarray || !outbufferarray, FMOD_ERR_INVALID_PARAM);
-		ERR_FAIL_COND_V(inbufferarray->numbuffers <= 0 || outbufferarray->numbuffers <= 0, FMOD_ERR_INVALID_PARAM);
-
-		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
-			const int num_buffers = MIN(inbufferarray->numbuffers, outbufferarray->numbuffers);
-			for (int i = 0; i < num_buffers; ++i) {
-				outbufferarray->buffernumchannels[i] = inbufferarray->buffernumchannels[i];
-				outbufferarray->bufferchannelmask[i] = inbufferarray->bufferchannelmask[i];
-			}
-			outbufferarray->speakermode = inbufferarray->speakermode;
-#if FMOD_VERSION >= 0x00020400
-			return _handle_shouldiprocess(dsp_state, inputsidle, length,
-				inbufferarray->bufferchannelmask[0], inbufferarray->buffernumchannels[0], inbufferarray->speakermode);
-#else
+		const int input_channels = input ? input->numchannels : 0;
+		PackedFloat32Array samples;
+		if (input && input->buffer && input_channels > 0) {
+			samples.resize(static_cast<int64_t>(frames) * input_channels);
+			memcpy(samples.ptrw(), input->buffer, samples.size() * sizeof(float));
+		}
+		const Variant returned = _process_callback.call(samples, frames, input_channels, output->numchannels);
+		if (returned.get_type() != Variant::DICTIONARY) {
 			return FMOD_OK;
-#endif
 		}
-
-		ERR_FAIL_COND_V(op != FMOD_PLAYER_DSP_PROCESS_PERFORM, FMOD_ERR_INVALID_PARAM);
-#if FMOD_VERSION >= 0x00020400
-		if (!_process_callback.is_valid() && _read_callback.is_valid()) {
-			return _handle_read(dsp_state, inbufferarray->buffers[0], outbufferarray->buffers[0],
-				length, inbufferarray->buffernumchannels[0], &outbufferarray->buffernumchannels[0]);
-		}
-#endif
-
-		const int num_buffers = MIN(inbufferarray->numbuffers, outbufferarray->numbuffers);
-		for (int i = 0; i < num_buffers; ++i) {
-			if (!inbufferarray->buffers[i] || !outbufferarray->buffers[i] || inbufferarray->buffernumchannels[i] <= 0) {
-				continue;
+		const Dictionary result = returned;
+		if (result.has("output")) {
+			ERR_FAIL_COND_V(result["output"].get_type() != Variant::PACKED_FLOAT32_ARRAY, FMOD_ERR_INVALID_PARAM);
+			const PackedFloat32Array processed = result["output"];
+			const int64_t capacity = static_cast<int64_t>(frames) * output->numchannels;
+			const int64_t count = MIN(processed.size(), capacity);
+			if (count > 0) {
+				memcpy(output->buffer, processed.ptr(), count * sizeof(float));
 			}
-			memcpy(
-				outbufferarray->buffers[i],
-				inbufferarray->buffers[i],
-				length * static_cast<unsigned int>(inbufferarray->buffernumchannels[i]) * sizeof(float)
-			);
+			memset(output->buffer + count, 0, (capacity - count) * sizeof(float));
 		}
-
-		if (_process_callback.is_valid() && _is_main_thread()) {
-			Dictionary in_buffers;
-			for (int i = 0; i < inbufferarray->numbuffers; i++) {
-				if (!inbufferarray->buffers[i] || inbufferarray->buffernumchannels[i] <= 0) {
-					continue;
-				}
-				PackedFloat32Array arr;
-				arr.resize(length * inbufferarray->buffernumchannels[i]);
-				memcpy(arr.ptrw(), inbufferarray->buffers[i], length * inbufferarray->buffernumchannels[i] * sizeof(float));
-				in_buffers[i] = arr;
-			}
-
-			const Variant ret = _process_callback.call(length, in_buffers, inputsidle != 0, op);
-			if (ret.get_type() == Variant::DICTIONARY) {
-				Dictionary result = ret;
-				if (result.has("outbuffers")) {
-					Dictionary out_buffers = result["outbuffers"];
-					for (int i = 0; i < outbufferarray->numbuffers; i++) {
-						if (out_buffers.has(i) && outbufferarray->buffers[i] && outbufferarray->buffernumchannels[i] > 0) {
-							PackedFloat32Array arr = out_buffers[i];
-				const int max_samples = static_cast<int>(length) * outbufferarray->buffernumchannels[i];
-				const int copy_samples = MIN(static_cast<int>(arr.size()), max_samples);
-							if (copy_samples > 0) {
-								memcpy(outbufferarray->buffers[i], arr.ptr(), copy_samples * sizeof(float));
-							}
-						}
-					}
-				}
-				if (result.has("result")) {
-					return static_cast<FMOD_RESULT>(int(result["result"]));
-				}
-			}
+		if (result.has("cooldown")) {
+			const int64_t cooldown = result["cooldown"];
+			ERR_FAIL_COND_V(cooldown < 0 || cooldown > FMOD_DSP_COOLDOWN_INFINITE, FMOD_ERR_INVALID_PARAM);
+			status = FMOD_DSP_SETCOOLDOWN(state, static_cast<unsigned int>(cooldown));
+			if (status != FMOD_OK) return status;
 		}
-		return FMOD_OK;
+		if (result.has("bypass")) {
+			status = FMOD_DSP_SETBYPASS(state, bool(result["bypass"]));
+			if (status != FMOD_OK) return status;
+		}
+		if (result.has("silence")) {
+			status = FMOD_DSP_SETSILENCE(state, bool(result["silence"]));
+		}
+		return status;
 	}
 
 	FMOD_RESULT FmodDSP::_handle_setposition(FMOD_DSP_STATE* dsp_state, unsigned int pos) {
@@ -1253,19 +1149,6 @@ namespace godot {
 		getparam_data_storage.erase(p_data);
 	}
 
-	FMOD_RESULT FmodDSP::_handle_shouldiprocess(FMOD_DSP_STATE* dsp_state, FMOD_BOOL inputsidle, unsigned int length, FMOD_CHANNELMASK inmask, int inchannels, FMOD_SPEAKERMODE speakermode) {
-		if (_shouldiprocess_callback.is_valid()) {
-			if (!_is_main_thread()) {
-				_shouldiprocess_callback.call_deferred(inputsidle != 0, length, inmask, inchannels, static_cast<int>(speakermode));
-				return FMOD_OK;
-			}
-			const Variant ret = _shouldiprocess_callback.call(inputsidle != 0, length, inmask, inchannels, speakermode);
-			if (ret.get_type() == Variant::INT) {
-				return static_cast<FMOD_RESULT>(int(ret));
-			}
-		}
-		return FMOD_OK;
-	}
 }
 
 // Helper function to get FmodDSP from DSP state
@@ -1340,62 +1223,9 @@ FMOD_RESULT F_CALL GD_FMOD_DSP_RESET_CALLBACK(
 	return FMOD_OK;
 }
 
-FMOD_RESULT F_CALL GD_FMOD_DSP_READ_CALLBACK(
-	FMOD_DSP_STATE* dsp_state,
-	float* inbuffer,
-	float* outbuffer,
-	unsigned int length,
-	int inchannels,
-	int* outchannels
-) {
-	godot::FmodDSP* dsp = get_dsp_from_state(dsp_state);
-	if (dsp) {
-		return dsp->_handle_read(dsp_state, inbuffer, outbuffer, length, inchannels, outchannels);
-	}
-	// 默认：直接复制
-	if (!outchannels || inchannels <= 0) {
-		return FMOD_ERR_INVALID_PARAM;
-	}
-	if (inbuffer && outbuffer) {
-		memcpy(outbuffer, inbuffer, length * inchannels * sizeof(float));
-	}
-	*outchannels = inchannels;
-	return FMOD_OK;
-}
-
-FMOD_RESULT F_CALL GD_FMOD_DSP_PROCESS_CALLBACK(
-	FMOD_DSP_STATE* dsp_state,
-	unsigned int length,
-	const FmodDSPBufferArray* inbufferarray,
-	FmodDSPBufferArray* outbufferarray,
-	FMOD_BOOL inputsidle,
-	FmodDSPProcessOperation op) {
-
-	godot::FmodDSP* dsp = get_dsp_from_state(dsp_state);
-	if (dsp) {
-		return dsp->_handle_process(dsp_state, length, inbufferarray, outbufferarray, inputsidle, op);
-	}
-
-	// 默认处理
-	if (!inbufferarray || !outbufferarray || inbufferarray->numbuffers <= 0 || outbufferarray->numbuffers <= 0) {
-		return FMOD_ERR_INVALID_PARAM;
-	}
-	if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
-		outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
-		outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
-		outbufferarray->speakermode = inbufferarray->speakermode;
-		return FMOD_OK;
-	}
-
-	if (op == FMOD_PLAYER_DSP_PROCESS_PERFORM) {
-		if (inbufferarray->buffers[0] && outbufferarray->buffers[0] && inbufferarray->buffernumchannels[0] > 0) {
-			memcpy(outbufferarray->buffers[0], inbufferarray->buffers[0],
-				length * inbufferarray->buffernumchannels[0] * sizeof(float));
-		}
-		return FMOD_OK;
-	}
-
-	return FMOD_OK;
+FMOD_RESULT F_CALL GD_FMOD_DSP_PROCESS_CALLBACK(FMOD_DSP_STATE* state, unsigned int frames, const FMOD_DSP_BUFFER* input, const FMOD_DSP_BUFFER* output) {
+	godot::FmodDSP* dsp = get_dsp_from_state(state);
+	return dsp ? dsp->_handle_process(state, frames, input, output) : fmod_dsp_passthrough(frames, input, output);
 }
 
 FMOD_RESULT F_CALL GD_FMOD_DSP_SETPOSITION_CALLBACK(
@@ -1507,21 +1337,6 @@ FMOD_RESULT F_CALL GD_FMOD_DSP_GETPARAM_DATA_CALLBACK(
 	godot::FmodDSP* dsp = get_dsp_from_state(dsp_state);
 	if (dsp) {
 		return dsp->_handle_getparam_data(dsp_state, index, data, length, valuestr);
-	}
-	return FMOD_OK;
-}
-
-FMOD_RESULT F_CALL GD_FMOD_DSP_SHOULDIPROCESS_CALLBACK(
-	FMOD_DSP_STATE* dsp_state,
-	FMOD_BOOL inputsidle,
-	unsigned int length,
-	FMOD_CHANNELMASK inmask,
-	int inchannels,
-	FMOD_SPEAKERMODE speakermode
-) {
-	godot::FmodDSP* dsp = get_dsp_from_state(dsp_state);
-	if (dsp) {
-		return dsp->_handle_shouldiprocess(dsp_state, inputsidle, length, inmask, inchannels, speakermode);
 	}
 	return FMOD_OK;
 }

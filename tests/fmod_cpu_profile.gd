@@ -1,6 +1,6 @@
 extends RefCounted
 
-# 测试项目启用 NOSOUND_NRT、MIX_FROM_UPDATE、48 kHz 和立体声
+# 测试项目启用 NOSOUND_NRT、STREAM_FROM_UPDATE、48 kHz 和立体声
 # 每项效果器独立运行，计时包含基础混音和脚本开销，不代表实际游戏的热点占比
 # 由测试主场景运行，结果保存在 tests/logs 的本次运行目录
 
@@ -53,7 +53,7 @@ func run(output_path: String, quick: bool = false) -> Array[Dictionary]:
 	_measure("CaptureConsumed", FmodAudioEffectCapture.new(), -1)
 	_measure("RecordActive", FmodAudioEffectRecord.new())
 	var script_dsp: FmodDSP = _system.create_dsp("Profile script passthrough")
-	script_dsp.set_read_callback(_read_audio)
+	script_dsp.set_process_callback(_read_audio)
 	_bus.add_dsp(-1, script_dsp)
 	_measure("ScriptPassthrough", null)
 	_bus.remove_dsp(script_dsp)
@@ -255,6 +255,6 @@ func _measure(label: String, effect: FmodAudioEffect, queries: int = 0) -> void:
 		effect.remove_from_bus(_bus)
 
 
-func _read_audio(samples: PackedFloat32Array, _frames: int, _channels: int) -> Dictionary:
+func _read_audio(samples: PackedFloat32Array, _frames: int, _channels: int, _output_channels: int) -> Dictionary:
 	_callback_count += 1
 	return {"output": samples,}

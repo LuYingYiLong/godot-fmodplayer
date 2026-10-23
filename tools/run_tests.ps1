@@ -37,6 +37,9 @@ function Invoke-TestGodot([string[]]$Arguments, [string]$ConsoleLog) {
     $ErrorActionPreference = 'Continue'
     & $GodotPath @Arguments *> $ConsoleLog
     if ($LASTEXITCODE -ne 0) { throw "Godot failed ($LASTEXITCODE); see $ConsoleLog" }
+    if (Select-String -LiteralPath $ConsoleLog -Pattern '^(SCRIPT ERROR:|ERROR:)' -Quiet) {
+        throw "Godot reported an error; see $ConsoleLog"
+    }
 }
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $testRoot = Join-Path $repoRoot 'tests'
@@ -76,16 +79,26 @@ foreach ($legacyPath in @('fmod_player.gdextension', 'fmod_player.gdextension.ui
 }
 foreach ($extension in @('.dll', '.pdb')) {
     $fileName = 'fmod_player.windows.template_debug.x86_64' + $extension
-    Sync-TestFile (Join-Path $ExtensionBin $fileName) (Join-Path $binRoot $fileName)
+    $sourceFile = Join-Path $ExtensionBin $fileName
+    if ($extension -eq '.pdb' -and -not (Test-Path -LiteralPath $sourceFile)) {
+        $staleSymbols = Join-Path $binRoot $fileName
+        if (Test-Path -LiteralPath $staleSymbols) {
+            Move-Item -LiteralPath $staleSymbols -Destination (Join-Path $logRoot $fileName)
+        }
+        continue
+    }
+    Sync-TestFile $sourceFile (Join-Path $binRoot $fileName)
 }
 Sync-TestFile $FmodRuntime (Join-Path $binRoot 'fmod.dll')
+$symbolsPath = Join-Path $binRoot 'fmod_player.windows.template_debug.x86_64.pdb'
+$symbolsHash = if (Test-Path -LiteralPath $symbolsPath) { Get-TestFileHash $symbolsPath } else { $null }
 $buildInfo = @{
     suite = $Suite
     quick = [bool]$Quick
     capture_baseline = [bool]$CaptureBaseline
     extension_source = $ExtensionBin
     dll_sha256 = Get-TestFileHash (Join-Path $binRoot 'fmod_player.windows.template_debug.x86_64.dll')
-    pdb_sha256 = Get-TestFileHash (Join-Path $binRoot 'fmod_player.windows.template_debug.x86_64.pdb')
+    pdb_sha256 = $symbolsHash
 }
 $buildInfo | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $logRoot 'build.json') -Encoding utf8
 Push-Location $repoRoot

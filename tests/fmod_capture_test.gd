@@ -17,8 +17,8 @@ func run(output_dir: String, baseline: bool = false) -> bool:
 	_bus = _system.get_master_channel_group()
 	var initial_dsps: int = _bus.get_num_dsps()
 	var source: FmodDSP = _system.create_dsp("Capture stereo fixture")
-	source.set_channel_format(2, FmodSystem.FMOD_SPEAKER_MODE_STEREO)
-	source.set_read_callback(_generate_stereo)
+	source.set_input_channel_format(2, FmodSystem.FMOD_SPEAKER_MODE_STEREO)
+	source.set_process_callback(_generate_stereo)
 	_bus.add_dsp(-1, source)
 	var capture: FmodAudioEffectCapture = FmodAudioEffectCapture.new()
 	capture.buffer_length = 0.1
@@ -77,12 +77,12 @@ func run(output_dir: String, baseline: bool = false) -> bool:
 	_mix()
 	_check_samples(capture.get_buffer(1024), _last_start, "Reattached capture")
 	_expected_channels = 1
-	source.set_channel_format(1, FmodSystem.FMOD_SPEAKER_MODE_MONO)
+	source.set_input_channel_format(1, FmodSystem.FMOD_SPEAKER_MODE_MONO)
 	capture.clear_buffer()
 	_mix()
 	_check_samples(capture.get_buffer(1024), _last_start, "Mono input duplicates to stereo")
 	_expected_channels = 4
-	source.set_channel_format(4, FmodSystem.FMOD_SPEAKER_MODE_QUAD)
+	source.set_input_channel_format(4, FmodSystem.FMOD_SPEAKER_MODE_QUAD)
 	capture.clear_buffer()
 	_mix()
 	_check_samples(capture.get_buffer(1024), _last_start, "Multichannel input keeps its first two channels")
@@ -105,7 +105,7 @@ func _mix() -> void:
 	_expect(_source_channels == _expected_channels, "Fixture channel format")
 
 
-func _generate_stereo(samples: PackedFloat32Array, frames: int, channels: int) -> Dictionary:
+func _generate_stereo(samples: PackedFloat32Array, frames: int, channels: int, _output_channels: int) -> Dictionary:
 	_last_start = _source_frame
 	_source_channels = channels
 	for frame: int in range(frames):

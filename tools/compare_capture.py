@@ -38,7 +38,7 @@ def compare(before: Path, after: Path) -> dict:
     return {
         "before": str(before),
         "after": str(after),
-        "conditions": "48 kHz stereo, 1024 frames/block, NOSOUND_NRT + MIX_FROM_UPDATE; /O2 + PDB; five trial medians. Timings include base mixing and script calls. CPU frequency/scheduling may vary.",
+        "conditions": "48 kHz stereo, 1024 frames/block, NOSOUND_NRT + STREAM_FROM_UPDATE; /O2 + PDB; five trial medians. Timings include base mixing and script calls. CPU frequency/scheduling may vary.",
         "before_build": read_json(before / "build.json"),
         "after_build": read_json(after / "build.json"),
         "timings": timings,

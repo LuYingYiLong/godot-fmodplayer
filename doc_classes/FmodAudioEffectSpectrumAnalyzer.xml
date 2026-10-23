@@ -29,8 +29,22 @@
 				Magnitude values are in linear scale (0.0 to 1.0+). Use [code]linear_to_db()[/code] to convert to decibels for display purposes.
 			</description>
 		</method>
+		<method name="set_immediate_mode">
+			<return type="void" />
+			<param index="0" name="enabled" type="bool" />
+			<description>
+				Enables synchronous FFT calculation for offline analysis. This disables FMOD FFT hardware acceleration.
+			</description>
+		</method>
+		<method name="get_immediate_mode">
+			<return type="bool" />
+			<description>
+				Returns whether immediate FFT mode is enabled.
+			</description>
+		</method>
 	</methods>
 	<members>
+		<member name="immediate_mode" type="bool" setter="set_immediate_mode" getter="get_immediate_mode" default="false">Calculates FFT data synchronously. Useful for offline processing and same-frame queries.</member>
 		<member name="buffer_length" type="float" setter="set_buffer_length" getter="get_buffer_length" default="2.0">
 			The internal buffer length in seconds used for spectrum analysis. A larger buffer provides more stable analysis results but increases latency. The default value of 2.0 seconds is suitable for most visualization applications.
 		</member>

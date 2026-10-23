@@ -35,10 +35,8 @@ namespace godot {
 		virtual void _on_dsp_create(FMOD_DSP_STATE* dsp_state) override;
 		virtual void _on_dsp_process(FMOD_DSP_STATE* dsp_state,
 			unsigned int length,
-			const FmodDSPBufferArray* inbufferarray,
-			FmodDSPBufferArray* outbufferarray,
-			FMOD_BOOL inputsidle,
-			FmodDSPProcessOperation op) override;
+			const FMOD_DSP_BUFFER* inbufferarray,
+			const FMOD_DSP_BUFFER* outbufferarray) override;
 		virtual void _on_dsp_release(FMOD_DSP_STATE* dsp_state) override;
 
 		void set_damping(float p_damping);

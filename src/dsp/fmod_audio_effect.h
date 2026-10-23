@@ -32,10 +32,8 @@ namespace godot {
 		virtual void _on_dsp_create(FMOD_DSP_STATE* dsp_state);
 		virtual void _on_dsp_process(FMOD_DSP_STATE* dsp_state,
 			unsigned int length,
-			const FmodDSPBufferArray* inbufferarray,
-			FmodDSPBufferArray* outbufferarray,
-			FMOD_BOOL inputsidle,
-			FmodDSPProcessOperation op);
+			const FMOD_DSP_BUFFER* inbufferarray,
+			const FMOD_DSP_BUFFER* outbufferarray);
 		virtual void _on_dsp_release(FMOD_DSP_STATE* dsp_state);
 		
 	protected:
@@ -61,10 +59,8 @@ extern "C" {
 	FMOD_RESULT F_CALL fmod_custom_dsp_process_callback(
 		FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FmodDSPBufferArray* inbufferarray,
-		FmodDSPBufferArray* outbufferarray,
-		FMOD_BOOL inputsidle,
-		FmodDSPProcessOperation op
+		const FMOD_DSP_BUFFER* inbufferarray,
+		const FMOD_DSP_BUFFER* outbufferarray
 	);
 	FMOD_RESULT F_CALL fmod_custom_dsp_release_callback(FMOD_DSP_STATE* dsp_state);
 }

@@ -60,6 +60,16 @@ public partial class FmodAudioStream : Resource
 	/// <returns>The wrapper instance linked to the underlying GDExtension "FmodAudioStream" type.</returns>
 	public new static FmodAudioStream Instantiate() => Bind(ClassDB.Instantiate(NativeName).As<GodotObject>());
 
+	public FmodSystem.FmodResamplerMethod ResamplerMethod
+	{
+		get => (FmodSystem.FmodResamplerMethod)Call("get_resampler_method").As<long>();
+		set => Call("set_resampler_method", [Variant.From(value)]);
+	}
+
+	public void SetResamplerMethod(FmodSystem.FmodResamplerMethod method) => Call("set_resampler_method", [Variant.From(method)]);
+	public FmodSystem.FmodResamplerMethod GetResamplerMethod() => ResamplerMethod;
+
+
 	public enum CreateMode
 	{
 		Default = 0,

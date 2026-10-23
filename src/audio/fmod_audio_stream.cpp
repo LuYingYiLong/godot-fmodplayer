@@ -8,6 +8,9 @@
 
 namespace godot {
 	void FmodAudioStream::_bind_methods() {
+		ClassDB::bind_method(D_METHOD("set_resampler_method", "method"), &FmodAudioStream::set_resampler_method);
+		ClassDB::bind_method(D_METHOD("get_resampler_method"), &FmodAudioStream::get_resampler_method);
+		ADD_PROPERTY(PropertyInfo(Variant::INT, "resampler_method", PROPERTY_HINT_ENUM, "Default,No Interpolation,Linear,Cubic,Spline"), "set_resampler_method", "get_resampler_method");
 		BIND_ENUM_CONSTANT(MODE_DEFAULT);
 		BIND_ENUM_CONSTANT(MODE_STREAM);
 		BIND_ENUM_CONSTANT(MODE_SAMPLE);
@@ -74,7 +77,7 @@ namespace godot {
 		ADD_PROPERTY(PropertyInfo(Variant::INT, "initial_subsound", PROPERTY_HINT_RANGE, "-1,65535,1"), "set_initial_subsound", "get_initial_subsound");
 		ADD_PROPERTY(PropertyInfo(Variant::INT, "num_subsounds", PROPERTY_HINT_RANGE, "0,65535,1"), "set_num_subsounds", "get_num_subsounds");
 		ADD_PROPERTY(PropertyInfo(Variant::PACKED_INT32_ARRAY, "inclusion_list"), "set_inclusion_list", "get_inclusion_list");
-		ADD_PROPERTY(PropertyInfo(Variant::INT, "suggested_sound_type", PROPERTY_HINT_ENUM, "Unknown,AIFF,ASF,DLS,FLAC,FSB,IT,MIDI,MOD,MPEG,OGGVORBIS,PLAYLIST,RAW,S3M,USER,WAV,XM,XMA,AUDIOQUEUE,AT9,VORBIS,MEDIA_FOUNDATION,MEDIACODEC,FADPCM,OPUS,MAX"), "set_suggested_sound_type", "get_suggested_sound_type");
+		ADD_PROPERTY(PropertyInfo(Variant::INT, "suggested_sound_type", PROPERTY_HINT_ENUM, "Unknown,AIFF,ASF,DLS,FLAC,FSB,IT,MIDI,MOD,MPEG,OGGVORBIS,PLAYLIST,RAW,S3M,USER,WAV,XM,XMA,AUDIOQUEUE,AT9,VORBIS,MEDIACODEC,FADPCM,OPUS,MAX"), "set_suggested_sound_type", "get_suggested_sound_type");
 
 		ADD_GROUP("Raw PCM", "");
 		ADD_PROPERTY(PropertyInfo(Variant::INT, "default_frequency", PROPERTY_HINT_RANGE, "0,384000,1,or_greater,suffix:Hz"), "set_default_frequency", "get_default_frequency");
@@ -181,6 +184,7 @@ namespace godot {
 
 		FMOD_CREATESOUNDEXINFO exinfo = {};
 		exinfo.cbsize = sizeof(exinfo);
+		exinfo.resamplermethod = static_cast<FMOD_DSP_RESAMPLER>(resampler_method);
 		exinfo.length = length_override > 0 ? static_cast<unsigned int>(MIN(length_override, audio_data.size())) : static_cast<unsigned int>(audio_data.size());
 
 		if (file_offset > 0) {
@@ -311,6 +315,17 @@ namespace godot {
 
 	PackedInt32Array FmodAudioStream::get_inclusion_list() const {
 		return inclusion_list;
+	}
+
+	void FmodAudioStream::set_resampler_method(FmodSystem::FmodResamplerMethod p_method) {
+		ERR_FAIL_COND(p_method < FmodSystem::FMOD_RESAMPLER_DEFAULT || p_method >= FmodSystem::FMOD_RESAMPLER_MAX);
+		if (resampler_method == p_method) return;
+		resampler_method = p_method;
+		invalidate_sound();
+	}
+
+	FmodSystem::FmodResamplerMethod FmodAudioStream::get_resampler_method() const {
+		return resampler_method;
 	}
 
 	void FmodAudioStream::set_suggested_sound_type(FmodSound::FmodSoundType p_type) {

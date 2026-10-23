@@ -64,7 +64,6 @@ public partial class FmodSystem : GodotObject
 	{
 		FlagNormal = 0,
 		FlagStreamFromUpdate = 1,
-		FlagMixFromUpdate = 2,
 		Flag3dRighthanded = 4,
 		FlagClipOutput = 8,
 		FlagChannelLowpass = 256,
@@ -100,9 +99,10 @@ public partial class FmodSystem : GodotObject
 		Winsonic = 17,
 		Aaudio = 18,
 		Audioworklet = 19,
-		Phase = 20,
-		Ohaudio = 21,
-		Max = 22,
+		Audioworkletp = 20,
+		Phase = 21,
+		Ohaudio = 22,
+		Max = 23,
 		Forceint = 65536,
 	}
 
@@ -575,20 +575,23 @@ public partial class FmodSystem : GodotObject
 	public new long GetSpeakerModeChannels(FmodSystem.FmodSpeakerMode mode) => 
 		Call(GDExtensionMethodName.GetSpeakerModeChannels, [Variant.From(mode)]).As<long>();
 
-	public new FmodSound CreateSoundFromFile(string path, long mode = 0) => 
-		FmodSound.Bind(Call(GDExtensionMethodName.CreateSoundFromFile, [path, mode]).As<RefCounted>());
+	public new FmodSound CreateSoundFromFile(string path, long mode = 0, FmodResamplerMethod resamplerMethod = FmodResamplerMethod.Default) =>
+		FmodSound.Bind(Call(GDExtensionMethodName.CreateSoundFromFile, [path, mode, Variant.From(resamplerMethod)]).As<RefCounted>());
 
-	public new FmodSound CreateSoundFromMemory(byte[] data, long mode = 0) => 
-		FmodSound.Bind(Call(GDExtensionMethodName.CreateSoundFromMemory, [data, mode]).As<RefCounted>());
+	public new FmodSound CreateSoundFromMemory(byte[] data, long mode = 0, FmodResamplerMethod resamplerMethod = FmodResamplerMethod.Default) =>
+		FmodSound.Bind(Call(GDExtensionMethodName.CreateSoundFromMemory, [data, mode, Variant.From(resamplerMethod)]).As<RefCounted>());
 
-	public new FmodSound CreateSoundFromRes(string path, long mode = 0) => 
-		FmodSound.Bind(Call(GDExtensionMethodName.CreateSoundFromRes, [path, mode]).As<RefCounted>());
+	public new FmodSound CreateSoundFromRes(string path, long mode = 0, FmodResamplerMethod resamplerMethod = FmodResamplerMethod.Default) =>
+		FmodSound.Bind(Call(GDExtensionMethodName.CreateSoundFromRes, [path, mode, Variant.From(resamplerMethod)]).As<RefCounted>());
 
-	public new FmodSound CreateStreamFromFile(string path, long mode = 0) => 
-		FmodSound.Bind(Call(GDExtensionMethodName.CreateStreamFromFile, [path, mode]).As<RefCounted>());
+	public new FmodSound CreateStreamFromFile(string path, long mode = 0, FmodResamplerMethod resamplerMethod = FmodResamplerMethod.Default) =>
+		FmodSound.Bind(Call(GDExtensionMethodName.CreateStreamFromFile, [path, mode, Variant.From(resamplerMethod)]).As<RefCounted>());
 
-	public new FmodDSP CreateDsp(string name) => 
-		FmodDSP.Bind(Call(GDExtensionMethodName.CreateDsp, [name]).As<RefCounted>());
+	public FmodDSPConnection CreateDspConnection(FmodDSPConnection.FmodDspConnectionType type = FmodDSPConnection.FmodDspConnectionType.Standard) =>
+		FmodDSPConnection.Bind(Call("create_dsp_connection", [Variant.From(type)]).As<RefCounted>());
+
+	public new FmodDSP CreateDsp(string name, FmodDSP.FmodDspMode mode = FmodDSP.FmodDspMode.Filter, long defaultCooldown = FmodDSP.DspCooldownInfinite, long inputChannels = 0, long outputChannels = 0) =>
+		FmodDSP.Bind(Call(GDExtensionMethodName.CreateDsp, [name, Variant.From(mode), defaultCooldown, inputChannels, outputChannels]).As<RefCounted>());
 
 	public new FmodDSP CreateDspByType(long type) => 
 		FmodDSP.Bind(Call(GDExtensionMethodName.CreateDspByType, [type]).As<RefCounted>());

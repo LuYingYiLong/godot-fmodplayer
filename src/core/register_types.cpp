@@ -90,7 +90,7 @@ void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 		add_fmod_project_setting("audio/fmod/show_startup_banner", true, Variant::BOOL, false, false);
 		add_fmod_project_setting("audio/fmod/max_channels", 32, Variant::INT, true, true, PROPERTY_HINT_RANGE, "1,4095,1");
 		add_fmod_project_setting("audio/fmod/software_channels", 0, Variant::INT, false, true, PROPERTY_HINT_RANGE, "0,4095,1,or_greater");
-		add_fmod_project_setting("audio/fmod/output_type", FmodSystem::FMOD_OUTPUT_TYPE_AUTODETECT, Variant::INT, false, true, PROPERTY_HINT_ENUM, "Autodetect,Unknown,No Sound,WAV Writer,No Sound NRT,WAV Writer NRT,WASAPI,ASIO,PulseAudio,ALSA,CoreAudio,AudioTrack,OpenSL,AudioOut,Audio3D,WebAudio,NNAudio,WinSonic,AAudio,AudioWorklet,PHASE,OHAudio");
+		add_fmod_project_setting("audio/fmod/output_type", FmodSystem::FMOD_OUTPUT_TYPE_AUTODETECT, Variant::INT, false, true, PROPERTY_HINT_ENUM, "Autodetect,Unknown,No Sound,WAV Writer,No Sound NRT,WAV Writer NRT,WASAPI,ASIO,PulseAudio,ALSA,CoreAudio,AudioTrack,OpenSL,AudioOut,Audio3D,WebAudio,NNAudio,WinSonic,AAudio,AudioWorklet,AudioWorkletP,PHASE,OHAudio");
 		add_fmod_project_setting("audio/fmod/driver", -1, Variant::INT, false, true, PROPERTY_HINT_RANGE, "-1,128,1");
 		add_fmod_project_setting("audio/fmod/software_sample_rate", 0, Variant::INT, false, true, PROPERTY_HINT_RANGE, "0,192000,1,or_greater");
 		add_fmod_project_setting("audio/fmod/speaker_mode", FmodSystem::FMOD_SPEAKER_MODE_DEFAULT, Variant::INT, false, true, PROPERTY_HINT_ENUM, "Default,Raw,Mono,Stereo,Quad,Surround,5.1,7.1,7.1.4");
@@ -99,7 +99,6 @@ void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 		add_fmod_project_setting("audio/fmod/dsp_buffer_count", 4, Variant::INT, false, true, PROPERTY_HINT_RANGE, "2,16,1,or_greater");
 		add_fmod_project_setting("audio/fmod/stream_buffer_size", 16384, Variant::INT, false, true, PROPERTY_HINT_RANGE, "0,10485760,1,or_greater");
 		add_fmod_project_setting("audio/fmod/init_flags/stream_from_update", false, Variant::BOOL, false, true);
-		add_fmod_project_setting("audio/fmod/init_flags/mix_from_update", false, Variant::BOOL, false, true);
 		add_fmod_project_setting("audio/fmod/init_flags/3d_right_handed", false, Variant::BOOL, false, true);
 		add_fmod_project_setting("audio/fmod/init_flags/clip_output", false, Variant::BOOL, false, true);
 		add_fmod_project_setting("audio/fmod/init_flags/channel_lowpass", false, Variant::BOOL, false, true);

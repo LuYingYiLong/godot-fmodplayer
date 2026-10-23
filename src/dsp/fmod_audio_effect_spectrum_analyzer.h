@@ -30,6 +30,7 @@ namespace godot {
 	private:
 		float buffer_length = 2.0f;
 		FFTSize fft_size = FFT_SIZE_1024;
+		bool immediate_mode = false;
 		Ref<FmodDSP> fft_dsp;
 
 		Vector<Vector2> spectrum_data;
@@ -54,6 +55,8 @@ namespace godot {
 
 		void set_fft_size(FFTSize p_fft_size);
 		FFTSize get_fft_size() const;
+		void set_immediate_mode(bool p_enabled);
+		bool get_immediate_mode() const;
 
 		void update_spectrum();
 		int get_bin_count() const;

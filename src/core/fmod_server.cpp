@@ -251,7 +251,6 @@ namespace godot {
 		bool enable_profile = false;
 		unsigned int mode_flags = FmodSystem::FMOD_INIT_FLAG_NORMAL;
 		_append_init_flag(settings, "audio/fmod/init_flags/stream_from_update", FmodSystem::FMOD_INIT_FLAG_STREAM_FROM_UPDATE, mode_flags);
-		_append_init_flag(settings, "audio/fmod/init_flags/mix_from_update", FmodSystem::FMOD_INIT_FLAG_MIX_FROM_UPDATE, mode_flags);
 		_append_init_flag(settings, "audio/fmod/init_flags/3d_right_handed", FmodSystem::FMOD_INIT_FLAG_3D_RIGHTHANDED, mode_flags);
 		_append_init_flag(settings, "audio/fmod/init_flags/clip_output", FmodSystem::FMOD_INIT_FLAG_CLIP_OUTPUT, mode_flags);
 		_append_init_flag(settings, "audio/fmod/init_flags/channel_lowpass", FmodSystem::FMOD_INIT_FLAG_CHANNEL_LOWPASS, mode_flags);

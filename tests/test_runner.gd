@@ -88,7 +88,7 @@ func _configure_offline_audio() -> void:
 	system.set_output(FmodSystem.FMOD_OUTPUT_TYPE_NOSOUND_NRT)
 	system.set_software_format(48000, FmodSystem.FMOD_SPEAKER_MODE_STEREO, 0)
 	system.set_dsp_buffer_size(1024, 4)
-	system.init(32, FmodSystem.FMOD_INIT_FLAG_MIX_FROM_UPDATE)
+	system.init(32, FmodSystem.FMOD_INIT_FLAG_STREAM_FROM_UPDATE)
 	FmodServer.reset_main_system(system)
 	print("TEST_AUDIO_CONFIG output=", system.get_output(), " ", system.get_software_format())
 

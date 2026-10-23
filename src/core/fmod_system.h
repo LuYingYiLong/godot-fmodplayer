@@ -16,6 +16,7 @@ namespace godot {
 	class FmodGeometry;
 	class FmodDSP;
 	class FmodReverb3D;
+	class FmodDSPConnection;
 
 	class FmodSystem : public RefCounted {
 		GDCLASS(FmodSystem, RefCounted)
@@ -25,7 +26,6 @@ namespace godot {
 		enum FmodInitFlags {
 			FMOD_INIT_FLAG_NORMAL = 0x00000000,													// 正常初始化
 			FMOD_INIT_FLAG_STREAM_FROM_UPDATE = 0x00000001,										// 内部没有创建流线程，流是从 update 驱动，主要用于非实时输出
-			FMOD_INIT_FLAG_MIX_FROM_UPDATE = 0x00000002,										// 内部没有创建混合线程，混音由 update 驱动，仅适用于基于轮询的输出模式
 			FMOD_INIT_FLAG_3D_RIGHTHANDED = 0x00000004,											// 三维计算将采用右手坐标进行，而非默认的左手坐标
 			FMOD_INIT_FLAG_CLIP_OUTPUT = 0x00000008,											// 支持对输出值大于 1.0f 或小于 -1.0f 进行硬削波
 			FMOD_INIT_FLAG_CHANNEL_LOWPASS = 0x00000100,										// 启用 ChannelControl::setLowPassGain、ChannelControl::set3DOcclusion，或 Geometry API 的自动使用
@@ -61,6 +61,7 @@ namespace godot {
 			FMOD_OUTPUT_TYPE_WINSONIC,															// Win10 / Xbox One / Game Core - Windows Sonic
 			FMOD_OUTPUT_TYPE_AAUDIO,															// Android - AAudio
 			FMOD_OUTPUT_TYPE_AUDIOWORKLET,														// HTML5 - 网页音频音频 WorkletNode 输出
+			FMOD_OUTPUT_TYPE_AUDIOWORKLETP,
 			FMOD_OUTPUT_TYPE_PHASE,																// iOS - PHASE 框架
 			FMOD_OUTPUT_TYPE_OHAUDIO,															// OpenHarmony - OHAudio
 
@@ -343,14 +344,15 @@ namespace godot {
 		int get_speaker_mode_channels(FmodSpeakerMode mode) const;								// 获取给定扬声器模式的通道数
 
 		// 创建与获取
-		Ref<FmodSound> create_sound_from_file(const String p_path, unsigned int mode) const;	// 从文件创建 FmodSound
+		Ref<FmodSound> create_sound_from_file(const String p_path, unsigned int mode, FmodResamplerMethod resampler_method = FMOD_RESAMPLER_DEFAULT) const;	// 从文件创建 FmodSound
 		Ref<FmodSound> create_sound_from_memory(
 			const PackedByteArray& data,
-			unsigned int mode
+			unsigned int mode,
+			FmodResamplerMethod resampler_method = FMOD_RESAMPLER_DEFAULT
 		) const;																				// 从内存创建 FmodSound
-		Ref<FmodSound> create_sound_from_res(const String p_path, unsigned int mode) const;		// 从资源文件创建 FmodSound
-		Ref<FmodSound> create_stream_from_file(const String p_path, unsigned int mode) const;	// 从文件创建流 FmodSound
-		Ref<FmodDSP> create_dsp(const String& name) const;										// 创建 DSP
+		Ref<FmodSound> create_sound_from_res(const String p_path, unsigned int mode, FmodResamplerMethod resampler_method = FMOD_RESAMPLER_DEFAULT) const;		// 从资源文件创建 FmodSound
+		Ref<FmodSound> create_stream_from_file(const String p_path, unsigned int mode, FmodResamplerMethod resampler_method = FMOD_RESAMPLER_DEFAULT) const;	// 从文件创建流 FmodSound
+		Ref<FmodDSP> create_dsp(const String& name, unsigned int mode = FMOD_DSP_MODE_FILTER, unsigned int default_cooldown = FMOD_DSP_COOLDOWN_INFINITE, int input_channels = 0, int output_channels = 0) const;										// 创建 DSP
 		Ref<FmodDSP> create_dsp_by_type(unsigned int type) const;								// 创建一个带有指定类型索引的 DSP
 		Ref<FmodChannelGroup> create_channel_group(const String& p_name) const;					// 创建 ChannelGroup
 		Ref<FmodSoundGroup> create_sound_group(const String& p_name) const;						// 创建 SoundGroup
@@ -369,6 +371,7 @@ namespace godot {
 		Dictionary get_dsp_info_by_type(unsigned int type) const;								// 获取内置 DSP 描述结构信息
 		Ref<FmodChannelGroup> get_master_channel_group() const;									// 获取所有声音最终路由到的主通道组
 		Ref<FmodSoundGroup> get_master_sound_group() const;										// 获取默认的 SoundGroup，所有声音在创建时放置的位置
+		Ref<FmodDSPConnection> create_dsp_connection(unsigned int type = FMOD_DSPCONNECTION_TYPE_STANDARD) const;
 
 		// 运行控制
 		void set_3d_listener_attributes(

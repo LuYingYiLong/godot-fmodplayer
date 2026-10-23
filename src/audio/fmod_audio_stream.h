@@ -36,6 +36,7 @@ namespace godot {
 		int initial_subsound = -1;
 		int num_subsounds = 0;
 		PackedInt32Array inclusion_list;
+		FmodSystem::FmodResamplerMethod resampler_method = FmodSystem::FMOD_RESAMPLER_DEFAULT;
 		FmodSound::FmodSoundType suggested_sound_type = FmodSound::FMOD_SOUND_TYPE_UNKNOWN;
 		int default_frequency = 0;
 		int num_channels = 0;
@@ -81,6 +82,9 @@ namespace godot {
 
 		void set_inclusion_list(const PackedInt32Array& p_list);
 		PackedInt32Array get_inclusion_list() const;
+
+		void set_resampler_method(FmodSystem::FmodResamplerMethod p_method);
+		FmodSystem::FmodResamplerMethod get_resampler_method() const;
 
 		void set_suggested_sound_type(FmodSound::FmodSoundType p_type);
 		FmodSound::FmodSoundType get_suggested_sound_type() const;

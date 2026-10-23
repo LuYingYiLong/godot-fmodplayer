@@ -60,6 +60,9 @@ public partial class FmodDSP : RefCounted
 	/// <returns>The wrapper instance linked to the underlying GDExtension "FmodDSP" type.</returns>
 	public new static FmodDSP Instantiate() => Bind(ClassDB.Instantiate(NativeName).As<GodotObject>());
 
+	public enum FmodDspMode { Filter = 0, Generator = 1, }
+	public const long DspCooldownInfinite = 4294967295;
+
 	public enum FmodDspType
 	{
 		Unknown = 0,
@@ -140,8 +143,8 @@ public partial class FmodDSP : RefCounted
 		public new static readonly StringName GetNumOutputs = "get_num_outputs";
 		public new static readonly StringName DisconnectAll = "disconnect_all";
 		public new static readonly StringName DisconnectFrom = "disconnect_from";
-		public new static readonly StringName SetChannelFormat = "set_channel_format";
-		public new static readonly StringName GetChannelFormat = "get_channel_format";
+		public new static readonly StringName SetInputChannelFormat = "set_input_channel_format";
+		public new static readonly StringName GetInputChannelFormat = "get_input_channel_format";
 		public new static readonly StringName GetOutputChannelFormat = "get_output_channel_format";
 		public new static readonly StringName GetMeteringInfo = "get_metering_info";
 		public new static readonly StringName SetMeteringEnabled = "set_metering_enabled";
@@ -173,8 +176,6 @@ public partial class FmodDSP : RefCounted
 		public new static readonly StringName GetReleaseCallback = "get_release_callback";
 		public new static readonly StringName SetResetCallback = "set_reset_callback";
 		public new static readonly StringName GetResetCallback = "get_reset_callback";
-		public new static readonly StringName SetReadCallback = "set_read_callback";
-		public new static readonly StringName GetReadCallback = "get_read_callback";
 		public new static readonly StringName SetProcessCallback = "set_process_callback";
 		public new static readonly StringName GetProcessCallback = "get_process_callback";
 		public new static readonly StringName SetSetpositionCallback = "set_setposition_callback";
@@ -195,9 +196,10 @@ public partial class FmodDSP : RefCounted
 		public new static readonly StringName GetGetparamBoolCallback = "get_getparam_bool_callback";
 		public new static readonly StringName SetGetparamDataCallback = "set_getparam_data_callback";
 		public new static readonly StringName GetGetparamDataCallback = "get_getparam_data_callback";
-		public new static readonly StringName SetShouldiprocessCallback = "set_shouldiprocess_callback";
-		public new static readonly StringName GetShouldiprocessCallback = "get_shouldiprocess_callback";
 	}
+
+	public FmodDSPConnection AddInputPreallocated(FmodDSP targetDsp, FmodDSPConnection connection) =>
+		FmodDSPConnection.Bind(Call("add_input_preallocated", [targetDsp, connection]).As<RefCounted>());
 
 	public new FmodDSPConnection AddInput(FmodDSP targetDsp, long type = 0) => 
 		FmodDSPConnection.Bind(Call(GDExtensionMethodName.AddInput, [targetDsp, type]).As<RefCounted>());
@@ -220,11 +222,11 @@ public partial class FmodDSP : RefCounted
 	public new void DisconnectFrom(FmodDSP target, FmodDSPConnection connection = null) => 
 		Call(GDExtensionMethodName.DisconnectFrom, [target, connection]);
 
-	public new void SetChannelFormat(long numchannels, FmodSystem.FmodSpeakerMode speakermode) => 
-		Call(GDExtensionMethodName.SetChannelFormat, [numchannels, Variant.From(speakermode)]);
+	public new void SetInputChannelFormat(long numchannels, FmodSystem.FmodSpeakerMode speakermode) =>
+		Call(GDExtensionMethodName.SetInputChannelFormat, [numchannels, Variant.From(speakermode)]);
 
-	public new Godot.Collections.Dictionary GetChannelFormat() => 
-		Call(GDExtensionMethodName.GetChannelFormat, []).As<Godot.Collections.Dictionary>();
+	public new Godot.Collections.Dictionary GetInputChannelFormat() =>
+		Call(GDExtensionMethodName.GetInputChannelFormat, []).As<Godot.Collections.Dictionary>();
 
 	public new Godot.Collections.Dictionary GetOutputChannelFormat(long inchannels, FmodSystem.FmodSpeakerMode inspeakermode) => 
 		Call(GDExtensionMethodName.GetOutputChannelFormat, [inchannels, Variant.From(inspeakermode)]).As<Godot.Collections.Dictionary>();
@@ -317,11 +319,7 @@ public partial class FmodDSP : RefCounted
 	public new Callable GetResetCallback() => 
 		Call(GDExtensionMethodName.GetResetCallback, []).As<Callable>();
 
-	public new void SetReadCallback(Callable callback) => 
-		Call(GDExtensionMethodName.SetReadCallback, [callback]);
 
-	public new Callable GetReadCallback() => 
-		Call(GDExtensionMethodName.GetReadCallback, []).As<Callable>();
 
 	public new void SetProcessCallback(Callable callback) => 
 		Call(GDExtensionMethodName.SetProcessCallback, [callback]);
@@ -383,10 +381,6 @@ public partial class FmodDSP : RefCounted
 	public new Callable GetGetparamDataCallback() => 
 		Call(GDExtensionMethodName.GetGetparamDataCallback, []).As<Callable>();
 
-	public new void SetShouldiprocessCallback(Callable callback) => 
-		Call(GDExtensionMethodName.SetShouldiprocessCallback, [callback]);
 
-	public new Callable GetShouldiprocessCallback() => 
-		Call(GDExtensionMethodName.GetShouldiprocessCallback, []).As<Callable>();
 
 }

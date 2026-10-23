@@ -92,35 +92,17 @@ namespace godot {
 
 	static FMOD_RESULT F_CALL stereo_enhance_dsp_process_callback(FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FmodDSPBufferArray* inbufferarray,
-		FmodDSPBufferArray* outbufferarray,
-		FMOD_BOOL inputsidle,
-		FmodDSPProcessOperation op) {
+		const FMOD_DSP_BUFFER* inbufferarray,
+		const FMOD_DSP_BUFFER* outbufferarray) {
 
-		static_cast<void>(inputsidle);
-
-		if (!inbufferarray || !outbufferarray ||
-			inbufferarray->numbuffers <= 0 || outbufferarray->numbuffers <= 0 ||
-			!inbufferarray->buffernumchannels || !outbufferarray->buffernumchannels ||
-			!inbufferarray->bufferchannelmask || !outbufferarray->bufferchannelmask) {
+		if (!inbufferarray || !outbufferarray) {
 			return FMOD_ERR_INVALID_PARAM;
 		}
 
-		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
-			outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
-			outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
-			outbufferarray->speakermode = inbufferarray->speakermode;
-			return FMOD_OK;
-		}
-
-		if (op != FMOD_PLAYER_DSP_PROCESS_PERFORM) {
-			return FMOD_OK;
-		}
-
-		const int input_channels = inbufferarray->buffernumchannels[0];
-		const int output_channels = outbufferarray->buffernumchannels[0];
-		const float* in_buffer = static_cast<const float*>(inbufferarray->buffers[0]);
-		float* out_buffer = static_cast<float*>(outbufferarray->buffers[0]);
+		const int input_channels = inbufferarray->numchannels;
+		const int output_channels = outbufferarray->numchannels;
+		const float* in_buffer = static_cast<const float*>(inbufferarray->buffer);
+		float* out_buffer = static_cast<float*>(outbufferarray->buffer);
 		if (!in_buffer || !out_buffer || input_channels <= 0 || output_channels <= 0) {
 			return FMOD_ERR_INVALID_PARAM;
 		}
@@ -193,7 +175,7 @@ namespace godot {
 
 		ClassDB::bind_method(D_METHOD("set_surround", "amount"), &FmodAudioEffectStereoEnhance::set_surround);
 		ClassDB::bind_method(D_METHOD("get_surround"), &FmodAudioEffectStereoEnhance::get_surround);
-		
+
 		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "pan_pullout", PROPERTY_HINT_RANGE, "0,4,0.01"), "set_pan_pullout", "get_pan_pullout");
 		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "time_pullout_ms", PROPERTY_HINT_RANGE, "0,50,0.01,suffix:ms"), "set_time_pullout", "get_time_pullout");
 		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "surround", PROPERTY_HINT_RANGE, "0,1,0.01"), "set_surround", "get_surround");
@@ -269,7 +251,7 @@ namespace godot {
 			fmod_configure_filter_description(desc);
 			desc.create = stereo_enhance_dsp_create_callback;
 			desc.release = stereo_enhance_dsp_release_callback;
-			desc.process = fmod_dsp_process_callback<stereo_enhance_dsp_process_callback>();
+			desc.process = stereo_enhance_dsp_process_callback;
 			initialized = true;
 		}
 		return &desc;

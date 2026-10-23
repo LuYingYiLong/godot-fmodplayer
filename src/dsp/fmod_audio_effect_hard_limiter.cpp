@@ -106,35 +106,17 @@ namespace godot {
 
 	static FMOD_RESULT F_CALL hard_limiter_dsp_process_callback(FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FmodDSPBufferArray* inbufferarray,
-		FmodDSPBufferArray* outbufferarray,
-		FMOD_BOOL inputsidle,
-		FmodDSPProcessOperation op) {
+		const FMOD_DSP_BUFFER* inbufferarray,
+		const FMOD_DSP_BUFFER* outbufferarray) {
 
-		static_cast<void>(inputsidle);
-
-		if (!inbufferarray || !outbufferarray ||
-			inbufferarray->numbuffers <= 0 || outbufferarray->numbuffers <= 0 ||
-			!inbufferarray->buffernumchannels || !outbufferarray->buffernumchannels ||
-			!inbufferarray->bufferchannelmask || !outbufferarray->bufferchannelmask) {
+		if (!inbufferarray || !outbufferarray) {
 			return FMOD_ERR_INVALID_PARAM;
 		}
 
-		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
-			outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
-			outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
-			outbufferarray->speakermode = inbufferarray->speakermode;
-			return FMOD_OK;
-		}
-
-		if (op != FMOD_PLAYER_DSP_PROCESS_PERFORM) {
-			return FMOD_OK;
-		}
-
-		const int input_channels = inbufferarray->buffernumchannels[0];
-		const int output_channels = outbufferarray->buffernumchannels[0];
-		const float* in_buffer = static_cast<const float*>(inbufferarray->buffers[0]);
-		float* out_buffer = static_cast<float*>(outbufferarray->buffers[0]);
+		const int input_channels = inbufferarray->numchannels;
+		const int output_channels = outbufferarray->numchannels;
+		const float* in_buffer = static_cast<const float*>(inbufferarray->buffer);
+		float* out_buffer = static_cast<float*>(outbufferarray->buffer);
 		if (!in_buffer || !out_buffer || input_channels <= 0 || output_channels <= 0) {
 			return FMOD_ERR_INVALID_PARAM;
 		}
@@ -294,7 +276,7 @@ namespace godot {
 			fmod_configure_filter_description(desc);
 			desc.create = hard_limiter_dsp_create_callback;
 			desc.release = hard_limiter_dsp_release_callback;
-			desc.process = fmod_dsp_process_callback<hard_limiter_dsp_process_callback>();
+			desc.process = hard_limiter_dsp_process_callback;
 			initialized = true;
 		}
 		return &desc;

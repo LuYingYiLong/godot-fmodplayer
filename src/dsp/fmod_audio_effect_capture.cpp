@@ -55,38 +55,20 @@ namespace godot {
 
 	static FMOD_RESULT capture_process(CaptureDSPState* state,
 		unsigned int length,
-		const FmodDSPBufferArray* inbufferarray,
-		FmodDSPBufferArray* outbufferarray,
-		FMOD_BOOL inputsidle,
-		FmodDSPProcessOperation op) {
+		const FMOD_DSP_BUFFER* inbufferarray,
+		const FMOD_DSP_BUFFER* outbufferarray) {
 
-		static_cast<void>(inputsidle);
-
-		if (!inbufferarray || !outbufferarray ||
-			inbufferarray->numbuffers <= 0 || outbufferarray->numbuffers <= 0 ||
-			!inbufferarray->buffernumchannels || !outbufferarray->buffernumchannels ||
-			!inbufferarray->bufferchannelmask || !outbufferarray->bufferchannelmask) {
+		if (!inbufferarray || !outbufferarray) {
 			return FMOD_ERR_INVALID_PARAM;
 		}
 
-		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
-			outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
-			outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
-			outbufferarray->speakermode = inbufferarray->speakermode;
-			return FMOD_OK;
-		}
-
-		if (op != FMOD_PLAYER_DSP_PROCESS_PERFORM) {
-			return FMOD_OK;
-		}
-
-		if (!inbufferarray->buffers || !outbufferarray->buffers) {
+		if (!inbufferarray->buffer || !outbufferarray->buffer) {
 			return FMOD_ERR_INVALID_PARAM;
 		}
 
-		const int channels = inbufferarray->buffernumchannels[0];
-		float* in = static_cast<float*>(inbufferarray->buffers[0]);
-		float* out = static_cast<float*>(outbufferarray->buffers[0]);
+		const int channels = inbufferarray->numchannels;
+		float* in = static_cast<float*>(inbufferarray->buffer);
+		float* out = static_cast<float*>(outbufferarray->buffer);
 		if (!in || !out || channels <= 0) {
 			return FMOD_ERR_INVALID_PARAM;
 		}
@@ -111,16 +93,16 @@ namespace godot {
 	}
 
 	static FMOD_RESULT F_CALL capture_dsp_process_callback(FMOD_DSP_STATE* dsp_state,
-		unsigned int length, const FmodDSPBufferArray* inbufferarray,
-		FmodDSPBufferArray* outbufferarray, FMOD_BOOL inputsidle, FmodDSPProcessOperation op) {
-		return capture_process(_get_capture_userdata(dsp_state), length, inbufferarray, outbufferarray, inputsidle, op);
+		unsigned int length, const FMOD_DSP_BUFFER* inbufferarray,
+		const FMOD_DSP_BUFFER* outbufferarray) {
+		return capture_process(_get_capture_userdata(dsp_state), length, inbufferarray, outbufferarray);
 	}
 
 	void FmodAudioEffectCapture::_bind_methods() {
 		ClassDB::bind_method(D_METHOD("set_buffer_length", "buffer_length"), &FmodAudioEffectCapture::set_buffer_length);
 		ClassDB::bind_method(D_METHOD("get_buffer_length"), &FmodAudioEffectCapture::get_buffer_length);
 		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "buffer_length", PROPERTY_HINT_RANGE, "0.1,10.0,0.1,suffix:s"), "set_buffer_length", "get_buffer_length");
-		
+
 		ClassDB::bind_method(D_METHOD("can_get_buffer", "frames"), &FmodAudioEffectCapture::can_get_buffer);
 		ClassDB::bind_method(D_METHOD("clear_buffer"), &FmodAudioEffectCapture::clear_buffer);
 		ClassDB::bind_method(D_METHOD("get_buffer", "frames"), &FmodAudioEffectCapture::get_buffer);
@@ -139,61 +121,61 @@ namespace godot {
 			remove_from_bus(bus);
 		}
 	}
-	
+
 	void FmodAudioEffectCapture::_update_buffer_size() {
 		// Preserve the existing 48 kHz sizing policy, expressed in complete frames.
 		buffer_size = static_cast<int>(CLAMP(buffer_length * 48000.0, 512.0, 480000.0));
-		
+
 		std::lock_guard<std::mutex> lock(buffer_mutex);
 		ring_buffer.resize(static_cast<size_t>(buffer_size));
 	}
 
 	void FmodAudioEffectCapture::apply_to(Ref<FmodChannelGroup> p_bus) {
 		ERR_FAIL_COND_MSG(p_bus.is_null(), "Invalid bus");
-		
+
 		// 如果已经应用过，先移除
 		if (bus.is_valid()) {
 			remove_from_bus(bus);
 		}
-		
+
 		bus = p_bus;
-		
+
 		// 获取主系统
 		Ref<FmodSystem> system = FmodServer::get_main_system();
 		ERR_FAIL_COND_MSG(system.is_null(), "FMOD system not initialized");
-		
+
 		// 创建自定义 DSP
 		Ref<FmodDSP> dsp = create_custom_dsp(system);
 		if (!dsp.is_valid()) {
 			ERR_PRINT("FmodAudioEffectCapture: Failed to create custom DSP");
 			return;
 		}
-		
+
 		// 检查 DSP 内部指针
 		if (!dsp->dsp) {
 			ERR_PRINT("FmodAudioEffectCapture: DSP internal pointer is null after setup");
 			return;
 		}
-		
+
 		// 添加到 DSP 链
 		dsp_chain.push_back(dsp);
-		
+
 		// 添加到总线（-1 表示添加到末尾）
 		bus->add_dsp(-1, dsp);
-		
+
 		dsp_created = true;
 	}
 
 	void FmodAudioEffectCapture::remove_from_bus(Ref<FmodChannelGroup> p_bus) {
 		// 调用基类实现
 		FmodAudioEffect::remove_from_bus(p_bus);
-		
+
 		// 清空缓冲区统计
 		pushed_frames.store(0);
 		discarded_frames.store(0);
 		dsp_created = false;
 	}
-	
+
 	// 重写基类虚函数 - DSP 创建
 	void FmodAudioEffectCapture::_on_dsp_create(FMOD_DSP_STATE* dsp_state) {
 		// 分配捕获特定的状态
@@ -203,22 +185,20 @@ namespace godot {
 		state->pushed_frames = &pushed_frames;
 		state->discarded_frames = &discarded_frames;
 		state->channels = 2;														// 默认立体声
-		
+
 		// 存储到 DSP 状态
 		dsp_state->plugindata = state;
 	}
-	
+
 	// 重写基类虚函数 - DSP 处理
 	void FmodAudioEffectCapture::_on_dsp_process(FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FmodDSPBufferArray* inbufferarray,
-		FmodDSPBufferArray* outbufferarray,
-		FMOD_BOOL inputsidle,
-		FmodDSPProcessOperation op) {
+		const FMOD_DSP_BUFFER* inbufferarray,
+		const FMOD_DSP_BUFFER* outbufferarray) {
 		CaptureDSPState* state = dsp_state ? static_cast<CaptureDSPState*>(dsp_state->plugindata) : nullptr;
-		capture_process(state, length, inbufferarray, outbufferarray, inputsidle, op);
+		capture_process(state, length, inbufferarray, outbufferarray);
 	}
-	
+
 	// 重写基类虚函数 - DSP 释放
 	void FmodAudioEffectCapture::_on_dsp_release(FMOD_DSP_STATE* dsp_state) {
 		if (dsp_state->plugindata) {
@@ -323,7 +303,7 @@ namespace godot {
 			fmod_configure_filter_description(desc);
 			desc.create = capture_dsp_create_callback;
 			desc.release = capture_dsp_release_callback;
-			desc.process = fmod_dsp_process_callback<capture_dsp_process_callback>();
+			desc.process = capture_dsp_process_callback;
 			initialized = true;
 		}
 

@@ -8,6 +8,7 @@
 #include "geometry/fmod_geometry.h"
 #include "dsp/fmod_dsp.h"
 #include "spatial/fmod_reverb_3d.h"
+#include "dsp/fmod_dsp_connection.h"
 
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
@@ -23,7 +24,6 @@ namespace godot {
 	void FmodSystem::_bind_methods() {
 		BIND_ENUM_CONSTANT(FMOD_INIT_FLAG_NORMAL);
 		BIND_ENUM_CONSTANT(FMOD_INIT_FLAG_STREAM_FROM_UPDATE);
-		BIND_ENUM_CONSTANT(FMOD_INIT_FLAG_MIX_FROM_UPDATE);
 		BIND_ENUM_CONSTANT(FMOD_INIT_FLAG_3D_RIGHTHANDED);
 		BIND_ENUM_CONSTANT(FMOD_INIT_FLAG_CLIP_OUTPUT);
 		BIND_ENUM_CONSTANT(FMOD_INIT_FLAG_CHANNEL_LOWPASS);
@@ -56,6 +56,7 @@ namespace godot {
 		BIND_ENUM_CONSTANT(FMOD_OUTPUT_TYPE_WINSONIC);
 		BIND_ENUM_CONSTANT(FMOD_OUTPUT_TYPE_AAUDIO);
 		BIND_ENUM_CONSTANT(FMOD_OUTPUT_TYPE_AUDIOWORKLET);
+		BIND_ENUM_CONSTANT(FMOD_OUTPUT_TYPE_AUDIOWORKLETP);
 		BIND_ENUM_CONSTANT(FMOD_OUTPUT_TYPE_PHASE);
 		BIND_ENUM_CONSTANT(FMOD_OUTPUT_TYPE_OHAUDIO);
 		BIND_ENUM_CONSTANT(FMOD_OUTPUT_TYPE_MAX);
@@ -262,11 +263,12 @@ namespace godot {
 		ClassDB::bind_method(D_METHOD("get_default_mix_matrix", "source_speaker_mode", "target_speaker_mode", "array_length", "hop"), &FmodSystem::get_default_mix_matrix);
 		ClassDB::bind_method(D_METHOD("get_speaker_mode_channels", "mode"), &FmodSystem::get_speaker_mode_channels);
 
-		ClassDB::bind_method(D_METHOD("create_sound_from_file", "path", "mode"), &FmodSystem::create_sound_from_file, DEFVAL(FMOD_MODE_DEFAULT));
-		ClassDB::bind_method(D_METHOD("create_sound_from_memory", "data", "mode"), &FmodSystem::create_sound_from_memory, DEFVAL(FMOD_MODE_DEFAULT));
-		ClassDB::bind_method(D_METHOD("create_sound_from_res", "path", "mode"), &FmodSystem::create_sound_from_res, DEFVAL(FMOD_MODE_DEFAULT));
-		ClassDB::bind_method(D_METHOD("create_stream_from_file", "path", "mode"), &FmodSystem::create_stream_from_file, DEFVAL(FMOD_MODE_DEFAULT));
-		ClassDB::bind_method(D_METHOD("create_dsp", "name"), &FmodSystem::create_dsp);
+		ClassDB::bind_method(D_METHOD("create_sound_from_file", "path", "mode", "resampler_method"), &FmodSystem::create_sound_from_file, DEFVAL(FMOD_MODE_DEFAULT), DEFVAL(FMOD_RESAMPLER_DEFAULT));
+		ClassDB::bind_method(D_METHOD("create_sound_from_memory", "data", "mode", "resampler_method"), &FmodSystem::create_sound_from_memory, DEFVAL(FMOD_MODE_DEFAULT), DEFVAL(FMOD_RESAMPLER_DEFAULT));
+		ClassDB::bind_method(D_METHOD("create_sound_from_res", "path", "mode", "resampler_method"), &FmodSystem::create_sound_from_res, DEFVAL(FMOD_MODE_DEFAULT), DEFVAL(FMOD_RESAMPLER_DEFAULT));
+		ClassDB::bind_method(D_METHOD("create_stream_from_file", "path", "mode", "resampler_method"), &FmodSystem::create_stream_from_file, DEFVAL(FMOD_MODE_DEFAULT), DEFVAL(FMOD_RESAMPLER_DEFAULT));
+		ClassDB::bind_method(D_METHOD("create_dsp", "name", "mode", "default_cooldown", "input_channels", "output_channels"), &FmodSystem::create_dsp, DEFVAL(FMOD_DSP_MODE_FILTER), DEFVAL(int64_t(FMOD_DSP_COOLDOWN_INFINITE)), DEFVAL(0), DEFVAL(0));
+		ClassDB::bind_method(D_METHOD("create_dsp_connection", "type"), &FmodSystem::create_dsp_connection, DEFVAL(FMOD_DSPCONNECTION_TYPE_STANDARD));
 		ClassDB::bind_method(D_METHOD("create_dsp_by_type", "type"), &FmodSystem::create_dsp_by_type);
 		ClassDB::bind_method(D_METHOD("create_channel_group", "name"), &FmodSystem::create_channel_group);
 		ClassDB::bind_method(D_METHOD("create_sound_group", "name"), &FmodSystem::create_sound_group);
@@ -516,35 +518,14 @@ namespace godot {
 
 	void FmodSystem::set_output(FmodOutputType output_type) {
 		ERR_FAIL_COND(!system);
-		auto fmod_output_type = static_cast<FMOD_OUTPUTTYPE>(output_type);
-#if FMOD_VERSION >= 0x00020400
-		// Preserve serialized Godot enum values after AUDIOWORKLETP was inserted.
-		if (output_type == FMOD_OUTPUT_TYPE_PHASE) {
-			fmod_output_type = FMOD_OUTPUTTYPE_PHASE;
-		} else if (output_type == FMOD_OUTPUT_TYPE_OHAUDIO) {
-			fmod_output_type = FMOD_OUTPUTTYPE_OHAUDIO;
-		}
-#endif
-		FMOD_ERR_CHECK(system->setOutput(fmod_output_type));
+		FMOD_ERR_CHECK(system->setOutput(static_cast<FMOD_OUTPUTTYPE>(output_type)));
 	}
 
 	FmodSystem::FmodOutputType FmodSystem::get_output() const {
 		ERR_FAIL_COND_V(!system, FMOD_OUTPUT_TYPE_UNKNOWN);
-		FMOD_OUTPUTTYPE fmod_output_type = FMOD_OUTPUTTYPE_UNKNOWN;
-		FMOD_ERR_CHECK_V(system->getOutput(&fmod_output_type), FMOD_OUTPUT_TYPE_UNKNOWN);
-#if FMOD_VERSION >= 0x00020400
-		if (fmod_output_type == FMOD_OUTPUTTYPE_PHASE) {
-			return FMOD_OUTPUT_TYPE_PHASE;
-		}
-		if (fmod_output_type == FMOD_OUTPUTTYPE_OHAUDIO) {
-			return FMOD_OUTPUT_TYPE_OHAUDIO;
-		}
-		if (fmod_output_type == FMOD_OUTPUTTYPE_AUDIOWORKLETP) {
-			return FMOD_OUTPUT_TYPE_UNKNOWN;
-		}
-#endif
-		FmodOutputType output_type = static_cast<FmodOutputType>(fmod_output_type);
-		return output_type;
+		FMOD_OUTPUTTYPE output = FMOD_OUTPUTTYPE_UNKNOWN;
+		FMOD_ERR_CHECK_V(system->getOutput(&output), FMOD_OUTPUT_TYPE_UNKNOWN);
+		return static_cast<FmodOutputType>(output);
 	}
 
 	int FmodSystem::get_num_drivers() const {
@@ -1056,13 +1037,13 @@ namespace godot {
 		return channels;
 	}
 
-	Ref<FmodSound> FmodSystem::create_sound_from_file(const String p_path, unsigned int mode) const {
+	Ref<FmodSound> FmodSystem::create_sound_from_file(const String p_path, unsigned int mode, FmodResamplerMethod resampler_method) const {
 		ERR_FAIL_COND_V(!system, Ref<FmodSound>());
 		ERR_FAIL_COND_V_MSG(p_path.is_empty(), Ref<FmodSound>(), "Sound path cannot be empty.");
 
 		// 检查是否为资源文件路径，如果是则使用资源文件加载 FmodSound
 		if (p_path.begins_with("res://")) {
-			return create_sound_from_res(p_path, mode);
+			return create_sound_from_res(p_path, mode, resampler_method);
 		}
 
 		// 转换字符串为对象，防止野指针
@@ -1072,10 +1053,13 @@ namespace godot {
 		const char* path_cstr = path_utf8.get_data();
 		FMOD::Sound* sound_ptr = nullptr;
 
+		FMOD_CREATESOUNDEXINFO exinfo = {};
+		exinfo.cbsize = sizeof(exinfo);
+		exinfo.resamplermethod = static_cast<FMOD_DSP_RESAMPLER>(resampler_method);
 		FMOD_ERR_CHECK_V(system->createSound(
 			path_cstr,
 			mode,
-			nullptr,
+			&exinfo,
 			&sound_ptr
 		), Ref<FmodSound>());
 
@@ -1086,7 +1070,7 @@ namespace godot {
 		return fmod_sound;
 	}
 
-	Ref<FmodSound> FmodSystem::create_sound_from_memory(const PackedByteArray& data, unsigned int mode) const {
+	Ref<FmodSound> FmodSystem::create_sound_from_memory(const PackedByteArray& data, unsigned int mode, FmodResamplerMethod resampler_method) const {
 		ERR_FAIL_COND_V(!system || data.is_empty(), Ref<FmodSound>());
 		ERR_FAIL_COND_V_MSG(data.size() > static_cast<int64_t>(std::numeric_limits<unsigned int>::max()), Ref<FmodSound>(), "Sound data is too large for FMOD OPENMEMORY.");
 
@@ -1096,6 +1080,7 @@ namespace godot {
 		sound->data = data;
 		FMOD_CREATESOUNDEXINFO exinfo = {};
 		exinfo.cbsize = sizeof(exinfo);
+		exinfo.resamplermethod = static_cast<FMOD_DSP_RESAMPLER>(resampler_method);
 		exinfo.length = static_cast<unsigned int>(sound->data.size());
 
 		if (!(mode & FMOD_MODE_OPENMEMORY)) {
@@ -1114,7 +1099,7 @@ namespace godot {
 		return sound;
 	}
 
-	Ref<FmodSound> FmodSystem::create_sound_from_res(const String p_path, unsigned int mode) const {
+	Ref<FmodSound> FmodSystem::create_sound_from_res(const String p_path, unsigned int mode, FmodResamplerMethod resampler_method) const {
 		ERR_FAIL_COND_V(!system, Ref<FmodSound>());
 		ERR_FAIL_COND_V_MSG(p_path.is_empty(), Ref<FmodSound>(), "Resource sound path cannot be empty.");
 
@@ -1128,10 +1113,10 @@ namespace godot {
 		ERR_FAIL_COND_V(data.is_empty(), Ref<FmodSound>());
 
 		// 以内存模式创建 FMOD Sound（添加 OPENMEMORY 标志）
-		return create_sound_from_memory(data, mode);
+		return create_sound_from_memory(data, mode, resampler_method);
 	}
 
-	Ref<FmodSound> FmodSystem::create_stream_from_file(const String p_path, unsigned int mode) const {
+	Ref<FmodSound> FmodSystem::create_stream_from_file(const String p_path, unsigned int mode, FmodResamplerMethod resampler_method) const {
 		ERR_FAIL_COND_V(!system, Ref<FmodSound>());
 		ERR_FAIL_COND_V_MSG(p_path.is_empty(), Ref<FmodSound>(), "Stream path cannot be empty.");
 
@@ -1156,6 +1141,7 @@ namespace godot {
 
 			FMOD_CREATESOUNDEXINFO exinfo = {};
 			exinfo.cbsize = sizeof(exinfo);
+			exinfo.resamplermethod = static_cast<FMOD_DSP_RESAMPLER>(resampler_method);
 			exinfo.length = static_cast<unsigned int>(sound->data.size());
 
 			FMOD::Sound* sound_ptr = nullptr;
@@ -1178,10 +1164,13 @@ namespace godot {
 		const char* path_cstr = path_utf8.get_data();
 
 		FMOD::Sound* sound_ptr = nullptr;
+		FMOD_CREATESOUNDEXINFO exinfo = {};
+		exinfo.cbsize = sizeof(exinfo);
+		exinfo.resamplermethod = static_cast<FMOD_DSP_RESAMPLER>(resampler_method);
 		FMOD_ERR_CHECK_V(system->createStream(
 			path_cstr,
 			stream_mode,
-			nullptr,
+			&exinfo,
 			&sound_ptr
 		), Ref<FmodSound>());
 
@@ -1193,7 +1182,8 @@ namespace godot {
 		return sound;
 	}
 
-	Ref<FmodDSP> FmodSystem::create_dsp(const String& name) const {
+	Ref<FmodDSP> FmodSystem::create_dsp(const String& name, unsigned int mode, unsigned int default_cooldown, int input_channels, int output_channels) const {
+		ERR_FAIL_COND_V(mode > FMOD_DSP_MODE_GENERATOR || input_channels < 0 || output_channels < 0 || input_channels > FMOD_MAX_CHANNEL_WIDTH || output_channels > FMOD_MAX_CHANNEL_WIDTH, Ref<FmodDSP>());
 		ERR_FAIL_COND_V(!system, Ref<FmodDSP>());
 
 		// FMOD 直接引用描述符，描述符由 FmodSystem 持有到 System::release
@@ -1203,18 +1193,17 @@ namespace godot {
 		desc->pluginsdkversion = FMOD_PLUGIN_SDK_VERSION;
 		const CharString name_utf8 = name.utf8();
 		strncpy(desc->name, name_utf8.get_data(), sizeof(desc->name) - 1);
-		fmod_configure_filter_description(*desc);
+		desc->mode = static_cast<FMOD_DSP_MODE>(mode);
+		desc->defaultcooldown = default_cooldown;
+		desc->inchannels = input_channels;
+		desc->outchannels = output_channels;
 
 		// 使用 fmod_dsp.cpp 中定义的回调函数
 		// 这些回调会通过 userdata 找到 FmodDSP 实例并调用 GDScript Callable
 		desc->create = GD_FMOD_DSP_CREATE_CALLBACK;
 		desc->release = GD_FMOD_DSP_RELEASE_CALLBACK;
 		desc->reset = GD_FMOD_DSP_RESET_CALLBACK;
-#if FMOD_VERSION < 0x00020400
-		desc->read = GD_FMOD_DSP_READ_CALLBACK;
-		desc->shouldiprocess = GD_FMOD_DSP_SHOULDIPROCESS_CALLBACK;
-#endif
-		desc->process = fmod_dsp_process_callback<GD_FMOD_DSP_PROCESS_CALLBACK>();
+		desc->process = GD_FMOD_DSP_PROCESS_CALLBACK;
 		desc->setposition = GD_FMOD_DSP_SETPOSITION_CALLBACK;
 		desc->setparameterfloat = GD_FMOD_DSP_SETPARAM_FLOAT_CALLBACK;
 		desc->setparameterint = GD_FMOD_DSP_SETPARAM_INT_CALLBACK;
@@ -1354,21 +1343,10 @@ namespace godot {
 		info["name"] = String::utf8(desc->name);
 		info["version"] = desc->version;
 		info["plugin_sdk_version"] = desc->pluginsdkversion;
-#if FMOD_VERSION >= 0x00020400
-		info["num_input_buffers"] = desc->mode == FMOD_DSP_MODE_FILTER ? 1 : 0;
-		info["num_output_buffers"] = 1;
 		info["mode"] = static_cast<int>(desc->mode);
 		info["input_channels"] = desc->inchannels;
 		info["output_channels"] = desc->outchannels;
 		info["default_cooldown"] = desc->defaultcooldown;
-		info["has_read"] = false;
-		info["has_should_i_process"] = false;
-#else
-		info["num_input_buffers"] = desc->numinputbuffers;
-		info["num_output_buffers"] = desc->numoutputbuffers;
-		info["has_read"] = (desc->read != nullptr);
-		info["has_should_i_process"] = (desc->shouldiprocess != nullptr);
-#endif
 		info["has_create"] = (desc->create != nullptr);
 		info["has_release"] = (desc->release != nullptr);
 		info["has_reset"] = (desc->reset != nullptr);
@@ -1397,6 +1375,16 @@ namespace godot {
 		sound_group.instantiate();
 		sound_group->setup(sound_group_ptr);
 		return sound_group;
+	}
+
+	Ref<FmodDSPConnection> FmodSystem::create_dsp_connection(unsigned int type) const {
+		ERR_FAIL_COND_V(!system || type >= FMOD_DSPCONNECTION_TYPE_PREALLOCATED, Ref<FmodDSPConnection>());
+		FMOD::DSPConnection* native = nullptr;
+		FMOD_ERR_CHECK_V(system->createDSPConnection(static_cast<FMOD_DSPCONNECTION_TYPE>(type), &native), Ref<FmodDSPConnection>());
+		Ref<FmodDSPConnection> connection;
+		connection.instantiate();
+		connection->setup(native);
+		return connection;
 	}
 
 	void FmodSystem::set_3d_listener_attributes(

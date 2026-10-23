@@ -41,32 +41,6 @@ namespace godot {
 		return userdata->record_state.get();
 	}
 
-	static FMOD_RESULT _record_passthrough(float* inbuffer, float* outbuffer, unsigned int length, int inchannels, int* outchannels) {
-		if (!outbuffer || !outchannels || *outchannels <= 0) {
-			return FMOD_ERR_INVALID_PARAM;
-		}
-
-		const int output_channels = *outchannels;
-		const size_t output_sample_count = static_cast<size_t>(length) * static_cast<size_t>(output_channels);
-
-		if (inbuffer && inchannels > 0) {
-			if (inchannels == output_channels) {
-				memcpy(outbuffer, inbuffer, output_sample_count * sizeof(float));
-			} else {
-				for (unsigned int frame = 0; frame < length; frame++) {
-					for (int channel = 0; channel < output_channels; channel++) {
-						const int input_channel = MIN(channel, inchannels - 1);
-						outbuffer[frame * output_channels + channel] = inbuffer[frame * inchannels + input_channel];
-					}
-				}
-			}
-		} else {
-			memset(outbuffer, 0, output_sample_count * sizeof(float));
-		}
-
-		return FMOD_OK;
-	}
-
 	static void _record_add_samples(FmodAudioEffectRecordSharedState* p_state, const float* buffer, unsigned int length, int channels) {
 		if (!p_state || !buffer || !p_state->recording_active.load()) {
 			return;
@@ -94,58 +68,24 @@ namespace godot {
 		}
 	}
 
-	static FMOD_RESULT _record_dsp_read(FmodAudioEffectRecordSharedState* p_state, FMOD_DSP_STATE* dsp_state, float* inbuffer, float* outbuffer, unsigned int length, int inchannels, int* outchannels) {
-		FMOD_RESULT result = _record_passthrough(inbuffer, outbuffer, length, inchannels, outchannels);
-		if (result != FMOD_OK) {
-			return result;
-		}
-
-		if (p_state && p_state->recording_active.load() && inbuffer && inchannels > 0) {
-			if (dsp_state && dsp_state->functions && dsp_state->functions->getsamplerate) {
-				int current_rate = 0;
-				if (dsp_state->functions->getsamplerate(dsp_state, &current_rate) == FMOD_OK && current_rate > 0) {
-					p_state->sample_rate.store(current_rate);
-				}
-			}
-			_record_add_samples(p_state, inbuffer, length, inchannels);
-		}
-
-		return FMOD_OK;
-	}
-
 	static FMOD_RESULT _record_dsp_process(FmodAudioEffectRecordSharedState* p_state,
 		FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FmodDSPBufferArray* inbufferarray,
-		FmodDSPBufferArray* outbufferarray,
-		FmodDSPProcessOperation op) {
+		const FMOD_DSP_BUFFER* inbufferarray,
+		const FMOD_DSP_BUFFER* outbufferarray) {
 
-		if (!inbufferarray || !outbufferarray ||
-			inbufferarray->numbuffers <= 0 || outbufferarray->numbuffers <= 0 ||
-			!inbufferarray->buffernumchannels || !outbufferarray->buffernumchannels ||
-			!inbufferarray->bufferchannelmask || !outbufferarray->bufferchannelmask) {
+		if (!inbufferarray || !outbufferarray) {
 			return FMOD_ERR_INVALID_PARAM;
 		}
 
-		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
-			outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
-			outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
-			outbufferarray->speakermode = inbufferarray->speakermode;
-			return FMOD_OK;
-		}
-
-		if (op != FMOD_PLAYER_DSP_PROCESS_PERFORM) {
-			return FMOD_OK;
-		}
-
-		if (!inbufferarray->buffers || !outbufferarray->buffers) {
+		if (!inbufferarray->buffer || !outbufferarray->buffer) {
 			return FMOD_ERR_INVALID_PARAM;
 		}
 
-		const int input_channels = inbufferarray->buffernumchannels[0];
-		int output_channels = outbufferarray->buffernumchannels[0];
-		const float* in_buffer = static_cast<const float*>(inbufferarray->buffers[0]);
-		float* out_buffer = static_cast<float*>(outbufferarray->buffers[0]);
+		const int input_channels = inbufferarray->numchannels;
+		int output_channels = outbufferarray->numchannels;
+		const float* in_buffer = static_cast<const float*>(inbufferarray->buffer);
+		float* out_buffer = static_cast<float*>(outbufferarray->buffer);
 
 		if (!out_buffer || output_channels <= 0) {
 			return FMOD_ERR_INVALID_PARAM;
@@ -212,19 +152,11 @@ namespace godot {
 		return FMOD_OK;
 	}
 
-	static FMOD_RESULT F_CALL record_dsp_read_callback(FMOD_DSP_STATE* dsp_state, float* inbuffer, float* outbuffer, unsigned int length, int inchannels, int* outchannels) {
-		return _record_dsp_read(_get_record_state_from_dsp(dsp_state), dsp_state, inbuffer, outbuffer, length, inchannels, outchannels);
-	}
-
 	static FMOD_RESULT F_CALL record_dsp_process_callback(FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FmodDSPBufferArray* inbufferarray,
-		FmodDSPBufferArray* outbufferarray,
-		FMOD_BOOL inputsidle,
-		FmodDSPProcessOperation op) {
-
-		static_cast<void>(inputsidle);
-		return _record_dsp_process(_get_record_state_from_dsp(dsp_state), dsp_state, length, inbufferarray, outbufferarray, op);
+		const FMOD_DSP_BUFFER* inbufferarray,
+		const FMOD_DSP_BUFFER* outbufferarray) {
+		return _record_dsp_process(_get_record_state_from_dsp(dsp_state), dsp_state, length, inbufferarray, outbufferarray);
 	}
 
 	void FmodAudioEffectRecord::_bind_methods() {
@@ -316,7 +248,7 @@ namespace godot {
 			fmod_configure_filter_description(desc);
 			desc.create = record_dsp_create_callback;
 			desc.release = record_dsp_release_callback;
-			desc.process = fmod_dsp_process_callback<record_dsp_process_callback>();
+			desc.process = record_dsp_process_callback;
 			initialized = true;
 		}
 
@@ -325,32 +257,16 @@ namespace godot {
 
 	void FmodAudioEffectRecord::_on_dsp_process(FMOD_DSP_STATE* dsp_state,
 		unsigned int length,
-		const FmodDSPBufferArray* inbufferarray,
-		FmodDSPBufferArray* outbufferarray,
-		FMOD_BOOL inputsidle,
-		FmodDSPProcessOperation op) {
+		const FMOD_DSP_BUFFER* inbufferarray,
+		const FMOD_DSP_BUFFER* outbufferarray) {
 
-		if (!inbufferarray || !outbufferarray || inbufferarray->numbuffers <= 0 || outbufferarray->numbuffers <= 0 ||
-			!inbufferarray->buffernumchannels || !outbufferarray->buffernumchannels ||
-			!inbufferarray->bufferchannelmask || !outbufferarray->bufferchannelmask ||
-			!inbufferarray->buffers || !outbufferarray->buffers) {
+		if (!inbufferarray || !outbufferarray) {
 			return;
 		}
 
-		if (op == FMOD_PLAYER_DSP_PROCESS_QUERY) {
-			outbufferarray->buffernumchannels[0] = inbufferarray->buffernumchannels[0];
-			outbufferarray->bufferchannelmask[0] = inbufferarray->bufferchannelmask[0];
-			outbufferarray->speakermode = inbufferarray->speakermode;
-			return;
-		}
-
-		if (op != FMOD_PLAYER_DSP_PROCESS_PERFORM) {
-			return;
-		}
-
-		int num_channels = inbufferarray->buffernumchannels[0];
-		const float* in_buffer = static_cast<const float*>(inbufferarray->buffers[0]);
-		float* out_buffer = static_cast<float*>(outbufferarray->buffers[0]);
+		int num_channels = inbufferarray->numchannels;
+		const float* in_buffer = static_cast<const float*>(inbufferarray->buffer);
+		float* out_buffer = static_cast<float*>(outbufferarray->buffer);
 
 		if (num_channels <= 0 || !out_buffer) {
 			return;
@@ -374,10 +290,6 @@ namespace godot {
 			}
 			_record_add_samples(state.get(), in_buffer, length, num_channels);
 		}
-	}
-
-	FMOD_RESULT FmodAudioEffectRecord::_on_dsp_read(FMOD_DSP_STATE* dsp_state, float* inbuffer, float* outbuffer, unsigned int length, int inchannels, int* outchannels) {
-		return _record_dsp_read(record_state.get(), dsp_state, inbuffer, outbuffer, length, inchannels, outchannels);
 	}
 
 	void FmodAudioEffectRecord::_init_recording() {
