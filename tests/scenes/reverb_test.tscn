@@ -87,10 +87,10 @@ data = PackedVector3Array(-0.5, 3.5, 12.5, 0.5, 3.5, 12.5, -0.5, -3.5, 12.5, 0.5
 
 [sub_resource type="BoxMesh" id="BoxMesh_gaq2e"]
 lightmap_size_hint = Vector2i(144, 206)
-size = Vector3(26, 7, 2)
+size = Vector3(14, 7, 2)
 
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_gaq2e"]
-data = PackedVector3Array(-13, 3.5, 1, 13, 3.5, 1, -13, -3.5, 1, 13, 3.5, 1, 13, -3.5, 1, -13, -3.5, 1, 13, 3.5, -1, -13, 3.5, -1, 13, -3.5, -1, -13, 3.5, -1, -13, -3.5, -1, 13, -3.5, -1, 13, 3.5, 1, 13, 3.5, -1, 13, -3.5, 1, 13, 3.5, -1, 13, -3.5, -1, 13, -3.5, 1, -13, 3.5, -1, -13, 3.5, 1, -13, -3.5, -1, -13, 3.5, 1, -13, -3.5, 1, -13, -3.5, -1, 13, 3.5, 1, -13, 3.5, 1, 13, 3.5, -1, -13, 3.5, 1, -13, 3.5, -1, 13, 3.5, -1, -13, -3.5, 1, 13, -3.5, 1, -13, -3.5, -1, 13, -3.5, 1, 13, -3.5, -1, -13, -3.5, -1)
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_hk1pi"]
+data = PackedVector3Array(-7, 3.5, 1, 7, 3.5, 1, -7, -3.5, 1, 7, 3.5, 1, 7, -3.5, 1, -7, -3.5, 1, 7, 3.5, -1, -7, 3.5, -1, 7, -3.5, -1, -7, 3.5, -1, -7, -3.5, -1, 7, -3.5, -1, 7, 3.5, 1, 7, 3.5, -1, 7, -3.5, 1, 7, 3.5, -1, 7, -3.5, -1, 7, -3.5, 1, -7, 3.5, -1, -7, 3.5, 1, -7, -3.5, -1, -7, 3.5, 1, -7, -3.5, 1, -7, -3.5, -1, 7, 3.5, 1, -7, 3.5, 1, 7, 3.5, -1, -7, 3.5, 1, -7, 3.5, -1, 7, 3.5, -1, -7, -3.5, 1, 7, -3.5, 1, -7, -3.5, -1, 7, -3.5, 1, 7, -3.5, -1, -7, -3.5, -1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_wvhbo"]
 size = Vector3(1, 10, 29)
@@ -136,7 +136,6 @@ shape = SubResource("ConcavePolygonShape3D_6bcqh")
 
 [node name="FmodAudioStreamPlayer3D" type="FmodAudioStreamPlayer3D" parent="." unique_id=1512813107]
 stream = ExtResource("2_audio")
-playing = true
 auto_play = true
 max_distance = 20.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 3, 2)
@@ -160,16 +159,15 @@ reverb_occlusion = 0.75
 shape = SubResource("ConcavePolygonShape3D_v1ufe")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=1305545028]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.5, 3, -3.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 3, -3.5)
 material_override = ExtResource("1_v1ufe")
 mesh = SubResource("BoxMesh_gaq2e")
 
-[node name="FmodGeometryOccluder" type="FmodGeometryInstance3D" parent="MeshInstance3D2" unique_id=1902283007]
-direct_occlusion = 1.0
-reverb_occlusion = 0.75
+[node name="FmodGeometryOccluder" type="FmodGeometryInstance3D" parent="MeshInstance3D2" unique_id=591345346]
+direct_occlusion = 0.58
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D2/FmodGeometryOccluder" unique_id=1068961266]
-shape = SubResource("ConcavePolygonShape3D_gaq2e")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D2/FmodGeometryOccluder" unique_id=1039139042]
+shape = SubResource("ConcavePolygonShape3D_hk1pi")
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1398396673]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 1, 0)
