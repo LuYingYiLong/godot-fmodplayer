@@ -344,7 +344,11 @@ namespace godot {
 		int get_speaker_mode_channels(FmodSpeakerMode mode) const;								// 获取给定扬声器模式的通道数
 
 		// 创建与获取
-		Ref<FmodSound> create_sound_from_file(const String p_path, unsigned int mode, FmodResamplerMethod resampler_method = FMOD_RESAMPLER_DEFAULT) const;	// 从文件创建 FmodSound
+		Ref<FmodSound> create_sound_from_file(
+			const String p_path,
+			unsigned int mode,
+			FmodResamplerMethod resampler_method = FMOD_RESAMPLER_DEFAULT
+		) const;																				// 从文件创建 FmodSound
 		Ref<FmodSound> create_sound_from_memory(
 			const PackedByteArray& data,
 			unsigned int mode,
@@ -371,7 +375,9 @@ namespace godot {
 		Dictionary get_dsp_info_by_type(unsigned int type) const;								// 获取内置 DSP 描述结构信息
 		Ref<FmodChannelGroup> get_master_channel_group() const;									// 获取所有声音最终路由到的主通道组
 		Ref<FmodSoundGroup> get_master_sound_group() const;										// 获取默认的 SoundGroup，所有声音在创建时放置的位置
-		Ref<FmodDSPConnection> create_dsp_connection(unsigned int type = FMOD_DSPCONNECTION_TYPE_STANDARD) const;
+		Ref<FmodDSPConnection> create_dsp_connection(
+			unsigned int type = FMOD_DSPCONNECTION_TYPE_STANDARD
+		) const;																				// 创建一个 DSPConnection 对象
 
 		// 运行控制
 		void set_3d_listener_attributes(
