@@ -60,6 +60,7 @@ if env["platform"] == "android":
                 "or on the SCons command line. Windows FMOD libraries cannot be used for Android."
             )
     env.Append(CPPPATH=[os.path.join(fmod_core_path, "inc")])
+
 elif env["platform"] == "linux":
     fmod_core_path = Dir(build_config["fmod_linux_sdk"]).abspath
     if os.path.isdir(os.path.join(fmod_core_path, "api", "core")):
