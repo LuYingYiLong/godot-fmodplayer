@@ -48,6 +48,7 @@
 | Platform | Status |
 |----------|--------|
 | Windows x86_64 | Supported |
+| Linux x86_64 | Tested on Ubuntu 26.04 |
 | Android | arm64 builds; other ABIs available through `build_android.bat` |
 | macOS / iOS | Experimental; requires local SDK and linking setup |
 
@@ -71,6 +72,18 @@ scons platform=windows target=template_release arch=x86_64 -j16
 ```
 
 Place your SDK's `fmod.dll` in the project's `addons/fmod_player/bin` folder.
+
+### Linux
+
+Use the FMOD **Linux** Core SDK 2.04 with GCC or Clang and SCons:
+
+```sh
+FMOD_LINUX_SDK=/path/to/fmodstudioapi20400linux bash build_linux.sh debug_symbols=no
+```
+
+The script builds x86_64 Debug and Release extensions under `addons/fmod_player/bin`, with logs in `tests/logs`. Set `JOBS` to change the default of two compile jobs. `fmod_linux_sdk` also accepts an `api/core` folder through `custom.py` or the SCons command line; its default is `src/thirdparty/fmod/linux`.
+
+Place `libfmodL.so.15` (Debug) and `libfmod.so.15` (Release) beside the extension. Copy the SDK's symlink targets as regular files with these names, or keep the versioned files and symlinks together. The extension uses `$ORIGIN` to find its runtime libraries.
 
 ### Android
 

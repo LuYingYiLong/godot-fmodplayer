@@ -2,6 +2,7 @@
 #define FMOD_DSP_H
 
 #include "core/fmod_system.h"
+#include "dsp/fmod_dsp_connection.h"
 #include <godot_cpp/classes/ref_counted.hpp>
 #include "dsp/fmod_dsp_helpers.h"
 
@@ -9,7 +10,6 @@
 #include <unordered_map>
 
 namespace godot {
-	class FmodDSPConnection;
 
 	class FmodDSP : public RefCounted {
 		GDCLASS(FmodDSP, RefCounted)

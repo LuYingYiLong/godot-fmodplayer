@@ -1,4 +1,5 @@
 #include "fmod_reverb_3d.h"
+#include <cfloat>
 #include <godot_cpp/core/math.hpp>
 
 namespace godot {

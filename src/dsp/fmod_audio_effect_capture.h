@@ -7,7 +7,6 @@
 #include <mutex>
 
 namespace godot {
-
 	struct CaptureDSPState {
 		AudioRingBuffer* ring_buffer = nullptr;
 		std::mutex* buffer_mutex = nullptr;

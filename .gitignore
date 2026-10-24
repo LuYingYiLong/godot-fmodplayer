@@ -378,6 +378,8 @@ src/**/.sconsign.dblite
 
 addons/bin/fmod.dll
 addons/fmod_player/bin/fmod.dll
+addons/fmod_player/bin/libfmod*.so*
+!addons/fmod_player/bin/libfmod_player*.so
 src/thirdparty/fmod/
 .vscode/
 compile_commands.json

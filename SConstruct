@@ -10,11 +10,17 @@ build_options.Add(
     "FMOD Android Core SDK directory containing inc/ and lib/ (or the full SDK root)",
     os.environ.get("FMOD_ANDROID_SDK", "src/thirdparty/fmod/android"),
 )
+build_options.Add(
+    "fmod_linux_sdk",
+    "FMOD Linux Core SDK directory containing inc/ and lib/ (or the full SDK root)",
+    os.environ.get("FMOD_LINUX_SDK", "src/thirdparty/fmod/linux"),
+)
 build_config = Environment(tools=[])
 build_options.Update(build_config)
 Help(build_options.GenerateHelpText(build_config))
 # This option belongs to the extension, rather than godot-cpp.
 ARGUMENTS.pop("fmod_android_sdk", None)
+ARGUMENTS.pop("fmod_linux_sdk", None)
 # godot-cpp resolves custom.py relative to its own directory. Forward the
 # remaining root configuration options without forwarding our FMOD option.
 for key, value in build_options.UnknownVariables().items():
@@ -52,6 +58,25 @@ if env["platform"] == "android":
                 "Missing FMOD Android SDK file: " + required_file
                 + "\nExtract the Android SDK and set fmod_android_sdk in custom.py "
                 "or on the SCons command line. Windows FMOD libraries cannot be used for Android."
+            )
+    env.Append(CPPPATH=[os.path.join(fmod_core_path, "inc")])
+elif env["platform"] == "linux":
+    fmod_core_path = Dir(build_config["fmod_linux_sdk"]).abspath
+    if os.path.isdir(os.path.join(fmod_core_path, "api", "core")):
+        fmod_core_path = os.path.join(fmod_core_path, "api", "core")
+    fmod_arch_dirs = {"x86_64": "x86_64", "x86_32": "x86", "arm64": "arm64", "arm32": "arm"}
+    if env["arch"] not in fmod_arch_dirs:
+        raise UserError("The FMOD Linux SDK does not support architecture: " + env["arch"])
+    fmod_lib_path = os.path.join(fmod_core_path, "lib", fmod_arch_dirs[env["arch"]])
+    fmod_library_name = "fmod" if env["target"] == "template_release" else "fmodL"
+    for required_file in [
+        os.path.join(fmod_core_path, "inc", "fmod.hpp"),
+        os.path.join(fmod_lib_path, "lib" + fmod_library_name + ".so"),
+    ]:
+        if not os.path.isfile(required_file):
+            raise UserError(
+                "Missing FMOD Linux SDK file: " + required_file
+                + "\nExtract the Linux SDK and set fmod_linux_sdk in custom.py or on the SCons command line."
             )
     env.Append(CPPPATH=[os.path.join(fmod_core_path, "inc")])
 else:
@@ -100,6 +125,16 @@ if env["platform"] == "android":
     else:
         env.Append(CXXFLAGS=['-g', '-O0'])
     
+    library = env.SharedLibrary(
+        "addons/fmod_player/bin/libfmod_player{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
+        source=sources,
+    )
+
+elif env["platform"] == "linux":
+    env.Append(LIBPATH=[fmod_lib_path])
+    env.Append(LIBS=[fmod_library_name])
+    # Fail the build for unresolved extension symbols instead of failing at load time.
+    env.Append(LINKFLAGS=["-Wl,--no-undefined"])
     library = env.SharedLibrary(
         "addons/fmod_player/bin/libfmod_player{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
         source=sources,

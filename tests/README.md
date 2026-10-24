@@ -19,6 +19,17 @@
 
 在 Godot 中打开 `tests/project.godot`，按 F5 运行自动测试；打开 `scenes/reverb_test.tscn`，按 F6 测试空间音频。
 
+Linux 可使用以下命令，脚本同样会同步完整插件、复制本机 SDK 运行库，并把日志保存到 `tests/logs/linux_<构建目标>_<时间>/`：
+
+```sh
+export GODOT_BIN=/path/to/Godot
+export FMOD_LINUX_SDK=/path/to/fmodstudioapi20400linux
+bash tools/run_tests_linux.sh --quick
+FMOD_TEST_TARGET=template_release bash tools/run_tests_linux.sh --quick
+```
+
+先运行 Debug 导入测试项目，再测 Release。脚本临时使用离线配置，结束后还原项目设置；Release 只在测试副本切换加载目标，默认命令可恢复 Debug。
+
 ## 性能对比
 
 1. 将旧版 DLL/PDB 备份到 `tests/logs/baseline_bin/`。

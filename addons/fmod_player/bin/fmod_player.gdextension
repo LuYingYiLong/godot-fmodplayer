@@ -10,6 +10,8 @@ windows.debug.x86_64 = "fmod_player.windows.template_debug.x86_64.dll"
 windows.release.x86_64 = "fmod_player.windows.template_release.x86_64.dll"
 android.debug.arm64 = "libfmod_player.android.template_debug.arm64.so"
 android.release.arm64 = "libfmod_player.android.template_release.arm64.so"
+linux.debug.x86_64 = "libfmod_player.linux.template_debug.x86_64.so"
+linux.release.x86_64 = "libfmod_player.linux.template_release.x86_64.so"
 
 [icons]
 
@@ -22,6 +24,12 @@ FmodGeometryInstance3D = "icons/FmodGeometryInstance3D.svg"
 FmodReverbZone3D = "icons/FmodReverbZone3D.svg"
 
 [dependencies]
+linux.debug.x86_64 = {
+    "libfmodL.so.15" : "",
+}
+linux.release.x86_64 = {
+    "libfmod.so.15" : "",
+}
 windows.debug.x86_64 = {
     "fmod.dll" : "",
 }
