@@ -1,18 +1,63 @@
-[gd_scene format=3 uid="uid://bq2vsmn68g7k3"]
+[gd_scene format=3 uid="uid://dn5d452hgjfbj"]
 
-[ext_resource type="Script" uid="uid://doo6t4wev1jo3" path="res://test_runner.gd" id="1_runner"]
+[ext_resource type="Script" uid="uid://1056y477jphl" path="res://manual/test_menu.gd" id="1_menu"]
 
-[node name="FmodTests" type="Control"]
+[node name="FmodTestMenu" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_runner")
+script = ExtResource("1_menu")
 
-[node name="Output" type="Label" parent="."]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 24.0
-text = "Preparing FMOD tests..."
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Options" type="VBoxContainer" parent="Center"]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Center/Options"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "FMOD 测试"
+horizontal_alignment = 1
+
+[node name="Reverb" type="Button" parent="Center/Options"]
+layout_mode = 2
+text = "空间音频、混响与几何遮挡"
+
+[node name="Playback" type="Button" parent="Center/Options"]
+layout_mode = 2
+text = "FMOD / Godot 2D 播放对比"
+
+[node name="RunRegression" type="Button" parent="Center/Options"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "运行自动回归测试"
+
+[node name="Logs" type="Button" parent="Center/Options"]
+layout_mode = 2
+text = "打开测试日志目录"
+
+[node name="Status" type="Label" parent="Center/Options"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "准备测试..."
+autowrap_mode = 3
+
+[node name="ProcessPoll" type="Timer" parent="."]
+wait_time = 0.25
+
+[connection signal="pressed" from="Center/Options/Reverb" to="." method="_on_reverb_pressed"]
+[connection signal="pressed" from="Center/Options/Playback" to="." method="_on_playback_pressed"]
+[connection signal="pressed" from="Center/Options/RunRegression" to="." method="_on_regression_pressed"]
+[connection signal="pressed" from="Center/Options/Logs" to="." method="_on_logs_pressed"]
+[connection signal="timeout" from="ProcessPoll" to="." method="_on_process_poll_timeout"]

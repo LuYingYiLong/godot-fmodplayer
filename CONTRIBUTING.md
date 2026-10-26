@@ -25,12 +25,12 @@ $godot = "C:\path\to\Godot.exe"
 $runtime = "C:\path\to\FMOD\api\core\lib\x64\fmod.dll"
 
 .\build_debug_to_test.bat -GodotPath $godot -FmodRuntime $runtime
-.\tools\run_tests.ps1 -Suite all -Quick -GodotPath $godot -FmodRuntime $runtime
+.\tools\run_tests.ps1 -Suite regression -GodotPath $godot -FmodRuntime $runtime
 ```
 
 The build script creates an optimized `template_debug` extension with matching PDB symbols, copies the complete addon to `tests/addons/fmod_player`, and refreshes Godot imports. Staged extension binaries belong in `tests/addons/fmod_player/bin`; test logs and reports belong in `tests/logs`.
 
-Run the suite relevant to your change: `capture`, `spectrum`, `reverb`, or `profile`. Use `all -Quick` for a fast regression pass. For interactive checks, open `tests/project.godot`; the `reverb_test` scene supports manual spatial audio testing.
+Run the suite relevant to your change: `smoke`, `capture`, `spectrum`, `reverb`, or `profile`. The `regression` suite runs correctness checks; `all -Quick` keeps the combined regression and benchmark workflow. Use `-Suite editor` for property translations and `python tools/run_native_tests.py` for the C++ ring-buffer tests. For interactive checks, open `tests/project.godot` and press F5 for the test menu.
 
 For Linux, build with the Linux SDK and run the test script:
 
@@ -38,7 +38,7 @@ For Linux, build with the Linux SDK and run the test script:
 export FMOD_LINUX_SDK=/path/to/fmodstudioapi20400linux
 export GODOT_BIN=/path/to/Godot
 bash build_linux.sh
-bash tools/run_tests_linux.sh --quick
+bash tools/run_tests_linux.sh --suite=regression
 ```
 
 See [tests/README.md](tests/README.md) for individual suites, Release testing, log locations, and performance comparisons. Android build and export instructions are in the [README](README.md#android).

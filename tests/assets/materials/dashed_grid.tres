@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://c0abjll72woxs"]
 
-[ext_resource type="Shader" uid="uid://c6ciuf6qw5xkg" path="res://shaders/dashed_grid.gdshader" id="1_ogcfr"]
+[ext_resource type="Shader" uid="uid://c6ciuf6qw5xkg" path="res://assets/shaders/dashed_grid.gdshader" id="1_ogcfr"]
 
 [resource]
 render_priority = 0

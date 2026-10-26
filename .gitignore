@@ -389,11 +389,16 @@ AGENTS.md
 # Godot imports, caches and locally staged test binaries
 .godot/
 *.import
-!/tests/assets/bgm_fire_extinguisher_all.mp3.import
+!/tests/assets/audio/*.import
 /tests/bin/
 /tests/addons/fmod_player/
-/tests/logs/
+!/tests/logs/
+/tests/logs/*
+!/tests/logs/.gdignore
 
 # Local profiling sessions and reports
 *.diagsession
 /profiling_*.json
+
+# Local maintenance archives
+/.local/

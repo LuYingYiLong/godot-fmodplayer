@@ -1,6 +1,6 @@
 extends RefCounted
 
-var _failures: Array[String] = []
+var _failures: Array[String]
 
 
 func run() -> bool:

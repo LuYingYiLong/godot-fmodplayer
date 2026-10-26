@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bq2vsmn68g7k3"]
+
+[ext_resource type="Script" uid="uid://doo6t4wev1jo3" path="res://runner/scene_runner.gd" id="1_runner"]
+
+[node name="FmodTests" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_runner")
+
+[node name="Output" type="Label" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 24.0
+text = "Preparing FMOD tests..."

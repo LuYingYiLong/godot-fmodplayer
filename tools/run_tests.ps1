@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('profile', 'spectrum', 'reverb', 'capture', 'all')]
+    [ValidateSet('profile', 'spectrum', 'reverb', 'capture', 'all', 'regression', 'smoke', 'editor')]
     [string]$Suite = 'all',
     [ValidatePattern('^[a-zA-Z0-9_-]+$')]
     [string]$Label = 'run',
@@ -31,11 +31,11 @@ function Sync-TestFile([string]$SourcePath, [string]$TargetPath) {
     }
     Copy-Item -LiteralPath $SourcePath -Destination $TargetPath -Force
 }
-function Invoke-TestGodot([string[]]$Arguments, [string]$ConsoleLog) {
+function Invoke-TestProcess([string]$Executable, [string[]]$Arguments, [string]$ConsoleLog) {
     # Windows PowerShell treats redirected native stderr as PowerShell errors.
     # Let Godot finish and use its exit code, as PowerShell 7 does.
     $ErrorActionPreference = 'Continue'
-    & $GodotPath @Arguments *> $ConsoleLog
+    & $Executable @Arguments *> $ConsoleLog
     if ($LASTEXITCODE -ne 0) { throw "Godot failed ($LASTEXITCODE); see $ConsoleLog" }
     if (Select-String -LiteralPath $ConsoleLog -Pattern '^(SCRIPT ERROR:|ERROR:)' -Quiet) {
         throw "Godot reported an error; see $ConsoleLog"
@@ -50,7 +50,7 @@ $extensionResource = 'res://addons/fmod_player/bin/fmod_player.gdextension'
 if (-not $ExtensionBin) { $ExtensionBin = Join-Path $addonSource 'bin' }
 $ExtensionBin = [System.IO.Path]::GetFullPath($ExtensionBin)
 $runName = $Label + '_' + (Get-Date -Format 'yyyyMMdd_HHmmss_fff')
-$logRoot = Join-Path $testRoot ('logs/' + $runName)
+$logRoot = Join-Path $testRoot ('logs/runs/' + $runName)
 New-Item -ItemType Directory -Path $binRoot, $logRoot -Force | Out-Null
 [System.IO.File]::WriteAllText((Join-Path $testRoot 'logs/.gdignore'), '')
 $consoleGodot = Join-Path (Split-Path -Parent $GodotPath) (([System.IO.Path]::GetFileNameWithoutExtension($GodotPath)) + '_console.exe')
@@ -113,13 +113,27 @@ try {
             # Godot loads cached extensions before scanning their new locations.
             Move-Item -LiteralPath $extensionList -Destination (Join-Path $logRoot 'extension_list.before.cfg')
         }
-        Invoke-TestGodot @('--headless', '--path', $testRoot, '--editor', '--import', 'res://main.tscn', '--log-file', (Join-Path $logRoot 'import.log')) (Join-Path $logRoot 'import-console.log')
+        # A fresh checkout has no UID cache when Godot first reads the main scene.
+        $projectPath = Join-Path $testRoot 'project.godot'
+        $originalProject = [System.IO.File]::ReadAllBytes($projectPath)
+        try {
+            $projectText = [System.Text.Encoding]::UTF8.GetString($originalProject)
+            $projectText = [regex]::Replace($projectText, '(?m)^run/main_scene=.*$', 'run/main_scene="res://main.tscn"')
+            [System.IO.File]::WriteAllText($projectPath, $projectText, [System.Text.UTF8Encoding]::new($false))
+            Invoke-TestProcess $GodotPath @('--headless', '--path', $testRoot, '--editor', '--import', 'res://runner/automated.tscn', '--log-file', (Join-Path $logRoot 'import.log')) (Join-Path $logRoot 'import-console.log')
+        } finally {
+            [System.IO.File]::WriteAllBytes($projectPath, $originalProject)
+        }
     }
     if (-not $PrepareOnly) {
-        $testArguments = @('--headless', '--path', $testRoot, '--log-file', (Join-Path $logRoot 'godot.log'), '--', "--suite=$Suite", "--output-dir=$logRoot")
-        if ($Quick) { $testArguments += '--quick' }
-        if ($CaptureBaseline) { $testArguments += '--capture-baseline' }
-        Invoke-TestGodot $testArguments (Join-Path $logRoot 'console.log')
+        if ($Suite -eq 'editor') {
+            Invoke-TestProcess 'python' @((Join-Path $PSScriptRoot 'run_editor_tests.py'), '--godot', $GodotPath, '--output-dir', $logRoot) (Join-Path $logRoot 'console.log')
+        } else {
+            $testArguments = @('--headless', '--path', $testRoot, 'res://runner/automated.tscn', '--log-file', (Join-Path $logRoot 'godot.log'), '--', "--suite=$Suite", "--output-dir=$logRoot")
+            if ($Quick) { $testArguments += '--quick' }
+            if ($CaptureBaseline) { $testArguments += '--capture-baseline' }
+            Invoke-TestProcess $GodotPath $testArguments (Join-Path $logRoot 'console.log')
+        }
         if (-not (Select-String -LiteralPath (Join-Path $logRoot 'godot.log') -SimpleMatch 'TESTS_PASSED' -Quiet)) {
             throw "Test completion marker missing; see $logRoot"
         }

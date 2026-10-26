@@ -3,16 +3,17 @@
 importer="fmod_audio"
 type="FmodAudioStream"
 uid="uid://c6kky7072rqpo"
-path="res://.godot/imported/bgm_fire_extinguisher_all.mp3-a7a944325dd0b9fd35125203f34bb337.res"
+path="res://.godot/imported/fmod_playback.mp3-9a8d87c4c78fad7187c297107b6d225d.res"
 
 [deps]
 
-source_file="res://assets/bgm_fire_extinguisher_all.mp3"
-dest_files=["res://.godot/imported/bgm_fire_extinguisher_all.mp3-a7a944325dd0b9fd35125203f34bb337.res"]
+source_file="res://assets/audio/fmod_playback.mp3"
+dest_files=["res://.godot/imported/fmod_playback.mp3-9a8d87c4c78fad7187c297107b6d225d.res"]
 
 [params]
 
 flags=1
+advanced/resampler_method=0
 advanced/suggested_sound_type=0
 advanced/length_override=0
 advanced/file_offset=0

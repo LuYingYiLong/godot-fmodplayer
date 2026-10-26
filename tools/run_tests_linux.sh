@@ -12,7 +12,7 @@ fmod_core="${FMOD_LINUX_SDK:-src/thirdparty/fmod/linux}"
 if [[ -d "$fmod_core/api/core" ]]; then
     fmod_core="$fmod_core/api/core"
 fi
-run_dir="$PWD/tests/logs/linux_${target}_$(date +%Y%m%d_%H%M%S)"
+run_dir="$PWD/tests/logs/runs/linux_${target}_$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$run_dir" tests/addons/fmod_player/bin
 touch tests/logs/.gdignore
 cp -p tests/project.godot "$run_dir/project.before.godot"
@@ -20,7 +20,7 @@ restore_project() {
     cp -p "$run_dir/project.before.godot" tests/project.godot
 }
 trap restore_project EXIT
-# Bootstrap the main scene before its UID is indexed; keep import and tests offline.
+# Keep import and tests offline; the automated scene is selected explicitly.
 # The editor ignores override.cfg, so restore the original project on every exit.
 python3 - "$run_dir/project.before.godot" <<'PYTHON'
 from pathlib import Path
@@ -57,9 +57,19 @@ check_log() {
 
 sha256sum tests/addons/fmod_player/bin/libfmod_player.linux.*.x86_64.so > "$run_dir/build.sha256"
 printf '%s\n' "$target" > "$run_dir/target.txt"
-"$godot" --headless --path tests --editor --import --log-file "$run_dir/import.log" > "$run_dir/import-console.log" 2>&1
+"$godot" --headless --path tests --editor --import res://runner/automated.tscn --log-file "$run_dir/import.log" > "$run_dir/import-console.log" 2>&1
 check_log "$run_dir/import-console.log"
-"$godot" --headless --path tests --log-file "$run_dir/godot.log" -- --suite=all "--output-dir=$run_dir" "$@" > "$run_dir/console.log" 2>&1
+editor_test=false
+for argument in "$@"; do
+    if [[ "$argument" == --suite=editor ]]; then
+        editor_test=true
+    fi
+done
+if "$editor_test"; then
+    python3 tools/run_editor_tests.py --godot "$godot" --output-dir "$run_dir" > "$run_dir/console.log" 2>&1
+else
+    "$godot" --headless --path tests res://runner/automated.tscn --log-file "$run_dir/godot.log" -- --suite=all "--output-dir=$run_dir" "$@" > "$run_dir/console.log" 2>&1
+fi
 check_log "$run_dir/console.log"
 grep -q 'TESTS_PASSED' "$run_dir/console.log"
 printf 'Test output: %s\n' "$run_dir"

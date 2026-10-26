@@ -1,5 +1,9 @@
 #include "dsp/fmod_capture_ring_buffer.h"
 
+#ifdef NDEBUG
+#error "Native test assertions must remain enabled"
+#endif
+
 #include <cassert>
 #include <cstdio>
 #include <deque>

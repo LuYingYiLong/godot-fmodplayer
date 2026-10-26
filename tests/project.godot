@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Fmod Test"
-run/main_scene="uid://bq2vsmn68g7k3"
+run/main_scene="uid://dn5d452hgjfbj"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -22,7 +22,7 @@ fmod/speaker_mode=3
 
 [debug]
 
-file_logging/log_path="res://logs/godot.log"
+file_logging/log_path="res://logs/editor.log"
 
 [display]
 

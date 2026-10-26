@@ -50,7 +50,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("before", type=Path)
     parser.add_argument("after", type=Path)
-    parser.add_argument("--output", type=Path, default=Path("tests/logs/reverb_comparison.json"))
+    parser.add_argument("--output", type=Path, default=Path("tests/logs/comparisons/reverb_comparison.json"))
     args = parser.parse_args()
     report = compare(args.before, args.after)
     args.output.parent.mkdir(parents=True, exist_ok=True)

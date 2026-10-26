@@ -123,12 +123,12 @@ From the repository root:
 
 ```powershell
 .\build_debug_to_test.bat
-.\tools\run_tests.ps1 -Suite all -Quick
+.\tools\run_tests.ps1 -Suite regression
 ```
 
-The build script copies the complete addon into `tests/addons/fmod_player`. Logs and performance reports go to `tests/logs`.
+The build script copies the complete addon into `tests/addons/fmod_player`. Test runs go to `tests/logs/runs`, build logs to `tests/logs/builds`, and comparison reports to `tests/logs/comparisons`.
 
-Open `tests/project.godot` to run the tests in Godot. See [tests/README.md](tests/README.md) for individual suites and performance comparisons.
+Open `tests/project.godot` and press F5 for the manual test menu. Automated tests use a separate offline process. See [tests/README.md](tests/README.md) for individual suites, editor and native checks, and performance comparisons.
 
 ## Documentation
 

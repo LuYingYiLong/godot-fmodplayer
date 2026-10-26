@@ -2,7 +2,7 @@ extends RefCounted
 
 var _system: FmodSystem
 var _bus: FmodChannelGroup
-var _checks: Array[Dictionary] = []
+var _checks: Array[Dictionary]
 var _baseline: bool
 var _failed: bool
 var _source_frame: int

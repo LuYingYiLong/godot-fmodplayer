@@ -2,43 +2,82 @@
 
 以下命令在仓库根目录执行。
 
-## 运行测试
+## 手动测试
+
+在 Godot 中打开 `tests/project.godot`，按 F5 进入测试菜单：
+
+- 空间音频、混响与几何遮挡：FMOD 音源自动播放，WASD 移动，左键捕获鼠标，Esc 显示鼠标
+- FMOD / Godot 2D 播放对比：用按钮选择单独播放、同时播放或停止
+- 自动回归：启动独立离线进程，完成后在菜单显示结果
+
+两个手动场景都可返回菜单，也可打开 `manual/reverb_test.tscn` 或 `manual/playback_compare.tscn` 按 F6 运行。两份 MP3 内容相同，分别保存 FMOD 和 Godot 导入设置，用于播放对比。
+
+## 自动测试
 
 ```powershell
 .\build_debug_to_test.bat
-.\tools\run_tests.ps1 -Suite all
+.\tools\run_tests.ps1 -Suite regression
+.\tools\run_tests.ps1 -Suite smoke
 .\tools\run_tests.ps1 -Suite spectrum
 .\tools\run_tests.ps1 -Suite capture
 .\tools\run_tests.ps1 -Suite reverb
 .\tools\run_tests.ps1 -Suite profile
+.\tools\run_tests.ps1 -Suite editor
+python tools/run_native_tests.py
 ```
 
-构建脚本将完整插件复制到 `tests/addons/fmod_player`，并从本机 SDK 补入 `fmod.dll`。已有构建可用 `.\tools\run_tests.ps1 -PrepareOnly` 同步；自定义运行库路径用 `-FmodRuntime "SDK 路径/fmod.dll"`。
+| 入口 | 内容 |
+|------|------|
+| `regression` | SDK、频谱、Capture、混响正确性检查 |
+| `smoke` | FMOD 2.04 API、效果器及音频资源冒烟检查 |
+| `spectrum` | 频谱快照复用回归 |
+| `capture` | Capture 回归和专项计时 |
+| `reverb` | 混响音频、尾音回归和专项计时 |
+| `profile` | DSP 效果器性能测量 |
+| `all` | 保留原行为：全部回归加 DSP 性能测量 |
+| `editor` | 在完整编辑器生命周期中检查属性翻译 |
+| `run_native_tests.py` | C++ 环形缓冲检查，分别构建单精度和双精度 |
 
-`-Quick` 用于快速检查，性能对比使用默认计时。`-Import` 刷新 Godot 导入缓存。
+自动场景入口为 `runner/automated.tscn`，命令行脚本显式选择它。编辑器检查会临时启用 `editor/plugin.cfg`，结束后恢复项目配置。原生检查使用 MSVC 或 `CXX` 指定的 C++ 编译器。
 
-在 Godot 中打开 `tests/project.godot`，按 F5 运行自动测试；打开 `scenes/reverb_test.tscn`，按 F6 测试空间音频。
+构建脚本将完整插件复制到 `tests/addons/fmod_player`，并从本机 SDK 补入 `fmod.dll`。已有构建可用 `.\tools\run_tests.ps1 -PrepareOnly` 同步；`-Import` 刷新导入缓存。首次导入时脚本临时使用主场景资源路径，结束后恢复项目配置中的 UID。
 
-Linux 可使用以下命令，脚本同样会同步完整插件、复制本机 SDK 运行库，并把日志保存到 `tests/logs/linux_<构建目标>_<时间>/`：
+通过 `-GodotPath "Godot 可执行文件路径"` 和 `-FmodRuntime "SDK 的 fmod.dll 路径"` 指定本机环境。`-Quick` 缩短性能测量时长，回归检查保持相同用例；性能对比使用默认计时。
+
+Linux 使用以下命令，同样会同步完整插件并保存日志：
 
 ```sh
 export GODOT_BIN=/path/to/Godot
 export FMOD_LINUX_SDK=/path/to/fmodstudioapi20400linux
-bash tools/run_tests_linux.sh --quick
-FMOD_TEST_TARGET=template_release bash tools/run_tests_linux.sh --quick
+bash tools/run_tests_linux.sh --suite=regression
+bash tools/run_tests_linux.sh --suite=profile --quick
+bash tools/run_tests_linux.sh --suite=editor
+FMOD_TEST_TARGET=template_release bash tools/run_tests_linux.sh --suite=regression
+python3 tools/run_native_tests.py
 ```
 
-先运行 Debug 导入测试项目，再测 Release。脚本临时使用离线配置，结束后还原项目设置；Release 只在测试副本切换加载目标，默认命令可恢复 Debug。
+先用 Debug 导入项目，再测 Release。Linux 脚本临时使用离线音频配置，结束后还原项目设置；Release 只在测试插件副本切换加载目标，默认命令可恢复 Debug。
+
+## 目录
+
+| 目录 | 用途 |
+|------|------|
+| `runner/` | 参数、离线音频配置、套件调度和自动场景入口 |
+| `regression/` | SDK、Capture、频谱和混响正确性检查 |
+| `benchmarks/` | DSP、Capture 和混响性能测量 |
+| `manual/` | 测试菜单、播放对比和空间音频场景 |
+| `editor/` | 编辑器属性翻译测试插件 |
+| `native/` | C++ 环形缓冲测试 |
+| `assets/` | 音频素材、材质和 shader |
+| `addons/` | 本地部署的完整插件副本 |
 
 ## 性能对比
 
-1. 将旧版 DLL/PDB 备份到 `tests/logs/baseline_bin/`。
-2. 运行旧版测试，修改代码并重新编译，再运行新版测试。
-3. 用两次运行的实际目录生成对比报告。控制台会打印目录，`build.json` 记录 DLL/PDB 哈希。
+1. 将旧版 DLL/PDB 备份到 `tests/logs/baseline_bin/`
+2. 运行旧版测试，修改代码并重新编译，再运行新版测试
+3. 用两次运行的实际目录生成对比报告，控制台会打印目录，`build.json` 记录 DLL/PDB 哈希
 
-前后使用相同脚本和编译参数。测试配置为 48 kHz、立体声、1024 帧/块，采用 `NOSOUND_NRT + STREAM_FROM_UPDATE`；计时包含基础混音和脚本开销，记录 5 次测量的中位数及范围。
-
-当前测试使用 FMOD 2.04 封装 API。跨 API 版本对比时，旧 DLL 需搭配对应版本的测试脚本。
+前后使用相同脚本和编译参数。测试采用 48 kHz、立体声、1024 帧/块和 `NOSOUND_NRT + STREAM_FROM_UPDATE`，记录 5 次测量的中位数及范围。计时包含基础混音和脚本开销。跨 FMOD 封装 API 版本对比时，旧 DLL 需搭配对应版本的脚本。
 
 ### Capture
 
@@ -47,10 +86,10 @@ FMOD_TEST_TARGET=template_release bash tools/run_tests_linux.sh --quick
 # 修改代码后重新编译
 .\build_debug_to_test.bat
 .\tools\run_tests.ps1 -Suite capture -Label capture_after
-python tools/compare_capture.py "tests/logs/<优化前目录>" "tests/logs/<优化后目录>"
+python tools/compare_capture.py "tests/logs/runs/<优化前目录>" "tests/logs/runs/<优化后目录>"
 ```
 
-`-CaptureBaseline` 用于旧版基线，允许已知的溢出容量、计数和声道错位检查失败。新版按完整回归检查，比较工具同时验证非溢出音频逐位一致。
+`-CaptureBaseline` 允许旧版基线的已知溢出容量、计数和声道错位检查失败。新版执行完整回归，比较工具同时验证非溢出音频逐位一致。
 
 ### 混响
 
@@ -59,20 +98,20 @@ python tools/compare_capture.py "tests/logs/<优化前目录>" "tests/logs/<优�
 # 修改代码后重新编译
 .\build_debug_to_test.bat
 .\tools\run_tests.ps1 -Suite reverb -Label reverb_after
-python tools/compare_reverb.py "tests/logs/<优化前目录>" "tests/logs/<优化后目录>"
+python tools/compare_reverb.py "tests/logs/runs/<优化前目录>" "tests/logs/runs/<优化后目录>"
 ```
 
-比较工具汇总耗时，并校验默认、高通、动态参数、尾音四组音频的逐位一致性。测试旧 DLL 后，用 `.\tools\run_tests.ps1 -PrepareOnly` 恢复当前构建。
+比较工具汇总耗时，并校验默认、高通、动态参数和尾音四组音频的逐位一致性。旧 DLL 测试结束后，用 `.\tools\run_tests.ps1 -PrepareOnly` 恢复当前构建。
 
 ## 日志与报告
 
 | 内容 | 位置 |
 |------|------|
-| 命令行运行日志、计时、音频及构建哈希 | `tests/logs/<标签>_<时间>/` |
-| F5 运行日志 | `tests/logs/godot.log` |
-| F5 测试结果 | `tests/logs/run_<时间>/` |
-| 优化构建日志 | `tests/logs/build_profile.log` |
-| Capture 对比报告 | `tests/logs/capture_comparison.json` |
-| 混响对比报告 | `tests/logs/reverb_comparison.json` |
+| Godot、编辑器和原生测试日志与结果 | `logs/runs/<标签>_<时间>/` |
+| 编译日志 | `logs/builds/` |
+| Capture 和混响对比报告 | `logs/comparisons/` |
+| F5 手动场景日志 | `logs/editor.log` |
+| 历史运行与诊断资料 | `logs/archive/pre_reorganization/` |
+| 历史资料迁移清单 | `logs/archive/reorganization_index.json` |
 
-日志、缓存和测试插件副本均由 Git 忽略。
+旧基线二进制目录保留原路径。文档迁移的临时源码与副本归档到仓库根目录 `.local/maintenance_archive/`。日志内容、缓存、本地维护归档和测试插件副本均由 Git 忽略；保留 `logs/.gdignore`，防止 Godot 导入日志和诊断资料。
