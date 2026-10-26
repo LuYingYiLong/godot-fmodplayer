@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffectPanner" inherits="FmodAudioEffect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectPanner" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Stereo panner for positioning audio in the stereo field.
 	</brief_description>
@@ -10,9 +10,26 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="set_pan">
+			<return type="void" />
+			<param index="0" name="pan" type="float" />
+			<description>
+				Sets [member pan].
+			</description>
+		</method>
+		<method name="get_pan" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member pan].
+			</description>
+		</method>
+	</methods>
 	<members>
-		<member name="pan" type="float" setter="set_pan" getter="get_pan" default="0.0">
+		<member type="float" name="pan" setter="set_pan" getter="get_pan" default="0.0">
 			The pan position in the stereo field. Range: -1.0 to 1.0. Default: 0.0. A value of -1.0 sends the signal fully to the left channel, 0.0 is centered (equal in both channels), and 1.0 sends the signal fully to the right channel. Values in between provide smooth positioning.
 		</member>
 	</members>
+	<signals />
+	<constants />
 </class>

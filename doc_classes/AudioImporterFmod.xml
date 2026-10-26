@@ -1,87 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="AudioImporterFmod" inherits="EditorImportPlugin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="AudioImporterFmod" inherits="EditorImportPlugin" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Editor import plugin for importing audio files as FMOD audio streams.
 	</brief_description>
 	<description>
 		AudioImporterFmod is an editor plugin that handles importing audio files into [FmodAudioStream] resources. It integrates with Godot's import system to provide seamless audio asset management.
 		Supported formats include common audio types like MP3, WAV, OGG, FLAC, and others supported by FMOD.
-		The importer processes audio files during project import, creating optimized [FmodAudioStream] resources that can be used with [FmodAudioStreamPlayer] and [FmodAudioSampleEmitter].
+		The importer processes audio files during project import, creating optimized [FmodAudioStream] resources that can be used with [FmodAudioStreamPlayer] and [FmodAudioStreamPlayer3D].
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods>
-		<method name="_get_importer_name" qualifiers="const virtual">
-			<return type="String" />
-			<description>
-				Returns the unique identifier for this importer.
-			</description>
-		</method>
-		<method name="_get_import_options" qualifiers="const virtual">
-			<return type="Dictionary[]" />
-			<param index="0" name="path" type="String" />
-			<param index="1" name="preset_index" type="int" />
-			<description>
-				Returns the import options available for this importer.
-			</description>
-		</method>
-		<method name="_get_option_visibility" qualifiers="const virtual">
-			<return type="bool" />
-			<param index="0" name="path" type="String" />
-			<param index="1" name="option_name" type="StringName" />
-			<param index="2" name="options" type="Dictionary" />
-			<description>
-				Returns whether a specific import option should be visible in the UI.
-			</description>
-		</method>
-		<method name="_get_preset_count" qualifiers="const virtual">
-			<return type="int" />
-			<description>
-				Returns the number of import presets available.
-			</description>
-		</method>
-		<method name="_get_preset_name" qualifiers="const virtual">
-			<return type="String" />
-			<param index="0" name="preset_index" type="int" />
-			<description>
-				Returns the name of the import preset at the given index.
-			</description>
-		</method>
-		<method name="_get_recognized_extensions" qualifiers="const virtual">
-			<return type="PackedStringArray" />
-			<description>
-				Returns the list of file extensions this importer can handle (e.g., mp3, wav, ogg).
-			</description>
-		</method>
-		<method name="_get_resource_type" qualifiers="const virtual">
-			<return type="String" />
-			<description>
-				Returns the resource type produced by this importer ([code]"FmodAudioStream"[/code]).
-			</description>
-		</method>
-		<method name="_get_save_extension" qualifiers="const virtual">
-			<return type="String" />
-			<description>
-				Returns the file extension used for imported resources.
-			</description>
-		</method>
-		<method name="_get_visible_name" qualifiers="const virtual">
-			<return type="String" />
-			<description>
-				Returns the display name shown in the import dialog.
-			</description>
-		</method>
-		<method name="_import" qualifiers="virtual">
-			<return type="int" enum="Error" />
-			<param index="0" name="source_file" type="String" />
-			<param index="1" name="save_path" type="String" />
-			<param index="2" name="options" type="Dictionary" />
-			<param index="3" name="platform_variants" type="String[]" />
-			<param index="4" name="gen_files" type="String[]" />
-			<description>
-				Performs the actual import of the source audio file into a [FmodAudioStream] resource.
-				Returns [code]OK[/code] on success, or an error code on failure.
-			</description>
-		</method>
-	</methods>
+	<methods />
+	<members />
+	<signals />
+	<constants />
 </class>

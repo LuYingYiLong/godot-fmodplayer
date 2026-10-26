@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodDSPConnection" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodDSPConnection" inherits="RefCounted" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Represents a connection between DSP nodes in the audio processing graph.
 	</brief_description>
@@ -9,16 +9,27 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="get_input" qualifiers="const">
-			<return type="FmodDSP" />
+		<method name="set_mix">
+			<return type="void" />
+			<param index="0" name="volume_db" type="float" />
 			<description>
-				Gets the input DSP unit of this connection.
+				Sets the volume scale of the connection in dB.
 			</description>
 		</method>
 		<method name="get_mix" qualifiers="const">
 			<return type="float" />
 			<description>
 				Gets the volume scale of the connection in dB.
+			</description>
+		</method>
+		<method name="set_mix_matrix">
+			<return type="void" />
+			<param index="0" name="matrix" type="PackedFloat32Array" />
+			<param index="1" name="outchannels" type="int" />
+			<param index="2" name="inchannels" type="int" />
+			<param index="3" name="inchannel_hop" type="int" default="0" />
+			<description>
+				Sets a 2D pan matrix that maps signals from input channels (columns) to output speakers (rows).
 			</description>
 		</method>
 		<method name="get_mix_matrix" qualifiers="const">
@@ -28,6 +39,12 @@
 			<param index="2" name="inchannel_hop" type="int" default="0" />
 			<description>
 				Gets the 2D pan matrix that maps signals from input channels (columns) to output speakers (rows).
+			</description>
+		</method>
+		<method name="get_input" qualifiers="const">
+			<return type="FmodDSP" />
+			<description>
+				Gets the input DSP unit of this connection.
 			</description>
 		</method>
 		<method name="get_output" qualifiers="const">
@@ -42,29 +59,13 @@
 				Gets the connection type between the two DSP units.
 			</description>
 		</method>
-		<method name="set_mix">
-			<return type="void" />
-			<param index="0" name="volume_db" type="float" />
-			<description>
-				Sets the volume scale of the connection in dB.
-			</description>
-		</method>
-		<method name="set_mix_matrix">
-			<return type="void" />
-			<param index="0" name="matrix" type="PackedFloat32Array" />
-			<param index="1" name="outchannels" type="int" />
-			<param index="2" name="inchannels" type="int" />
-			<param index="3" name="inchannel_hop" type="int" default="0" />
-			<description>
-				Sets a 2D pan matrix that maps signals from input channels (columns) to output speakers (rows).
-			</description>
-		</method>
 	</methods>
 	<members>
-		<member name="mix" type="float" setter="set_mix" getter="get_mix" default="0.0">
+		<member type="float" name="mix" setter="set_mix" getter="get_mix" default="0.0">
 			The volume mix level of the connection in dB.
 		</member>
 	</members>
+	<signals />
 	<constants>
 		<constant name="DSPCONNECTION_TYPE_STANDARD" value="0" enum="FmodDSPConnectionType">
 			Standard connection type where the input DSP's output is fed directly to the output DSP's input.

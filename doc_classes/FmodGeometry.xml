@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodGeometry" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodGeometry" inherits="RefCounted" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Represents a geometry object for 3D audio occlusion calculations.
 	</brief_description>
@@ -17,22 +17,11 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="add_polygon">
-			<return type="int" />
-			<param index="0" name="direct_occlusion" type="float" />
-			<param index="1" name="reverb_occlusion" type="float" />
-			<param index="2" name="double_sided" type="bool" />
-			<param index="3" name="num_vertices" type="int" />
-			<param index="4" name="vertices" type="Vector3" />
+		<method name="geometry_is_valid" qualifiers="const">
+			<return type="bool" />
 			<description>
-				Adds a polygon to this geometry object.
-				- [param direct_occlusion]: Occlusion factor for direct sound path (0.0 = no occlusion, 1.0 = full occlusion)
-				- [param reverb_occlusion]: Occlusion factor for reverb path (0.0 = no occlusion, 1.0 = full occlusion)
-				- [param double_sided]: If [code]true[/code], the polygon blocks sound from both sides. If [code]false[/code], only blocks from the front side.
-				- [param num_vertices]: Number of vertices in the polygon (must be at least 3)
-				- [param vertices]: Array of vertex positions defining the polygon
-				Returns the index of the newly created polygon, or -1 on failure.
-				[b]Note:[/b] The total number of polygons and vertices is limited by the max_polygons and max_vertices parameters specified when creating the geometry via [method FmodSystem.create_geometry].
+				Returns [code]true[/code] if the geometry handle is valid and ready for use.
+				A valid geometry can have polygons added and can be used for occlusion calculations.
 			</description>
 		</method>
 		<method name="geometry_is_null" qualifiers="const">
@@ -42,34 +31,18 @@
 				A null geometry indicates that the object has not been properly initialized or has been released.
 			</description>
 		</method>
-		<method name="geometry_is_valid" qualifiers="const">
-			<return type="bool" />
+		<method name="set_polygon_attributes">
+			<return type="void" />
+			<param index="0" name="index" type="int" />
+			<param index="1" name="direct_occlusion" type="float" />
+			<param index="2" name="reverb_occlusion" type="float" />
+			<param index="3" name="double_sided" type="bool" />
 			<description>
-				Returns [code]true[/code] if the geometry handle is valid and ready for use.
-				A valid geometry can have polygons added and can be used for occlusion calculations.
-			</description>
-		</method>
-		<method name="get_active" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if this geometry object is currently active and being processed by the geometry engine.
-				Inactive geometry does not contribute to occlusion calculations.
-			</description>
-		</method>
-		<method name="get_max_polygons" qualifiers="const">
-			<return type="Dictionary" />
-			<description>
-				Returns a Dictionary containing the maximum capacity of this geometry object:
-				- [code]max_polygons[/code]: Maximum number of polygons this geometry can hold
-				- [code]max_vertices[/code]: Maximum number of vertices this geometry can hold
-				These values are set when the geometry is created via [method FmodSystem.create_geometry].
-			</description>
-		</method>
-		<method name="get_num_polygons" qualifiers="const">
-			<return type="int" />
-			<description>
-				Returns the number of polygons currently in this geometry object.
-				Returns [code]-1[/code] if the geometry is invalid.
+				Sets the attributes of an existing polygon.
+				- [param index]: The polygon index
+				- [param direct_occlusion]: Direct sound occlusion factor (0.0 = transparent, 1.0 = fully opaque)
+				- [param reverb_occlusion]: Reverb occlusion factor (0.0 = transparent, 1.0 = fully opaque)
+				- [param double_sided]: Whether the polygon blocks sound from both sides
 			</description>
 		</method>
 		<method name="get_polygon_attributes" qualifiers="const">
@@ -91,85 +64,6 @@
 				Returns [code]-1[/code] if the polygon index is invalid.
 			</description>
 		</method>
-		<method name="get_polygon_vertex" qualifiers="const">
-			<return type="Vector3" />
-			<param index="0" name="index" type="int" />
-			<param index="1" name="vertex_index" type="int" />
-			<description>
-				Returns the position of a specific vertex in a polygon.
-				- [param index]: The polygon index
-				- [param vertex_index]: The vertex index within the polygon (0 to [method get_polygon_num_vertices] - 1)
-				Returns [code]Vector3(0, 0, 0)[/code] if either index is invalid.
-			</description>
-		</method>
-		<method name="get_position" qualifiers="const">
-			<return type="Vector3" />
-			<description>
-				Returns the position of this geometry object in world space.
-				The position is applied to all polygons in the geometry.
-			</description>
-		</method>
-		<method name="get_rotation" qualifiers="const">
-			<return type="Vector3" />
-			<description>
-				Returns the rotation of this geometry object in world space (in degrees).
-				The rotation is applied to all polygons in the geometry.
-			</description>
-		</method>
-		<method name="get_save_size" qualifiers="const">
-			<return type="int" />
-			<description>
-				Returns the size in bytes required to serialize this geometry object.
-				Use this to allocate a buffer for [method save].
-			</description>
-		</method>
-		<method name="get_scale" qualifiers="const">
-			<return type="Vector3" />
-			<description>
-				Returns the scale of this geometry object.
-				The scale is applied to all polygons in the geometry.
-			</description>
-		</method>
-		<method name="release">
-			<return type="void" />
-			<description>
-				Releases this geometry object and frees its memory.
-				After calling this method, the geometry becomes invalid and should not be used.
-				Any polygons in the geometry are also destroyed.
-			</description>
-		</method>
-		<method name="save" qualifiers="const">
-			<return type="PackedByteArray" />
-			<description>
-				Serializes this geometry object to a PackedByteArray.
-				The saved data can be loaded later using [method FmodSystem.load_geometry].
-				This is useful for saving complex geometry to disk or transmitting it over a network.
-				[b]Note:[/b] Use [method get_save_size] to determine the required buffer size beforehand.
-			</description>
-		</method>
-		<method name="set_active">
-			<return type="void" />
-			<param index="0" name="active" type="bool" />
-			<description>
-				Enables or disables this geometry object.
-				When inactive ([code]false[/code]), the geometry does not contribute to occlusion calculations.
-				Use this to toggle geometry on/off without rebuilding it.
-			</description>
-		</method>
-		<method name="set_polygon_attributes">
-			<return type="void" />
-			<param index="0" name="index" type="int" />
-			<param index="1" name="direct_occlusion" type="float" />
-			<param index="2" name="reverb_occlusion" type="float" />
-			<param index="3" name="double_sided" type="bool" />
-			<description>
-				Sets the attributes of an existing polygon.
-				- [param index]: The polygon index
-				- [param direct_occlusion]: Direct sound occlusion factor (0.0 = transparent, 1.0 = fully opaque)
-				- [param reverb_occlusion]: Reverb occlusion factor (0.0 = transparent, 1.0 = fully opaque)
-				- [param double_sided]: Whether the polygon blocks sound from both sides
-			</description>
-		</method>
 		<method name="set_polygon_vertex">
 			<return type="void" />
 			<param index="0" name="index" type="int" />
@@ -182,12 +76,30 @@
 				- [param vertex]: The new position of the vertex
 			</description>
 		</method>
+		<method name="get_polygon_vertex" qualifiers="const">
+			<return type="Vector3" />
+			<param index="0" name="index" type="int" />
+			<param index="1" name="vertex_index" type="int" />
+			<description>
+				Returns the position of a specific vertex in a polygon.
+				- [param index]: The polygon index
+				- [param vertex_index]: The vertex index within the polygon (0 to [method get_polygon_num_vertices] - 1)
+				Returns [code]Vector3(0, 0, 0)[/code] if either index is invalid.
+			</description>
+		</method>
 		<method name="set_position">
 			<return type="void" />
 			<param index="0" name="position" type="Vector3" />
 			<description>
 				Sets the position of this geometry object in world space.
 				All polygons in the geometry are transformed by this position.
+			</description>
+		</method>
+		<method name="get_position" qualifiers="const">
+			<return type="Vector3" />
+			<description>
+				Returns the position of this geometry object in world space.
+				The position is applied to all polygons in the geometry.
 			</description>
 		</method>
 		<method name="set_rotation">
@@ -198,6 +110,13 @@
 				All polygons in the geometry are transformed by this rotation.
 			</description>
 		</method>
+		<method name="get_rotation" qualifiers="const">
+			<return type="Vector3" />
+			<description>
+				Returns the rotation of this geometry object in world space (in degrees).
+				The rotation is applied to all polygons in the geometry.
+			</description>
+		</method>
 		<method name="set_scale">
 			<return type="void" />
 			<param index="0" name="scale" type="Vector3" />
@@ -206,19 +125,101 @@
 				All polygons in the geometry are transformed by this scale.
 			</description>
 		</method>
+		<method name="get_scale" qualifiers="const">
+			<return type="Vector3" />
+			<description>
+				Returns the scale of this geometry object.
+				The scale is applied to all polygons in the geometry.
+			</description>
+		</method>
+		<method name="set_transform">
+			<return type="void" />
+			<param index="0" name="transform" type="Transform3D" />
+			<description>
+				Sets transform.
+			</description>
+		</method>
+		<method name="add_polygon" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="direct_occlusion" type="float" />
+			<param index="1" name="reverb_occlusion" type="float" />
+			<param index="2" name="double_sided" type="bool" />
+			<param index="3" name="vertices" type="PackedVector3Array" />
+			<description>
+				Adds a polygon to this geometry object.
+				- [param direct_occlusion]: Occlusion factor for direct sound path (0.0 = no occlusion, 1.0 = full occlusion)
+				- [param reverb_occlusion]: Occlusion factor for reverb path (0.0 = no occlusion, 1.0 = full occlusion)
+				- [param double_sided]: If [code]true[/code], the polygon blocks sound from both sides. If [code]false[/code], only blocks from the front side.
+				- [param vertices]: Number of vertices in the polygon (must be at least 3)
+				- [param vertices]: Array of vertex positions defining the polygon
+				Returns the index of the newly created polygon, or -1 on failure.
+				[b]Note:[/b] The total number of polygons and vertices is limited by the max_polygons and max_vertices parameters specified when creating the geometry via [method FmodSystem.create_geometry].
+			</description>
+		</method>
+		<method name="set_active">
+			<return type="void" />
+			<param index="0" name="active" type="bool" />
+			<description>
+				Enables or disables this geometry object.
+				When inactive ([code]false[/code]), the geometry does not contribute to occlusion calculations.
+				Use this to toggle geometry on/off without rebuilding it.
+			</description>
+		</method>
+		<method name="get_active" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if this geometry object is currently active and being processed by the geometry engine.
+				Inactive geometry does not contribute to occlusion calculations.
+			</description>
+		</method>
+		<method name="get_max_polygons" qualifiers="const">
+			<return type="Dictionary" />
+			<description>
+				Returns a Dictionary containing the maximum capacity of this geometry object:
+				- [code]max_polygons[/code]: Maximum number of polygons this geometry can hold
+				- [code]max_vertices[/code]: Maximum number of vertices this geometry can hold
+				These values are set when the geometry is created via [method FmodSystem.create_geometry].
+			</description>
+		</method>
+		<method name="save" qualifiers="const">
+			<return type="PackedByteArray" />
+			<description>
+				Serializes this geometry object to a PackedByteArray.
+				The saved data can be loaded later using [method FmodSystem.load_geometry].
+				This is useful for saving complex geometry to disk or transmitting it over a network.
+				[b]Note:[/b] Use [method get_save_size] to determine the required buffer size beforehand.
+			</description>
+		</method>
+		<method name="get_save_size" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the size in bytes required to serialize this geometry object.
+				Use this to allocate a buffer for [method save].
+			</description>
+		</method>
+		<method name="release">
+			<return type="void" />
+			<description>
+				Releases this geometry object and frees its memory.
+				After calling this method, the geometry becomes invalid and should not be used.
+				Any polygons in the geometry are also destroyed.
+			</description>
+		</method>
 	</methods>
 	<members>
-		<member name="active" type="bool" setter="set_active" getter="get_active" default="true">
-			Whether this geometry object is active and contributes to occlusion calculations.
-		</member>
-		<member name="position" type="Vector3" setter="set_position" getter="get_position" default="Vector3(0, 0, 0)">
+		<member type="Vector3" name="position" setter="set_position" getter="get_position" default="Vector3(0, 0, 0)">
 			The position of this geometry object in world space.
 		</member>
-		<member name="rotation" type="Vector3" setter="set_rotation" getter="get_rotation" default="Vector3(0, 0, 0)">
+		<member type="Vector3" name="rotation" setter="set_rotation" getter="get_rotation" default="Vector3(0, 0, 0)">
 			The rotation of this geometry object in world space (in degrees).
 		</member>
-		<member name="scale" type="Vector3" setter="set_scale" getter="get_scale" default="Vector3(1, 1, 1)">
+		<member type="Vector3" name="scale" setter="set_scale" getter="get_scale" default="Vector3(0, 0, 0)">
 			The scale of this geometry object.
 		</member>
+		<member type="bool" name="active" setter="set_active" getter="get_active" default="false">
+			Whether this geometry object is active and contributes to occlusion calculations.
+		</member>
 	</members>
+	<signals />
+	<constants />
 </class>

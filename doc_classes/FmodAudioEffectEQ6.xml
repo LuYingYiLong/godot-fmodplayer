@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffectEQ6" inherits="FmodAudioEffectEQ" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectEQ6" inherits="FmodAudioEffectEQ" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		6-band equalizer audio effect.
 	</brief_description>
@@ -11,81 +11,84 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods />
 	<members>
 		<member name="preset" type="int" setter="set_preset" getter="get_preset" overrides="FmodAudioEffectEQ" enum="FmodAudioEffectEQ.Preset" default="0">
 			The preset is fixed to [constant FmodAudioEffectEQ.PRESET_6_BANDS] for this class.
 		</member>
-		<member name="band_0_gain" type="float" default="0.0">
+		<member type="float" name="band_0_gain" default="0.0">
 			Gain for the first band (32Hz) in decibels. Range: -60 to +24 dB.
 		</member>
-		<member name="band_0_frequency" type="float" default="32.0">
+		<member type="float" name="band_0_frequency" default="32.0">
 			Center frequency for the first band in Hz.
 		</member>
-		<member name="band_0_q" type="float" default="0.707">
+		<member type="float" name="band_0_q" default="0.707">
 			Q value for the first band. Range: 0.01 to 10.0.
 		</member>
-		<member name="band_0_filter_type" type="int" enum="FmodAudioEffectEQ.FilterType" default="9">
+		<member type="int" enum="FmodAudioEffectEQ.FilterType" name="band_0_filter_type" default="9">
 			Filter type for the first band. Default is [constant FmodAudioEffectEQ.FILTER_PEAKING].
 		</member>
-		<member name="band_1_gain" type="float" default="0.0">
+		<member type="float" name="band_1_gain" default="0.0">
 			Gain for the second band (100Hz) in decibels. Range: -60 to +24 dB.
 		</member>
-		<member name="band_1_frequency" type="float" default="100.0">
+		<member type="float" name="band_1_frequency" default="100.0">
 			Center frequency for the second band in Hz.
 		</member>
-		<member name="band_1_q" type="float" default="0.707">
+		<member type="float" name="band_1_q" default="0.707">
 			Q value for the second band. Range: 0.01 to 10.0.
 		</member>
-		<member name="band_1_filter_type" type="int" enum="FmodAudioEffectEQ.FilterType" default="9">
+		<member type="int" enum="FmodAudioEffectEQ.FilterType" name="band_1_filter_type" default="9">
 			Filter type for the second band. Default is [constant FmodAudioEffectEQ.FILTER_PEAKING].
 		</member>
-		<member name="band_2_gain" type="float" default="0.0">
+		<member type="float" name="band_2_gain" default="0.0">
 			Gain for the third band (320Hz) in decibels. Range: -60 to +24 dB.
 		</member>
-		<member name="band_2_frequency" type="float" default="320.0">
+		<member type="float" name="band_2_frequency" default="320.0">
 			Center frequency for the third band in Hz.
 		</member>
-		<member name="band_2_q" type="float" default="0.707">
+		<member type="float" name="band_2_q" default="0.707">
 			Q value for the third band. Range: 0.01 to 10.0.
 		</member>
-		<member name="band_2_filter_type" type="int" enum="FmodAudioEffectEQ.FilterType" default="9">
+		<member type="int" enum="FmodAudioEffectEQ.FilterType" name="band_2_filter_type" default="9">
 			Filter type for the third band. Default is [constant FmodAudioEffectEQ.FILTER_PEAKING].
 		</member>
-		<member name="band_3_gain" type="float" default="0.0">
+		<member type="float" name="band_3_gain" default="0.0">
 			Gain for the fourth band (1000Hz) in decibels. Range: -60 to +24 dB.
 		</member>
-		<member name="band_3_frequency" type="float" default="1000.0">
+		<member type="float" name="band_3_frequency" default="1000.0">
 			Center frequency for the fourth band in Hz.
 		</member>
-		<member name="band_3_q" type="float" default="0.707">
+		<member type="float" name="band_3_q" default="0.707">
 			Q value for the fourth band. Range: 0.01 to 10.0.
 		</member>
-		<member name="band_3_filter_type" type="int" enum="FmodAudioEffectEQ.FilterType" default="9">
+		<member type="int" enum="FmodAudioEffectEQ.FilterType" name="band_3_filter_type" default="9">
 			Filter type for the fourth band. Default is [constant FmodAudioEffectEQ.FILTER_PEAKING].
 		</member>
-		<member name="band_4_gain" type="float" default="0.0">
+		<member type="float" name="band_4_gain" default="0.0">
 			Gain for the fifth band (3200Hz) in decibels. Range: -60 to +24 dB.
 		</member>
-		<member name="band_4_frequency" type="float" default="3200.0">
+		<member type="float" name="band_4_frequency" default="3200.0">
 			Center frequency for the fifth band in Hz.
 		</member>
-		<member name="band_4_q" type="float" default="0.707">
+		<member type="float" name="band_4_q" default="0.707">
 			Q value for the fifth band. Range: 0.01 to 10.0.
 		</member>
-		<member name="band_4_filter_type" type="int" enum="FmodAudioEffectEQ.FilterType" default="9">
+		<member type="int" enum="FmodAudioEffectEQ.FilterType" name="band_4_filter_type" default="9">
 			Filter type for the fifth band. Default is [constant FmodAudioEffectEQ.FILTER_PEAKING].
 		</member>
-		<member name="band_5_gain" type="float" default="0.0">
+		<member type="float" name="band_5_gain" default="0.0">
 			Gain for the sixth band (10000Hz) in decibels. Range: -60 to +24 dB.
 		</member>
-		<member name="band_5_frequency" type="float" default="10000.0">
+		<member type="float" name="band_5_frequency" default="10000.0">
 			Center frequency for the sixth band in Hz.
 		</member>
-		<member name="band_5_q" type="float" default="0.707">
+		<member type="float" name="band_5_q" default="0.707">
 			Q value for the sixth band. Range: 0.01 to 10.0.
 		</member>
-		<member name="band_5_filter_type" type="int" enum="FmodAudioEffectEQ.FilterType" default="9">
+		<member type="int" enum="FmodAudioEffectEQ.FilterType" name="band_5_filter_type" default="9">
 			Filter type for the sixth band. Default is [constant FmodAudioEffectEQ.FILTER_PEAKING].
 		</member>
 	</members>
+	<signals />
+	<constants />
 </class>

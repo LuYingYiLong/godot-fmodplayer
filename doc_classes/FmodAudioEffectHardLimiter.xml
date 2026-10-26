@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffectHardLimiter" inherits="FmodAudioEffect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectHardLimiter" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Hard limiter to prevent audio clipping and distortion.
 	</brief_description>
@@ -10,15 +10,58 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="set_ceiling_db">
+			<return type="void" />
+			<param index="0" name="ceiling_db" type="float" />
+			<description>
+				Sets [member ceiling_db].
+			</description>
+		</method>
+		<method name="get_ceiling_db" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member ceiling_db].
+			</description>
+		</method>
+		<method name="set_pre_gain_db">
+			<return type="void" />
+			<param index="0" name="pre_gain_db" type="float" />
+			<description>
+				Sets [member pre_gain_db].
+			</description>
+		</method>
+		<method name="get_pre_gain_db" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member pre_gain_db].
+			</description>
+		</method>
+		<method name="set_release">
+			<return type="void" />
+			<param index="0" name="release" type="float" />
+			<description>
+				Sets [member release].
+			</description>
+		</method>
+		<method name="get_release" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member release].
+			</description>
+		</method>
+	</methods>
 	<members>
-		<member name="ceiling_db" type="float" setter="set_ceiling_db" getter="get_ceiling_db" default="-0.3">
+		<member type="float" name="ceiling_db" setter="set_ceiling_db" getter="get_ceiling_db" default="-0.3">
 			The maximum output level in decibels (dB). Range: -12.0 dB to 0.0 dB. Default: -0.3 dB. The signal will never exceed this level. Setting this slightly below 0 dB (e.g., -0.3 dB) provides safety headroom to prevent inter-sample peaks from clipping.
 		</member>
-		<member name="pre_gain_db" type="float" setter="set_pre_gain_db" getter="get_pre_gain_db" default="0.0">
+		<member type="float" name="pre_gain_db" setter="set_pre_gain_db" getter="get_pre_gain_db" default="0.0">
 			The gain applied to the signal before limiting, in decibels (dB). Range: -30 dB to +30 dB. Default: 0 dB. Use positive values to boost quiet signals before limiting, which can increase perceived loudness. The limiting stage ensures the final output never exceeds the ceiling regardless of pre-gain.
 		</member>
-		<member name="release" type="float" setter="set_release" getter="get_release" default="0.1">
+		<member type="float" name="release" setter="set_release" getter="get_release" default="0.1">
 			The release time in seconds. Range: 0.001 to 1.0 seconds. Default: 0.1 seconds. This controls how quickly the limiter stops reducing gain after the signal drops below the ceiling. Longer release times produce smoother results but may reduce transients; shorter times are more transparent but may cause pumping.
 		</member>
 	</members>
+	<signals />
+	<constants />
 </class>

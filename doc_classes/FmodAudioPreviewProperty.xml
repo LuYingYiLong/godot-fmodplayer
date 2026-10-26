@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioPreviewProperty" inherits="ColorRect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioPreviewProperty" inherits="ColorRect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Custom property editor control for previewing FMOD audio streams in the editor.
 	</brief_description>
@@ -15,12 +15,6 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="get_stream" qualifiers="const">
-			<return type="FmodAudioStream" />
-			<description>
-				Returns the [FmodAudioStream] currently being previewed.
-			</description>
-		</method>
 		<method name="set_stream">
 			<return type="void" />
 			<param index="0" name="stream" type="FmodAudioStream" />
@@ -28,5 +22,57 @@
 				Sets the [FmodAudioStream] to preview. This regenerates the waveform display.
 			</description>
 		</method>
+		<method name="get_stream" qualifiers="const">
+			<return type="FmodAudioStream" />
+			<description>
+				Returns the [FmodAudioStream] currently being previewed.
+			</description>
+		</method>
+		<method name="_draw_waveform">
+			<return type="void" />
+			<description>
+				Internal editor or engine callback.
+			</description>
+		</method>
+		<method name="_draw_indicator">
+			<return type="void" />
+			<description>
+				Internal editor or engine callback.
+			</description>
+		</method>
+		<method name="_on_indicator_gui_input">
+			<return type="void" />
+			<param index="0" name="event" type="InputEvent" />
+			<description>
+				Internal editor or engine callback.
+			</description>
+		</method>
+		<method name="_play">
+			<return type="void" />
+			<description>
+				Internal editor or engine callback.
+			</description>
+		</method>
+		<method name="_stop">
+			<return type="void" />
+			<description>
+				Internal editor or engine callback.
+			</description>
+		</method>
+		<method name="_on_finished">
+			<return type="void" />
+			<description>
+				Internal editor or engine callback.
+			</description>
+		</method>
+		<method name="_generate_waveform_async">
+			<return type="void" />
+			<description>
+				Internal editor or engine callback.
+			</description>
+		</method>
 	</methods>
+	<members />
+	<signals />
+	<constants />
 </class>

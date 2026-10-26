@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffectReverb" inherits="FmodAudioEffect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectReverb" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reverb effect for adding spatial ambience and simulated acoustic spaces to audio.
 	</brief_description>
@@ -9,30 +9,138 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="set_damping">
+			<return type="void" />
+			<param index="0" name="damping" type="float" />
+			<description>
+				Sets [member damping].
+			</description>
+		</method>
+		<method name="get_damping" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member damping].
+			</description>
+		</method>
+		<method name="set_dry">
+			<return type="void" />
+			<param index="0" name="dry" type="float" />
+			<description>
+				Sets [member dry].
+			</description>
+		</method>
+		<method name="get_dry" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member dry].
+			</description>
+		</method>
+		<method name="set_hpf">
+			<return type="void" />
+			<param index="0" name="hpf" type="float" />
+			<description>
+				Sets hpf.
+			</description>
+		</method>
+		<method name="get_hpf" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns hpf.
+			</description>
+		</method>
+		<method name="set_predelay_feedback">
+			<return type="void" />
+			<param index="0" name="predelay_feedback" type="float" />
+			<description>
+				Sets [member predelay_feedback].
+			</description>
+		</method>
+		<method name="get_predelay_feedback" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member predelay_feedback].
+			</description>
+		</method>
+		<method name="set_predelay_msec">
+			<return type="void" />
+			<param index="0" name="predelay_msec" type="float" />
+			<description>
+				Sets [member predelay_msec].
+			</description>
+		</method>
+		<method name="get_predelay_msec" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member predelay_msec].
+			</description>
+		</method>
+		<method name="set_room_size">
+			<return type="void" />
+			<param index="0" name="room_size" type="float" />
+			<description>
+				Sets [member room_size].
+			</description>
+		</method>
+		<method name="get_room_size" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member room_size].
+			</description>
+		</method>
+		<method name="set_spread">
+			<return type="void" />
+			<param index="0" name="spread" type="float" />
+			<description>
+				Sets [member spread].
+			</description>
+		</method>
+		<method name="get_spread" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member spread].
+			</description>
+		</method>
+		<method name="set_wet">
+			<return type="void" />
+			<param index="0" name="wet" type="float" />
+			<description>
+				Sets [member wet].
+			</description>
+		</method>
+		<method name="get_wet" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member wet].
+			</description>
+		</method>
+	</methods>
 	<members>
-		<member name="damping" type="float" setter="set_damping" getter="get_damping" default="0.5">
+		<member type="float" name="damping" setter="set_damping" getter="get_damping" default="0.5">
 			Controls the absorption of high frequencies in the virtual room. Range: 0.0 to 1.0. Higher values simulate softer surfaces (carpets, curtains) that absorb more high frequencies, creating a warmer, darker reverb tail.
 		</member>
-		<member name="dry" type="float" setter="set_dry" getter="get_dry" default="1.0">
+		<member type="float" name="dry" setter="set_dry" getter="get_dry" default="1.0">
 			The level of the original (dry) signal. Range: 0.0 to 1.0. A value of 1.0 passes the original signal at full volume. Lower values reduce the direct sound, emphasizing the reverb effect.
 		</member>
-		<member name="hipass" type="float" setter="set_hpf" getter="get_hpf" default="0.0">
+		<member type="float" name="hipass" setter="set_hpf" getter="get_hpf" default="0.0">
 			High-pass filter applied to the reverb input. Range: 0.0 to 1.0. Higher values remove more low frequencies from the reverb, preventing muddiness in the reverberated signal.
 		</member>
-		<member name="predelay_feedback" type="float" setter="set_predelay_feedback" getter="get_predelay_feedback" default="0.4">
+		<member type="float" name="predelay_feedback" setter="set_predelay_feedback" getter="get_predelay_feedback" default="0.4">
 			The amount of feedback in the predelay section. Range: 0.0 to 1.0. Controls how much of the predelay output is fed back into itself, affecting the density of early reflections.
 		</member>
-		<member name="predelay_msec" type="float" setter="set_predelay_msec" getter="get_predelay_msec" default="150.0">
+		<member type="float" name="predelay_msec" setter="set_predelay_msec" getter="get_predelay_msec" default="150.0">
 			The delay time before the reverb tail begins, measured in milliseconds. Range: 0.0 to 300.0 ms. Simulates the time it takes for sound to reach the first reflecting surfaces in a room.
 		</member>
-		<member name="room_size" type="float" setter="set_room_size" getter="get_room_size" default="0.8">
+		<member type="float" name="room_size" setter="set_room_size" getter="get_room_size" default="0.8">
 			The size of the simulated acoustic space. Range: 0.0 to 1.0. Higher values create the impression of larger spaces (halls, cathedrals) with longer decay times, while lower values simulate smaller rooms.
 		</member>
-		<member name="spread" type="float" setter="set_spread" getter="get_spread" default="1.0">
+		<member type="float" name="spread" setter="set_spread" getter="get_spread" default="1.0">
 			The stereo spread of the reverb. Range: 0.0 to 1.0. Higher values create a wider stereo image in the reverberated signal, simulating reflections from wider spaces.
 		</member>
-		<member name="wet" type="float" setter="set_wet" getter="get_wet" default="0.5">
+		<member type="float" name="wet" setter="set_wet" getter="get_wet" default="0.5">
 			The level of the reverberated (wet) signal. Range: 0.0 to 1.0. Controls how much of the processed reverb signal is mixed with the dry signal. A value of 0.0 produces no reverb effect.
 		</member>
 	</members>
+	<signals />
+	<constants />
 </class>

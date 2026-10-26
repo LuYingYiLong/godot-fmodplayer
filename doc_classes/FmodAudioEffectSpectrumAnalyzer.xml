@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffectSpectrumAnalyzer" inherits="FmodAudioEffect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectSpectrumAnalyzer" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Performs real-time frequency spectrum analysis on audio signals for visualization and analysis.
 	</brief_description>
@@ -12,10 +12,67 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="set_immediate_mode">
+			<return type="void" />
+			<param index="0" name="enabled" type="bool" />
+			<description>
+				Enables synchronous FFT calculation for offline analysis. This disables FMOD FFT hardware acceleration.
+			</description>
+		</method>
+		<method name="get_immediate_mode" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns whether immediate FFT mode is enabled.
+			</description>
+		</method>
+		<method name="set_buffer_length">
+			<return type="void" />
+			<param index="0" name="buffer_length" type="float" />
+			<description>
+				Sets [member buffer_length].
+			</description>
+		</method>
+		<method name="get_buffer_length" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member buffer_length].
+			</description>
+		</method>
+		<method name="set_fft_size">
+			<return type="void" />
+			<param index="0" name="fft_size" type="int" enum="FmodAudioEffectSpectrumAnalyzer.FFTSize" />
+			<description>
+				Sets [member fft_size].
+			</description>
+		</method>
+		<method name="get_fft_size" qualifiers="const">
+			<return type="int" enum="FmodAudioEffectSpectrumAnalyzer.FFTSize" />
+			<description>
+				Returns [member fft_size].
+			</description>
+		</method>
 		<method name="update_spectrum">
 			<return type="void" />
 			<description>
 				Forces a fresh spectrum snapshot even if the bus DSP clock has not advanced. Magnitude, bin count, RMS and centroid queries otherwise share the current snapshot.
+			</description>
+		</method>
+		<method name="get_bin_count" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns bin count.
+			</description>
+		</method>
+		<method name="get_rms" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns rms.
+			</description>
+		</method>
+		<method name="get_centroid" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns centroid.
 			</description>
 		</method>
 		<method name="get_magnitude_for_frequency_range" qualifiers="const">
@@ -29,29 +86,17 @@
 				Magnitude values are in linear scale (0.0 to 1.0+). Use [code]linear_to_db()[/code] to convert to decibels for display purposes.
 			</description>
 		</method>
-		<method name="set_immediate_mode">
-			<return type="void" />
-			<param index="0" name="enabled" type="bool" />
-			<description>
-				Enables synchronous FFT calculation for offline analysis. This disables FMOD FFT hardware acceleration.
-			</description>
-		</method>
-		<method name="get_immediate_mode">
-			<return type="bool" />
-			<description>
-				Returns whether immediate FFT mode is enabled.
-			</description>
-		</method>
 	</methods>
 	<members>
-		<member name="immediate_mode" type="bool" setter="set_immediate_mode" getter="get_immediate_mode" default="false">Calculates FFT data synchronously. Useful for offline processing and same-frame queries.</member>
-		<member name="buffer_length" type="float" setter="set_buffer_length" getter="get_buffer_length" default="2.0">
+		<member type="bool" name="immediate_mode" setter="set_immediate_mode" getter="get_immediate_mode" default="false">Calculates FFT data synchronously. Useful for offline processing and same-frame queries.</member>
+		<member type="float" name="buffer_length" setter="set_buffer_length" getter="get_buffer_length" default="2.0">
 			The internal buffer length in seconds used for spectrum analysis. A larger buffer provides more stable analysis results but increases latency. The default value of 2.0 seconds is suitable for most visualization applications.
 		</member>
-		<member name="fft_size" type="int" setter="set_fft_size" getter="get_fft_size" enum="FmodAudioEffectSpectrumAnalyzer.FFTSize" default="2">
+		<member type="int" enum="FmodAudioEffectSpectrumAnalyzer.FFTSize" name="fft_size" setter="set_fft_size" getter="get_fft_size" default="2">
 			The FFT (Fast Fourier Transform) size used for spectrum analysis. Larger FFT sizes provide better frequency resolution (more frequency bins) but worse time resolution and higher CPU usage. See [enum FFTSize] for available options. The default [constant FFT_SIZE_1024] provides a good balance for general visualization.
 		</member>
 	</members>
+	<signals />
 	<constants>
 		<constant name="FFT_SIZE_256" value="0" enum="FFTSize">
 			256-point FFT. Lower frequency resolution but better time resolution. Useful for analyzing transient sounds or when low latency is required.

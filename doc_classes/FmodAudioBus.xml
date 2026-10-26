@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioBus" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioBus" inherits="RefCounted" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Represents an audio bus for mixing with effects support.
 	</brief_description>
@@ -15,6 +15,48 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="init_bus">
+			<return type="void" />
+			<param index="0" name="name" type="String" />
+			<param index="1" name="parent" type="FmodChannelGroup" default="null" />
+			<description>
+				Initializes this bus with the specified [param name] and optional [param parent] channel group.
+				This creates the internal FMOD channel group for audio routing.
+			</description>
+		</method>
+		<method name="set_parent">
+			<return type="void" />
+			<param index="0" name="parent" type="FmodChannelGroup" />
+			<description>
+				Sets the parent channel group that this bus outputs to.
+			</description>
+		</method>
+		<method name="get_bus" qualifiers="const">
+			<return type="FmodChannelGroup" />
+			<description>
+				Returns the [FmodChannelGroup] used by this bus for audio routing.
+				Returns [code]null[/code] if the bus has not been initialized.
+			</description>
+		</method>
+		<method name="get_parent" qualifiers="const">
+			<return type="FmodChannelGroup" />
+			<description>
+				Returns the parent [FmodChannelGroup] that this bus outputs to.
+				Returns [code]null[/code] for the master bus.
+			</description>
+		</method>
+		<method name="get_bus_name" qualifiers="const">
+			<return type="String" />
+			<description>
+				Returns the name of this audio bus.
+			</description>
+		</method>
+		<method name="release">
+			<return type="void" />
+			<description>
+				Release.
+			</description>
+		</method>
 		<method name="add_effect">
 			<return type="void" />
 			<param index="0" name="effect" type="FmodAudioEffect" />
@@ -25,17 +67,17 @@
 				The effect chain is processed in order, with each effect feeding into the next.
 			</description>
 		</method>
-		<method name="get_bus" qualifiers="const">
-			<return type="FmodChannelGroup" />
+		<method name="remove_effect">
+			<return type="void" />
+			<param index="0" name="index" type="int" />
 			<description>
-				Returns the [FmodChannelGroup] used by this bus for audio routing.
-				Returns [code]null[/code] if the bus has not been initialized.
+				Removes the audio effect at the specified [param index] from this bus.
 			</description>
 		</method>
-		<method name="get_bus_name" qualifiers="const">
-			<return type="String" />
+		<method name="get_effect_count" qualifiers="const">
+			<return type="int" />
 			<description>
-				Returns the name of this audio bus.
+				Returns effect count.
 			</description>
 		</method>
 		<method name="get_effect" qualifiers="const">
@@ -46,61 +88,18 @@
 				Returns [code]null[/code] if the index is out of bounds.
 			</description>
 		</method>
-		<method name="get_parent" qualifiers="const">
-			<return type="FmodChannelGroup" />
+		<method name="set_volume_db">
+			<return type="void" />
+			<param index="0" name="volume_db" type="float" />
 			<description>
-				Returns the parent [FmodChannelGroup] that this bus outputs to.
-				Returns [code]null[/code] for the master bus.
+				Sets the volume of this bus in decibels.
+				The default value is [code]0.0[/code] dB (unity gain).
 			</description>
 		</method>
 		<method name="get_volume_db" qualifiers="const">
 			<return type="float" />
 			<description>
 				Returns the volume of this bus in decibels.
-			</description>
-		</method>
-		<method name="init_bus">
-			<return type="void" />
-			<param index="0" name="name" type="String" />
-			<param index="1" name="parent" type="FmodChannelGroup" default="null" />
-			<description>
-				Initializes this bus with the specified [param name] and optional [param parent] channel group.
-				This creates the internal FMOD channel group for audio routing.
-			</description>
-		</method>
-		<method name="is_bypass" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if effects bypass is enabled for this bus.
-				When bypassed, effects are not processed but the audio still passes through.
-			</description>
-		</method>
-		<method name="is_mute" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if this bus is muted.
-			</description>
-		</method>
-		<method name="is_solo" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if this bus is in solo mode.
-				When any bus is soloed, only soloed buses produce audible output.
-			</description>
-		</method>
-		<method name="remove_effect">
-			<return type="void" />
-			<param index="0" name="index" type="int" />
-			<description>
-				Removes the audio effect at the specified [param index] from this bus.
-			</description>
-		</method>
-		<method name="set_bypass">
-			<return type="void" />
-			<param index="0" name="bypass" type="bool" />
-			<description>
-				Enables or disables effects bypass for this bus.
-				When [code]true[/code], effects are not processed.
 			</description>
 		</method>
 		<method name="set_mute">
@@ -111,11 +110,17 @@
 				Muted buses produce no audible output.
 			</description>
 		</method>
-		<method name="set_parent">
-			<return type="void" />
-			<param index="0" name="parent" type="FmodChannelGroup" />
+		<method name="is_mute" qualifiers="const">
+			<return type="bool" />
 			<description>
-				Sets the parent channel group that this bus outputs to.
+				Returns [code]true[/code] if this bus is muted.
+			</description>
+		</method>
+		<method name="apply_mute">
+			<return type="void" />
+			<param index="0" name="mute" type="bool" />
+			<description>
+				Apply mute.
 			</description>
 		</method>
 		<method name="set_solo">
@@ -126,13 +131,49 @@
 				When any bus is soloed, only soloed buses are audible.
 			</description>
 		</method>
-		<method name="set_volume_db">
-			<return type="void" />
-			<param index="0" name="volume_db" type="float" />
+		<method name="is_solo" qualifiers="const">
+			<return type="bool" />
 			<description>
-				Sets the volume of this bus in decibels.
-				The default value is [code]0.0[/code] dB (unity gain).
+				Returns [code]true[/code] if this bus is in solo mode.
+				When any bus is soloed, only soloed buses produce audible output.
+			</description>
+		</method>
+		<method name="set_bypass">
+			<return type="void" />
+			<param index="0" name="bypass" type="bool" />
+			<description>
+				Enables or disables effects bypass for this bus.
+				When [code]true[/code], effects are not processed.
+			</description>
+		</method>
+		<method name="is_bypass" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if effects bypass is enabled for this bus.
+				When bypassed, effects are not processed but the audio still passes through.
+			</description>
+		</method>
+		<method name="sync_bypass">
+			<return type="void" />
+			<description>
+				Sync bypass.
 			</description>
 		</method>
 	</methods>
+	<members>
+		<member type="float" name="volume" default="0.0">
+			Controls volume.
+		</member>
+		<member type="bool" name="solo" setter="set_solo" getter="is_solo" default="false">
+			Controls solo.
+		</member>
+		<member type="bool" name="mute" setter="set_mute" getter="is_mute" default="false">
+			Controls mute.
+		</member>
+		<member type="bool" name="bypass" setter="set_bypass" getter="is_bypass" default="false">
+			Controls bypass.
+		</member>
+	</members>
+	<signals />
+	<constants />
 </class>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodReverbZone3DGizmoPlugin" inherits="EditorNode3DGizmoPlugin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodReverbZone3DGizmoPlugin" inherits="EditorNode3DGizmoPlugin" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Editor gizmo plugin for [FmodReverbZone3D].
 	</brief_description>
@@ -9,4 +9,8 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods />
+	<members />
+	<signals />
+	<constants />
 </class>

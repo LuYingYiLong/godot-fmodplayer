@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffectAmplify" inherits="FmodAudioEffect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectAmplify" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A simple gain/volume effect for amplifying or attenuating audio signals.
 	</brief_description>
@@ -9,12 +9,42 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="set_volume_db">
+			<return type="void" />
+			<param index="0" name="volume_db" type="float" />
+			<description>
+				Sets [member volume_db].
+			</description>
+		</method>
+		<method name="get_volume_db" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member volume_db].
+			</description>
+		</method>
+		<method name="set_volume_linear">
+			<return type="void" />
+			<param index="0" name="volume_linear" type="float" />
+			<description>
+				Sets [member volume_linear].
+			</description>
+		</method>
+		<method name="get_volume_linear" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member volume_linear].
+			</description>
+		</method>
+	</methods>
 	<members>
-		<member name="volume_db" type="float" setter="set_volume_db" getter="get_volume_db" default="0.0">
+		<member type="float" name="volume_db" setter="set_volume_db" getter="get_volume_db" default="0.0">
 			The amplification level in decibels (dB). Range: -80 dB to +24 dB. Default value of 0 dB means no change to the signal. Negative values attenuate the signal, positive values amplify it.
 		</member>
-		<member name="volume_linear" type="float" setter="set_volume_linear" getter="get_volume_linear" default="1.0">
+		<member type="float" name="volume_linear" setter="set_volume_linear" getter="get_volume_linear">
 			The amplification level as a linear value. Range: 0.0 to 4.0 (approximate). A value of 1.0 means unity gain (no change), values below 1.0 attenuate, and values above 1.0 amplify. This is automatically converted to/from [member volume_db].
 		</member>
 	</members>
+	<signals />
+	<constants />
 </class>

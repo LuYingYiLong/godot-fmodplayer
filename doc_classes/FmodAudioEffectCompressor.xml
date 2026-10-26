@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffectCompressor" inherits="FmodAudioEffect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectCompressor" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Dynamic range compressor for reducing the dynamic range of audio signals.
 	</brief_description>
@@ -10,27 +10,122 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="set_threshold">
+			<return type="void" />
+			<param index="0" name="threshold_db" type="float" />
+			<description>
+				Sets threshold.
+			</description>
+		</method>
+		<method name="get_threshold" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns threshold.
+			</description>
+		</method>
+		<method name="set_ratio">
+			<return type="void" />
+			<param index="0" name="ratio" type="float" />
+			<description>
+				Sets [member ratio].
+			</description>
+		</method>
+		<method name="get_ratio" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member ratio].
+			</description>
+		</method>
+		<method name="set_gain">
+			<return type="void" />
+			<param index="0" name="gain_db" type="float" />
+			<description>
+				Sets gain.
+			</description>
+		</method>
+		<method name="get_gain" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns gain.
+			</description>
+		</method>
+		<method name="set_attack_us">
+			<return type="void" />
+			<param index="0" name="attack_us" type="float" />
+			<description>
+				Sets [member attack_us].
+			</description>
+		</method>
+		<method name="get_attack_us" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member attack_us].
+			</description>
+		</method>
+		<method name="set_release_ms">
+			<return type="void" />
+			<param index="0" name="release_ms" type="float" />
+			<description>
+				Sets [member release_ms].
+			</description>
+		</method>
+		<method name="get_release_ms" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member release_ms].
+			</description>
+		</method>
+		<method name="set_mix">
+			<return type="void" />
+			<param index="0" name="mix" type="float" />
+			<description>
+				Sets [member mix].
+			</description>
+		</method>
+		<method name="get_mix" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member mix].
+			</description>
+		</method>
+		<method name="set_sidechain">
+			<return type="void" />
+			<param index="0" name="sidechain" type="StringName" />
+			<description>
+				Sets [member sidechain].
+			</description>
+		</method>
+		<method name="get_sidechain" qualifiers="const">
+			<return type="StringName" />
+			<description>
+				Returns [member sidechain].
+			</description>
+		</method>
+	</methods>
 	<members>
-		<member name="attack_us" type="float" setter="set_attack_us" getter="get_attack_us" default="20000.0">
-			The attack time in microseconds (μs). This is the time it takes for the compressor to start reducing gain after the input signal exceeds the threshold. Range: 0 to 100000 μs (100 ms). Default: 20000 μs (20 ms). Shorter attack times respond faster but may cause distortion; longer times preserve transients.
-		</member>
-		<member name="gain_db" type="float" setter="set_gain" getter="get_gain" default="0.0">
-			The gain makeup applied after compression, in decibels (dB). Range: -30 dB to +30 dB. Default: 0 dB. Use this to compensate for the volume reduction caused by compression and bring the output level back up.
-		</member>
-		<member name="mix" type="float" setter="set_mix" getter="get_mix" default="1.0">
-			The mix between dry (unprocessed) and wet (compressed) signal, as a value from 0.0 to 1.0. Default: 1.0 (fully wet). A value of 0.0 outputs only the dry signal, 1.0 outputs only the compressed signal, and intermediate values blend the two. This enables parallel compression effects.
-		</member>
-		<member name="ratio" type="float" setter="set_ratio" getter="get_ratio" default="4.0">
-			The compression ratio, which determines how much the signal is compressed when it exceeds the threshold. Range: 1.0 to 50.0. Default: 4.0. A ratio of 4:1 means that for every 4 dB the input exceeds the threshold, the output increases by only 1 dB. Higher ratios result in more aggressive compression.
-		</member>
-		<member name="release_ms" type="float" setter="set_release_ms" getter="get_release_ms" default="250.0">
-			The release time in milliseconds (ms). This is the time it takes for the compressor to return to unity gain after the input signal falls below the threshold. Range: 10 ms to 10000 ms. Default: 250 ms. Longer release times produce smoother, more natural results; shorter times may cause pumping artifacts.
-		</member>
-		<member name="sidechain" type="StringName" setter="set_sidechain" getter="get_sidechain" default="&amp;&quot;&quot;">
-			The name of the sidechain bus used to trigger compression. When set, the compressor uses the level of the specified bus instead of the input signal to control the gain reduction. This enables sidechain compression (ducking), where one signal controls the compression of another. Empty string means no sidechain is used.
-		</member>
-		<member name="threshold_db" type="float" setter="set_threshold" getter="get_threshold" default="0.0">
+		<member type="float" name="threshold_db" setter="set_threshold" getter="get_threshold" default="0.0">
 			The threshold level in decibels (dB) above which compression begins. Range: -60 dB to 0 dB. Default: 0 dB. Signals below this level pass through unaffected; signals above are reduced according to the ratio. Lower threshold values result in more compression.
 		</member>
+		<member type="float" name="ratio" setter="set_ratio" getter="get_ratio" default="4.0">
+			The compression ratio, which determines how much the signal is compressed when it exceeds the threshold. Range: 1.0 to 50.0. Default: 4.0. A ratio of 4:1 means that for every 4 dB the input exceeds the threshold, the output increases by only 1 dB. Higher ratios result in more aggressive compression.
+		</member>
+		<member type="float" name="gain_db" setter="set_gain" getter="get_gain" default="0.0">
+			The gain makeup applied after compression, in decibels (dB). Range: -30 dB to +30 dB. Default: 0 dB. Use this to compensate for the volume reduction caused by compression and bring the output level back up.
+		</member>
+		<member type="float" name="attack_us" setter="set_attack_us" getter="get_attack_us" default="20.0">
+			The attack time in microseconds (μs). This is the time it takes for the compressor to start reducing gain after the input signal exceeds the threshold. Range: 0 to 100000 μs (100 ms). Default: 20000 μs (20 ms). Shorter attack times respond faster but may cause distortion; longer times preserve transients.
+		</member>
+		<member type="float" name="release_ms" setter="set_release_ms" getter="get_release_ms" default="250.0">
+			The release time in milliseconds (ms). This is the time it takes for the compressor to return to unity gain after the input signal falls below the threshold. Range: 10 ms to 10000 ms. Default: 250 ms. Longer release times produce smoother, more natural results; shorter times may cause pumping artifacts.
+		</member>
+		<member type="float" name="mix" setter="set_mix" getter="get_mix" default="1.0">
+			The mix between dry (unprocessed) and wet (compressed) signal, as a value from 0.0 to 1.0. Default: 1.0 (fully wet). A value of 0.0 outputs only the dry signal, 1.0 outputs only the compressed signal, and intermediate values blend the two. This enables parallel compression effects.
+		</member>
+		<member type="StringName" name="sidechain" setter="set_sidechain" getter="get_sidechain" default="&amp;&quot;&quot;">
+			The name of the sidechain bus used to trigger compression. When set, the compressor uses the level of the specified bus instead of the input signal to control the gain reduction. This enables sidechain compression (ducking), where one signal controls the compression of another. Empty string means no sidechain is used.
+		</member>
 	</members>
+	<signals />
+	<constants />
 </class>

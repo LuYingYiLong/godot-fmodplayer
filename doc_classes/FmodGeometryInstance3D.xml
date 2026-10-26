@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodGeometryInstance3D" inherits="StaticBody3D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodGeometryInstance3D" inherits="StaticBody3D" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Static 3D audio occlusion geometry for FMOD.
 	</brief_description>
@@ -10,16 +10,184 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="set_source_mode">
+			<return type="void" />
+			<param index="0" name="mode" type="int" enum="FmodGeometryInstance3D.SourceMode" />
+			<description>
+				Sets [member source_mode].
+			</description>
+		</method>
+		<method name="get_source_mode" qualifiers="const">
+			<return type="int" enum="FmodGeometryInstance3D.SourceMode" />
+			<description>
+				Returns [member source_mode].
+			</description>
+		</method>
+		<method name="set_source_node_path">
+			<return type="void" />
+			<param index="0" name="path" type="NodePath" />
+			<description>
+				Sets [member source_node_path].
+			</description>
+		</method>
+		<method name="get_source_node_path" qualifiers="const">
+			<return type="NodePath" />
+			<description>
+				Returns [member source_node_path].
+			</description>
+		</method>
+		<method name="set_mesh">
+			<return type="void" />
+			<param index="0" name="mesh" type="Mesh" />
+			<description>
+				Sets [member mesh].
+			</description>
+		</method>
+		<method name="get_mesh" qualifiers="const">
+			<return type="Mesh" />
+			<description>
+				Returns [member mesh].
+			</description>
+		</method>
+		<method name="set_direct_occlusion">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+				Sets [member direct_occlusion].
+			</description>
+		</method>
+		<method name="get_direct_occlusion" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member direct_occlusion].
+			</description>
+		</method>
+		<method name="set_reverb_occlusion">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+				Sets [member reverb_occlusion].
+			</description>
+		</method>
+		<method name="get_reverb_occlusion" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member reverb_occlusion].
+			</description>
+		</method>
+		<method name="set_double_sided">
+			<return type="void" />
+			<param index="0" name="value" type="bool" />
+			<description>
+				Sets [member double_sided].
+			</description>
+		</method>
+		<method name="get_double_sided" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [member double_sided].
+			</description>
+		</method>
+		<method name="set_active">
+			<return type="void" />
+			<param index="0" name="value" type="bool" />
+			<description>
+				Sets [member active].
+			</description>
+		</method>
+		<method name="get_active" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [member active].
+			</description>
+		</method>
+		<method name="set_auto_rebuild">
+			<return type="void" />
+			<param index="0" name="value" type="bool" />
+			<description>
+				Sets [member auto_rebuild].
+			</description>
+		</method>
+		<method name="get_auto_rebuild" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [member auto_rebuild].
+			</description>
+		</method>
+		<method name="set_sync_transform">
+			<return type="void" />
+			<param index="0" name="value" type="bool" />
+			<description>
+				Sets [member sync_transform].
+			</description>
+		</method>
+		<method name="get_sync_transform" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [member sync_transform].
+			</description>
+		</method>
+		<method name="set_recursive_source_scan">
+			<return type="void" />
+			<param index="0" name="value" type="bool" />
+			<description>
+				Sets [member recursive_source_scan].
+			</description>
+		</method>
+		<method name="get_recursive_source_scan" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [member recursive_source_scan].
+			</description>
+		</method>
+		<method name="set_primitive_segments">
+			<return type="void" />
+			<param index="0" name="segments" type="int" />
+			<description>
+				Sets [member primitive_segments].
+			</description>
+		</method>
+		<method name="get_primitive_segments" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns [member primitive_segments].
+			</description>
+		</method>
+		<method name="set_show_debug_gizmo">
+			<return type="void" />
+			<param index="0" name="value" type="bool" />
+			<description>
+				Sets [member show_debug_gizmo].
+			</description>
+		</method>
+		<method name="get_show_debug_gizmo" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [member show_debug_gizmo].
+			</description>
+		</method>
+		<method name="rebuild_geometry">
+			<return type="void" />
+			<description>
+				Rebuilds the FMOD geometry from the configured source.
+			</description>
+		</method>
 		<method name="clear_geometry">
 			<return type="void" />
 			<description>
 				Releases the internal [FmodGeometry].
 			</description>
 		</method>
-		<method name="get_geometry" qualifiers="const">
-			<return type="FmodGeometry" />
+		<method name="has_valid_geometry" qualifiers="const">
+			<return type="bool" />
 			<description>
-				Returns the internal [FmodGeometry], or [code]null[/code] when no geometry has been built.
+				Returns whether the internal FMOD geometry object exists.
+			</description>
+		</method>
+		<method name="sync_geometry_transform">
+			<return type="void" />
+			<description>
+				Synchronizes the FMOD geometry transform with this node's global transform.
 			</description>
 		</method>
 		<method name="get_polygon_count" qualifiers="const">
@@ -34,72 +202,60 @@
 				Returns the number of vertices successfully added to FMOD.
 			</description>
 		</method>
-		<method name="has_valid_geometry" qualifiers="const">
-			<return type="bool" />
+		<method name="get_geometry" qualifiers="const">
+			<return type="FmodGeometry" />
 			<description>
-				Returns whether the internal FMOD geometry object exists.
-			</description>
-		</method>
-		<method name="rebuild_geometry">
-			<return type="void" />
-			<description>
-				Rebuilds the FMOD geometry from the configured source.
-			</description>
-		</method>
-		<method name="sync_geometry_transform">
-			<return type="void" />
-			<description>
-				Synchronizes the FMOD geometry transform with this node's global transform.
+				Returns the internal [FmodGeometry], or [code]null[/code] when no geometry has been built.
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="active" type="bool" setter="set_active" getter="get_active" default="true">
-			Whether this FMOD geometry contributes to occlusion.
-		</member>
-		<member name="auto_rebuild" type="bool" setter="set_auto_rebuild" getter="get_auto_rebuild" default="true">
-			Rebuilds geometry automatically when relevant exported properties change.
-		</member>
-		<member name="direct_occlusion" type="float" setter="set_direct_occlusion" getter="get_direct_occlusion" default="0.5">
-			Direct sound occlusion factor from [code]0.0[/code] to [code]1.0[/code].
-		</member>
-		<member name="double_sided" type="bool" setter="set_double_sided" getter="get_double_sided" default="true">
-			If enabled, polygons occlude sound from both sides.
-		</member>
-		<member name="mesh" type="Mesh" setter="set_mesh" getter="get_mesh">
-			Mesh source used when [member source_mode] is [constant SOURCE_MESH_RESOURCE].
-		</member>
-		<member name="primitive_segments" type="int" setter="set_primitive_segments" getter="get_primitive_segments" default="16">
-			Segment count used when converting sphere and cylinder collision shapes.
-		</member>
-		<member name="recursive_source_scan" type="bool" setter="set_recursive_source_scan" getter="get_recursive_source_scan" default="true">
-			If enabled, child collision shapes are collected recursively.
-		</member>
-		<member name="reverb_occlusion" type="float" setter="set_reverb_occlusion" getter="get_reverb_occlusion" default="0.5">
-			Reverb occlusion factor from [code]0.0[/code] to [code]1.0[/code].
-		</member>
-		<member name="show_debug_gizmo" type="bool" setter="set_show_debug_gizmo" getter="get_show_debug_gizmo" default="true">
-			Whether editor gizmo visualization is enabled.
-		</member>
-		<member name="source_mode" type="int" setter="set_source_mode" getter="get_source_mode" enum="FmodGeometryInstance3D.SourceMode" default="1">
+		<member type="int" enum="FmodGeometryInstance3D.SourceMode" name="source_mode" setter="set_source_mode" getter="get_source_mode" default="1">
 			Source used to build FMOD polygons.
 		</member>
-		<member name="source_node_path" type="NodePath" setter="set_source_node_path" getter="get_source_node_path">
+		<member type="NodePath" name="source_node_path" setter="set_source_node_path" getter="get_source_node_path" default="NodePath(&quot;&quot;)">
 			Optional source node path for mesh or collision shape conversion.
 		</member>
-		<member name="sync_transform" type="bool" setter="set_sync_transform" getter="get_sync_transform" default="true">
+		<member type="Mesh" name="mesh" setter="set_mesh" getter="get_mesh">
+			Mesh source used when [member source_mode] is [constant SOURCE_MESH_RESOURCE].
+		</member>
+		<member type="float" name="direct_occlusion" setter="set_direct_occlusion" getter="get_direct_occlusion" default="0.5">
+			Direct sound occlusion factor from [code]0.0[/code] to [code]1.0[/code].
+		</member>
+		<member type="float" name="reverb_occlusion" setter="set_reverb_occlusion" getter="get_reverb_occlusion" default="0.5">
+			Reverb occlusion factor from [code]0.0[/code] to [code]1.0[/code].
+		</member>
+		<member type="bool" name="double_sided" setter="set_double_sided" getter="get_double_sided" default="true">
+			If enabled, polygons occlude sound from both sides.
+		</member>
+		<member type="bool" name="active" setter="set_active" getter="get_active" default="true">
+			Whether this FMOD geometry contributes to occlusion.
+		</member>
+		<member type="bool" name="auto_rebuild" setter="set_auto_rebuild" getter="get_auto_rebuild" default="true">
+			Rebuilds geometry automatically when relevant exported properties change.
+		</member>
+		<member type="bool" name="sync_transform" setter="set_sync_transform" getter="get_sync_transform" default="true">
 			If enabled, this node's global transform is applied to the FMOD geometry every frame.
+		</member>
+		<member type="bool" name="recursive_source_scan" setter="set_recursive_source_scan" getter="get_recursive_source_scan" default="true">
+			If enabled, child collision shapes are collected recursively.
+		</member>
+		<member type="int" name="primitive_segments" setter="set_primitive_segments" getter="get_primitive_segments" default="16">
+			Segment count used when converting sphere and cylinder collision shapes.
+		</member>
+		<member type="bool" name="show_debug_gizmo" setter="set_show_debug_gizmo" getter="get_show_debug_gizmo" default="true">
+			Whether editor gizmo visualization is enabled.
 		</member>
 	</members>
 	<signals>
-		<signal name="geometry_cleared">
-			<description>
-				Emitted after the internal geometry has been released.
-			</description>
-		</signal>
 		<signal name="geometry_created">
 			<description>
 				Emitted after a new FMOD geometry object has been created.
+			</description>
+		</signal>
+		<signal name="geometry_cleared">
+			<description>
+				Emitted after the internal geometry has been released.
 			</description>
 		</signal>
 		<signal name="geometry_rebuilt">

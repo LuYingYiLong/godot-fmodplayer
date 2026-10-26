@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioStreamPlayer2D" inherits="Node2D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioStreamPlayer2D" inherits="Node2D" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A 2D node for playing FMOD audio streams with spatial audio support.
 	</brief_description>
@@ -19,62 +19,12 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="get_area_mask" qualifiers="const">
-			<return type="int" />
+		<method name="set_stream">
+			<return type="void" />
+			<param index="0" name="stream" type="FmodAudioStream" />
 			<description>
-				Returns the area mask used for physics-based audio filtering.
-				The default value is [code]1[/code] (first layer).
-			</description>
-		</method>
-		<method name="get_attenuation" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the current attenuation factor.
-				Higher values make the sound fade more quickly with distance.
-			</description>
-		</method>
-		<method name="get_bus" qualifiers="const">
-			<return type="StringName" />
-			<description>
-				Returns the name of the audio bus this player outputs to.
-				The default value is [code]&amp;"Master"[/code].
-			</description>
-		</method>
-		<method name="get_max_distance" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the maximum distance in pixels at which the sound is audible.
-				Beyond this distance, the volume is set to minimum.
-				The default value is [code]2000.0[/code] pixels.
-			</description>
-		</method>
-		<method name="get_max_polyphony" qualifiers="const">
-			<return type="int" />
-			<description>
-				Returns the maximum number of simultaneous voices this player can play.
-				The default value is [code]1[/code].
-			</description>
-		</method>
-		<method name="get_panning_strength" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the current panning strength multiplier.
-				Higher values create more pronounced left/right panning.
-				The default value is [code]1.0[/code].
-			</description>
-		</method>
-		<method name="get_pitch_scale" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the current pitch scale of the audio playback.
-				[code]1.0[/code] is the default pitch, [code]0.5[/code] is one octave lower, [code]2.0[/code] is one octave higher.
-			</description>
-		</method>
-		<method name="get_playback_position" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the current playback position in seconds.
-				Returns [code]0.0[/code] if not playing.
+				Sets the [FmodAudioStream] to play. The stream can be changed during playback,
+				which will stop the current playback and start the new stream if playing.
 			</description>
 		</method>
 		<method name="get_stream" qualifiers="const">
@@ -84,52 +34,11 @@
 				Returns [code]null[/code] if no stream is set.
 			</description>
 		</method>
-		<method name="get_stream_paused" qualifiers="const">
+		<method name="preload_stream">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the stream playback is currently paused.
-			</description>
-		</method>
-		<method name="get_stream_playback" qualifiers="const">
-			<return type="FmodChannel" />
-			<description>
-				Returns the internal [FmodChannel] used for playback.
-				Returns [code]null[/code] if no channel is active.
-				This can be used for advanced control over the playing sound.
-			</description>
-		</method>
-		<method name="get_volume_db" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the current volume in decibels.
-				The default value is [code]0.0[/code] dB (unity gain).
-			</description>
-		</method>
-		<method name="get_volume_linear" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the current volume as a linear value (0.0 to 1.0+).
-				Converts from the internal dB value.
-			</description>
-		</method>
-		<method name="has_stream_playback" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if a stream playback channel is currently active.
-			</description>
-		</method>
-		<method name="is_autoplay_enabled" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if autoplay is enabled.
-				When enabled, playback starts automatically when the node enters the scene tree.
-			</description>
-		</method>
-		<method name="is_playing" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if audio is currently playing.
-				Note that this returns [code]false[/code] when paused, even though playback is active.
+				Preloads the assigned stream by creating its internal [FmodSound] before playback starts.
+				This reduces first-play latency when the stream is later played.
 			</description>
 		</method>
 		<method name="play">
@@ -140,13 +49,6 @@
 				If [param from_position] is negative, playback starts from the beginning.
 			</description>
 		</method>
-		<method name="preload_stream">
-			<return type="bool" />
-			<description>
-				Preloads the assigned stream by creating its internal [FmodSound] before playback starts.
-				This reduces first-play latency when the stream is later played.
-			</description>
-		</method>
 		<method name="seek">
 			<return type="void" />
 			<param index="0" name="to_position" type="float" />
@@ -155,67 +57,10 @@
 				This can be called while playing or paused.
 			</description>
 		</method>
-		<method name="set_area_mask">
+		<method name="stop">
 			<return type="void" />
-			<param index="0" name="mask" type="int" />
 			<description>
-				Sets the area mask for physics-based audio filtering.
-				Only areas matching this mask will affect this player's audio.
-			</description>
-		</method>
-		<method name="set_attenuation">
-			<return type="void" />
-			<param index="0" name="curve" type="float" />
-			<description>
-				Sets the attenuation factor controlling how quickly sound fades with distance.
-				[code]1.0[/code] is linear attenuation. Higher values cause faster fade-out.
-			</description>
-		</method>
-		<method name="set_autoplay">
-			<return type="void" />
-			<param index="0" name="enable" type="bool" />
-			<description>
-				Enables or disables autoplay. When enabled, the stream starts playing automatically when the node enters the scene tree.
-			</description>
-		</method>
-		<method name="set_bus">
-			<return type="void" />
-			<param index="0" name="bus" type="StringName" />
-			<description>
-				Sets the audio bus to route this player's output to.
-				The bus name should match a bus in the [FmodAudioBusLayout].
-			</description>
-		</method>
-		<method name="set_max_distance">
-			<return type="void" />
-			<param index="0" name="pixels" type="float" />
-			<description>
-				Sets the maximum distance in pixels at which the sound is audible.
-				Beyond this distance, the volume is set to minimum (-80 dB).
-			</description>
-		</method>
-		<method name="set_max_polyphony">
-			<return type="void" />
-			<param index="0" name="max_polyphony" type="int" />
-			<description>
-				Sets the maximum number of simultaneous voices this player can play.
-			</description>
-		</method>
-		<method name="set_panning_strength">
-			<return type="void" />
-			<param index="0" name="panning_strength" type="float" />
-			<description>
-				Sets the panning strength multiplier.
-				Higher values create more pronounced left/right panning effect.
-				Set to [code]0.0[/code] to disable panning.
-			</description>
-		</method>
-		<method name="set_pitch_scale">
-			<return type="void" />
-			<param index="0" name="pitch_scale" type="float" />
-			<description>
-				Sets the pitch scale of the audio playback.
-				[code]1.0[/code] is normal pitch. Higher values increase pitch and playback speed.
+				Stops playback and resets the position to the beginning.
 			</description>
 		</method>
 		<method name="set_playing">
@@ -226,12 +71,11 @@
 				Setting to [code]false[/code] stops playback.
 			</description>
 		</method>
-		<method name="set_stream">
-			<return type="void" />
-			<param index="0" name="stream" type="FmodAudioStream" />
+		<method name="is_playing" qualifiers="const">
+			<return type="bool" />
 			<description>
-				Sets the [FmodAudioStream] to play. The stream can be changed during playback,
-				which will stop the current playback and start the new stream if playing.
+				Returns [code]true[/code] if audio is currently playing.
+				Note that this returns [code]false[/code] when paused, even though playback is active.
 			</description>
 		</method>
 		<method name="set_stream_paused">
@@ -239,6 +83,78 @@
 			<param index="0" name="paused" type="bool" />
 			<description>
 				Pauses or resumes playback without changing position.
+			</description>
+		</method>
+		<method name="get_stream_paused" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the stream playback is currently paused.
+			</description>
+		</method>
+		<method name="get_playback_position" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the current playback position in seconds.
+				Returns [code]0.0[/code] if not playing.
+			</description>
+		</method>
+		<method name="set_volume_db">
+			<return type="void" />
+			<param index="0" name="volume_db" type="float" />
+			<description>
+				Sets the volume in decibels.
+				[code]0.0[/code] is unity gain. Negative values attenuate, positive values amplify (if supported).
+			</description>
+		</method>
+		<method name="get_volume_db" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the current volume in decibels.
+				The default value is [code]0.0[/code] dB (unity gain).
+			</description>
+		</method>
+		<method name="set_volume_linear">
+			<return type="void" />
+			<param index="0" name="volume_linear" type="float" />
+			<description>
+				Sets the volume as a linear value (0.0 to 1.0+).
+				This is converted internally to decibels.
+			</description>
+		</method>
+		<method name="get_volume_linear" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the current volume as a linear value (0.0 to 1.0+).
+				Converts from the internal dB value.
+			</description>
+		</method>
+		<method name="set_pitch_scale">
+			<return type="void" />
+			<param index="0" name="pitch_scale" type="float" />
+			<description>
+				Sets the pitch scale of the audio playback.
+				[code]1.0[/code] is normal pitch. Higher values increase pitch and playback speed.
+			</description>
+		</method>
+		<method name="get_pitch_scale" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the current pitch scale of the audio playback.
+				[code]1.0[/code] is the default pitch, [code]0.5[/code] is one octave lower, [code]2.0[/code] is one octave higher.
+			</description>
+		</method>
+		<method name="set_autoplay">
+			<return type="void" />
+			<param index="0" name="enable" type="bool" />
+			<description>
+				Enables or disables autoplay. When enabled, the stream starts playing automatically when the node enters the scene tree.
+			</description>
+		</method>
+		<method name="is_autoplay_enabled" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if autoplay is enabled.
+				When enabled, playback starts automatically when the node enters the scene tree.
 			</description>
 		</method>
 		<method name="set_preload_on_set_stream">
@@ -254,68 +170,152 @@
 				Returns [code]true[/code] if streams are preloaded as soon as they are assigned.
 			</description>
 		</method>
-		<method name="set_volume_db">
+		<method name="set_max_distance">
 			<return type="void" />
-			<param index="0" name="volume_db" type="float" />
+			<param index="0" name="pixels" type="float" />
 			<description>
-				Sets the volume in decibels.
-				[code]0.0[/code] is unity gain. Negative values attenuate, positive values amplify (if supported).
+				Sets the maximum distance in pixels at which the sound is audible.
+				Beyond this distance, the volume is set to minimum (-80 dB).
 			</description>
 		</method>
-		<method name="set_volume_linear">
-			<return type="void" />
-			<param index="0" name="volume_linear" type="float" />
+		<method name="get_max_distance" qualifiers="const">
+			<return type="float" />
 			<description>
-				Sets the volume as a linear value (0.0 to 1.0+).
-				This is converted internally to decibels.
+				Returns the maximum distance in pixels at which the sound is audible.
+				Beyond this distance, the volume is set to minimum.
+				The default value is [code]2000.0[/code] pixels.
 			</description>
 		</method>
-		<method name="stop">
+		<method name="set_attenuation">
 			<return type="void" />
+			<param index="0" name="curve" type="float" />
 			<description>
-				Stops playback and resets the position to the beginning.
+				Sets the attenuation factor controlling how quickly sound fades with distance.
+				[code]1.0[/code] is linear attenuation. Higher values cause faster fade-out.
+			</description>
+		</method>
+		<method name="get_attenuation" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the current attenuation factor.
+				Higher values make the sound fade more quickly with distance.
+			</description>
+		</method>
+		<method name="set_panning_strength">
+			<return type="void" />
+			<param index="0" name="panning_strength" type="float" />
+			<description>
+				Sets the panning strength multiplier.
+				Higher values create more pronounced left/right panning effect.
+				Set to [code]0.0[/code] to disable panning.
+			</description>
+		</method>
+		<method name="get_panning_strength" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the current panning strength multiplier.
+				Higher values create more pronounced left/right panning.
+				The default value is [code]1.0[/code].
+			</description>
+		</method>
+		<method name="set_bus">
+			<return type="void" />
+			<param index="0" name="bus" type="StringName" />
+			<description>
+				Sets the audio bus to route this player's output to.
+				The bus name should match a bus in the [FmodAudioBusLayout].
+			</description>
+		</method>
+		<method name="get_bus" qualifiers="const">
+			<return type="StringName" />
+			<description>
+				Returns the name of the audio bus this player outputs to.
+				The default value is [code]&amp;"Master"[/code].
+			</description>
+		</method>
+		<method name="set_area_mask">
+			<return type="void" />
+			<param index="0" name="mask" type="int" />
+			<description>
+				Sets the area mask for physics-based audio filtering.
+				Only areas matching this mask will affect this player's audio.
+			</description>
+		</method>
+		<method name="get_area_mask" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the area mask used for physics-based audio filtering.
+				The default value is [code]1[/code] (first layer).
+			</description>
+		</method>
+		<method name="set_max_polyphony">
+			<return type="void" />
+			<param index="0" name="max_polyphony" type="int" />
+			<description>
+				Sets the maximum number of simultaneous voices this player can play.
+			</description>
+		</method>
+		<method name="get_max_polyphony" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the maximum number of simultaneous voices this player can play.
+				The default value is [code]1[/code].
+			</description>
+		</method>
+		<method name="has_stream_playback" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if a stream playback channel is currently active.
+			</description>
+		</method>
+		<method name="get_stream_playback" qualifiers="const">
+			<return type="FmodChannel" />
+			<description>
+				Returns the internal [FmodChannel] used for playback.
+				Returns [code]null[/code] if no channel is active.
+				This can be used for advanced control over the playing sound.
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="area_mask" type="int" setter="set_area_mask" getter="get_area_mask" default="1">
-			Physics layer mask for area-based audio filtering.
-		</member>
-		<member name="attenuation" type="float" setter="set_attenuation" getter="get_attenuation" default="1.0">
-			Attenuation factor controlling how quickly sound fades with distance.
-		</member>
-		<member name="autoplay" type="bool" setter="set_autoplay" getter="is_autoplay_enabled" default="false">
-			If [code]true[/code], audio plays automatically when the node enters the scene tree.
-		</member>
-		<member name="bus" type="StringName" setter="set_bus" getter="get_bus" default="&amp;&quot;Master&quot;">
-			The name of the audio bus to route output to.
-		</member>
-		<member name="max_distance" type="float" setter="set_max_distance" getter="get_max_distance" default="2000.0">
-			Maximum distance in pixels at which the sound is audible.
-		</member>
-		<member name="max_polyphony" type="int" setter="set_max_polyphony" getter="get_max_polyphony" default="1">
-			Maximum number of simultaneous voices this player can play.
-		</member>
-		<member name="panning_strength" type="float" setter="set_panning_strength" getter="get_panning_strength" default="1.0">
-			Multiplier for the panning effect strength.
-		</member>
-		<member name="pitch_scale" type="float" setter="set_pitch_scale" getter="get_pitch_scale" default="1.0">
-			Pitch scale of the audio. [code]1.0[/code] is the default pitch.
-		</member>
-		<member name="playing" type="bool" setter="set_playing" getter="is_playing" default="false">
-			Current playback state. Can be set to start/stop playback.
-		</member>
-		<member name="preload_on_set_stream" type="bool" setter="set_preload_on_set_stream" getter="is_preload_on_set_stream_enabled" default="false">
-			If [code]true[/code], assigning a stream creates its internal [FmodSound] immediately instead of waiting for the first playback.
-		</member>
-		<member name="stream" type="FmodAudioStream" setter="set_stream" getter="get_stream">
+		<member type="FmodAudioStream" name="stream" setter="set_stream" getter="get_stream">
 			The [FmodAudioStream] resource to play.
 		</member>
-		<member name="stream_paused" type="bool" setter="set_stream_paused" getter="get_stream_paused" default="false">
+		<member type="bool" name="playing" setter="set_playing" getter="is_playing" default="false">
+			Current playback state. Can be set to start/stop playback.
+		</member>
+		<member type="bool" name="stream_paused" setter="set_stream_paused" getter="get_stream_paused" default="false">
 			If [code]true[/code], playback is paused.
 		</member>
-		<member name="volume_db" type="float" setter="set_volume_db" getter="get_volume_db" default="0.0">
+		<member type="float" name="volume_db" setter="set_volume_db" getter="get_volume_db" default="0.0">
 			Volume in decibels. [code]0.0[/code] is unity gain, negative values attenuate.
+		</member>
+		<member type="float" name="pitch_scale" setter="set_pitch_scale" getter="get_pitch_scale" default="1.0">
+			Pitch scale of the audio. [code]1.0[/code] is the default pitch.
+		</member>
+		<member type="bool" name="autoplay" setter="set_autoplay" getter="is_autoplay_enabled" default="false">
+			If [code]true[/code], audio plays automatically when the node enters the scene tree.
+		</member>
+		<member type="bool" name="preload_on_set_stream" setter="set_preload_on_set_stream" getter="is_preload_on_set_stream_enabled" default="false">
+			If [code]true[/code], assigning a stream creates its internal [FmodSound] immediately instead of waiting for the first playback.
+		</member>
+		<member type="float" name="max_distance" setter="set_max_distance" getter="get_max_distance" default="2000.0">
+			Maximum distance in pixels at which the sound is audible.
+		</member>
+		<member type="float" name="attenuation" setter="set_attenuation" getter="get_attenuation" default="1.0">
+			Attenuation factor controlling how quickly sound fades with distance.
+		</member>
+		<member type="float" name="panning_strength" setter="set_panning_strength" getter="get_panning_strength" default="1.0">
+			Multiplier for the panning effect strength.
+		</member>
+		<member type="StringName" name="bus" setter="set_bus" getter="get_bus" default="&amp;&quot;Master&quot;">
+			The name of the audio bus to route output to.
+		</member>
+		<member type="int" name="area_mask" setter="set_area_mask" getter="get_area_mask" default="1">
+			Physics layer mask for area-based audio filtering.
+		</member>
+		<member type="int" name="max_polyphony" setter="set_max_polyphony" getter="get_max_polyphony" default="1">
+			Maximum number of simultaneous voices this player can play.
 		</member>
 	</members>
 	<signals>
@@ -325,4 +325,5 @@
 			</description>
 		</signal>
 	</signals>
+	<constants />
 </class>

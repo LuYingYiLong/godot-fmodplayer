@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffectDistortion" inherits="FmodAudioEffect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectDistortion" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Distortion and overdrive effect with multiple distortion modes.
 	</brief_description>
@@ -10,16 +10,11 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="get_drive" qualifiers="const">
-			<return type="float" />
+		<method name="set_mode">
+			<return type="void" />
+			<param index="0" name="mode" type="int" enum="FmodAudioEffectDistortion.Mode" />
 			<description>
-				Returns the distortion drive/amount (0.0 to 1.0).
-			</description>
-		</method>
-		<method name="get_keep_hf_hz" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the high-frequency preservation cutoff in Hertz.
+				Sets the distortion mode. See [enum Mode] for available options.
 			</description>
 		</method>
 		<method name="get_mode" qualifiers="const">
@@ -28,16 +23,12 @@
 				Returns the current distortion mode.
 			</description>
 		</method>
-		<method name="get_oversample" qualifiers="const">
-			<return type="int" />
+		<method name="set_pre_gain">
+			<return type="void" />
+			<param index="0" name="gain" type="float" />
 			<description>
-				Returns the oversampling factor.
-			</description>
-		</method>
-		<method name="get_post_gain" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the post-distortion gain in decibels.
+				Sets the pre-distortion gain in decibels.
+				Higher values drive the distortion harder.
 			</description>
 		</method>
 		<method name="get_pre_gain" qualifiers="const">
@@ -54,26 +45,10 @@
 				Higher values produce more distortion.
 			</description>
 		</method>
-		<method name="set_keep_hf_hz">
-			<return type="void" />
-			<param index="0" name="hz" type="float" />
+		<method name="get_drive" qualifiers="const">
+			<return type="float" />
 			<description>
-				Sets the high-frequency preservation cutoff in Hertz.
-				Frequencies above this value are preserved and mixed back with the distorted signal.
-			</description>
-		</method>
-		<method name="set_mode">
-			<return type="void" />
-			<param index="0" name="mode" type="int" enum="FmodAudioEffectDistortion.Mode" />
-			<description>
-				Sets the distortion mode. See [enum Mode] for available options.
-			</description>
-		</method>
-		<method name="set_oversample">
-			<return type="void" />
-			<param index="0" name="oversample" type="int" />
-			<description>
-				Sets the oversampling factor. Higher values reduce aliasing artifacts.
+				Returns the distortion drive/amount (0.0 to 1.0).
 			</description>
 		</method>
 		<method name="set_post_gain">
@@ -84,35 +59,61 @@
 				Use this to compensate for volume changes caused by distortion.
 			</description>
 		</method>
-		<method name="set_pre_gain">
-			<return type="void" />
-			<param index="0" name="gain" type="float" />
+		<method name="get_post_gain" qualifiers="const">
+			<return type="float" />
 			<description>
-				Sets the pre-distortion gain in decibels.
-				Higher values drive the distortion harder.
+				Returns the post-distortion gain in decibels.
+			</description>
+		</method>
+		<method name="set_keep_hf_hz">
+			<return type="void" />
+			<param index="0" name="hz" type="float" />
+			<description>
+				Sets the high-frequency preservation cutoff in Hertz.
+				Frequencies above this value are preserved and mixed back with the distorted signal.
+			</description>
+		</method>
+		<method name="get_keep_hf_hz" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the high-frequency preservation cutoff in Hertz.
+			</description>
+		</method>
+		<method name="set_oversample">
+			<return type="void" />
+			<param index="0" name="oversample" type="int" />
+			<description>
+				Sets the oversampling factor. Higher values reduce aliasing artifacts.
+			</description>
+		</method>
+		<method name="get_oversample" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the oversampling factor.
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="drive" type="float" setter="set_drive" getter="get_drive" default="0.5">
-			The distortion drive/amount. Range: 0.0 to 1.0. Higher values produce more distortion.
-		</member>
-		<member name="keep_hf_hz" type="float" setter="set_keep_hf_hz" getter="get_keep_hf_hz" default="16000.0">
-			The high-frequency preservation cutoff in Hz. Frequencies above this value are preserved and mixed back with the distorted signal to maintain clarity.
-		</member>
-		<member name="mode" type="int" setter="set_mode" getter="get_mode" enum="FmodAudioEffectDistortion.Mode" default="0">
+		<member type="int" enum="FmodAudioEffectDistortion.Mode" name="mode" setter="set_mode" getter="get_mode" default="0">
 			The distortion mode. See [enum Mode] for available options.
 		</member>
-		<member name="oversample" type="int" setter="set_oversample" getter="get_oversample" default="4">
-			The oversampling factor. Higher values reduce aliasing artifacts at the cost of more CPU usage.
-		</member>
-		<member name="post_gain" type="float" setter="set_post_gain" getter="get_post_gain" default="0.0">
-			The post-distortion gain in decibels. Use this to compensate for volume changes.
-		</member>
-		<member name="pre_gain" type="float" setter="set_pre_gain" getter="get_pre_gain" default="0.0">
+		<member type="float" name="pre_gain" setter="set_pre_gain" getter="get_pre_gain" default="0.0">
 			The pre-distortion gain in decibels. Higher values drive the distortion harder.
 		</member>
+		<member type="float" name="drive" setter="set_drive" getter="get_drive" default="0.0">
+			The distortion drive/amount. Range: 0.0 to 1.0. Higher values produce more distortion.
+		</member>
+		<member type="float" name="post_gain" setter="set_post_gain" getter="get_post_gain" default="0.0">
+			The post-distortion gain in decibels. Use this to compensate for volume changes.
+		</member>
+		<member type="float" name="keep_hf_hz" setter="set_keep_hf_hz" getter="get_keep_hf_hz" default="16000.0">
+			The high-frequency preservation cutoff in Hz. Frequencies above this value are preserved and mixed back with the distorted signal to maintain clarity.
+		</member>
+		<member type="int" name="oversample" setter="set_oversample" getter="get_oversample" default="4">
+			The oversampling factor. Higher values reduce aliasing artifacts at the cost of more CPU usage.
+		</member>
 	</members>
+	<signals />
 	<constants>
 		<constant name="MODE_CLIP" value="0" enum="Mode">
 			Hard clipping distortion. Creates harsh, aggressive distortion by sharply limiting the signal.

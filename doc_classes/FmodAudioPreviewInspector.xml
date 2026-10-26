@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioPreviewInspector" inherits="EditorInspectorPlugin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioPreviewInspector" inherits="EditorInspectorPlugin" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Editor inspector plugin that adds audio preview functionality for FmodAudioStream resources.
 	</brief_description>
@@ -9,22 +9,8 @@
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods>
-		<method name="_can_handle" qualifiers="const virtual">
-			<return type="bool" />
-			<param index="0" name="object" type="Object" />
-			<description>
-				Returns [code]true[/code] if this plugin can handle the given object.
-				Returns [code]true[/code] for [FmodAudioStream] resources.
-			</description>
-		</method>
-		<method name="_parse_begin" qualifiers="virtual">
-			<return type="void" />
-			<param index="0" name="object" type="Object" />
-			<description>
-				Called at the beginning of inspector parsing for the given object.
-				Adds the audio preview widget to the inspector.
-			</description>
-		</method>
-	</methods>
+	<methods />
+	<members />
+	<signals />
+	<constants />
 </class>

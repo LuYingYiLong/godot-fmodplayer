@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffectFilter" inherits="FmodAudioEffect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectFilter" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A multi-mode filter effect supporting lowpass, highpass, and bandpass filter types.
 	</brief_description>
@@ -9,20 +9,75 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="set_cutoff_hz">
+			<return type="void" />
+			<param index="0" name="cutoff_hz" type="float" />
+			<description>
+				Sets [member cutoff_hz].
+			</description>
+		</method>
+		<method name="get_cutoff_hz" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member cutoff_hz].
+			</description>
+		</method>
+		<method name="set_db">
+			<return type="void" />
+			<param index="0" name="db" type="int" enum="FmodAudioEffectFilter.FilterDB" />
+			<description>
+				Sets [member db].
+			</description>
+		</method>
+		<method name="get_db" qualifiers="const">
+			<return type="int" enum="FmodAudioEffectFilter.FilterDB" />
+			<description>
+				Returns [member db].
+			</description>
+		</method>
+		<method name="set_gain">
+			<return type="void" />
+			<param index="0" name="gain" type="float" />
+			<description>
+				Sets [member gain].
+			</description>
+		</method>
+		<method name="get_gain" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member gain].
+			</description>
+		</method>
+		<method name="set_resonance">
+			<return type="void" />
+			<param index="0" name="resonance" type="float" />
+			<description>
+				Sets [member resonance].
+			</description>
+		</method>
+		<method name="get_resonance" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member resonance].
+			</description>
+		</method>
+	</methods>
 	<members>
-		<member name="cutoff_hz" type="float" setter="set_cutoff_hz" getter="get_cutoff_hz" default="2000.0">
+		<member type="float" name="cutoff_hz" setter="set_cutoff_hz" getter="get_cutoff_hz" default="2000.0">
 			The cutoff frequency of the filter in Hertz (Hz). Frequencies above this point are attenuated (lowpass), below this point are attenuated (highpass), or a band around this point is passed (bandpass) depending on the filter mode.
 		</member>
-		<member name="db" type="int" setter="set_db" getter="get_db" enum="FmodAudioEffectFilter.FilterDB" default="0">
+		<member type="int" enum="FmodAudioEffectFilter.FilterDB" name="db" setter="set_db" getter="get_db" default="0">
 			The rolloff steepness of the filter, specified in dB per octave. Determines how sharply frequencies beyond the cutoff are attenuated. See [enum FilterDB] for available values.
 		</member>
-		<member name="gain" type="float" setter="set_gain" getter="get_gain" default="1.0">
+		<member type="float" name="gain" setter="set_gain" getter="get_gain" default="1.0">
 			The gain applied to frequencies within the passband, specified as a linear value. Values above 1.0 boost the filtered frequencies, while values below 1.0 attenuate them.
 		</member>
-		<member name="resonance" type="float" setter="set_resonance" getter="get_resonance" default="0.5">
+		<member type="float" name="resonance" setter="set_resonance" getter="get_resonance" default="0.5">
 			The amount of resonance (boost) applied around the cutoff frequency. Range: 0.0 to 1.0. Higher values create a more pronounced peak at the cutoff frequency, useful for creating vocal-like or synthesizer filter effects.
 		</member>
 	</members>
+	<signals />
 	<constants>
 		<constant name="FILTER_6DB" value="0" enum="FilterDB">
 			6 dB per octave rolloff. Gentle slope, minimal effect on neighboring frequencies.

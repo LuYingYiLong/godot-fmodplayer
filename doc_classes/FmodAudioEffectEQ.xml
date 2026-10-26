@@ -1,64 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffectEQ" inherits="FmodAudioEffect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectEQ" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Base class for multi-band equalizer audio effects.
 	</brief_description>
 	<description>
 		FmodAudioEffectEQ is a base class for multi-band equalizer audio effects using FMOD's MULTIBAND_EQ DSP. It provides flexible frequency equalization with support for multiple bands, each with independent gain, frequency, Q value, and filter type.
 		The effect supports three preset configurations: 6-band, 10-band, and 21-band equalizers. Each band uses a peaking filter by default, but can be configured with other filter types including low-pass, high-pass, low-shelf, high-shelf, and more.
-		To apply this effect to an audio bus, use [method apply_to] and pass a [FmodChannelGroup].
+		To apply this effect to an audio bus, use [method FmodAudioEffect.apply_to] and pass a [FmodChannelGroup].
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="set_preset">
+			<return type="void" />
+			<param index="0" name="preset" type="int" enum="FmodAudioEffectEQ.Preset" />
+			<description>
+				Sets [member preset].
+			</description>
+		</method>
+		<method name="get_preset" qualifiers="const">
+			<return type="int" enum="FmodAudioEffectEQ.Preset" />
+			<description>
+				Returns [member preset].
+			</description>
+		</method>
 		<method name="get_band_count" qualifiers="const">
 			<return type="int" />
 			<description>
 				Returns the number of bands in this equalizer, which depends on the preset (6, 10, or 21).
-			</description>
-		</method>
-		<method name="get_band_filter_type" qualifiers="const">
-			<return type="int" enum="FmodAudioEffectEQ.FilterType" />
-			<param index="0" name="band_idx" type="int" />
-			<description>
-				Returns the filter type for the specified band. See [enum FilterType] for possible values.
-			</description>
-		</method>
-		<method name="get_band_frequency" qualifiers="const">
-			<return type="float" />
-			<param index="0" name="band_idx" type="int" />
-			<description>
-				Returns the center frequency (in Hz) for the specified band.
-			</description>
-		</method>
-		<method name="get_band_gain_db" qualifiers="const">
-			<return type="float" />
-			<param index="0" name="band_idx" type="int" />
-			<description>
-				Returns the gain (in dB) for the specified band. The value ranges from -60 dB to +24 dB.
-			</description>
-		</method>
-		<method name="get_band_q" qualifiers="const">
-			<return type="float" />
-			<param index="0" name="band_idx" type="int" />
-			<description>
-				Returns the Q value (quality factor) for the specified band. Higher Q values result in a narrower bandwidth.
-			</description>
-		</method>
-		<method name="set_band_filter_type">
-			<return type="void" />
-			<param index="0" name="band_idx" type="int" />
-			<param index="1" name="filter_type" type="int" enum="FmodAudioEffectEQ.FilterType" />
-			<description>
-				Sets the filter type for the specified band. See [enum FilterType] for available filter types.
-			</description>
-		</method>
-		<method name="set_band_frequency">
-			<return type="void" />
-			<param index="0" name="band_idx" type="int" />
-			<param index="1" name="frequency" type="float" />
-			<description>
-				Sets the center frequency (in Hz) for the specified band. Valid range is 10 Hz to 22000 Hz.
 			</description>
 		</method>
 		<method name="set_band_gain_db">
@@ -69,6 +38,43 @@
 				Sets the gain (in dB) for the specified band. The value is clamped to the range -60 dB to +24 dB.
 			</description>
 		</method>
+		<method name="get_band_gain_db" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="band_idx" type="int" />
+			<description>
+				Returns the gain (in dB) for the specified band. The value ranges from -60 dB to +24 dB.
+			</description>
+		</method>
+		<method name="set_band_frequency">
+			<return type="void" />
+			<param index="0" name="band_idx" type="int" />
+			<param index="1" name="frequency" type="float" />
+			<description>
+				Sets the center frequency (in Hz) for the specified band. Valid range is 10 Hz to 22000 Hz.
+			</description>
+		</method>
+		<method name="get_band_frequency" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="band_idx" type="int" />
+			<description>
+				Returns the center frequency (in Hz) for the specified band.
+			</description>
+		</method>
+		<method name="set_band_filter_type">
+			<return type="void" />
+			<param index="0" name="band_idx" type="int" />
+			<param index="1" name="filter_type" type="int" enum="FmodAudioEffectEQ.FilterType" />
+			<description>
+				Sets the filter type for the specified band. See [enum FilterType] for available filter types.
+			</description>
+		</method>
+		<method name="get_band_filter_type" qualifiers="const">
+			<return type="int" enum="FmodAudioEffectEQ.FilterType" />
+			<param index="0" name="band_idx" type="int" />
+			<description>
+				Returns the filter type for the specified band. See [enum FilterType] for possible values.
+			</description>
+		</method>
 		<method name="set_band_q">
 			<return type="void" />
 			<param index="0" name="band_idx" type="int" />
@@ -77,12 +83,92 @@
 				Sets the Q value (quality factor) for the specified band. Valid range is 0.01 to 10.0. Higher values create a narrower, more selective filter.
 			</description>
 		</method>
+		<method name="get_band_q" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="band_idx" type="int" />
+			<description>
+				Returns the Q value (quality factor) for the specified band. Higher Q values result in a narrower bandwidth.
+			</description>
+		</method>
 	</methods>
 	<members>
-		<member name="preset" type="int" setter="set_preset" getter="get_preset" enum="FmodAudioEffectEQ.Preset" default="0">
+		<member type="int" enum="FmodAudioEffectEQ.Preset" name="preset" setter="set_preset" getter="get_preset" default="0">
 			The EQ preset determining the number of bands. Use [constant PRESET_6_BANDS], [constant PRESET_10_BANDS], or [constant PRESET_21_BANDS]. Changing this will reinitialize all bands with default values.
 		</member>
+		<member type="float" name="band_0_gain" default="0.0">
+			Controls band 0 gain.
+		</member>
+		<member type="float" name="band_0_frequency" default="32.0">
+			Controls band 0 frequency.
+		</member>
+		<member type="float" name="band_0_q" default="0.707">
+			Controls band 0 q.
+		</member>
+		<member type="int" enum="FmodAudioEffectEQ.FilterType" name="band_0_filter_type" default="9">
+			Controls band 0 filter type.
+		</member>
+		<member type="float" name="band_1_gain" default="0.0">
+			Controls band 1 gain.
+		</member>
+		<member type="float" name="band_1_frequency" default="100.0">
+			Controls band 1 frequency.
+		</member>
+		<member type="float" name="band_1_q" default="0.707">
+			Controls band 1 q.
+		</member>
+		<member type="int" enum="FmodAudioEffectEQ.FilterType" name="band_1_filter_type" default="9">
+			Controls band 1 filter type.
+		</member>
+		<member type="float" name="band_2_gain" default="0.0">
+			Controls band 2 gain.
+		</member>
+		<member type="float" name="band_2_frequency" default="320.0">
+			Controls band 2 frequency.
+		</member>
+		<member type="float" name="band_2_q" default="0.707">
+			Controls band 2 q.
+		</member>
+		<member type="int" enum="FmodAudioEffectEQ.FilterType" name="band_2_filter_type" default="9">
+			Controls band 2 filter type.
+		</member>
+		<member type="float" name="band_3_gain" default="0.0">
+			Controls band 3 gain.
+		</member>
+		<member type="float" name="band_3_frequency" default="1000.0">
+			Controls band 3 frequency.
+		</member>
+		<member type="float" name="band_3_q" default="0.707">
+			Controls band 3 q.
+		</member>
+		<member type="int" enum="FmodAudioEffectEQ.FilterType" name="band_3_filter_type" default="9">
+			Controls band 3 filter type.
+		</member>
+		<member type="float" name="band_4_gain" default="0.0">
+			Controls band 4 gain.
+		</member>
+		<member type="float" name="band_4_frequency" default="3200.0">
+			Controls band 4 frequency.
+		</member>
+		<member type="float" name="band_4_q" default="0.707">
+			Controls band 4 q.
+		</member>
+		<member type="int" enum="FmodAudioEffectEQ.FilterType" name="band_4_filter_type" default="9">
+			Controls band 4 filter type.
+		</member>
+		<member type="float" name="band_5_gain" default="0.0">
+			Controls band 5 gain.
+		</member>
+		<member type="float" name="band_5_frequency" default="10000.0">
+			Controls band 5 frequency.
+		</member>
+		<member type="float" name="band_5_q" default="0.707">
+			Controls band 5 q.
+		</member>
+		<member type="int" enum="FmodAudioEffectEQ.FilterType" name="band_5_filter_type" default="9">
+			Controls band 5 filter type.
+		</member>
 	</members>
+	<signals />
 	<constants>
 		<constant name="PRESET_6_BANDS" value="0" enum="Preset">
 			6-band equalizer preset with frequencies: 32Hz, 100Hz, 320Hz, 1000Hz, 3200Hz, 10000Hz.

@@ -1,59 +1,87 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffectCapture" inherits="FmodAudioEffect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectCapture" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Captures audio output to an internal ring buffer for audio visualization, recording, or analysis.
 	</brief_description>
 	<description>
-		FmodAudioEffectCapture captures the audio signal passing through an audio bus and stores it in an internal ring buffer. This is useful for real-time audio visualization, custom audio processing, or recording audio output.
-		The captured audio is stored in a thread-safe ring buffer as interleaved stereo data (L, R, L, R...). You can query the available frames and retrieve them as needed.
-		To use this effect, apply it to an audio bus using [method apply_to], then poll [method get_frames_available] periodically and retrieve the audio data using [method get_buffer].
+		Captures the signal passing through an audio bus without changing its output. Attach it with [method FmodAudioEffect.apply_to], then read complete stereo frames with [method get_buffer]. Each [Vector2] contains the left sample in [code]x[/code] and the right sample in [code]y[/code]. Mono input is duplicated; input with more than two channels keeps its first two channels.
+		When the ring buffer is full, incoming frames are discarded and unread frames are preserved. [method clear_buffer] clears the queue and resets both counters. Changing [member buffer_length] clears queued audio but keeps the counters.
+		[codeblock]
+		extends Node
+
+		var _capture: FmodAudioEffectCapture = FmodAudioEffectCapture.new()
+
+
+		func _ready() -&gt; void:
+			_capture.apply_to(FmodServer.get_main_system().get_master_channel_group())
+
+
+		func _process(_delta: float) -&gt; void:
+			if _capture.can_get_buffer(256):
+				var frames: PackedVector2Array = _capture.get_buffer(256)
+				print(frames[0].x, frames[0].y)
+		[/codeblock]
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="set_buffer_length">
+			<return type="void" />
+			<param index="0" name="buffer_length" type="float" />
+			<description>
+				Sets [member buffer_length] and clears queued audio. The frame counters are preserved.
+			</description>
+		</method>
+		<method name="get_buffer_length" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member buffer_length] in seconds.
+			</description>
+		</method>
 		<method name="can_get_buffer" qualifiers="const">
 			<return type="bool" />
 			<param index="0" name="frames" type="int" />
 			<description>
-				Returns [code]true[/code] if at least the specified number of frames are available in the buffer and can be retrieved using [method get_buffer].
+				Returns [code]true[/code] when at least [param frames] complete audio frames are queued. Zero returns [code]true[/code]; a negative count returns [code]false[/code]. Availability may change before another call reads the data.
 			</description>
 		</method>
 		<method name="clear_buffer">
 			<return type="void" />
 			<description>
-				Clears the internal ring buffer, discarding all captured audio data. This is useful when you want to start fresh, for example, when beginning a new visualization or recording session.
+				Discards all queued frames and resets [method get_pushed_frames] and [method get_discarded_frames] to zero.
 			</description>
 		</method>
 		<method name="get_buffer">
 			<return type="PackedVector2Array" />
 			<param index="0" name="frames" type="int" />
 			<description>
-				Retrieves the specified number of frames from the internal ring buffer. The returned array contains interleaved stereo audio data where each [Vector2] represents one sample: [code]x[/code] is the left channel and [code]y[/code] is the right channel.
-				Returns an empty array if no data is available. Use [method can_get_buffer] or [method get_frames_available] to check availability before calling this method.
+				Removes and returns up to [param frames] queued stereo frames as a [PackedVector2Array]. Each [Vector2] stores left and right samples in [code]x[/code] and [code]y[/code]. If fewer frames are available, the returned array is shorter. Returns an empty array for a nonpositive count or an empty buffer. Reading does not reset either counter.
 			</description>
 		</method>
 		<method name="get_discarded_frames" qualifiers="const">
 			<return type="int" />
 			<description>
-				Returns the number of audio frames that have been discarded due to buffer overflow. If the audio bus produces data faster than it is consumed, older frames may be dropped. A high number of discarded frames indicates that you should increase the [member buffer_length] or consume data more frequently.
+				Returns the number of incoming frames dropped because the buffer was full. The unread frames already in the queue are preserved. Reading does not reset this counter; [method clear_buffer] and detaching the effect reset it.
 			</description>
 		</method>
 		<method name="get_frames_available" qualifiers="const">
 			<return type="int" />
 			<description>
-				Returns the number of audio frames currently available in the ring buffer that can be retrieved using [method get_buffer]. This value changes as new audio is captured and as data is retrieved.
+				Returns the number of complete stereo frames currently queued. This is the number of [Vector2] elements that can be read, rather than the number of individual channel samples.
 			</description>
 		</method>
 		<method name="get_pushed_frames" qualifiers="const">
 			<return type="int" />
 			<description>
-				Returns the total number of audio frames that have been pushed to the buffer from the audio bus since the effect was applied. This includes both frames currently in the buffer and frames that have been discarded.
+				Returns the number of frames submitted by the audio callback, including frames that were discarded. Reading does not reset this counter; [method clear_buffer] and detaching the effect reset it.
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="buffer_length" type="float" setter="set_buffer_length" getter="get_buffer_length" default="1.0">
-			The length of the internal ring buffer in seconds. A larger buffer can hold more audio data and is less likely to drop frames, but uses more memory. The default value of 1.0 second is suitable for most visualization and recording use cases. Increase this value if you are experiencing frame discards.
+		<member type="float" name="buffer_length" setter="set_buffer_length" getter="get_buffer_length" default="1.0">
+			Requested buffer length in seconds. It must be finite and positive. Capacity uses the current implementation's 48,000-frames-per-second sizing policy, clamped to 512 through 480,000 frames. Changing it clears queued audio while preserving the frame counters.
 		</member>
 	</members>
+	<signals />
+	<constants />
 </class>

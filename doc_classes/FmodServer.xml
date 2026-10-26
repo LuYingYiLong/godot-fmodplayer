@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodServer" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodServer" inherits="Object" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Global singleton that manages the FMOD audio system lifecycle.
 	</brief_description>
 	<description>
 		FmodServer is a global singleton that manages the FMOD Core API audio system within Godot. It initializes and maintains the main FMOD System instance, registers performance monitors for tracking CPU and file usage, manages the audio bus layout, and connects to Godot's SceneTree for per-frame updates.
-		The server automatically initializes during GDExtension loading and handles all FMOD lifecycle management. It creates performance monitors that can be viewed in Godot's Debugger > Monitor tab to track FMOD's resource usage.
+		The server automatically initializes during GDExtension loading and handles all FMOD lifecycle management. It creates performance monitors that can be viewed in Godot's Debugger &gt; Monitor tab to track FMOD's resource usage.
 		[b]Performance Monitors:[/b]
 		The following custom monitors are registered with Godot's Performance system:
 		- [code]FmodCPUUsage/DSP[/code]: DSP processing CPU usage percentage
@@ -22,10 +22,22 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="get_audio_bus_layout" qualifiers="static">
-			<return type="FmodAudioBusLayout" />
+		<method name="_connect_update">
+			<return type="void" />
 			<description>
-				Returns the audio bus layout used for managing audio buses and their routing. The bus layout synchronizes with Godot's AudioServer bus layout and provides FMOD-specific bus functionality including DSP effects.
+				Internal editor or engine callback.
+			</description>
+		</method>
+		<method name="_update_fmod">
+			<return type="void" />
+			<description>
+				Internal editor or engine callback.
+			</description>
+		</method>
+		<method name="_build_bus_layout">
+			<return type="void" />
+			<description>
+				Internal editor or engine callback.
 			</description>
 		</method>
 		<method name="get_main_system" qualifiers="static">
@@ -40,5 +52,27 @@
 				Returns the master channel group that all sounds route through by default. This is the root of the channel group hierarchy and can be used to control global volume, pitch, and effects for all playing sounds.
 			</description>
 		</method>
+		<method name="get_audio_bus_layout" qualifiers="static">
+			<return type="FmodAudioBusLayout" />
+			<description>
+				Returns the audio bus layout used for managing audio buses and their routing. The bus layout synchronizes with Godot's AudioServer bus layout and provides FMOD-specific bus functionality including DSP effects.
+			</description>
+		</method>
+		<method name="generate_bus_layout" qualifiers="static">
+			<return type="void" />
+			<description>
+				Generate bus layout.
+			</description>
+		</method>
+		<method name="reset_main_system" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="system" type="FmodSystem" />
+			<description>
+				Reset main system.
+			</description>
+		</method>
 	</methods>
+	<members />
+	<signals />
+	<constants />
 </class>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffect" inherits="Resource" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffect" inherits="Resource" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Abstract base class for audio effects in the FMOD audio system.
 	</brief_description>
@@ -10,36 +10,11 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="apply_to" qualifiers="virtual">
+		<method name="apply_to">
 			<return type="void" />
 			<param index="0" name="bus" type="FmodChannelGroup" />
 			<description>
 				Applies this effect to the specified audio bus. Subclasses should override this method to add their DSP units to the bus.
-			</description>
-		</method>
-		<method name="create_custom_dsp" qualifiers="virtual">
-			<return type="FmodDSP" />
-			<param index="0" name="system" type="FmodSystem" />
-			<description>
-				Creates a custom DSP unit for this effect. Subclasses can override this to provide custom DSP behavior.
-			</description>
-		</method>
-		<method name="get_bus" qualifiers="const">
-			<return type="FmodChannelGroup" />
-			<description>
-				Gets the audio bus (channel group) that this effect is currently applied to.
-			</description>
-		</method>
-		<method name="get_dsp_chain" qualifiers="const">
-			<return type="FmodDSP[]" />
-			<description>
-				Gets the chain of DSP units created by this effect.
-			</description>
-		</method>
-		<method name="get_dsp_description" qualifiers="virtual">
-			<return type="void*" />
-			<description>
-				Gets the DSP description structure for creating custom DSPs. Subclasses can override this to customize DSP behavior. Returns a pointer to FMOD_DSP_DESCRIPTION.
 			</description>
 		</method>
 		<method name="remove_from_bus">
@@ -49,20 +24,14 @@
 				Removes this effect from the specified audio bus, detaching all DSP units.
 			</description>
 		</method>
-	</methods>
-	<members>
-		<member name="bus" type="FmodChannelGroup">
-			The audio bus (channel group) that this effect is applied to.
-		</member>
-		<member name="dsp_chain" type="FmodDSP[]">
-			The array of DSP units created by this effect.
-		</member>
-	</members>
-	<signals>
-		<signal name="changed">
+		<method name="get_bus" qualifiers="const">
+			<return type="FmodChannelGroup" />
 			<description>
-				Emitted when the effect's parameters have changed and need to be reapplied.
+				Gets the audio bus (channel group) that this effect is currently applied to.
 			</description>
-		</signal>
-	</signals>
+		</method>
+	</methods>
+	<members />
+	<signals />
+	<constants />
 </class>

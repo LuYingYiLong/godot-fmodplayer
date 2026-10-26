@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffectPitchShift" inherits="FmodAudioEffect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectPitchShift" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Pitch shifter for changing the pitch of audio without affecting playback speed.
 	</brief_description>
@@ -10,17 +10,59 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="set_pitch_scale">
+			<return type="void" />
+			<param index="0" name="pitch_scale" type="float" />
+			<description>
+				Sets [member pitch_scale].
+			</description>
+		</method>
+		<method name="get_pitch_scale" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member pitch_scale].
+			</description>
+		</method>
+		<method name="set_fft_size">
+			<return type="void" />
+			<param index="0" name="fft_size" type="int" enum="FmodAudioEffectPitchShift.FFTSize" />
+			<description>
+				Sets [member fft_size].
+			</description>
+		</method>
+		<method name="get_fft_size" qualifiers="const">
+			<return type="int" enum="FmodAudioEffectPitchShift.FFTSize" />
+			<description>
+				Returns [member fft_size].
+			</description>
+		</method>
+		<method name="set_oversampling">
+			<return type="void" />
+			<param index="0" name="oversampling" type="int" />
+			<description>
+				Sets [member oversampling].
+			</description>
+		</method>
+		<method name="get_oversampling" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns [member oversampling].
+			</description>
+		</method>
+	</methods>
 	<members>
-		<member name="fft_size" type="int" setter="set_fft_size" getter="get_fft_size" enum="FmodAudioEffectPitchShift.FFTSize" default="3">
-			The size of the FFT window used for pitch shifting. Larger sizes provide better frequency resolution but increase latency. Options: [constant FFT_SIZE_256], [constant FFT_SIZE_512], [constant FFT_SIZE_1024], [constant FFT_SIZE_2048], [constant FFT_SIZE_4096]. Default: [constant FFT_SIZE_2048]. Use smaller sizes for lower latency and larger sizes for better quality.
-		</member>
-		<member name="oversampling" type="int" setter="set_oversampling" getter="get_oversampling" default="4">
-			The oversampling factor for the FFT processing. Range: 1 to 8. Default: 4. Higher oversampling values can reduce artifacts and improve quality, especially at extreme pitch shifts, but increase CPU usage proportionally. Values above 4 provide diminishing returns for most content.
-		</member>
-		<member name="pitch_scale" type="float" setter="set_pitch_scale" getter="get_pitch_scale" default="1.0">
+		<member type="float" name="pitch_scale" setter="set_pitch_scale" getter="get_pitch_scale" default="1.0">
 			The pitch scale factor applied to the audio. Range: 0.5 to 2.0. Default: 1.0 (unity, no change). A value of 2.0 shifts the pitch up by one octave, 0.5 shifts it down by one octave, and 1.0 leaves the pitch unchanged. This is a linear multiplier; use [code]pow(2, semitones/12)[/code] to convert from semitones.
 		</member>
+		<member type="int" enum="FmodAudioEffectPitchShift.FFTSize" name="fft_size" setter="set_fft_size" getter="get_fft_size" default="3">
+			The size of the FFT window used for pitch shifting. Larger sizes provide better frequency resolution but increase latency. Options: [constant FFT_SIZE_256], [constant FFT_SIZE_512], [constant FFT_SIZE_1024], [constant FFT_SIZE_2048], [constant FFT_SIZE_4096]. Default: [constant FFT_SIZE_2048]. Use smaller sizes for lower latency and larger sizes for better quality.
+		</member>
+		<member type="int" name="oversampling" setter="set_oversampling" getter="get_oversampling" default="4">
+			The oversampling factor for the FFT processing. Range: 1 to 8. Default: 4. Higher oversampling values can reduce artifacts and improve quality, especially at extreme pitch shifts, but increase CPU usage proportionally. Values above 4 provide diminishing returns for most content.
+		</member>
 	</members>
+	<signals />
 	<constants>
 		<constant name="FFT_SIZE_256" value="0" enum="FFTSize">
 			FFT window size of 256 samples. Lowest latency but poorest frequency resolution. Best for real-time applications where low latency is critical.

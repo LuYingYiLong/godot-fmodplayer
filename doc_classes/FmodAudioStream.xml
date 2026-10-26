@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioStream" inherits="Resource" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioStream" inherits="Resource" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A resource representing an audio stream for FMOD playback.
 	</brief_description>
@@ -10,16 +10,251 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="clear">
+		<method name="set_resampler_method">
 			<return type="void" />
+			<param index="0" name="method" type="int" enum="FmodSystem.FmodResamplerMethod" />
 			<description>
-				Clears the audio data and releases the internal [FmodSound] resource. This frees up memory and resets the stream to an empty state. The stream will need to be reloaded before it can be played again.
+				Sets the per-sound FMOD resampler. Invalidates the cached sound so the next playback uses the new method.
 			</description>
 		</method>
-		<method name="get_length" qualifiers="const">
-			<return type="float" />
+		<method name="get_resampler_method" qualifiers="const">
+			<return type="int" enum="FmodSystem.FmodResamplerMethod" />
 			<description>
-				Returns the length of the audio in seconds. Returns [code]0.0[/code] if the sound has not been created or if no data is loaded.
+				Returns the per-sound resampler.
+			</description>
+		</method>
+		<method name="set_audio_data">
+			<return type="void" />
+			<param index="0" name="data" type="PackedByteArray" />
+			<description>
+				Sets [member audio_data].
+			</description>
+		</method>
+		<method name="get_audio_data" qualifiers="const">
+			<return type="PackedByteArray" />
+			<description>
+				Returns [member audio_data].
+			</description>
+		</method>
+		<method name="set_mode_flags">
+			<return type="void" />
+			<param index="0" name="flags" type="int" />
+			<description>
+				Sets [member mode_flags].
+			</description>
+		</method>
+		<method name="get_mode_flags" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns [member mode_flags].
+			</description>
+		</method>
+		<method name="set_length_override">
+			<return type="void" />
+			<param index="0" name="length" type="int" />
+			<description>
+				Sets [member length_override].
+			</description>
+		</method>
+		<method name="get_length_override" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns [member length_override].
+			</description>
+		</method>
+		<method name="set_file_offset">
+			<return type="void" />
+			<param index="0" name="offset" type="int" />
+			<description>
+				Sets [member file_offset].
+			</description>
+		</method>
+		<method name="get_file_offset" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns [member file_offset].
+			</description>
+		</method>
+		<method name="set_decode_buffer_size">
+			<return type="void" />
+			<param index="0" name="size" type="int" />
+			<description>
+				Sets [member decode_buffer_size].
+			</description>
+		</method>
+		<method name="get_decode_buffer_size" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns [member decode_buffer_size].
+			</description>
+		</method>
+		<method name="set_initial_subsound">
+			<return type="void" />
+			<param index="0" name="subsound" type="int" />
+			<description>
+				Sets [member initial_subsound].
+			</description>
+		</method>
+		<method name="get_initial_subsound" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns [member initial_subsound].
+			</description>
+		</method>
+		<method name="set_num_subsounds">
+			<return type="void" />
+			<param index="0" name="count" type="int" />
+			<description>
+				Sets [member num_subsounds].
+			</description>
+		</method>
+		<method name="get_num_subsounds" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns [member num_subsounds].
+			</description>
+		</method>
+		<method name="set_inclusion_list">
+			<return type="void" />
+			<param index="0" name="list" type="PackedInt32Array" />
+			<description>
+				Sets [member inclusion_list].
+			</description>
+		</method>
+		<method name="get_inclusion_list" qualifiers="const">
+			<return type="PackedInt32Array" />
+			<description>
+				Returns [member inclusion_list].
+			</description>
+		</method>
+		<method name="set_suggested_sound_type">
+			<return type="void" />
+			<param index="0" name="type" type="int" enum="FmodSound.FmodSoundType" />
+			<description>
+				Sets [member suggested_sound_type].
+			</description>
+		</method>
+		<method name="get_suggested_sound_type" qualifiers="const">
+			<return type="int" enum="FmodSound.FmodSoundType" />
+			<description>
+				Returns [member suggested_sound_type].
+			</description>
+		</method>
+		<method name="set_default_frequency">
+			<return type="void" />
+			<param index="0" name="frequency" type="int" />
+			<description>
+				Sets [member default_frequency].
+			</description>
+		</method>
+		<method name="get_default_frequency" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns [member default_frequency].
+			</description>
+		</method>
+		<method name="set_num_channels">
+			<return type="void" />
+			<param index="0" name="channels" type="int" />
+			<description>
+				Sets [member num_channels].
+			</description>
+		</method>
+		<method name="get_num_channels" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns [member num_channels].
+			</description>
+		</method>
+		<method name="set_format">
+			<return type="void" />
+			<param index="0" name="format" type="int" enum="FmodSound.FmodSoundFormat" />
+			<description>
+				Sets [member format].
+			</description>
+		</method>
+		<method name="get_format" qualifiers="const">
+			<return type="int" enum="FmodSound.FmodSoundFormat" />
+			<description>
+				Returns [member format].
+			</description>
+		</method>
+		<method name="set_dls_name">
+			<return type="void" />
+			<param index="0" name="name" type="String" />
+			<description>
+				Sets [member dls_name].
+			</description>
+		</method>
+		<method name="get_dls_name" qualifiers="const">
+			<return type="String" />
+			<description>
+				Returns [member dls_name].
+			</description>
+		</method>
+		<method name="set_encryption_key">
+			<return type="void" />
+			<param index="0" name="key" type="String" />
+			<description>
+				Sets [member encryption_key].
+			</description>
+		</method>
+		<method name="get_encryption_key" qualifiers="const">
+			<return type="String" />
+			<description>
+				Returns [member encryption_key].
+			</description>
+		</method>
+		<method name="set_max_polyphony">
+			<return type="void" />
+			<param index="0" name="polyphony" type="int" />
+			<description>
+				Sets [member max_polyphony].
+			</description>
+		</method>
+		<method name="get_max_polyphony" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns [member max_polyphony].
+			</description>
+		</method>
+		<method name="set_initial_seek_position">
+			<return type="void" />
+			<param index="0" name="position" type="int" />
+			<description>
+				Sets [member initial_seek_position].
+			</description>
+		</method>
+		<method name="get_initial_seek_position" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns [member initial_seek_position].
+			</description>
+		</method>
+		<method name="set_initial_seek_postype">
+			<return type="void" />
+			<param index="0" name="postype" type="int" enum="FmodSystem.FmodTimeUnit" />
+			<description>
+				Sets [member initial_seek_postype].
+			</description>
+		</method>
+		<method name="get_initial_seek_postype" qualifiers="const">
+			<return type="int" enum="FmodSystem.FmodTimeUnit" />
+			<description>
+				Returns [member initial_seek_postype].
+			</description>
+		</method>
+		<method name="set_ignore_set_file_system">
+			<return type="void" />
+			<param index="0" name="ignore" type="bool" />
+			<description>
+				Sets [member ignore_set_file_system].
+			</description>
+		</method>
+		<method name="is_ignore_set_file_system" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [member ignore_set_file_system].
 			</description>
 		</method>
 		<method name="get_sound">
@@ -27,31 +262,6 @@
 			<description>
 				Returns the [FmodSound] object for this stream, creating it if necessary (lazy creation). The sound is created using the current [member mode_flags] settings. If the mode flags have changed since the last call, the sound will be recreated with the new settings.
 				Returns an empty reference if no audio data is loaded or if the FMOD system is not available.
-			</description>
-		</method>
-		<method name="invalidate_sound">
-			<return type="void" />
-			<description>
-				Invalidates the cached [FmodSound] object while preserving the audio data.
-				The next call to [method get_sound] will create a new sound with the current mode flags.
-				This is useful when you need to change mode flags (e.g., switching between 2D and 3D)
-				without reloading the audio data.
-			</description>
-		</method>
-		<method name="is_data_loaded" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if audio data has been loaded into this stream, [code]false[/code] otherwise.
-			</description>
-		</method>
-		<method name="load_from_file" qualifiers="static">
-			<return type="FmodAudioStream" />
-			<param index="0" name="path" type="String" />
-			<param index="1" name="flags" type="int" default="1" />
-			<description>
-				Loads an audio stream from a file path. The path can be a Godot resource path (e.g., [code]"res://audio/music.mp3"[/code]) or an absolute file path.
-				The [param flags] parameter specifies the creation mode flags (bitmask of [enum CreateMode]). Defaults to [constant MODE_STREAM] for streaming playback from disk.
-				Returns an empty reference if the file cannot be opened or read.
 			</description>
 		</method>
 		<method name="preload">
@@ -68,78 +278,94 @@
 				Returns [code]true[/code] if the internal [FmodSound] has already been created.
 			</description>
 		</method>
-		<method name="set_resampler_method">
-			<return type="void" />
-			<param index="0" name="method" type="int" enum="FmodSystem.FmodResamplerMethod" />
+		<method name="get_length" qualifiers="const">
+			<return type="float" />
 			<description>
-				Sets the per-sound FMOD resampler. Invalidates the cached sound so the next playback uses the new method.
+				Returns the length of the audio in seconds. Returns [code]0.0[/code] if the sound has not been created or if no data is loaded.
 			</description>
 		</method>
-		<method name="get_resampler_method">
-			<return type="int" />
+		<method name="is_data_loaded" qualifiers="const">
+			<return type="bool" />
 			<description>
-				Returns the per-sound resampler.
+				Returns [code]true[/code] if audio data has been loaded into this stream, [code]false[/code] otherwise.
+			</description>
+		</method>
+		<method name="clear">
+			<return type="void" />
+			<description>
+				Clears the audio data and releases the internal [FmodSound] resource. This frees up memory and resets the stream to an empty state. The stream will need to be reloaded before it can be played again.
+			</description>
+		</method>
+		<method name="load_from_file" qualifiers="static">
+			<return type="FmodAudioStream" />
+			<param index="0" name="path" type="String" />
+			<param index="1" name="flags" type="int" default="1" />
+			<description>
+				Loads an audio stream from a file path. The path can be a Godot resource path (e.g., [code]"res://audio/music.mp3"[/code]) or an absolute file path.
+				The [param flags] parameter specifies the creation mode flags (bitmask of [enum CreateMode]). Defaults to [constant MODE_STREAM] for streaming playback from disk.
+				Returns an empty reference if the file cannot be opened or read.
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="resampler_method" type="int" setter="set_resampler_method" getter="get_resampler_method" enum="FmodSystem.FmodResamplerMethod" default="0">Per-sound resampler; Default follows the system setting.</member>
-		<member name="audio_data" type="PackedByteArray" setter="set_audio_data" getter="get_audio_data" default="PackedByteArray()">
+		<member type="int" enum="FmodSystem.FmodResamplerMethod" name="resampler_method" setter="set_resampler_method" getter="get_resampler_method" default="0">Per-sound resampler; Default follows the system setting.</member>
+		<member type="PackedByteArray" name="audio_data" setter="set_audio_data" getter="get_audio_data" default="PackedByteArray()">
 			The raw audio data loaded from file. This is typically set by the audio importer or by [method load_from_file]. The data is stored in memory and used to create the FMOD sound object when [method get_sound] is called.
 		</member>
-		<member name="mode_flags" type="int" setter="set_mode_flags" getter="get_mode_flags" default="1">
+		<member type="int" name="mode_flags" setter="set_mode_flags" getter="get_mode_flags" default="1">
 			Creation mode flags that determine how the audio is loaded and played. This is a bitmask of [enum CreateMode] values. When these flags are changed, the internal [FmodSound] is released and will be recreated with the new flags on the next call to [method get_sound].
 			Default value is [constant MODE_STREAM] (1).
 		</member>
-		<member name="decode_buffer_size" type="int" setter="set_decode_buffer_size" getter="get_decode_buffer_size" default="0">
-			Optional FMOD decode buffer size in PCM samples. A value of [code]0[/code] lets FMOD choose its default.
-		</member>
-		<member name="default_frequency" type="int" setter="set_default_frequency" getter="get_default_frequency" default="0">
-			Default sample rate used when importing or opening raw PCM data. Only needed for formats that cannot describe their own frequency.
-		</member>
-		<member name="dls_name" type="String" setter="set_dls_name" getter="get_dls_name" default="&quot;&quot;">
-			Optional DLS or SF2 bank path used by MIDI/DLS content.
-		</member>
-		<member name="encryption_key" type="String" setter="set_encryption_key" getter="get_encryption_key" default="&quot;&quot;">
-			Optional key used when opening encrypted FMOD-compatible audio data.
-		</member>
-		<member name="file_offset" type="int" setter="set_file_offset" getter="get_file_offset" default="0">
-			Optional byte offset passed to [code]FMOD_CREATESOUNDEXINFO.fileoffset[/code]. Leave at [code]0[/code] for normal imported files.
-		</member>
-		<member name="format" type="int" setter="set_format" getter="get_format" default="0">
-			Raw PCM format. This is mainly used with [member suggested_sound_type] set to [code]FMOD_SOUND_TYPE_RAW[/code].
-		</member>
-		<member name="ignore_set_file_system" type="bool" setter="set_ignore_set_file_system" getter="is_ignore_set_file_system" default="false">
-			Forces this sound creation call to ignore a custom FMOD file system, if one has been configured.
-		</member>
-		<member name="inclusion_list" type="PackedInt32Array" setter="set_inclusion_list" getter="get_inclusion_list" default="PackedInt32Array()">
-			Optional subsound inclusion list used by container formats.
-		</member>
-		<member name="initial_seek_position" type="int" setter="set_initial_seek_position" getter="get_initial_seek_position" default="0">
-			Optional initial seek position. The unit is controlled by [member initial_seek_postype].
-		</member>
-		<member name="initial_seek_postype" type="int" setter="set_initial_seek_postype" getter="get_initial_seek_postype" default="1">
-			Time unit used for [member initial_seek_position].
-		</member>
-		<member name="initial_subsound" type="int" setter="set_initial_subsound" getter="get_initial_subsound" default="-1">
-			Optional initial subsound index for container formats. [code]-1[/code] lets FMOD use its default.
-		</member>
-		<member name="length_override" type="int" setter="set_length_override" getter="get_length_override" default="0">
+		<member type="int" name="length_override" setter="set_length_override" getter="get_length_override" default="0">
 			Optional byte length override. A value of [code]0[/code] uses the imported data size.
 		</member>
-		<member name="max_polyphony" type="int" setter="set_max_polyphony" getter="get_max_polyphony" default="0">
-			Optional maximum polyphony for formats that support it. A value of [code]0[/code] leaves FMOD's default unchanged.
+		<member type="int" name="file_offset" setter="set_file_offset" getter="get_file_offset" default="0">
+			Optional byte offset passed to [code]FMOD_CREATESOUNDEXINFO.fileoffset[/code]. Leave at [code]0[/code] for normal imported files.
 		</member>
-		<member name="num_channels" type="int" setter="set_num_channels" getter="get_num_channels" default="0">
-			Channel count used when importing or opening raw PCM data.
+		<member type="int" name="decode_buffer_size" setter="set_decode_buffer_size" getter="get_decode_buffer_size" default="0">
+			Optional FMOD decode buffer size in PCM samples. A value of [code]0[/code] lets FMOD choose its default.
 		</member>
-		<member name="num_subsounds" type="int" setter="set_num_subsounds" getter="get_num_subsounds" default="0">
+		<member type="int" name="initial_subsound" setter="set_initial_subsound" getter="get_initial_subsound" default="-1">
+			Optional initial subsound index for container formats. [code]-1[/code] lets FMOD use its default.
+		</member>
+		<member type="int" name="num_subsounds" setter="set_num_subsounds" getter="get_num_subsounds" default="0">
 			Optional subsound count override for container formats.
 		</member>
-		<member name="suggested_sound_type" type="int" setter="set_suggested_sound_type" getter="get_suggested_sound_type" default="0">
+		<member type="PackedInt32Array" name="inclusion_list" setter="set_inclusion_list" getter="get_inclusion_list" default="PackedInt32Array()">
+			Optional subsound inclusion list used by container formats.
+		</member>
+		<member type="int" name="suggested_sound_type" setter="set_suggested_sound_type" getter="get_suggested_sound_type" default="0">
 			Optional FMOD sound type hint. Leave as unknown for normal audio files; set this for raw PCM or ambiguous/special container formats.
 		</member>
+		<member type="int" name="default_frequency" setter="set_default_frequency" getter="get_default_frequency" default="0">
+			Default sample rate used when importing or opening raw PCM data. Only needed for formats that cannot describe their own frequency.
+		</member>
+		<member type="int" name="num_channels" setter="set_num_channels" getter="get_num_channels" default="0">
+			Channel count used when importing or opening raw PCM data.
+		</member>
+		<member type="int" name="format" setter="set_format" getter="get_format" default="0">
+			Raw PCM format. This is mainly used with [member suggested_sound_type] set to [code]FMOD_SOUND_TYPE_RAW[/code].
+		</member>
+		<member type="String" name="dls_name" setter="set_dls_name" getter="get_dls_name" default="&quot;&quot;">
+			Optional DLS or SF2 bank path used by MIDI/DLS content.
+		</member>
+		<member type="String" name="encryption_key" setter="set_encryption_key" getter="get_encryption_key" default="&quot;&quot;">
+			Optional key used when opening encrypted FMOD-compatible audio data.
+		</member>
+		<member type="int" name="max_polyphony" setter="set_max_polyphony" getter="get_max_polyphony" default="0">
+			Optional maximum polyphony for formats that support it. A value of [code]0[/code] leaves FMOD's default unchanged.
+		</member>
+		<member type="int" name="initial_seek_position" setter="set_initial_seek_position" getter="get_initial_seek_position" default="0">
+			Optional initial seek position. The unit is controlled by [member initial_seek_postype].
+		</member>
+		<member type="int" name="initial_seek_postype" setter="set_initial_seek_postype" getter="get_initial_seek_postype" default="1">
+			Time unit used for [member initial_seek_position].
+		</member>
+		<member type="bool" name="ignore_set_file_system" setter="set_ignore_set_file_system" getter="is_ignore_set_file_system" default="false">
+			Forces this sound creation call to ignore a custom FMOD file system, if one has been configured.
+		</member>
 	</members>
+	<signals />
 	<constants>
 		<constant name="MODE_DEFAULT" value="0" enum="CreateMode">
 			Default creation mode. No special flags are set.

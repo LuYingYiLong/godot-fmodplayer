@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodDSP" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodDSP" inherits="RefCounted" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Wrapper for FMOD::DSP, providing digital signal processing effects.
 	</brief_description>
@@ -9,12 +9,46 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="add_input_preallocated">
+			<return type="FmodDSPConnection" />
+			<param index="0" name="target_dsp" type="FmodDSP" />
+			<param index="1" name="connection" type="FmodDSPConnection" />
+			<description>
+				Connects an input using a connection from [method FmodSystem.create_dsp_connection]. Configure its mix before attaching it. Returns the supplied connection.
+			</description>
+		</method>
 		<method name="add_input">
 			<return type="FmodDSPConnection" />
 			<param index="0" name="target_dsp" type="FmodDSP" />
 			<param index="1" name="type" type="int" enum="FmodDSPConnection.FmodDSPConnectionType" default="0" />
 			<description>
 				Adds a DSP unit as an input to this DSP. Returns the connection handle.
+			</description>
+		</method>
+		<method name="get_input" qualifiers="const">
+			<return type="Dictionary" />
+			<param index="0" name="index" type="int" />
+			<description>
+				Gets the DSP and connection at the specified input index. Returns a dictionary with [code]output[/code] and [code]output_connection[/code].
+			</description>
+		</method>
+		<method name="get_output" qualifiers="const">
+			<return type="Dictionary" />
+			<param index="0" name="index" type="int" />
+			<description>
+				Gets the DSP and connection at the specified output index. Returns a dictionary with [code]input[/code] and [code]input_connection[/code].
+			</description>
+		</method>
+		<method name="get_num_inputs" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the number of input DSP connections.
+			</description>
+		</method>
+		<method name="get_num_outputs" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the number of output DSP connections.
 			</description>
 		</method>
 		<method name="disconnect_all">
@@ -33,91 +67,18 @@
 				Disconnects this DSP from the specified target DSP.
 			</description>
 		</method>
-		<method name="get_active" qualifiers="const">
-			<return type="bool" />
+		<method name="set_input_channel_format">
+			<return type="void" />
+			<param index="0" name="numchannels" type="int" />
+			<param index="1" name="speakermode" type="int" enum="FmodSystem.FmodSpeakerMode" />
 			<description>
-				Returns whether this DSP is currently active (processing).
-			</description>
-		</method>
-		<method name="get_bypass" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns whether this DSP is currently bypassed.
+				Sets the PCM channel format this DSP receives during processing.
 			</description>
 		</method>
 		<method name="get_input_channel_format" qualifiers="const">
 			<return type="Dictionary" />
 			<description>
 				Returns a dictionary containing the channel format information: [code]num_channels[/code] and [code]speaker_mode[/code].
-			</description>
-		</method>
-		<method name="get_cpu_usage" qualifiers="const">
-			<return type="Dictionary" />
-			<description>
-				Returns CPU usage statistics for this DSP. Contains [code]exclusive[/code] and [code]inclusive[/code] values.
-			</description>
-		</method>
-		<method name="get_data_parameter_index" qualifiers="const">
-			<return type="int" />
-			<param index="0" name="data_type" type="int" enum="FmodDSP.FmodDSPParameterDataType" />
-			<description>
-				Gets the index of the first data parameter of the specified data type.
-			</description>
-		</method>
-		<method name="get_idle" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns whether the DSP is currently idle (not processing any audible input).
-			</description>
-		</method>
-		<method name="get_info" qualifiers="const">
-			<return type="Dictionary" />
-			<description>
-				Returns [code]name[/code], [code]version[/code], [code]channels[/code], and [code]mode[/code] ([enum FmodDSPMode]).
-			</description>
-		</method>
-		<method name="get_input" qualifiers="const">
-			<return type="Dictionary" />
-			<param index="0" name="index" type="int" />
-			<description>
-				Gets the DSP and connection at the specified input index. Returns a dictionary with [code]output[/code] and [code]output_connection[/code].
-			</description>
-		</method>
-		<method name="get_metering_enabled" qualifiers="const">
-			<return type="Dictionary" />
-			<description>
-				Returns metering enabled state for input and output signals. Contains [code]input_enabled[/code] and [code]output_enabled[/code].
-			</description>
-		</method>
-		<method name="get_metering_info" qualifiers="const">
-			<return type="Dictionary" />
-			<description>
-				Returns metering information for input and output signals. Contains [code]input[/code] and [code]output[/code] dictionaries with peak and RMS levels.
-			</description>
-		</method>
-		<method name="get_num_inputs" qualifiers="const">
-			<return type="int" />
-			<description>
-				Returns the number of input DSP connections.
-			</description>
-		</method>
-		<method name="get_num_outputs" qualifiers="const">
-			<return type="int" />
-			<description>
-				Returns the number of output DSP connections.
-			</description>
-		</method>
-		<method name="get_num_parameters" qualifiers="const">
-			<return type="int" />
-			<description>
-				Returns the number of parameters exposed by this DSP unit.
-			</description>
-		</method>
-		<method name="get_output" qualifiers="const">
-			<return type="Dictionary" />
-			<param index="0" name="index" type="int" />
-			<description>
-				Gets the DSP and connection at the specified output index. Returns a dictionary with [code]input[/code] and [code]input_connection[/code].
 			</description>
 		</method>
 		<method name="get_output_channel_format">
@@ -128,91 +89,10 @@
 				Gets the output channel format based on the specified input format. Returns a dictionary with [code]out_channels[/code] and [code]out_speaker_mode[/code].
 			</description>
 		</method>
-		<method name="get_parameter_bool" qualifiers="const">
-			<return type="bool" />
-			<param index="0" name="index" type="int" />
-			<description>
-				Gets a boolean parameter value by index.
-			</description>
-		</method>
-		<method name="get_parameter_data" qualifiers="const">
-			<return type="PackedByteArray" />
-			<param index="0" name="index" type="int" />
-			<description>
-				Gets a binary data parameter value by index.
-			</description>
-		</method>
-		<method name="get_parameter_float" qualifiers="const">
-			<return type="float" />
-			<param index="0" name="index" type="int" />
-			<description>
-				Gets a float parameter value by index.
-			</description>
-		</method>
-		<method name="get_parameter_info" qualifiers="const">
-			<return type="Dictionary" />
-			<param index="0" name="index" type="int" />
-			<description>
-				Gets information about the specified parameter, including type, name, label, description, and value ranges.
-			</description>
-		</method>
-		<method name="get_parameter_int" qualifiers="const">
-			<return type="int" />
-			<param index="0" name="index" type="int" />
-			<description>
-				Gets an integer parameter value by index.
-			</description>
-		</method>
-		<method name="get_system_object" qualifiers="const">
-			<return type="FmodSystem" />
-			<description>
-				Gets the parent FMOD system object.
-			</description>
-		</method>
-		<method name="get_type" qualifiers="const">
-			<return type="int" enum="FmodDSP.FmodDSPType" />
-			<description>
-				Gets the predefined type of this DSP unit.
-			</description>
-		</method>
-		<method name="get_wet_dry_mix" qualifiers="const">
+		<method name="get_metering_info" qualifiers="const">
 			<return type="Dictionary" />
 			<description>
-				Gets the wet/dry mix ratios. Returns a dictionary with [code]prewet[/code], [code]postwet[/code], and [code]dry[/code] values.
-			</description>
-		</method>
-		<method name="release">
-			<return type="void" />
-			<description>
-				Releases the DSP unit and frees its memory.
-			</description>
-		</method>
-		<method name="reset">
-			<return type="void" />
-			<description>
-				Resets the DSP's internal state to prepare it for new input signals.
-			</description>
-		</method>
-		<method name="set_active">
-			<return type="void" />
-			<param index="0" name="active" type="bool" />
-			<description>
-				Sets whether the DSP is active (processing).
-			</description>
-		</method>
-		<method name="set_bypass">
-			<return type="void" />
-			<param index="0" name="bypass" type="bool" />
-			<description>
-				Sets whether the DSP should be bypassed.
-			</description>
-		</method>
-		<method name="set_input_channel_format">
-			<return type="void" />
-			<param index="0" name="numchannels" type="int" />
-			<param index="1" name="speakermode" type="int" enum="FmodSystem.FmodSpeakerMode" />
-			<description>
-				Sets the PCM channel format this DSP receives during processing.
+				Returns metering information for input and output signals. Contains [code]input[/code] and [code]output[/code] dictionaries with peak and RMS levels.
 			</description>
 		</method>
 		<method name="set_metering_enabled">
@@ -223,12 +103,38 @@
 				Enables or disables metering for input and output signals.
 			</description>
 		</method>
+		<method name="get_metering_enabled" qualifiers="const">
+			<return type="Dictionary" />
+			<description>
+				Returns metering enabled state for input and output signals. Contains [code]input_enabled[/code] and [code]output_enabled[/code].
+			</description>
+		</method>
+		<method name="get_data_parameter_index" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="data_type" type="int" enum="FmodDSP.FmodDSPParameterDataType" />
+			<description>
+				Gets the index of the first data parameter of the specified data type.
+			</description>
+		</method>
+		<method name="get_num_parameters" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the number of parameters exposed by this DSP unit.
+			</description>
+		</method>
 		<method name="set_parameter_bool">
 			<return type="void" />
 			<param index="0" name="index" type="int" />
 			<param index="1" name="value" type="bool" />
 			<description>
 				Sets a boolean parameter value by index.
+			</description>
+		</method>
+		<method name="get_parameter_bool" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="index" type="int" />
+			<description>
+				Gets a boolean parameter value by index.
 			</description>
 		</method>
 		<method name="set_parameter_data">
@@ -239,6 +145,13 @@
 				Sets a binary data parameter value by index.
 			</description>
 		</method>
+		<method name="get_parameter_data" qualifiers="const">
+			<return type="PackedByteArray" />
+			<param index="0" name="index" type="int" />
+			<description>
+				Gets a binary data parameter value by index.
+			</description>
+		</method>
 		<method name="set_parameter_float">
 			<return type="void" />
 			<param index="0" name="index" type="int" />
@@ -247,12 +160,59 @@
 				Sets a float parameter value by index.
 			</description>
 		</method>
+		<method name="get_parameter_float" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="index" type="int" />
+			<description>
+				Gets a float parameter value by index.
+			</description>
+		</method>
 		<method name="set_parameter_int">
 			<return type="void" />
 			<param index="0" name="index" type="int" />
 			<param index="1" name="value" type="int" />
 			<description>
 				Sets an integer parameter value by index.
+			</description>
+		</method>
+		<method name="get_parameter_int" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="index" type="int" />
+			<description>
+				Gets an integer parameter value by index.
+			</description>
+		</method>
+		<method name="get_parameter_info" qualifiers="const">
+			<return type="Dictionary" />
+			<param index="0" name="index" type="int" />
+			<description>
+				Gets information about the specified parameter, including type, name, label, description, and value ranges.
+			</description>
+		</method>
+		<method name="set_active">
+			<return type="void" />
+			<param index="0" name="active" type="bool" />
+			<description>
+				Sets whether the DSP is active (processing).
+			</description>
+		</method>
+		<method name="get_active" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns whether this DSP is currently active (processing).
+			</description>
+		</method>
+		<method name="set_bypass">
+			<return type="void" />
+			<param index="0" name="bypass" type="bool" />
+			<description>
+				Sets whether the DSP should be bypassed.
+			</description>
+		</method>
+		<method name="get_bypass" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns whether this DSP is currently bypassed.
 			</description>
 		</method>
 		<method name="set_wet_dry_mix">
@@ -264,36 +224,233 @@
 				Sets the wet and dry signal mix ratios.
 			</description>
 		</method>
-		<method name="add_input_preallocated">
-			<return type="FmodDSPConnection" />
-			<param index="0" name="target_dsp" type="FmodDSP" />
-			<param index="1" name="connection" type="FmodDSPConnection" />
+		<method name="get_wet_dry_mix" qualifiers="const">
+			<return type="Dictionary" />
 			<description>
-				Connects an input using a connection from [method FmodSystem.create_dsp_connection]. Configure its mix before attaching it. Returns the supplied connection.
+				Gets the wet/dry mix ratios. Returns a dictionary with [code]prewet[/code], [code]postwet[/code], and [code]dry[/code] values.
+			</description>
+		</method>
+		<method name="get_idle" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns whether the DSP is currently idle (not processing any audible input).
+			</description>
+		</method>
+		<method name="reset">
+			<return type="void" />
+			<description>
+				Resets the DSP's internal state to prepare it for new input signals.
+			</description>
+		</method>
+		<method name="release">
+			<return type="void" />
+			<description>
+				Releases the DSP unit and frees its memory.
+			</description>
+		</method>
+		<method name="get_type" qualifiers="const">
+			<return type="int" enum="FmodDSP.FmodDSPType" />
+			<description>
+				Gets the predefined type of this DSP unit.
+			</description>
+		</method>
+		<method name="get_info" qualifiers="const">
+			<return type="Dictionary" />
+			<description>
+				Returns [code skip-lint]name[/code], [code]version[/code], [code]channels[/code], and [code]mode[/code] ([enum FmodDSPMode]). FMOD 2.04 does not return configuration dialog dimensions.
+			</description>
+		</method>
+		<method name="get_cpu_usage" qualifiers="const">
+			<return type="Dictionary" />
+			<description>
+				Returns CPU usage statistics for this DSP. Contains [code]exclusive[/code] and [code]inclusive[/code] values.
+			</description>
+		</method>
+		<method name="get_system_object" qualifiers="const">
+			<return type="FmodSystem" />
+			<description>
+				Gets the parent FMOD system object.
+			</description>
+		</method>
+		<method name="set_create_callback">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Assigns the custom DSP [code]create[/code] callback. The callable receives no arguments and may return an FMOD result code. Assigning it does not recreate the DSP. Notifications from other threads are deferred to the main thread; their return values cannot affect the completed FMOD call. Pass an empty [Callable] to clear it.
+			</description>
+		</method>
+		<method name="get_create_callback" qualifiers="const">
+			<return type="Callable" />
+			<description>
+				Returns the callback assigned by [method set_create_callback].
+			</description>
+		</method>
+		<method name="set_release_callback">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Assigns the custom DSP [code skip-lint]release[/code] callback. The callable receives no arguments and may return an FMOD result code. Notifications from other threads are deferred to the main thread; their return values cannot affect the completed FMOD call. Pass an empty [Callable] to clear it.
+			</description>
+		</method>
+		<method name="get_release_callback" qualifiers="const">
+			<return type="Callable" />
+			<description>
+				Returns the callback assigned by [method set_release_callback].
+			</description>
+		</method>
+		<method name="set_reset_callback">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Assigns the custom DSP [code skip-lint]reset[/code] callback. The callable receives no arguments and may return an FMOD result code. Notifications from other threads are deferred to the main thread; their return values cannot affect the completed FMOD call. Pass an empty [Callable] to clear it.
+			</description>
+		</method>
+		<method name="get_reset_callback" qualifiers="const">
+			<return type="Callable" />
+			<description>
+				Returns the callback assigned by [method set_reset_callback].
 			</description>
 		</method>
 		<method name="set_process_callback">
 			<return type="void" />
 			<param index="0" name="callback" type="Callable" />
 			<description>
-				Sets a callback [code]func(samples: PackedFloat32Array, frames: int, input_channels: int, output_channels: int) -&gt; Dictionary[/code]. Samples are interleaved; generators receive an empty input array. Return [code]{"output": samples}[/code]. Short output is padded with zeros. Optional [code]cooldown[/code] (sample frames), [code]bypass[/code], and [code]silence[/code] control FMOD 2.04 DSP state. Callbacks execute only when FMOD mixes on the Godot main thread, such as [constant FmodSystem.FMOD_OUTPUT_TYPE_NOSOUND_NRT]; other threads use passthrough for filters and zero output for generators.
+				Sets a callback [code]func(samples: PackedFloat32Array, frames: int, input_channels: int, output_channels: int) -&gt; Dictionary[/code]. Samples are interleaved; generators receive an empty input array. Return [code]{"output": samples}[/code]. Short output is padded with zeros. Optional [code]cooldown[/code] (sample frames), [code skip-lint]bypass[/code], and [code]silence[/code] control FMOD 2.04 DSP state. Callbacks execute only when FMOD mixes on the Godot main thread, such as [constant FmodSystem.FMOD_OUTPUT_TYPE_NOSOUND_NRT]; other threads use passthrough for filters and zero output for generators.
 			</description>
 		</method>
-		<method name="get_process_callback">
+		<method name="get_process_callback" qualifiers="const">
 			<return type="Callable" />
 			<description>
 				Returns the process callback.
 			</description>
 		</method>
+		<method name="set_setposition_callback">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Assigns the custom DSP [code]setposition[/code] callback. The callable receives [code]pos: int[/code] and may return an FMOD result code. Notifications from other threads are deferred to the main thread; their return values cannot affect the completed FMOD call. Pass an empty [Callable] to clear it.
+			</description>
+		</method>
+		<method name="get_setposition_callback" qualifiers="const">
+			<return type="Callable" />
+			<description>
+				Returns the callback assigned by [method set_setposition_callback].
+			</description>
+		</method>
+		<method name="set_setparam_float_callback">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Assigns the custom DSP [code]setparam_float[/code] callback. The callable receives [code]index: int[/code] and [code]value: float[/code], and may return an FMOD result code. Notifications from other threads are deferred to the main thread; their return values cannot affect the completed FMOD call. Pass an empty [Callable] to clear it.
+			</description>
+		</method>
+		<method name="get_setparam_float_callback" qualifiers="const">
+			<return type="Callable" />
+			<description>
+				Returns the callback assigned by [method set_setparam_float_callback].
+			</description>
+		</method>
+		<method name="set_setparam_int_callback">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Assigns the custom DSP [code]setparam_int[/code] callback. The callable receives [code]index: int[/code] and [code]value: int[/code], and may return an FMOD result code. Notifications from other threads are deferred to the main thread; their return values cannot affect the completed FMOD call. Pass an empty [Callable] to clear it.
+			</description>
+		</method>
+		<method name="get_setparam_int_callback" qualifiers="const">
+			<return type="Callable" />
+			<description>
+				Returns the callback assigned by [method set_setparam_int_callback].
+			</description>
+		</method>
+		<method name="set_setparam_bool_callback">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Assigns the custom DSP [code]setparam_bool[/code] callback. The callable receives [code]index: int[/code] and [code]value: bool[/code], and may return an FMOD result code. Notifications from other threads are deferred to the main thread; their return values cannot affect the completed FMOD call. Pass an empty [Callable] to clear it.
+			</description>
+		</method>
+		<method name="get_setparam_bool_callback" qualifiers="const">
+			<return type="Callable" />
+			<description>
+				Returns the callback assigned by [method set_setparam_bool_callback].
+			</description>
+		</method>
+		<method name="set_setparam_data_callback">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Assigns the custom DSP [code]setparam_data[/code] callback. The callable receives [code]index: int[/code] and [code]value: PackedByteArray[/code], and may return an FMOD result code. Notifications from other threads are deferred to the main thread; their return values cannot affect the completed FMOD call. Pass an empty [Callable] to clear it.
+			</description>
+		</method>
+		<method name="get_setparam_data_callback" qualifiers="const">
+			<return type="Callable" />
+			<description>
+				Returns the callback assigned by [method set_setparam_data_callback].
+			</description>
+		</method>
+		<method name="set_getparam_float_callback">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Assigns the custom DSP [code]getparam_float[/code] callback. The callable receives [code]index: int[/code] and returns a [Dictionary] with [code]value[/code] (float), optional [code]valuestr[/code] ([String]), and optional [code]result[/code] (an FMOD result code). Values are returned synchronously on the main thread. On other threads the callable is deferred and the immediate result is zero or empty. Pass an empty [Callable] to clear it.
+			</description>
+		</method>
+		<method name="get_getparam_float_callback" qualifiers="const">
+			<return type="Callable" />
+			<description>
+				Returns the callback assigned by [method set_getparam_float_callback].
+			</description>
+		</method>
+		<method name="set_getparam_int_callback">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Assigns the custom DSP [code]getparam_int[/code] callback. The callable receives [code]index: int[/code] and returns a [Dictionary] with [code]value[/code] (int), optional [code]valuestr[/code] ([String]), and optional [code]result[/code] (an FMOD result code). Values are returned synchronously on the main thread. On other threads the callable is deferred and the immediate result is zero or empty. Pass an empty [Callable] to clear it.
+			</description>
+		</method>
+		<method name="get_getparam_int_callback" qualifiers="const">
+			<return type="Callable" />
+			<description>
+				Returns the callback assigned by [method set_getparam_int_callback].
+			</description>
+		</method>
+		<method name="set_getparam_bool_callback">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Assigns the custom DSP [code]getparam_bool[/code] callback. The callable receives [code]index: int[/code] and returns a [Dictionary] with [code]value[/code] (bool), optional [code]valuestr[/code] ([String]), and optional [code]result[/code] (an FMOD result code). Values are returned synchronously on the main thread. On other threads the callable is deferred and the immediate result is zero or empty. Pass an empty [Callable] to clear it.
+			</description>
+		</method>
+		<method name="get_getparam_bool_callback" qualifiers="const">
+			<return type="Callable" />
+			<description>
+				Returns the callback assigned by [method set_getparam_bool_callback].
+			</description>
+		</method>
+		<method name="set_getparam_data_callback">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Assigns the custom DSP [code]getparam_data[/code] callback. The callable receives [code]index: int[/code] and returns a [Dictionary] with [code]data[/code] (PackedByteArray), optional [code]valuestr[/code] ([String]), and optional [code]result[/code] (an FMOD result code). Values are returned synchronously on the main thread. On other threads the callable is deferred and the immediate result is zero or empty. Pass an empty [Callable] to clear it.
+			</description>
+		</method>
+		<method name="get_getparam_data_callback" qualifiers="const">
+			<return type="Callable" />
+			<description>
+				Returns the callback assigned by [method set_getparam_data_callback].
+			</description>
+		</method>
 	</methods>
 	<members>
-		<member name="active" type="bool" setter="set_active" getter="get_active" default="false">
+		<member type="bool" name="active" setter="set_active" getter="get_active" default="false">
 			Whether the DSP is currently active and processing.
 		</member>
-		<member name="bypass" type="bool" setter="set_bypass" getter="get_bypass" default="false">
+		<member type="bool" name="bypass" setter="set_bypass" getter="get_bypass" default="false">
 			Whether the DSP is bypassed (input passes through unprocessed).
 		</member>
 	</members>
+	<signals />
 	<constants>
 		<constant name="DSP_MODE_FILTER" value="0" enum="FmodDSPMode">Processes input audio.</constant>
 		<constant name="DSP_MODE_GENERATOR" value="1" enum="FmodDSPMode">Generates audio without input.</constant>

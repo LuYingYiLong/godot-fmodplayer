@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffectChorus" inherits="FmodAudioEffect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectChorus" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Chorus effect for thickening and enriching audio with multiple detuned voices.
 	</brief_description>
@@ -10,10 +10,11 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="get_dry" qualifiers="const">
-			<return type="float" />
+		<method name="set_voice_count">
+			<return type="void" />
+			<param index="0" name="voices" type="int" />
 			<description>
-				Returns the dry (unprocessed) signal level.
+				Sets the number of active chorus voices (1-4).
 			</description>
 		</method>
 		<method name="get_voice_count" qualifiers="const">
@@ -22,46 +23,11 @@
 				Returns the number of active chorus voices (1-4).
 			</description>
 		</method>
-		<method name="get_voice_cutoff_hz" qualifiers="const">
-			<return type="float" />
-			<param index="0" name="voice" type="int" />
+		<method name="set_wet">
+			<return type="void" />
+			<param index="0" name="amount" type="float" />
 			<description>
-				Returns the lowpass filter cutoff frequency for the specified voice.
-			</description>
-		</method>
-		<method name="get_voice_delay_ms" qualifiers="const">
-			<return type="float" />
-			<param index="0" name="voice" type="int" />
-			<description>
-				Returns the base delay time in milliseconds for the specified voice.
-			</description>
-		</method>
-		<method name="get_voice_depth_ms" qualifiers="const">
-			<return type="float" />
-			<param index="0" name="voice" type="int" />
-			<description>
-				Returns the modulation depth in milliseconds for the specified voice.
-			</description>
-		</method>
-		<method name="get_voice_level_db" qualifiers="const">
-			<return type="float" />
-			<param index="0" name="voice" type="int" />
-			<description>
-				Returns the output level in decibels for the specified voice.
-			</description>
-		</method>
-		<method name="get_voice_pan" qualifiers="const">
-			<return type="float" />
-			<param index="0" name="voice" type="int" />
-			<description>
-				Returns the stereo panning position for the specified voice (-1.0 to 1.0).
-			</description>
-		</method>
-		<method name="get_voice_rate_hz" qualifiers="const">
-			<return type="float" />
-			<param index="0" name="voice" type="int" />
-			<description>
-				Returns the modulation rate in Hertz for the specified voice.
+				Sets the wet (processed) signal level (0.0 to 1.0).
 			</description>
 		</method>
 		<method name="get_wet" qualifiers="const">
@@ -77,78 +43,186 @@
 				Sets the dry (unprocessed) signal level (0.0 to 1.0).
 			</description>
 		</method>
-		<method name="set_voice_count">
-			<return type="void" />
-			<param index="0" name="voices" type="int" />
+		<method name="get_dry" qualifiers="const">
+			<return type="float" />
 			<description>
-				Sets the number of active chorus voices (1-4).
-			</description>
-		</method>
-		<method name="set_voice_cutoff_hz">
-			<return type="void" />
-			<param index="0" name="voice" type="int" />
-			<param index="1" name="cutoff_hz" type="float" />
-			<description>
-				Sets the lowpass filter cutoff frequency for the specified voice.
+				Returns the dry (unprocessed) signal level.
 			</description>
 		</method>
 		<method name="set_voice_delay_ms">
 			<return type="void" />
-			<param index="0" name="voice" type="int" />
+			<param index="0" name="voice_idx" type="int" />
 			<param index="1" name="delay_ms" type="float" />
 			<description>
 				Sets the base delay time in milliseconds for the specified voice.
 			</description>
 		</method>
-		<method name="set_voice_depth_ms">
-			<return type="void" />
-			<param index="0" name="voice" type="int" />
-			<param index="1" name="depth_ms" type="float" />
+		<method name="get_voice_delay_ms" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="voice_idx" type="int" />
 			<description>
-				Sets the modulation depth in milliseconds for the specified voice.
-			</description>
-		</method>
-		<method name="set_voice_level_db">
-			<return type="void" />
-			<param index="0" name="voice" type="int" />
-			<param index="1" name="level_db" type="float" />
-			<description>
-				Sets the output level in decibels for the specified voice.
-			</description>
-		</method>
-		<method name="set_voice_pan">
-			<return type="void" />
-			<param index="0" name="voice" type="int" />
-			<param index="1" name="pan" type="float" />
-			<description>
-				Sets the stereo panning position for the specified voice (-1.0 = left, 1.0 = right).
+				Returns the base delay time in milliseconds for the specified voice.
 			</description>
 		</method>
 		<method name="set_voice_rate_hz">
 			<return type="void" />
-			<param index="0" name="voice" type="int" />
+			<param index="0" name="voice_idx" type="int" />
 			<param index="1" name="rate_hz" type="float" />
 			<description>
 				Sets the modulation rate in Hertz for the specified voice.
 			</description>
 		</method>
-		<method name="set_wet">
-			<return type="void" />
-			<param index="0" name="amount" type="float" />
+		<method name="get_voice_rate_hz" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="voice_idx" type="int" />
 			<description>
-				Sets the wet (processed) signal level (0.0 to 1.0).
+				Returns the modulation rate in Hertz for the specified voice.
+			</description>
+		</method>
+		<method name="set_voice_depth_ms">
+			<return type="void" />
+			<param index="0" name="voice_idx" type="int" />
+			<param index="1" name="depth_ms" type="float" />
+			<description>
+				Sets the modulation depth in milliseconds for the specified voice.
+			</description>
+		</method>
+		<method name="get_voice_depth_ms" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="voice_idx" type="int" />
+			<description>
+				Returns the modulation depth in milliseconds for the specified voice.
+			</description>
+		</method>
+		<method name="set_voice_level_db">
+			<return type="void" />
+			<param index="0" name="voice_idx" type="int" />
+			<param index="1" name="level_db" type="float" />
+			<description>
+				Sets the output level in decibels for the specified voice.
+			</description>
+		</method>
+		<method name="get_voice_level_db" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="voice_idx" type="int" />
+			<description>
+				Returns the output level in decibels for the specified voice.
+			</description>
+		</method>
+		<method name="set_voice_cutoff_hz">
+			<return type="void" />
+			<param index="0" name="voice_idx" type="int" />
+			<param index="1" name="cutoff_hz" type="float" />
+			<description>
+				Sets the lowpass filter cutoff frequency for the specified voice.
+			</description>
+		</method>
+		<method name="get_voice_cutoff_hz" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="voice_idx" type="int" />
+			<description>
+				Returns the lowpass filter cutoff frequency for the specified voice.
+			</description>
+		</method>
+		<method name="set_voice_pan">
+			<return type="void" />
+			<param index="0" name="voice_idx" type="int" />
+			<param index="1" name="pan" type="float" />
+			<description>
+				Sets the stereo panning position for the specified voice (-1.0 = left, 1.0 = right).
+			</description>
+		</method>
+		<method name="get_voice_pan" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="voice_idx" type="int" />
+			<description>
+				Returns the stereo panning position for the specified voice (-1.0 to 1.0).
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="dry" type="float" setter="set_dry" getter="get_dry" default="1.0">
-			The dry (unprocessed) signal level. Range: 0.0 to 1.0.
-		</member>
-		<member name="voice_count" type="int" setter="set_voice_count" getter="get_voice_count" default="2">
+		<member type="int" name="voice_count" setter="set_voice_count" getter="get_voice_count" default="2">
 			The number of active chorus voices. Range: 1 to 4.
 		</member>
-		<member name="wet" type="float" setter="set_wet" getter="get_wet" default="0.5">
+		<member type="float" name="wet" setter="set_wet" getter="get_wet" default="0.5">
 			The wet (processed) signal level. Range: 0.0 to 1.0.
 		</member>
+		<member type="float" name="dry" setter="set_dry" getter="get_dry" default="1.0">
+			The dry (unprocessed) signal level. Range: 0.0 to 1.0.
+		</member>
+		<member type="float" name="voice/1/delay_ms" default="15.0">
+			Controls voice/1/delay ms.
+		</member>
+		<member type="float" name="voice/2/delay_ms" default="20.0">
+			Controls voice/2/delay ms.
+		</member>
+		<member type="float" name="voice/3/delay_ms">
+			Controls voice/3/delay ms.
+		</member>
+		<member type="float" name="voice/4/delay_ms">
+			Controls voice/4/delay ms.
+		</member>
+		<member type="float" name="voice/1/rate_hz" default="0.8">
+			Controls voice/1/rate hz.
+		</member>
+		<member type="float" name="voice/2/rate_hz" default="1.2">
+			Controls voice/2/rate hz.
+		</member>
+		<member type="float" name="voice/3/rate_hz">
+			Controls voice/3/rate hz.
+		</member>
+		<member type="float" name="voice/4/rate_hz">
+			Controls voice/4/rate hz.
+		</member>
+		<member type="float" name="voice/1/depth_ms" default="2.0">
+			Controls voice/1/depth ms.
+		</member>
+		<member type="float" name="voice/2/depth_ms" default="3.0">
+			Controls voice/2/depth ms.
+		</member>
+		<member type="float" name="voice/3/depth_ms">
+			Controls voice/3/depth ms.
+		</member>
+		<member type="float" name="voice/4/depth_ms">
+			Controls voice/4/depth ms.
+		</member>
+		<member type="float" name="voice/1/level_db" default="0.0">
+			Controls voice/1/level db.
+		</member>
+		<member type="float" name="voice/2/level_db" default="0.0">
+			Controls voice/2/level db.
+		</member>
+		<member type="float" name="voice/3/level_db">
+			Controls voice/3/level db.
+		</member>
+		<member type="float" name="voice/4/level_db">
+			Controls voice/4/level db.
+		</member>
+		<member type="float" name="voice/1/cutoff_hz" default="8000.0">
+			Controls voice/1/cutoff hz.
+		</member>
+		<member type="float" name="voice/2/cutoff_hz" default="8000.0">
+			Controls voice/2/cutoff hz.
+		</member>
+		<member type="float" name="voice/3/cutoff_hz">
+			Controls voice/3/cutoff hz.
+		</member>
+		<member type="float" name="voice/4/cutoff_hz">
+			Controls voice/4/cutoff hz.
+		</member>
+		<member type="float" name="voice/1/pan" default="-0.5">
+			Controls voice/1/pan.
+		</member>
+		<member type="float" name="voice/2/pan" default="0.5">
+			Controls voice/2/pan.
+		</member>
+		<member type="float" name="voice/3/pan">
+			Controls voice/3/pan.
+		</member>
+		<member type="float" name="voice/4/pan">
+			Controls voice/4/pan.
+		</member>
 	</members>
+	<signals />
+	<constants />
 </class>

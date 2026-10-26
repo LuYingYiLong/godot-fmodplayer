@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodChannel" inherits="FmodChannelControl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodChannel" inherits="FmodChannelControl" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Represents a single playing channel (voice) in FMOD.
 	</brief_description>
@@ -11,13 +11,6 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="channel_is_null" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if the Channel handle is null or invalid.
-				A null channel indicates that the sound has finished playing or the channel has been released.
-			</description>
-		</method>
 		<method name="channel_is_valid" qualifiers="const">
 			<return type="bool" />
 			<description>
@@ -25,99 +18,11 @@
 				A valid channel can be controlled and queried for playback information.
 			</description>
 		</method>
-		<method name="get_channel_group" qualifiers="const">
-			<return type="FmodChannelGroup" />
-			<description>
-				Returns the [FmodChannelGroup] that this channel outputs to.
-				If no channel group has been set, returns [code]null[/code].
-				The channel group determines the sub-mix that this channel's audio is routed through.
-			</description>
-		</method>
-		<method name="get_current_sound" qualifiers="const">
-			<return type="FmodSound" />
-			<description>
-				Returns the [FmodSound] currently playing on this channel.
-				Returns [code]null[/code] if no sound is playing or the channel is invalid.
-				This allows you to retrieve information about the playing sound, such as its length or format.
-			</description>
-		</method>
-		<method name="get_frequency" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the current playback frequency in Hertz (Hz).
-				The default frequency is the sample rate of the sound (typically 44100 or 48000 Hz).
-				Changing the frequency affects both playback speed and pitch.
-			</description>
-		</method>
-		<method name="get_index" qualifiers="const">
-			<return type="int" />
-			<description>
-				Returns the index of this channel in the system channel pool.
-				Each channel has a unique index from 0 to the maximum number of channels minus 1.
-				Returns [code]-1[/code] if the channel is invalid.
-			</description>
-		</method>
-		<method name="get_loop_count" qualifiers="const">
-			<return type="int" />
-			<description>
-				Returns the number of times the sound will loop before stopping.
-				[b]Values:[/b]
-				- [code]-1[/code]: Infinite looping
-				- [code]0[/code]: Play once (no looping)
-				- [code]1[/code]: Play twice (one loop)
-				- [code]n[/code]: Play n+1 times
-			</description>
-		</method>
-		<method name="get_loop_points" qualifiers="const">
-			<return type="Dictionary" />
-			<param index="0" name="timeunit" type="int" enum="FmodSystem.FmodTimeUnit" default="1" />
-			<description>
-				Returns a Dictionary containing the loop start and end points.
-				The returned Dictionary has two keys:
-				- [code]"start"[/code]: The loop start position
-				- [code]"end"[/code]: The loop end position
-				The [param timeunit] parameter specifies the unit for these values (milliseconds, PCM samples, etc.).
-				See [enum FmodSystem.FmodTimeUnit] for available time units.
-			</description>
-		</method>
-		<method name="get_position" qualifiers="const">
-			<return type="int" />
-			<param index="0" name="timeunit" type="int" enum="FmodSystem.FmodTimeUnit" default="1" />
-			<description>
-				Returns the current playback position.
-				The [param timeunit] parameter specifies the unit for the returned value:
-				- [code]FMOD_TIME_UNIT_MS[/code]: Milliseconds (default)
-				- [code]FMOD_TIME_UNIT_PCM[/code]: PCM samples
-				- [code]FMOD_TIME_UNIT_PCMBYTES[/code]: Bytes of PCM data
-				- [code]FMOD_TIME_UNIT_RAWBYTES[/code]: Raw file bytes
-				See [enum FmodSystem.FmodTimeUnit] for all available options.
-			</description>
-		</method>
-		<method name="get_priority" qualifiers="const">
-			<return type="int" />
-			<description>
-				Returns the virtual voice priority of this channel.
-				Priority values range from 0 (highest) to 256 (lowest).
-				When FMOD's virtual voice system needs to steal voices, lower priority channels are virtualized first.
-			</description>
-		</method>
-		<method name="is_virtual" qualifiers="const">
+		<method name="channel_is_null" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if this channel is being virtualized by the virtual voice system.
-				When virtualized, the channel continues to process silently in the background without consuming a hardware voice.
-				This happens automatically when there are more playing sounds than available physical voices.
-				Use [signal virtualvoice] to be notified when a channel becomes virtual or real.
-			</description>
-		</method>
-		<method name="set_channel_group">
-			<return type="void" />
-			<param index="0" name="channel_group" type="FmodChannelGroup" />
-			<description>
-				Sets the [FmodChannelGroup] that this channel outputs to.
-				All audio from this channel will be routed through the specified channel group,
-				allowing for sub-mixing and group-level effects processing.
-				Set to [code]null[/code] to route to the master channel group.
+				Returns [code]true[/code] if the Channel handle is null or invalid.
+				A null channel indicates that the sound has finished playing or the channel has been released.
 			</description>
 		</method>
 		<method name="set_frequency">
@@ -133,6 +38,78 @@
 				For pitch shifting without speed change, use the [FmodDSP] pitch shift effect instead.
 			</description>
 		</method>
+		<method name="get_frequency" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the current playback frequency in Hertz (Hz).
+				The default frequency is the sample rate of the sound (typically 44100 or 48000 Hz).
+				Changing the frequency affects both playback speed and pitch.
+			</description>
+		</method>
+		<method name="set_priority">
+			<return type="void" />
+			<param index="0" name="priority" type="int" />
+			<description>
+				Sets the virtual voice priority for this channel.
+				Priority values range from 0 (highest priority) to 256 (lowest priority).
+				When FMOD runs out of physical voices, lower priority channels are virtualized first.
+				Set important sounds (music, dialogue) to high priority (low numbers),
+				and less important sounds (ambient, effects) to lower priority (high numbers).
+			</description>
+		</method>
+		<method name="get_priority" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the virtual voice priority of this channel.
+				Priority values range from 0 (highest) to 256 (lowest).
+				When FMOD's virtual voice system needs to steal voices, lower priority channels are virtualized first.
+			</description>
+		</method>
+		<method name="set_position">
+			<return type="void" />
+			<param index="0" name="position" type="int" />
+			<param index="1" name="timeunit" type="int" enum="FmodSystem.FmodTimeUnit" default="1" />
+			<description>
+				Sets the current playback position.
+				Use this to seek to a specific point in the sound.
+				The [param timeunit] parameter specifies the unit for the position value:
+				- [code]FMOD_TIME_UNIT_MS[/code]: Milliseconds (default)
+				- [code]FMOD_TIME_UNIT_PCM[/code]: PCM samples
+				- Other time units from [enum FmodSystem.FmodTimeUnit]
+				[b]Note:[/b] Seeking in compressed streams (MP3, Vorbis) may not be sample-accurate.
+			</description>
+		</method>
+		<method name="get_position" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="timeunit" type="int" enum="FmodSystem.FmodTimeUnit" default="1" />
+			<description>
+				Returns the current playback position.
+				The [param timeunit] parameter specifies the unit for the returned value:
+				- [code]FMOD_TIME_UNIT_MS[/code]: Milliseconds (default)
+				- [code]FMOD_TIME_UNIT_PCM[/code]: PCM samples
+				- [code]FMOD_TIME_UNIT_PCMBYTES[/code]: Bytes of PCM data
+				- [code]FMOD_TIME_UNIT_RAWBYTES[/code]: Raw file bytes
+				See [enum FmodSystem.FmodTimeUnit] for all available options.
+			</description>
+		</method>
+		<method name="set_channel_group">
+			<return type="void" />
+			<param index="0" name="channel_group" type="FmodChannelGroup" />
+			<description>
+				Sets the [FmodChannelGroup] that this channel outputs to.
+				All audio from this channel will be routed through the specified channel group,
+				allowing for sub-mixing and group-level effects processing.
+				Set to [code]null[/code] to route to the master channel group.
+			</description>
+		</method>
+		<method name="get_channel_group" qualifiers="const">
+			<return type="FmodChannelGroup" />
+			<description>
+				Returns the [FmodChannelGroup] that this channel outputs to.
+				If no channel group has been set, returns [code]null[/code].
+				The channel group determines the sub-mix that this channel's audio is routed through.
+			</description>
+		</method>
 		<method name="set_loop_count">
 			<return type="void" />
 			<param index="0" name="loop_count" type="int" />
@@ -144,6 +121,17 @@
 				- [code]1[/code]: Play twice (loop once)
 				- [code]n[/code]: Loop n times (play n+1 times total)
 				The loop points (set via [method set_loop_points]) determine which portion of the sound loops.
+			</description>
+		</method>
+		<method name="get_loop_count" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the number of times the sound will loop before stopping.
+				[b]Values:[/b]
+				- [code]-1[/code]: Infinite looping
+				- [code]0[/code]: Play once (no looping)
+				- [code]1[/code]: Play twice (one loop)
+				- [code]n[/code]: Play n+1 times
 			</description>
 		</method>
 		<method name="set_loop_points">
@@ -161,51 +149,63 @@
 				[b]Note:[/b] You must also set [member loop_count] to enable looping behavior.
 			</description>
 		</method>
-		<method name="set_position">
-			<return type="void" />
-			<param index="0" name="position" type="int" />
-			<param index="1" name="timeunit" type="int" enum="FmodSystem.FmodTimeUnit" default="1" />
+		<method name="get_loop_points" qualifiers="const">
+			<return type="Dictionary" />
+			<param index="0" name="timeunit" type="int" enum="FmodSystem.FmodTimeUnit" />
 			<description>
-				Sets the current playback position.
-				Use this to seek to a specific point in the sound.
-				The [param timeunit] parameter specifies the unit for the position value:
-				- [code]FMOD_TIME_UNIT_MS[/code]: Milliseconds (default)
-				- [code]FMOD_TIME_UNIT_PCM[/code]: PCM samples
-				- Other time units from [enum FmodSystem.FmodTimeUnit]
-				[b]Note:[/b] Seeking in compressed streams (MP3, Vorbis) may not be sample-accurate.
+				Returns a Dictionary containing the loop start and end points.
+				The returned Dictionary has two keys:
+				- [code]"start"[/code]: The loop start position
+				- [code]"end"[/code]: The loop end position
+				The [param timeunit] parameter specifies the unit for these values (milliseconds, PCM samples, etc.).
+				See [enum FmodSystem.FmodTimeUnit] for available time units.
 			</description>
 		</method>
-		<method name="set_priority">
-			<return type="void" />
-			<param index="0" name="priority" type="int" />
+		<method name="is_virtual" qualifiers="const">
+			<return type="bool" />
 			<description>
-				Sets the virtual voice priority for this channel.
-				Priority values range from 0 (highest priority) to 256 (lowest priority).
-				When FMOD runs out of physical voices, lower priority channels are virtualized first.
-				Set important sounds (music, dialogue) to high priority (low numbers),
-				and less important sounds (ambient, effects) to lower priority (high numbers).
+				Returns [code]true[/code] if this channel is being virtualized by the virtual voice system.
+				When virtualized, the channel continues to process silently in the background without consuming a hardware voice.
+				This happens automatically when there are more playing sounds than available physical voices.
+				Use [signal virtualvoice] to be notified when a channel becomes virtual or real.
+			</description>
+		</method>
+		<method name="get_current_sound" qualifiers="const">
+			<return type="FmodSound" />
+			<description>
+				Returns the [FmodSound] currently playing on this channel.
+				Returns [code]null[/code] if no sound is playing or the channel is invalid.
+				This allows you to retrieve information about the playing sound, such as its length or format.
+			</description>
+		</method>
+		<method name="get_index" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the index of this channel in the system channel pool.
+				Each channel has a unique index from 0 to the maximum number of channels minus 1.
+				Returns [code]-1[/code] if the channel is invalid.
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="channel_group" type="FmodChannelGroup" setter="set_channel_group" getter="get_channel_group">
-			The [FmodChannelGroup] this channel outputs to. If not set, outputs to the master channel group.
-			Use channel groups to organize sounds into sub-mixes for group-level control.
-		</member>
-		<member name="frequency" type="float" setter="set_frequency" getter="get_frequency" default="0.0">
+		<member type="float" name="frequency" setter="set_frequency" getter="get_frequency" default="0.0">
 			Playback frequency in Hertz (Hz). Default is 0, which means the sound's native sample rate.
 			Changing this value affects both playback speed and pitch proportionally.
 			[b]Note:[/b] 0 indicates the default frequency; the actual frequency depends on the sound's sample rate.
 		</member>
-		<member name="loop_count" type="int" setter="set_loop_count" getter="get_loop_count" default="0">
+		<member type="int" name="priority" setter="set_priority" getter="get_priority" default="0">
+			Virtual voice priority (0 = highest, 256 = lowest). Default is 0.
+			Lower priority channels are virtualized first when FMOD runs out of physical voices.
+		</member>
+		<member type="Object" name="channel_group" setter="set_channel_group" getter="get_channel_group">
+			The [FmodChannelGroup] this channel outputs to. If not set, outputs to the master channel group.
+			Use channel groups to organize sounds into sub-mixes for group-level control.
+		</member>
+		<member type="int" name="loop_count" setter="set_loop_count" getter="get_loop_count" default="0">
 			Number of times to loop the sound. Default is 0 (play once, no looping).
 			- [code]-1[/code]: Infinite looping
 			- [code]0[/code]: No looping (default)
 			- [code]1+[/code]: Loop n times
-		</member>
-		<member name="priority" type="int" setter="set_priority" getter="get_priority" default="0">
-			Virtual voice priority (0 = highest, 256 = lowest). Default is 0.
-			Lower priority channels are virtualized first when FMOD runs out of physical voices.
 		</member>
 	</members>
 	<signals>
@@ -214,26 +214,6 @@
 				Emitted when playback of the sound has finished.
 				This is triggered when the sound reaches its end and is not looping,
 				or when all loop iterations have completed.
-			</description>
-		</signal>
-		<signal name="occlusion">
-			<param index="0" name="direct_occlusion" type="float" />
-			<param index="1" name="reverb_occlusion" type="float" />
-			<description>
-				Emitted when 3D occlusion is calculated for this channel.
-				This signal is only emitted when using FMOD's 3D occlusion features.
-				- [param direct_occlusion]: Occlusion factor for direct sound (0.0 = no occlusion, 1.0 = fully occluded)
-				- [param reverb_occlusion]: Occlusion factor for reverberant sound (0.0 = no occlusion, 1.0 = fully occluded)
-				Higher occlusion values typically result in muffled sound (low-pass filtering).
-			</description>
-		</signal>
-		<signal name="syncpoint">
-			<param index="0" name="sync_point_index" type="int" />
-			<description>
-				Emitted when a sync point embedded in the sound file is reached.
-				Sync points are markers that can be embedded in audio files to trigger events at specific times.
-				The [param sync_point_index] parameter indicates which sync point was triggered.
-				Pass it to [method FmodSound.get_sync_point] to get the sync point handle, which can then be used with [method FmodSound.get_sync_point_info] to retrieve the sync point's name and offset.
 			</description>
 		</signal>
 		<signal name="virtualvoice">
@@ -247,5 +227,26 @@
 				are more likely to become virtualized.
 			</description>
 		</signal>
+		<signal name="syncpoint">
+			<param index="0" name="sync_point_index" type="int" />
+			<description>
+				Emitted when a sync point embedded in the sound file is reached.
+				Sync points are markers that can be embedded in audio files to trigger events at specific times.
+				The [param sync_point_index] parameter indicates which sync point was triggered.
+				Pass it to [method FmodSound.get_sync_point] to get the sync point handle, which can then be used with [method FmodSound.get_sync_point_info] to retrieve the sync point's name and offset.
+			</description>
+		</signal>
+		<signal name="occlusion">
+			<param index="0" name="direct_occlusion" type="float" />
+			<param index="1" name="reverb_occlusion" type="float" />
+			<description>
+				Emitted when 3D occlusion is calculated for this channel.
+				This signal is only emitted when using FMOD's 3D occlusion features.
+				- [param direct_occlusion]: Occlusion factor for direct sound (0.0 = no occlusion, 1.0 = fully occluded)
+				- [param reverb_occlusion]: Occlusion factor for reverberant sound (0.0 = no occlusion, 1.0 = fully occluded)
+				Higher occlusion values typically result in muffled sound (low-pass filtering).
+			</description>
+		</signal>
 	</signals>
+	<constants />
 </class>

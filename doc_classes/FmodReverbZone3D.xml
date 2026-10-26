@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodReverbZone3D" inherits="Node3D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodReverbZone3D" inherits="Node3D" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Scene node wrapper for an FMOD 3D reverb zone.
 	</brief_description>
@@ -9,6 +9,227 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="set_active">
+			<return type="void" />
+			<param index="0" name="active" type="bool" />
+			<description>
+				Sets [member active].
+			</description>
+		</method>
+		<method name="get_active" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [member active].
+			</description>
+		</method>
+		<method name="set_sync_transform">
+			<return type="void" />
+			<param index="0" name="sync" type="bool" />
+			<description>
+				Sets [member sync_transform].
+			</description>
+		</method>
+		<method name="get_sync_transform" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [member sync_transform].
+			</description>
+		</method>
+		<method name="set_min_distance">
+			<return type="void" />
+			<param index="0" name="distance" type="float" />
+			<description>
+				Sets [member min_distance].
+			</description>
+		</method>
+		<method name="get_min_distance" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member min_distance].
+			</description>
+		</method>
+		<method name="set_max_distance">
+			<return type="void" />
+			<param index="0" name="distance" type="float" />
+			<description>
+				Sets [member max_distance].
+			</description>
+		</method>
+		<method name="get_max_distance" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member max_distance].
+			</description>
+		</method>
+		<method name="set_preset">
+			<return type="void" />
+			<param index="0" name="preset" type="int" enum="FmodReverbZone3D.Preset" />
+			<description>
+				Sets [member preset].
+			</description>
+		</method>
+		<method name="get_preset" qualifiers="const">
+			<return type="int" enum="FmodReverbZone3D.Preset" />
+			<description>
+				Returns [member preset].
+			</description>
+		</method>
+		<method name="set_decay_time">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+				Sets [member decay_time].
+			</description>
+		</method>
+		<method name="get_decay_time" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member decay_time].
+			</description>
+		</method>
+		<method name="set_early_delay">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+				Sets [member early_delay].
+			</description>
+		</method>
+		<method name="get_early_delay" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member early_delay].
+			</description>
+		</method>
+		<method name="set_late_delay">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+				Sets [member late_delay].
+			</description>
+		</method>
+		<method name="get_late_delay" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member late_delay].
+			</description>
+		</method>
+		<method name="set_hf_reference">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+				Sets [member hf_reference].
+			</description>
+		</method>
+		<method name="get_hf_reference" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member hf_reference].
+			</description>
+		</method>
+		<method name="set_hf_decay_ratio">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+				Sets [member hf_decay_ratio].
+			</description>
+		</method>
+		<method name="get_hf_decay_ratio" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member hf_decay_ratio].
+			</description>
+		</method>
+		<method name="set_diffusion">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+				Sets [member diffusion].
+			</description>
+		</method>
+		<method name="get_diffusion" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member diffusion].
+			</description>
+		</method>
+		<method name="set_density">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+				Sets [member density].
+			</description>
+		</method>
+		<method name="get_density" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member density].
+			</description>
+		</method>
+		<method name="set_low_shelf_frequency">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+				Sets [member low_shelf_frequency].
+			</description>
+		</method>
+		<method name="get_low_shelf_frequency" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member low_shelf_frequency].
+			</description>
+		</method>
+		<method name="set_low_shelf_gain">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+				Sets [member low_shelf_gain].
+			</description>
+		</method>
+		<method name="get_low_shelf_gain" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member low_shelf_gain].
+			</description>
+		</method>
+		<method name="set_high_cut">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+				Sets [member high_cut].
+			</description>
+		</method>
+		<method name="get_high_cut" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member high_cut].
+			</description>
+		</method>
+		<method name="set_early_late_mix">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+				Sets [member early_late_mix].
+			</description>
+		</method>
+		<method name="get_early_late_mix" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member early_late_mix].
+			</description>
+		</method>
+		<method name="set_wet_level">
+			<return type="void" />
+			<param index="0" name="value" type="float" />
+			<description>
+				Sets [member wet_level].
+			</description>
+		</method>
+		<method name="get_wet_level" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns [member wet_level].
+			</description>
+		</method>
 		<method name="get_reverb" qualifiers="const">
 			<return type="FmodReverb3D" />
 			<description>
@@ -17,58 +238,59 @@
 		</method>
 	</methods>
 	<members>
-		<member name="active" type="bool" setter="set_active" getter="get_active" default="true">
+		<member type="bool" name="active" setter="set_active" getter="get_active" default="true">
 			Whether this reverb zone contributes to the FMOD mix.
 		</member>
-		<member name="sync_transform" type="bool" setter="set_sync_transform" getter="get_sync_transform" default="true">
+		<member type="bool" name="sync_transform" setter="set_sync_transform" getter="get_sync_transform" default="true">
 			If enabled, the internal FMOD reverb position follows this node every frame.
 		</member>
-		<member name="min_distance" type="float" setter="set_min_distance" getter="get_min_distance" default="5.0">
+		<member type="float" name="min_distance" setter="set_min_distance" getter="get_min_distance" default="5.0">
 			Distance from the center where the reverb is fully applied.
 		</member>
-		<member name="max_distance" type="float" setter="set_max_distance" getter="get_max_distance" default="20.0">
+		<member type="float" name="max_distance" setter="set_max_distance" getter="get_max_distance" default="20.0">
 			Distance from the center where the reverb fades out.
 		</member>
-		<member name="preset" type="int" setter="set_preset" getter="get_preset" enum="FmodReverbZone3D.Preset" default="2">
+		<member type="int" enum="FmodReverbZone3D.Preset" name="preset" setter="set_preset" getter="get_preset" default="2">
 			FMOD reverb preset used by the zone. Editing an individual reverb property switches this to [constant PRESET_CUSTOM].
 		</member>
-		<member name="decay_time" type="float" setter="set_decay_time" getter="get_decay_time" default="1500.0">
+		<member type="float" name="decay_time" setter="set_decay_time" getter="get_decay_time" default="1500.0">
 			Reverb decay time in milliseconds.
 		</member>
-		<member name="early_delay" type="float" setter="set_early_delay" getter="get_early_delay" default="7.0">
+		<member type="float" name="early_delay" setter="set_early_delay" getter="get_early_delay" default="7.0">
 			Initial reflection delay in milliseconds.
 		</member>
-		<member name="late_delay" type="float" setter="set_late_delay" getter="get_late_delay" default="11.0">
+		<member type="float" name="late_delay" setter="set_late_delay" getter="get_late_delay" default="11.0">
 			Late reverb delay in milliseconds.
 		</member>
-		<member name="hf_reference" type="float" setter="set_hf_reference" getter="get_hf_reference" default="5000.0">
+		<member type="float" name="hf_reference" setter="set_hf_reference" getter="get_hf_reference" default="5000.0">
 			High frequency reference in Hz.
 		</member>
-		<member name="hf_decay_ratio" type="float" setter="set_hf_decay_ratio" getter="get_hf_decay_ratio" default="83.0">
+		<member type="float" name="hf_decay_ratio" setter="set_hf_decay_ratio" getter="get_hf_decay_ratio" default="83.0">
 			High-frequency decay ratio in percent.
 		</member>
-		<member name="diffusion" type="float" setter="set_diffusion" getter="get_diffusion" default="100.0">
+		<member type="float" name="diffusion" setter="set_diffusion" getter="get_diffusion" default="100.0">
 			Late reverb diffusion in percent.
 		</member>
-		<member name="density" type="float" setter="set_density" getter="get_density" default="100.0">
+		<member type="float" name="density" setter="set_density" getter="get_density" default="100.0">
 			Late reverb density in percent.
 		</member>
-		<member name="low_shelf_frequency" type="float" setter="set_low_shelf_frequency" getter="get_low_shelf_frequency" default="250.0">
+		<member type="float" name="low_shelf_frequency" setter="set_low_shelf_frequency" getter="get_low_shelf_frequency" default="250.0">
 			Low shelf reference frequency in Hz.
 		</member>
-		<member name="low_shelf_gain" type="float" setter="set_low_shelf_gain" getter="get_low_shelf_gain" default="0.0">
+		<member type="float" name="low_shelf_gain" setter="set_low_shelf_gain" getter="get_low_shelf_gain" default="0.0">
 			Low shelf gain in dB.
 		</member>
-		<member name="high_cut" type="float" setter="set_high_cut" getter="get_high_cut" default="14500.0">
+		<member type="float" name="high_cut" setter="set_high_cut" getter="get_high_cut" default="14500.0">
 			High cut frequency in Hz.
 		</member>
-		<member name="early_late_mix" type="float" setter="set_early_late_mix" getter="get_early_late_mix" default="96.0">
+		<member type="float" name="early_late_mix" setter="set_early_late_mix" getter="get_early_late_mix" default="96.0">
 			Early/late reflection mix in percent.
 		</member>
-		<member name="wet_level" type="float" setter="set_wet_level" getter="get_wet_level" default="-8.0">
+		<member type="float" name="wet_level" setter="set_wet_level" getter="get_wet_level" default="-8.0">
 			Overall wet level in dB.
 		</member>
 	</members>
+	<signals />
 	<constants>
 		<constant name="PRESET_CUSTOM" value="0" enum="Preset">
 			Custom user-edited reverb properties.

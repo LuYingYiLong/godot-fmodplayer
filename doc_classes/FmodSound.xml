@@ -1,16 +1,185 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodSound" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodSound" inherits="RefCounted" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		A reference-counted wrapper around FMOD::Sound representing a loaded audio resource.
 	</brief_description>
 	<description>
 		FmodSound is a RefCounted wrapper around FMOD::Sound, representing a loaded sound resource. It provides access to sound metadata, format information, raw audio data, music-specific controls for tracker formats (MOD/S3M/XM/IT/MIDI), and metadata tags.
-		
+
 		Use [method load_from_file] to load a sound from disk, or create one through [FmodSystem] methods. Once loaded, you can query information about the sound, read raw audio data, or use it with [FmodChannel] for playback.
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="load_from_file" qualifiers="static">
+			<return type="FmodSound" />
+			<param index="0" name="path" type="String" />
+			<description>
+				Static method to load a sound from a file path. The path should be a valid file system path or a Godot resource path (res://).
+
+				[b]Example:[/b]
+				[codeblock]
+				var sound: FmodSound = FmodSound.load_from_file("res://music.mp3")
+				[/codeblock]
+			</description>
+		</method>
+		<method name="sound_is_valid" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Sound is valid.
+			</description>
+		</method>
+		<method name="sound_is_null" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Sound is null.
+			</description>
+		</method>
+		<method name="get_name" qualifiers="const">
+			<return type="String" />
+			<description>
+				Returns the name of the sound. This is typically the filename or a name embedded in the audio file.
+			</description>
+		</method>
+		<method name="get_format" qualifiers="const">
+			<return type="Dictionary" />
+			<description>
+				Returns a dictionary containing the sound's format information with the following keys:
+				- [code]type[/code]: The audio format type ([enum FmodSoundType]).
+				- [code]format[/code]: The sample format ([enum FmodSoundFormat]).
+				- [code]channels[/code]: Number of channels (int).
+				- [code]bits[/code]: Bits per sample (int).
+			</description>
+		</method>
+		<method name="get_defaults" qualifiers="const">
+			<return type="Dictionary" />
+			<description>
+				Returns the sound's default playback attributes, which are used as the initial values for channels playing this sound. Returns a dictionary with:
+				- [code]frequency[/code]: Default playback frequency in Hz (float).
+				- [code]priority[/code]: Default priority (int, 0 to 256, where 0 is most important).
+			</description>
+		</method>
+		<method name="get_length" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="time_unit" type="int" enum="FmodSystem.FmodTimeUnit" default="1" />
+			<description>
+				Returns the length of the sound in the specified time units. When using milliseconds ([code]FMOD_TIME_UNIT_MS[/code]), the result is returned in seconds. For other units like bytes or PCM samples, the raw value is returned.
+				[b]Note:[/b] See [enum FmodSystem.FmodTimeUnit] for available time unit options.
+			</description>
+		</method>
+		<method name="get_num_tags" qualifiers="const">
+			<return type="Dictionary" />
+			<description>
+				Returns a dictionary with metadata tag counts:
+				- [code]num_tags[/code]: Total number of tags in the sound.
+				- [code]num_tags_updated[/code]: Number of tags that have been updated (for streaming sources).
+
+				[b]Note:[/b] Use [method get_tag] to retrieve individual tag information.
+			</description>
+		</method>
+		<method name="get_tag" qualifiers="const">
+			<return type="Dictionary" />
+			<param index="0" name="index" type="int" />
+			<param index="1" name="name" type="String" default="&quot;&quot;" />
+			<description>
+				Retrieves a metadata tag from the sound. Tags can be retrieved by index or by name. If [code skip-lint]name[/code] is non-empty, it will search for a tag with that name; otherwise, it retrieves the tag at the specified index.
+
+				Returns a dictionary with:
+				- [code]type[/code]: Tag type ([enum FmodTagType]).
+				- [code]datatype[/code]: Data type of the tag value ([enum FmodTagDataType]).
+				- [code skip-lint]name[/code]: Name of the tag.
+				- [code]data[/code]: The tag value (type varies based on [code]datatype[/code]).
+				- [code]data_len[/code]: Length of the data in bytes.
+				- [code]updated[/code]: [code]true[/code] if the tag was updated (for streaming sources).
+
+				[b]Note:[/b] Common tags include "TITLE", "ARTIST", "ALBUM" for music files.
+			</description>
+		</method>
+		<method name="get_open_state" qualifiers="const">
+			<return type="Dictionary" />
+			<description>
+				Returns the current open state of the sound. This is useful for sounds opened with non-blocking flags or for monitoring streaming buffer status. Returns a dictionary with:
+				- [code]open_state[/code]: The current open state ([enum FmodOpenState]).
+				- [code]percent_buffered[/code]: Percentage of the buffer filled (0-100) for streaming sounds.
+				- [code]starving[/code]: [code]true[/code] if the stream is starving for data (buffer underrun).
+				- [code]disk_busy[/code]: [code]true[/code] if the disk is currently busy reading.
+			</description>
+		</method>
+		<method name="read_data" qualifiers="const">
+			<return type="PackedByteArray" />
+			<param index="0" name="length" type="int" />
+			<description>
+				Reads raw audio data from the sound into a PackedByteArray using FMOD's internal codec. This is useful for extracting decoded PCM data or for custom processing.
+
+				[b]Note:[/b] Use [method seek_data] to position the read cursor before reading.
+			</description>
+		</method>
+		<method name="seek_data">
+			<return type="void" />
+			<param index="0" name="pcm" type="int" />
+			<description>
+				Seeks to a specific PCM position in the sound for data reading operations. The position is specified in PCM samples.
+
+				[b]Note:[/b] This affects the position used by [method read_data], not the playback position.
+			</description>
+		</method>
+		<method name="lock" qualifiers="const">
+			<return type="FmodSoundLock" />
+			<param index="0" name="offset" type="int" />
+			<param index="1" name="length" type="int" />
+			<description>
+				Locks a region of the sound's sample data for direct access. This allows reading or modifying the raw PCM data. Returns an [FmodSoundLock] object that provides access to the locked memory region.
+
+				[b]Note:[/b] Always ensure the [FmodSoundLock] is freed (goes out of scope) to unlock the data.
+
+				[b]Example:[/b]
+				[codeblock]
+				var lock: FmodSoundLock = sound.lock(0, sound.get_length(FmodSystem.FMOD_TIME_UNIT_PCMBYTES))
+				# Access data through lock object
+				[/codeblock]
+			</description>
+		</method>
+		<method name="get_music_num_channels" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the number of channels in a MOD/S3M/XM/IT/MIDI file. Each channel corresponds to a track/instrument in the module file.
+				[b]Note:[/b] This only works for module music formats (tracker formats).
+			</description>
+		</method>
+		<method name="set_music_channel_volume" qualifiers="const">
+			<return type="void" />
+			<param index="0" name="channel" type="int" />
+			<param index="1" name="volume_db" type="float" />
+			<description>
+				Sets the volume of a specific channel in a MOD/S3M/XM/IT/MIDI file, in decibels (dB). This allows individual control over each track/instrument in module music.
+
+				[b]Note:[/b] This only works for module music formats. Valid channel indices are 0 to [method get_music_num_channels] - 1.
+			</description>
+		</method>
+		<method name="get_music_channel_volume" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="channel" type="int" />
+			<description>
+				Returns the volume of a specific channel in a MOD/S3M/XM/IT/MIDI file, in decibels (dB).
+				[b]Note:[/b] This only works for module music formats. Use [method get_music_num_channels] to get the number of available channels.
+			</description>
+		</method>
+		<method name="set_music_speed">
+			<return type="void" />
+			<param index="0" name="speed" type="float" />
+			<description>
+				Sets the relative playback speed for MOD/S3M/XM/IT/MIDI music. A value of 1.0 is normal speed, 0.5 is half speed, 2.0 is double speed, etc.
+
+				[b]Note:[/b] This only works for module music formats (tracker formats).
+			</description>
+		</method>
+		<method name="get_music_speed" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the relative playback speed of MOD/S3M/XM/IT/MIDI music. A value of 1.0 represents normal speed, values less than 1.0 are slower, and values greater than 1.0 are faster.
+				[b]Note:[/b] This only works for module music formats.
+			</description>
+		</method>
 		<method name="add_sync_point">
 			<return type="int" />
 			<param index="0" name="offset" type="int" />
@@ -25,61 +194,34 @@
 			<return type="bool" />
 			<param index="0" name="point" type="int" />
 			<description>
-				Removes a sync point from the sound. The [code]point[/code] parameter should be a handle obtained from [method get_sync_point] or [method add_sync_point]. Returns [code]true[/code] on success.
+				Removes a sync point from the sound. The [code skip-lint]point[/code] parameter should be a handle obtained from [method get_sync_point] or [method add_sync_point]. Returns [code]true[/code] on success.
 			</description>
 		</method>
-		<method name="get_defaults" qualifiers="const">
-			<return type="Dictionary" />
-			<description>
-				Returns the sound's default playback attributes, which are used as the initial values for channels playing this sound. Returns a dictionary with:
-				- [code]frequency[/code]: Default playback frequency in Hz (float).
-				- [code]priority[/code]: Default priority (int, 0 to 256, where 0 is most important).
-			</description>
-		</method>
-		<method name="get_format" qualifiers="const">
-			<return type="Dictionary" />
-			<description>
-				Returns a dictionary containing the sound's format information with the following keys:
-				- [code]type[/code]: The audio format type ([enum FmodSoundType]).
-				- [code]format[/code]: The sample format ([enum FmodSoundFormat]).
-				- [code]channels[/code]: Number of channels (int).
-				- [code]bits[/code]: Bits per sample (int).
-			</description>
-		</method>
-		<method name="get_length" qualifiers="const">
-			<return type="float" />
-			<param index="0" name="time_unit" type="int" enum="FmodSystem.FmodTimeUnit" default="1" />
-			<description>
-				Returns the length of the sound in the specified time units. When using milliseconds ([code]FMOD_TIME_UNIT_MS[/code]), the result is returned in seconds. For other units like bytes or PCM samples, the raw value is returned.
-				[b]Note:[/b] See [enum FmodSystem.FmodTimeUnit] for available time unit options.
-			</description>
-		</method>
-		<method name="get_music_channel_volume" qualifiers="const">
-			<return type="float" />
-			<param index="0" name="channel" type="int" />
-			<description>
-				Returns the volume of a specific channel in a MOD/S3M/XM/IT/MIDI file, in decibels (dB).
-				[b]Note:[/b] This only works for module music formats. Use [method get_music_num_channels] to get the number of available channels.
-			</description>
-		</method>
-		<method name="get_music_num_channels" qualifiers="const">
+		<method name="get_num_sync_points" qualifiers="const">
 			<return type="int" />
 			<description>
-				Returns the number of channels in a MOD/S3M/XM/IT/MIDI file. Each channel corresponds to a track/instrument in the module file.
-				[b]Note:[/b] This only works for module music formats (tracker formats).
+				Returns the number of sync points in the sound. This includes both sync points embedded in the audio file (e.g., cue points) and ones added with [method add_sync_point].
 			</description>
 		</method>
-		<method name="get_music_speed" qualifiers="const">
-			<return type="float" />
+		<method name="get_sync_point" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="index" type="int" />
 			<description>
-				Returns the relative playback speed of MOD/S3M/XM/IT/MIDI music. A value of 1.0 represents normal speed, values less than 1.0 are slower, and values greater than 1.0 are faster.
-				[b]Note:[/b] This only works for module music formats.
+				Returns a sync point handle at the specified index. Sync points are embedded markers in audio files (e.g., loop points in WAV or cue points).
+
+				[b]Note:[/b] Use [method get_sync_point_info] to get information about the returned sync point handle.
 			</description>
 		</method>
-		<method name="get_name" qualifiers="const">
-			<return type="String" />
+		<method name="get_sync_point_info" qualifiers="const">
+			<return type="Dictionary" />
+			<param index="0" name="point" type="int" />
+			<param index="1" name="time_unit" type="int" enum="FmodSystem.FmodTimeUnit" default="1" />
 			<description>
-				Returns the name of the sound. This is typically the filename or a name embedded in the audio file.
+				Returns information about a sync point. The [code skip-lint]point[/code] parameter should be a handle obtained from [method get_sync_point]. Returns a dictionary with:
+				- [code skip-lint]name[/code]: Name of the sync point.
+				- [code]offset[/code]: Position of the sync point in the specified time units.
+				- [code skip-lint]time_unit[/code]: The time unit used for the offset.
+				- [code]id[/code]: The opaque sync point handle.
 			</description>
 		</method>
 		<method name="get_num_sub_sounds" qualifiers="const">
@@ -89,137 +231,48 @@
 				[b]Note:[/b] Regular audio files like MP3 or WAV typically return 0 for this value.
 			</description>
 		</method>
-		<method name="get_num_sync_points" qualifiers="const">
-			<return type="int" />
-			<description>
-				Returns the number of sync points in the sound. This includes both sync points embedded in the audio file (e.g., cue points) and ones added with [method add_sync_point].
-			</description>
-		</method>
-		<method name="get_num_tags" qualifiers="const">
-			<return type="Dictionary" />
-			<description>
-				Returns a dictionary with metadata tag counts:
-				- [code]num_tags[/code]: Total number of tags in the sound.
-				- [code]num_tags_updated[/code]: Number of tags that have been updated (for streaming sources).
-				
-				[b]Note:[/b] Use [method get_tag] to retrieve individual tag information.
-			</description>
-		</method>
-		<method name="get_open_state" qualifiers="const">
-			<return type="Dictionary" />
-			<description>
-				Returns the current open state of the sound. This is useful for sounds opened with non-blocking flags or for monitoring streaming buffer status. Returns a dictionary with:
-				- [code]open_state[/code]: The current open state ([enum FmodOpenState]).
-				- [code]percent_buffered[/code]: Percentage of the buffer filled (0-100) for streaming sounds.
-				- [code]starving[/code]: [code]true[/code] if the stream is starving for data (buffer underrun).
-				- [code]disk_busy[/code]: [code]true[/code] if the disk is currently busy reading.
-			</description>
-		</method>
-		<method name="get_sync_point" qualifiers="const">
-			<return type="int" />
-			<param index="0" name="index" type="int" />
-			<description>
-				Returns a sync point handle at the specified index. Sync points are embedded markers in audio files (e.g., loop points in WAV or cue points).
-				
-				[b]Note:[/b] Use [method get_sync_point_info] to get information about the returned sync point handle.
-			</description>
-		</method>
-		<method name="get_sync_point_info" qualifiers="const">
-			<return type="Dictionary" />
-			<param index="0" name="point" type="int" />
-			<param index="1" name="time_unit" type="int" enum="FmodSystem.FmodTimeUnit" default="1" />
-			<description>
-				Returns information about a sync point. The [code]point[/code] parameter should be a handle obtained from [method get_sync_point]. Returns a dictionary with:
-				- [code]name[/code]: Name of the sync point.
-				- [code]offset[/code]: Position of the sync point in the specified time units.
-				- [code]time_unit[/code]: The time unit used for the offset.
-				- [code]id[/code]: The opaque sync point handle.
-			</description>
-		</method>
-		<method name="get_tag" qualifiers="const">
-			<return type="Dictionary" />
-			<param index="0" name="index" type="int" />
-			<param index="1" name="name" type="String" default="&quot;&quot;" />
-			<description>
-				Retrieves a metadata tag from the sound. Tags can be retrieved by index or by name. If [code]name[/code] is non-empty, it will search for a tag with that name; otherwise, it retrieves the tag at the specified index.
-				
-				Returns a dictionary with:
-				- [code]type[/code]: Tag type ([enum FmodTagType]).
-				- [code]datatype[/code]: Data type of the tag value ([enum FmodTagDataType]).
-				- [code]name[/code]: Name of the tag.
-				- [code]data[/code]: The tag value (type varies based on [code]datatype[/code]).
-				- [code]data_len[/code]: Length of the data in bytes.
-				- [code]updated[/code]: [code]true[/code] if the tag was updated (for streaming sources).
-				
-				[b]Note:[/b] Common tags include "TITLE", "ARTIST", "ALBUM" for music files.
-			</description>
-		</method>
-		<method name="load_from_file" qualifiers="static">
-			<return type="FmodSound" />
-			<param index="0" name="path" type="String" />
-			<description>
-				Static method to load a sound from a file path. The path should be a valid file system path or a Godot resource path (res://).
-				
-				[b]Example:[/b]
-				[codeblock]
-				var sound = FmodSound.load_from_file("res://music.mp3")
-				[/codeblock]
-			</description>
-		</method>
-		<method name="lock" qualifiers="const">
-			<return type="FmodSoundLock" />
-			<param index="0" name="offset" type="int" />
-			<param index="1" name="length" type="int" />
-			<description>
-				Locks a region of the sound's sample data for direct access. This allows reading or modifying the raw PCM data. Returns an [FmodSoundLock] object that provides access to the locked memory region.
-				
-				[b]Note:[/b] Always ensure the [FmodSoundLock] is freed (goes out of scope) to unlock the data.
-				
-				[b]Example:[/b]
-				[codeblock]
-				var lock = sound.lock(0, sound.get_length(FmodSystem.FMOD_TIME_UNIT_PCM))
-				# Access data through lock object
-				[/codeblock]
-			</description>
-		</method>
-		<method name="read_data" qualifiers="const">
-			<return type="PackedByteArray" />
-			<param index="0" name="length" type="int" />
-			<description>
-				Reads raw audio data from the sound into a PackedByteArray using FMOD's internal codec. This is useful for extracting decoded PCM data or for custom processing.
-				
-				[b]Note:[/b] Use [method seek_data] to position the read cursor before reading.
-			</description>
-		</method>
-		<method name="seek_data">
+		<method name="set_pcmread_callback">
 			<return type="void" />
-			<param index="0" name="pcm" type="int" />
+			<param index="0" name="callback" type="Callable" />
 			<description>
-				Seeks to a specific PCM position in the sound for data reading operations. The position is specified in PCM samples.
-				
-				[b]Note:[/b] This affects the position used by [method read_data], not the playback position.
+				Sets pcmread callback.
 			</description>
 		</method>
-		<method name="set_music_channel_volume" qualifiers="const">
-			<return type="void" />
-			<param index="0" name="channel" type="int" />
-			<param index="1" name="volume_db" type="float" />
+		<method name="get_pcmread_callback" qualifiers="const">
+			<return type="Callable" />
 			<description>
-				Sets the volume of a specific channel in a MOD/S3M/XM/IT/MIDI file, in decibels (dB). This allows individual control over each track/instrument in module music.
-				
-				[b]Note:[/b] This only works for module music formats. Valid channel indices are 0 to [method get_music_num_channels] - 1.
+				Returns pcmread callback.
 			</description>
 		</method>
-		<method name="set_music_speed">
+		<method name="set_pcmsetpos_callback">
 			<return type="void" />
-			<param index="0" name="speed" type="float" />
+			<param index="0" name="callback" type="Callable" />
 			<description>
-				Sets the relative playback speed for MOD/S3M/XM/IT/MIDI music. A value of 1.0 is normal speed, 0.5 is half speed, 2.0 is double speed, etc.
-				
-				[b]Note:[/b] This only works for module music formats (tracker formats).
+				Sets pcmsetpos callback.
+			</description>
+		</method>
+		<method name="get_pcmsetpos_callback" qualifiers="const">
+			<return type="Callable" />
+			<description>
+				Returns pcmsetpos callback.
+			</description>
+		</method>
+		<method name="set_nonblock_callback">
+			<return type="void" />
+			<param index="0" name="callback" type="Callable" />
+			<description>
+				Sets nonblock callback.
+			</description>
+		</method>
+		<method name="get_nonblock_callback" qualifiers="const">
+			<return type="Callable" />
+			<description>
+				Returns nonblock callback.
 			</description>
 		</method>
 	</methods>
+	<members />
+	<signals />
 	<constants>
 		<constant name="FMOD_SOUND_TYPE_UNKNOWN" value="0" enum="FmodSoundType">
 			Unknown or unsupported audio format.

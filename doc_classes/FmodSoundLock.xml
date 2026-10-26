@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodSoundLock" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodSoundLock" inherits="RefCounted" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Provides direct access to sound sample data for reading or modification.
 	</brief_description>
@@ -12,6 +12,14 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="unlock">
+			<return type="void" />
+			<description>
+				Unlocks the sound data, allowing FMOD to resume normal processing.
+				This should be called as soon as you're finished accessing the data.
+				The destructor automatically calls this if the data is still locked.
+			</description>
+		</method>
 		<method name="get_data1" qualifiers="const">
 			<return type="PackedByteArray" />
 			<description>
@@ -32,13 +40,8 @@
 				Returns [code]true[/code] if the sound data is currently locked and accessible.
 			</description>
 		</method>
-		<method name="unlock">
-			<return type="void" />
-			<description>
-				Unlocks the sound data, allowing FMOD to resume normal processing.
-				This should be called as soon as you're finished accessing the data.
-				The destructor automatically calls this if the data is still locked.
-			</description>
-		</method>
 	</methods>
+	<members />
+	<signals />
+	<constants />
 </class>

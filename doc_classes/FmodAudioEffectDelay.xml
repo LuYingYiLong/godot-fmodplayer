@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodAudioEffectDelay" inherits="FmodAudioEffect" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectDelay" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Delay/echo effect with dual taps and feedback support.
 	</brief_description>
@@ -10,70 +10,24 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="set_dry">
+			<return type="void" />
+			<param index="0" name="amount" type="float" />
+			<description>
+				Sets the dry (unprocessed) signal level.
+			</description>
+		</method>
 		<method name="get_dry">
 			<return type="float" />
 			<description>
 				Returns the dry (unprocessed) signal level.
 			</description>
 		</method>
-		<method name="get_feedback_delay_ms" qualifiers="const">
-			<return type="float" />
+		<method name="set_tap1_active">
+			<return type="void" />
+			<param index="0" name="active" type="bool" />
 			<description>
-				Returns the delay time for the feedback loop in milliseconds.
-			</description>
-		</method>
-		<method name="get_feedback_level_db" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the output level of the feedback loop in decibels.
-			</description>
-		</method>
-		<method name="get_feedback_lowpass" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the lowpass filter cutoff frequency for the feedback loop.
-			</description>
-		</method>
-		<method name="get_tap1_delay_ms" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the delay time for tap 1 in milliseconds.
-			</description>
-		</method>
-		<method name="get_tap1_level_db" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the output level for tap 1 in decibels.
-			</description>
-		</method>
-		<method name="get_tap1_pan" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the stereo panning position for tap 1 (-1.0 to 1.0).
-			</description>
-		</method>
-		<method name="get_tap2_delay_ms" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the delay time for tap 2 in milliseconds.
-			</description>
-		</method>
-		<method name="get_tap2_level_db" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the output level for tap 2 in decibels.
-			</description>
-		</method>
-		<method name="get_tap2_pan" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the stereo panning position for tap 2 (-1.0 to 1.0).
-			</description>
-		</method>
-		<method name="is_feedback_active" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if the feedback loop is active.
+				Enables or disables tap 1.
 			</description>
 		</method>
 		<method name="is_tap1_active" qualifiers="const">
@@ -82,17 +36,95 @@
 				Returns [code]true[/code] if tap 1 is active.
 			</description>
 		</method>
+		<method name="set_tap1_delay_ms">
+			<return type="void" />
+			<param index="0" name="delay_ms" type="float" />
+			<description>
+				Sets the delay time for tap 1 in milliseconds.
+			</description>
+		</method>
+		<method name="get_tap1_delay_ms" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the delay time for tap 1 in milliseconds.
+			</description>
+		</method>
+		<method name="set_tap1_level_db">
+			<return type="void" />
+			<param index="0" name="level_db" type="float" />
+			<description>
+				Sets the output level for tap 1 in decibels.
+			</description>
+		</method>
+		<method name="get_tap1_level_db" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the output level for tap 1 in decibels.
+			</description>
+		</method>
+		<method name="set_tap1_pan">
+			<return type="void" />
+			<param index="0" name="pan" type="float" />
+			<description>
+				Sets the stereo panning position for tap 1 (-1.0 = left, 1.0 = right).
+			</description>
+		</method>
+		<method name="get_tap1_pan" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the stereo panning position for tap 1 (-1.0 to 1.0).
+			</description>
+		</method>
+		<method name="set_tap2_active">
+			<return type="void" />
+			<param index="0" name="active" type="bool" />
+			<description>
+				Enables or disables tap 2.
+			</description>
+		</method>
 		<method name="is_tap2_active" qualifiers="const">
 			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if tap 2 is active.
 			</description>
 		</method>
-		<method name="set_dry">
+		<method name="set_tap2_delay_ms">
 			<return type="void" />
-			<param index="0" name="dry" type="float" />
+			<param index="0" name="delay_ms" type="float" />
 			<description>
-				Sets the dry (unprocessed) signal level.
+				Sets the delay time for tap 2 in milliseconds.
+			</description>
+		</method>
+		<method name="get_tap2_delay_ms" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the delay time for tap 2 in milliseconds.
+			</description>
+		</method>
+		<method name="set_tap2_level_db">
+			<return type="void" />
+			<param index="0" name="level_db" type="float" />
+			<description>
+				Sets the output level for tap 2 in decibels.
+			</description>
+		</method>
+		<method name="get_tap2_level_db" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the output level for tap 2 in decibels.
+			</description>
+		</method>
+		<method name="set_tap2_pan">
+			<return type="void" />
+			<param index="0" name="pan" type="float" />
+			<description>
+				Sets the stereo panning position for tap 2 (-1.0 = left, 1.0 = right).
+			</description>
+		</method>
+		<method name="get_tap2_pan" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the stereo panning position for tap 2 (-1.0 to 1.0).
 			</description>
 		</method>
 		<method name="set_feedback_active">
@@ -102,6 +134,12 @@
 				Enables or disables the feedback loop.
 			</description>
 		</method>
+		<method name="is_feedback_active" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the feedback loop is active.
+			</description>
+		</method>
 		<method name="set_feedback_delay_ms">
 			<return type="void" />
 			<param index="0" name="delay_ms" type="float" />
@@ -109,11 +147,23 @@
 				Sets the delay time for the feedback loop in milliseconds.
 			</description>
 		</method>
+		<method name="get_feedback_delay_ms" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the delay time for the feedback loop in milliseconds.
+			</description>
+		</method>
 		<method name="set_feedback_level_db">
 			<return type="void" />
 			<param index="0" name="level_db" type="float" />
 			<description>
 				Sets the output level for the feedback loop in decibels.
+			</description>
+		</method>
+		<method name="get_feedback_level_db" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the output level of the feedback loop in decibels.
 			</description>
 		</method>
 		<method name="set_feedback_lowpass">
@@ -124,102 +174,54 @@
 				Lower values create darker, more muffled echoes.
 			</description>
 		</method>
-		<method name="set_tap1_active">
-			<return type="void" />
-			<param index="0" name="active" type="bool" />
+		<method name="get_feedback_lowpass" qualifiers="const">
+			<return type="float" />
 			<description>
-				Enables or disables tap 1.
-			</description>
-		</method>
-		<method name="set_tap1_delay_ms">
-			<return type="void" />
-			<param index="0" name="delay_ms" type="float" />
-			<description>
-				Sets the delay time for tap 1 in milliseconds.
-			</description>
-		</method>
-		<method name="set_tap1_level_db">
-			<return type="void" />
-			<param index="0" name="level_db" type="float" />
-			<description>
-				Sets the output level for tap 1 in decibels.
-			</description>
-		</method>
-		<method name="set_tap1_pan">
-			<return type="void" />
-			<param index="0" name="pan" type="float" />
-			<description>
-				Sets the stereo panning position for tap 1 (-1.0 = left, 1.0 = right).
-			</description>
-		</method>
-		<method name="set_tap2_active">
-			<return type="void" />
-			<param index="0" name="active" type="bool" />
-			<description>
-				Enables or disables tap 2.
-			</description>
-		</method>
-		<method name="set_tap2_delay_ms">
-			<return type="void" />
-			<param index="0" name="delay_ms" type="float" />
-			<description>
-				Sets the delay time for tap 2 in milliseconds.
-			</description>
-		</method>
-		<method name="set_tap2_level_db">
-			<return type="void" />
-			<param index="0" name="level_db" type="float" />
-			<description>
-				Sets the output level for tap 2 in decibels.
-			</description>
-		</method>
-		<method name="set_tap2_pan">
-			<return type="void" />
-			<param index="0" name="pan" type="float" />
-			<description>
-				Sets the stereo panning position for tap 2 (-1.0 = left, 1.0 = right).
+				Returns the lowpass filter cutoff frequency for the feedback loop.
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="dry" type="float" setter="set_dry" getter="get_dry" default="1.0">
+		<member type="float" name="dry" setter="set_dry" getter="get_dry" default="1.0">
 			The dry (unprocessed) signal level.
 		</member>
-		<member name="feedback_active" type="bool" setter="set_feedback_active" getter="is_feedback_active" default="false">
-			If [code]true[/code], the feedback loop is active, creating repeating echoes.
-		</member>
-		<member name="feedback_delay_ms" type="float" setter="set_feedback_delay_ms" getter="get_feedback_delay_ms" default="340.0">
-			The delay time for the feedback loop in milliseconds.
-		</member>
-		<member name="feedback_level_db" type="float" setter="set_feedback_level_db" getter="get_feedback_level_db" default="-6.0">
-			The output level for the feedback loop in decibels.
-		</member>
-		<member name="feedback_lowpass" type="float" setter="set_feedback_lowpass" getter="get_feedback_lowpass" default="16000.0">
-			The lowpass filter cutoff frequency for the feedback loop in Hz. Lower values create darker echoes.
-		</member>
-		<member name="tap_1_active" type="bool" setter="set_tap1_active" getter="is_tap1_active" default="true">
+		<member type="bool" name="tap1_active" setter="set_tap1_active" getter="is_tap1_active" default="true">
 			If [code]true[/code], tap 1 is active and produces output.
 		</member>
-		<member name="tap_1_delay_ms" type="float" setter="set_tap1_delay_ms" getter="get_tap1_delay_ms" default="250.0">
+		<member type="float" name="tap1_delay_ms" setter="set_tap1_delay_ms" getter="get_tap1_delay_ms" default="250.0">
 			The delay time for tap 1 in milliseconds.
 		</member>
-		<member name="tap_1_level_db" type="float" setter="set_tap1_level_db" getter="get_tap1_level_db" default="-6.0">
+		<member type="float" name="tap1_level_db" setter="set_tap1_level_db" getter="get_tap1_level_db" default="-6.0">
 			The output level for tap 1 in decibels.
 		</member>
-		<member name="tap_1_pan" type="float" setter="set_tap1_pan" getter="get_tap1_pan" default="0.2">
+		<member type="float" name="tap1_pan" setter="set_tap1_pan" getter="get_tap1_pan" default="0.2">
 			The stereo panning position for tap 1. Range: -1.0 (left) to 1.0 (right).
 		</member>
-		<member name="tap_2_active" type="bool" setter="set_tap2_active" getter="is_tap2_active" default="true">
+		<member type="bool" name="tap2_active" setter="set_tap2_active" getter="is_tap2_active" default="true">
 			If [code]true[/code], tap 2 is active and produces output.
 		</member>
-		<member name="tap_2_delay_ms" type="float" setter="set_tap2_delay_ms" getter="get_tap2_delay_ms" default="500.0">
+		<member type="float" name="tap2_delay_ms" setter="set_tap2_delay_ms" getter="get_tap2_delay_ms" default="500.0">
 			The delay time for tap 2 in milliseconds.
 		</member>
-		<member name="tap_2_level_db" type="float" setter="set_tap2_level_db" getter="get_tap2_level_db" default="-12.0">
+		<member type="float" name="tap2_level_db" setter="set_tap2_level_db" getter="get_tap2_level_db" default="-12.0">
 			The output level for tap 2 in decibels.
 		</member>
-		<member name="tap_2_pan" type="float" setter="set_tap2_pan" getter="get_tap2_pan" default="-0.4">
+		<member type="float" name="tap2_pan" setter="set_tap2_pan" getter="get_tap2_pan" default="-0.4">
 			The stereo panning position for tap 2. Range: -1.0 (left) to 1.0 (right).
 		</member>
+		<member type="bool" name="feedback_active" setter="set_feedback_active" getter="is_feedback_active" default="false">
+			If [code]true[/code], the feedback loop is active, creating repeating echoes.
+		</member>
+		<member type="float" name="feedback_delay_ms" setter="set_feedback_delay_ms" getter="get_feedback_delay_ms" default="340.0">
+			The delay time for the feedback loop in milliseconds.
+		</member>
+		<member type="float" name="feedback_level_db" setter="set_feedback_level_db" getter="get_feedback_level_db" default="-6.0">
+			The output level for the feedback loop in decibels.
+		</member>
+		<member type="float" name="feedback_lowpass" setter="set_feedback_lowpass" getter="get_feedback_lowpass" default="16000.0">
+			The lowpass filter cutoff frequency for the feedback loop in Hz. Lower values create darker echoes.
+		</member>
 	</members>
+	<signals />
+	<constants />
 </class>

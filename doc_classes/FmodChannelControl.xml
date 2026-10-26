@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodChannelControl" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodChannelControl" inherits="RefCounted" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Abstract base class that provides common functionality for Channel and ChannelGroup.
 	</brief_description>
@@ -10,20 +10,10 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="add_dsp">
-			<return type="void" />
-			<param index="0" name="index" type="int" />
-			<param index="1" name="dsp" type="FmodDSP" />
+		<method name="channel_control_is_valid" qualifiers="const">
+			<return type="bool" />
 			<description>
-				Adds a DSP unit to the DSP chain at the specified index. The DSP will be inserted at the given position in the processing chain, affecting how audio is processed.
-			</description>
-		</method>
-		<method name="add_fade_point">
-			<return type="void" />
-			<param index="0" name="dspclock" type="int" />
-			<param index="1" name="volume" type="float" />
-			<description>
-				Adds a sample-accurate fade point at the specified DSP clock time. This allows precise volume automation synchronized to the audio clock. The volume will transition to the specified value at the exact clock time specified.
+				Returns [code]true[/code] if the underlying FMOD::ChannelControl object is valid and can be used for operations.
 			</description>
 		</method>
 		<method name="channel_control_is_null" qualifiers="const">
@@ -32,205 +22,16 @@
 				Returns [code]true[/code] if the underlying FMOD::ChannelControl object is null (not initialized or already released).
 			</description>
 		</method>
-		<method name="channel_control_is_valid" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if the underlying FMOD::ChannelControl object is valid and can be used for operations.
-			</description>
-		</method>
-		<method name="clear_callback">
-			<return type="void" />
-			<description>
-				Clears the callback set by [method set_callback]. After calling this, the [signal callback_received] signal will no longer be emitted when FMOD events occur.
-			</description>
-		</method>
-		<method name="get_audibility" qualifiers="const">
-			<return type="float" />
-			<description>
-				Calculates and returns the final audibility of the channel based on all volume attenuation factors. This considers volume levels from the channel itself, its parent channel groups, and any applied 3D attenuation. Returns a value between 0.0 (silent) and 1.0 (full volume).
-			</description>
-		</method>
-		<method name="get_delay" qualifiers="const">
-			<return type="Dictionary" />
-			<description>
-				Returns a [Dictionary] containing the current delay settings with the following keys:
-				- [code]"start"[/code] ([code]int[/code]): The DSP clock value when playback should start.
-				- [code]"end"[/code] ([code]int[/code]): The DSP clock value when playback should stop.
-				- [code]"stop_channels"[/code] ([code]bool[/code]): Whether to stop channels when the end time is reached.
-			</description>
-		</method>
-		<method name="get_dsp" qualifiers="const">
-			<return type="FmodDSP" />
-			<param index="0" name="index" type="int" />
-			<description>
-				Retrieves the DSP unit at the specified index in the DSP chain. Returns [code]null[/code] if the index is invalid.
-			</description>
-		</method>
-		<method name="get_dsp_clock" qualifiers="const">
-			<return type="Dictionary" />
-			<description>
-				Returns a [Dictionary] with the current DSP clock values containing:
-				- [code]"dsp_lock"[/code] ([code]int[/code]): The current DSP clock for this channel.
-				- [code]"parent_clock"[/code] ([code]int[/code]): The current DSP clock of the parent ChannelGroup.
-				These clock values are used for sample-accurate scheduling operations.
-			</description>
-		</method>
-		<method name="get_dsp_index" qualifiers="const">
-			<return type="int" />
-			<param index="0" name="dsp" type="FmodDSP" />
-			<description>
-				Returns the index of the specified DSP unit in the DSP chain, or -1 if the DSP is not found in the chain.
-			</description>
-		</method>
-		<method name="get_fade_points" qualifiers="const">
-			<return type="Dictionary" />
-			<description>
-				Returns a [Dictionary] containing fade point information with the following keys:
-				- [code]"num_points"[/code] ([code]int[/code]): The number of fade points currently set.
-				- [code]"point_dspclock"[/code] ([code]int[/code]): The DSP clock of the fade point (for single-point queries).
-				- [code]"point_volume"[/code] ([code]float[/code]): The volume level of the fade point (for single-point queries).
-			</description>
-		</method>
-		<method name="get_low_pass_gain" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the current low pass gain value. This controls how much the dry signal is affected when the built-in lowpass filter is applied.
-			</description>
-		</method>
-		<method name="get_mode" qualifiers="const">
-			<return type="int" enum="FmodSystem.FmodMode" />
-			<description>
-				Returns the current playback mode flags that control the behavior of this channel. See [enum FmodSystem.FmodMode] for available mode flags.
-			</description>
-		</method>
-		<method name="get_mute" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if the channel is currently muted.
-			</description>
-		</method>
-		<method name="get_num_dsps" qualifiers="const">
-			<return type="int" />
-			<description>
-				Returns the number of DSP units currently in the DSP chain for this channel.
-			</description>
-		</method>
-		<method name="get_paused" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if the channel is currently paused.
-			</description>
-		</method>
-		<method name="get_pitch" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the current relative pitch/playback rate. A value of 1.0 means normal playback speed, values below 1.0 slow down playback, and values above 1.0 speed it up.
-			</description>
-		</method>
-		<method name="get_reverb_properties" qualifiers="const">
-			<return type="float" />
-			<param index="0" name="instance" type="int" />
-			<description>
-				Returns the wet/send level for the specified reverb instance (0-3). This controls how much of the channel's audio is sent to the reverb effect.
-			</description>
-		</method>
-		<method name="get_volume_db" qualifiers="const">
-			<return type="float" />
-			<description>
-				Returns the current volume level in decibels (dB). 0 dB represents unity gain (no change), negative values attenuate the signal, and positive values amplify it.
-			</description>
-		</method>
-		<method name="get_volume_ramp" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if volume changes are ramped smoothly (interpolated over time), or [code]false[/code] if volume changes are applied instantaneously.
-			</description>
-		</method>
 		<method name="is_playing" qualifiers="const">
 			<return type="bool" />
 			<description>
 				Returns [code]true[/code] if the channel is currently playing audio. Returns [code]false[/code] if the channel has stopped or if the underlying FMOD handle has become invalid.
 			</description>
 		</method>
-		<method name="remove_dsp">
-			<return type="void" />
-			<param index="0" name="dsp" type="FmodDSP" />
-			<description>
-				Removes the specified DSP unit from the DSP chain. The DSP will no longer process audio for this channel.
-			</description>
-		</method>
-		<method name="remove_fade_points">
-			<return type="void" />
-			<param index="0" name="start" type="int" />
-			<param index="1" name="end" type="int" />
-			<description>
-				Removes all fade points between the specified DSP clock start and end values. This cancels any volume automation scheduled within that time range.
-			</description>
-		</method>
-		<method name="set_callback">
+		<method name="stop">
 			<return type="void" />
 			<description>
-				Sets up a callback for receiving notifications from FMOD about channel events. When enabled, the [signal callback_received] signal will be emitted when FMOD events occur on this channel.
-			</description>
-		</method>
-		<method name="set_delay">
-			<return type="void" />
-			<param index="0" name="start" type="int" />
-			<param index="1" name="end" type="int" />
-			<param index="2" name="stop_channels" type="bool" default="true" />
-			<description>
-				Sets sample-accurate start and stop times relative to the parent ChannelGroup's DSP clock. This allows precise scheduling of when playback should begin and end.
-				- [param start]: The DSP clock value when playback should start. Use 0 for immediate playback.
-				- [param end]: The DSP clock value when playback should stop. Use 0 to play until manually stopped.
-				- [param stop_channels]: If [code]true[/code], channels will be stopped when the end time is reached.
-			</description>
-		</method>
-		<method name="set_dsp_index">
-			<return type="void" />
-			<param index="0" name="dsp" type="FmodDSP" />
-			<param index="1" name="index" type="int" />
-			<description>
-				Moves the specified DSP unit to a new position (index) in the DSP chain. This changes the order in which DSPs process the audio signal.
-			</description>
-		</method>
-		<method name="set_fade_point_ramp">
-			<return type="void" />
-			<param index="0" name="dspclock" type="int" />
-			<param index="1" name="volume" type="float" />
-			<description>
-				Adds a fade point at the specified DSP clock time with volume ramping. Similar to [method add_fade_point], but the volume transition will use a ramp curve for smoother changes.
-			</description>
-		</method>
-		<method name="set_low_pass_gain">
-			<return type="void" />
-			<param index="0" name="gain" type="float" />
-			<description>
-				Sets the gain of the dry signal when the built-in lowpass filter is applied. This affects how much the original unfiltered signal passes through when filtering is active. Values range from 0.0 to 1.0.
-			</description>
-		</method>
-		<method name="set_mode">
-			<return type="void" />
-			<param index="0" name="mode" type="int" enum="FmodSystem.FmodMode" />
-			<description>
-				Sets the playback mode flags that control the behavior of this channel. Mode flags include loop settings (LOOP_OFF, LOOP_NORMAL, LOOP_BIDI), spatial audio settings (2D, 3D with various rolloff types), and creation options (CREATESTREAM, CREATESAMPLE). See [enum FmodSystem.FmodMode] for all available options.
-			</description>
-		</method>
-		<method name="set_mute">
-			<return type="void" />
-			<param index="0" name="mute" type="bool" />
-			<description>
-				Sets the mute state of the channel. When muted, the channel produces no audio output but continues processing.
-			</description>
-		</method>
-		<method name="set_pan">
-			<return type="void" />
-			<param index="0" name="pan" type="float" />
-			<description>
-				Adjusts the left/right panning of the channel. 
-				- [code]-1.0[/code]: Full left
-				- [code]0.0[/code]: Center (default)
-				- [code]1.0[/code]: Full right
-				Values between these points create intermediate panning positions.
+				Stops playback of the channel (or all channels in nested ChannelGroups). The channel becomes invalid after stopping and cannot be reused.
 			</description>
 		</method>
 		<method name="set_paused">
@@ -240,22 +41,45 @@
 				Sets the pause state of the channel. When paused, playback is temporarily suspended and can be resumed by setting paused to [code]false[/code].
 			</description>
 		</method>
+		<method name="get_paused" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the channel is currently paused.
+			</description>
+		</method>
+		<method name="set_mode">
+			<return type="void" />
+			<param index="0" name="mode" type="int" enum="FmodSystem.FmodMode" />
+			<description>
+				Sets the playback mode flags that control the behavior of this channel. Mode flags include loop settings (LOOP_OFF, LOOP_NORMAL, LOOP_BIDI), spatial audio settings (2D, 3D with various rolloff types), and creation options (CREATESTREAM, CREATESAMPLE). See [enum FmodSystem.FmodMode] for all available options.
+			</description>
+		</method>
+		<method name="get_mode" qualifiers="const">
+			<return type="int" enum="FmodSystem.FmodMode" />
+			<description>
+				Returns the current playback mode flags that control the behavior of this channel. See [enum FmodSystem.FmodMode] for available mode flags.
+			</description>
+		</method>
 		<method name="set_pitch">
 			<return type="void" />
 			<param index="0" name="pitch" type="float" />
 			<description>
-				Sets the relative pitch/playback rate. 
+				Sets the relative pitch/playback rate.
 				- [code]1.0[/code]: Normal playback speed
 				- Values below 1.0: Slower playback (lower pitch)
 				- Values above 1.0: Faster playback (higher pitch)
 			</description>
 		</method>
-		<method name="set_reverb_properties">
-			<return type="void" />
-			<param index="0" name="instance" type="int" />
-			<param index="1" name="wet" type="float" />
+		<method name="get_pitch" qualifiers="const">
+			<return type="float" />
 			<description>
-				Sets the wet/send level for a specific reverb instance (0-3). This controls how much of the channel's audio is sent to the global reverb effect. Higher values result in more reverberation.
+				Returns the current relative pitch/playback rate. A value of 1.0 means normal playback speed, values below 1.0 slow down playback, and values above 1.0 speed it up.
+			</description>
+		</method>
+		<method name="get_audibility" qualifiers="const">
+			<return type="float" />
+			<description>
+				Calculates and returns the final audibility of the channel based on all volume attenuation factors. This considers volume levels from the channel itself, its parent channel groups, and any applied 3D attenuation. Returns a value between 0.0 (silent) and 1.0 (full volume).
 			</description>
 		</method>
 		<method name="set_volume_db">
@@ -269,17 +93,36 @@
 				Typical range is -80 dB to +24 dB.
 			</description>
 		</method>
+		<method name="get_volume_db" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the current volume level in decibels (dB). 0 dB represents unity gain (no change), negative values attenuate the signal, and positive values amplify it.
+			</description>
+		</method>
 		<method name="set_volume_ramp">
 			<return type="void" />
-			<param index="0" name="ramp" type="bool" />
+			<param index="0" name="volume_ramp" type="bool" />
 			<description>
 				Sets whether volume changes should be ramped (interpolated smoothly over time) or applied instantaneously. Ramping prevents clicks and pops when changing volume.
 			</description>
 		</method>
-		<method name="stop">
-			<return type="void" />
+		<method name="get_volume_ramp" qualifiers="const">
+			<return type="bool" />
 			<description>
-				Stops playback of the channel (or all channels in nested ChannelGroups). The channel becomes invalid after stopping and cannot be reused.
+				Returns [code]true[/code] if volume changes are ramped smoothly (interpolated over time), or [code]false[/code] if volume changes are applied instantaneously.
+			</description>
+		</method>
+		<method name="set_mute">
+			<return type="void" />
+			<param index="0" name="mute" type="bool" />
+			<description>
+				Sets the mute state of the channel. When muted, the channel produces no audio output but continues processing.
+			</description>
+		</method>
+		<method name="get_mute" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the channel is currently muted.
 			</description>
 		</method>
 		<method name="set_3d_attributes">
@@ -337,7 +180,7 @@
 		</method>
 		<method name="set_3d_custom_rolloff">
 			<return type="void" />
-			<param index="0" name="points" type="PackedVector3Array" />
+			<param index="0" name="3d_custom_rolloff" type="PackedVector3Array" />
 			<description>
 				Sets a custom distance rolloff curve.
 				Each point is a Vector3 where x=distance, y=volume, z=unused.
@@ -458,6 +301,17 @@
 				Returns the current 3D spread angle.
 			</description>
 		</method>
+		<method name="set_pan">
+			<return type="void" />
+			<param index="0" name="pan" type="float" />
+			<description>
+				Adjusts the left/right panning of the channel.
+				- [code]-1.0[/code]: Full left
+				- [code]0.0[/code]: Center (default)
+				- [code]1.0[/code]: Full right
+				Values between these points create intermediate panning positions.
+			</description>
+		</method>
 		<method name="set_mix_levels_input">
 			<return type="void" />
 			<param index="0" name="levels" type="PackedFloat32Array" />
@@ -498,25 +352,189 @@
 				Returns the current final mix matrix as a Dictionary with [code]matrix[/code], [code]outchannels[/code], [code]inchannels[/code], and [code]inchannel_hop[/code].
 			</description>
 		</method>
+		<method name="set_reverb_properties">
+			<return type="void" />
+			<param index="0" name="instance" type="int" />
+			<param index="1" name="wet" type="float" />
+			<description>
+				Sets the wet/send level for a specific reverb instance (0-3). This controls how much of the channel's audio is sent to the global reverb effect. Higher values result in more reverberation.
+			</description>
+		</method>
+		<method name="get_reverb_properties" qualifiers="const">
+			<return type="float" />
+			<param index="0" name="instance" type="int" />
+			<description>
+				Returns the wet/send level for the specified reverb instance (0-3). This controls how much of the channel's audio is sent to the reverb effect.
+			</description>
+		</method>
+		<method name="set_low_pass_gain">
+			<return type="void" />
+			<param index="0" name="gain" type="float" />
+			<description>
+				Sets the gain of the dry signal when the built-in lowpass filter is applied. This affects how much the original unfiltered signal passes through when filtering is active. Values range from 0.0 to 1.0.
+			</description>
+		</method>
+		<method name="get_low_pass_gain" qualifiers="const">
+			<return type="float" />
+			<description>
+				Returns the current low pass gain value. This controls how much the dry signal is affected when the built-in lowpass filter is applied.
+			</description>
+		</method>
+		<method name="add_dsp">
+			<return type="void" />
+			<param index="0" name="index" type="int" />
+			<param index="1" name="dsp" type="FmodDSP" />
+			<description>
+				Adds a DSP unit to the DSP chain at the specified index. The DSP will be inserted at the given position in the processing chain, affecting how audio is processed.
+			</description>
+		</method>
+		<method name="remove_dsp">
+			<return type="void" />
+			<param index="0" name="dsp" type="FmodDSP" />
+			<description>
+				Removes the specified DSP unit from the DSP chain. The DSP will no longer process audio for this channel.
+			</description>
+		</method>
+		<method name="get_num_dsps" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the number of DSP units currently in the DSP chain for this channel.
+			</description>
+		</method>
+		<method name="get_dsp" qualifiers="const">
+			<return type="FmodDSP" />
+			<param index="0" name="index" type="int" />
+			<description>
+				Retrieves the DSP unit at the specified index in the DSP chain. Returns [code]null[/code] if the index is invalid.
+			</description>
+		</method>
+		<method name="set_dsp_index">
+			<return type="void" />
+			<param index="0" name="dsp" type="FmodDSP" />
+			<param index="1" name="index" type="int" />
+			<description>
+				Moves the specified DSP unit to a new position (index) in the DSP chain. This changes the order in which DSPs process the audio signal.
+			</description>
+		</method>
+		<method name="get_dsp_index" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="dsp" type="FmodDSP" />
+			<description>
+				Returns the index of the specified DSP unit in the DSP chain, or -1 if the DSP is not found in the chain.
+			</description>
+		</method>
+		<method name="get_dsp_clock" qualifiers="const">
+			<return type="Dictionary" />
+			<description>
+				Returns a [Dictionary] with the current DSP clock values containing:
+				- [code]"dsp_lock"[/code] ([code skip-lint]int[/code]): The current DSP clock for this channel.
+				- [code]"parent_clock"[/code] ([code skip-lint]int[/code]): The current DSP clock of the parent ChannelGroup.
+				These clock values are used for sample-accurate scheduling operations.
+			</description>
+		</method>
+		<method name="set_delay">
+			<return type="void" />
+			<param index="0" name="start" type="int" />
+			<param index="1" name="end" type="int" />
+			<param index="2" name="stop_channels" type="bool" default="true" />
+			<description>
+				Sets sample-accurate start and stop times relative to the parent ChannelGroup's DSP clock. This allows precise scheduling of when playback should begin and end.
+				- [param start]: The DSP clock value when playback should start. Use 0 for immediate playback.
+				- [param end]: The DSP clock value when playback should stop. Use 0 to play until manually stopped.
+				- [param stop_channels]: If [code]true[/code], channels will be stopped when the end time is reached.
+			</description>
+		</method>
+		<method name="get_delay" qualifiers="const">
+			<return type="Dictionary" />
+			<description>
+				Returns a [Dictionary] containing the current delay settings with the following keys:
+				- [code]"start"[/code] ([code skip-lint]int[/code]): The DSP clock value when playback should start.
+				- [code]"end"[/code] ([code skip-lint]int[/code]): The DSP clock value when playback should stop.
+				- [code]"stop_channels"[/code] ([code skip-lint]bool[/code]): Whether to stop channels when the end time is reached.
+			</description>
+		</method>
+		<method name="add_fade_point">
+			<return type="void" />
+			<param index="0" name="dspclock" type="int" />
+			<param index="1" name="volume" type="float" />
+			<description>
+				Adds a sample-accurate fade point at the specified DSP clock time. This allows precise volume automation synchronized to the audio clock. The volume will transition to the specified value at the exact clock time specified.
+			</description>
+		</method>
+		<method name="set_fade_point_ramp">
+			<return type="void" />
+			<param index="0" name="dspclock" type="int" />
+			<param index="1" name="volume" type="float" />
+			<description>
+				Adds a fade point at the specified DSP clock time with volume ramping. Similar to [method add_fade_point], but the volume transition will use a ramp curve for smoother changes.
+			</description>
+		</method>
+		<method name="remove_fade_points">
+			<return type="void" />
+			<param index="0" name="start" type="int" />
+			<param index="1" name="end" type="int" />
+			<description>
+				Removes all fade points between the specified DSP clock start and end values. This cancels any volume automation scheduled within that time range.
+			</description>
+		</method>
+		<method name="get_fade_points" qualifiers="const">
+			<return type="Dictionary" />
+			<description>
+				Returns a [Dictionary] containing fade point information with the following keys:
+				- [code]"num_points"[/code] ([code skip-lint]int[/code]): The number of fade points currently set.
+				- [code]"point_dspclock"[/code] ([code skip-lint]int[/code]): The DSP clock of the fade point (for single-point queries).
+				- [code]"point_volume"[/code] ([code skip-lint]float[/code]): The volume level of the fade point (for single-point queries).
+			</description>
+		</method>
+		<method name="set_callback">
+			<return type="void" />
+			<description>
+				Sets up a callback for receiving notifications from FMOD about channel events. When enabled, the [signal callback_received] signal will be emitted when FMOD events occur on this channel.
+			</description>
+		</method>
+		<method name="clear_callback">
+			<return type="void" />
+			<description>
+				Clears the callback set by [method set_callback]. After calling this, the [signal callback_received] signal will no longer be emitted when FMOD events occur.
+			</description>
+		</method>
 	</methods>
 	<members>
-		<member name="gain" type="float" setter="set_low_pass_gain" getter="get_low_pass_gain" default="1.0">
-			The gain of the dry signal when the built-in lowpass filter is applied. Controls how much unfiltered signal passes through when filtering is active (0.0 to 1.0).
-		</member>
-		<member name="mute" type="bool" setter="set_mute" getter="get_mute" default="false">
-			If [code]true[/code], the channel is muted and produces no audio output.
-		</member>
-		<member name="pasued" type="bool" setter="set_paused" getter="get_paused" default="true">
+		<member type="bool" name="paused" setter="set_paused" getter="get_paused" default="true">
 			If [code]true[/code], the channel playback is paused.
 		</member>
-		<member name="pitch" type="float" setter="set_pitch" getter="get_pitch" default="1.0">
+		<member type="float" name="pitch" setter="set_pitch" getter="get_pitch" default="1.0">
 			The relative pitch/playback rate. 1.0 is normal speed, values below 1.0 slow down playback, values above 1.0 speed it up.
 		</member>
-		<member name="volume_db" type="float" setter="set_volume_db" getter="get_volume_db" default="0.0">
+		<member type="float" name="volume_db" setter="set_volume_db" getter="get_volume_db" default="0.0">
 			The volume level in decibels (dB). 0 dB is unity gain, negative values attenuate, positive values amplify.
 		</member>
-		<member name="volume_ramp" type="bool" setter="set_volume_ramp" getter="get_volume_ramp" default="false">
+		<member type="bool" name="volume_ramp" setter="set_volume_ramp" getter="get_volume_ramp" default="false">
 			If [code]true[/code], volume changes are ramped smoothly over time. If [code]false[/code], volume changes are instantaneous.
+		</member>
+		<member type="bool" name="mute" setter="set_mute" getter="get_mute" default="false">
+			If [code]true[/code], the channel is muted and produces no audio output.
+		</member>
+		<member type="PackedVector3Array" name="3d_custom_rolloff" setter="set_3d_custom_rolloff" getter="get_3d_custom_rolloff" default="PackedVector3Array()">
+			Controls 3d custom rolloff.
+		</member>
+		<member type="float" name="3d_doppler_level" setter="set_3d_doppler_level" getter="get_3d_doppler_level" default="1.0">
+			Controls 3d doppler level.
+		</member>
+		<member type="float" name="3d_level" setter="set_3d_level" getter="get_3d_level" default="1.0">
+			Controls 3d level.
+		</member>
+		<member type="float" name="3d_min_distance" setter="set_3d_min_distance" getter="get_3d_min_distance" default="1.0">
+			Controls 3d min distance.
+		</member>
+		<member type="float" name="3d_max_distance" setter="set_3d_max_distance" getter="get_3d_max_distance" default="100000.0">
+			Controls 3d max distance.
+		</member>
+		<member type="float" name="3d_spread" setter="set_3d_spread" getter="get_3d_spread" default="0.0">
+			Controls 3d spread.
+		</member>
+		<member type="float" name="gain" setter="set_low_pass_gain" getter="get_low_pass_gain" default="1.0">
+			The gain of the dry signal when the built-in lowpass filter is applied. Controls how much unfiltered signal passes through when filtering is active (0.0 to 1.0).
 		</member>
 	</members>
 	<signals>
@@ -527,4 +545,5 @@
 			</description>
 		</signal>
 	</signals>
+	<constants />
 </class>

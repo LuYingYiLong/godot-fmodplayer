@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="FmodGeometryMeshToolsPlugin" inherits="EditorPlugin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodGeometryMeshToolsPlugin" inherits="EditorPlugin" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
 		Editor tool for creating FMOD geometry nodes from selected meshes.
 	</brief_description>
@@ -9,4 +9,16 @@
 	</description>
 	<tutorials>
 	</tutorials>
+	<methods>
+		<method name="_on_menu_id_pressed">
+			<return type="void" />
+			<param index="0" name="id" type="int" />
+			<description>
+				Internal editor or engine callback.
+			</description>
+		</method>
+	</methods>
+	<members />
+	<signals />
+	<constants />
 </class>
