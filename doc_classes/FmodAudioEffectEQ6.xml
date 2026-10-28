@@ -4,17 +4,18 @@
 		6-band equalizer audio effect.
 	</brief_description>
 	<description>
-		FmodAudioEffectEQ6 is a 6-band equalizer using FMOD's MULTIBAND_EQ DSP. It provides frequency equalization across six bands spanning from 32Hz to 10000Hz with octave spacing.
+		FmodAudioEffectEQ6 is a 6-band equalizer using FMOD's MULTIBAND_EQ DSP. Its initial center frequencies span 32 Hz through 10000 Hz, at approximately logarithmic intervals.
 		Each band can be individually adjusted for gain (-60 dB to +24 dB), frequency, Q value, and filter type. By default, all bands use peaking filters with a Q value of 0.707.
 		The frequency bands are: 32Hz, 100Hz, 320Hz, 1000Hz, 3200Hz, and 10000Hz.
 		[b]Note:[/b] For finer control, use [FmodAudioEffectEQ10] or [FmodAudioEffectEQ21].
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods />
+	<methods>
+	</methods>
 	<members>
 		<member name="preset" type="int" setter="set_preset" getter="get_preset" overrides="FmodAudioEffectEQ" enum="FmodAudioEffectEQ.Preset" default="0">
-			The preset is fixed to [constant FmodAudioEffectEQ.PRESET_6_BANDS] for this class.
+			The initial preset is [constant FmodAudioEffectEQ.PRESET_6_BANDS]. The inherited [method FmodAudioEffectEQ.set_preset] can change it and reinitialize the bands.
 		</member>
 		<member type="float" name="band_0_gain" default="0.0">
 			Gain for the first band (32Hz) in decibels. Range: -60 to +24 dB.
@@ -89,6 +90,8 @@
 			Filter type for the sixth band. Default is [constant FmodAudioEffectEQ.FILTER_PEAKING].
 		</member>
 	</members>
-	<signals />
-	<constants />
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

@@ -12,7 +12,7 @@
 		- Position, rotate, and scale geometry in 3D space
 		- Serialize geometry data for efficient loading/saving
 		When a sound source is behind geometry relative to the listener, FMOD calculates occlusion values that can be used to muffle the sound (direct occlusion) and reduce its reverb contribution (reverb occlusion).
-		[b]Note:[/b] Geometry occlusion requires [constant FmodSystem.FMOD_INIT_FLAG_CHANNEL_LOWPASS] to be set during system initialization.
+		To apply automatic geometry filtering to channels, enable [constant FmodSystem.FMOD_INIT_FLAG_CHANNEL_LOWPASS] or [constant FmodSystem.FMOD_INIT_FLAG_CHANNEL_DISTANCEFILTER] when initializing the system.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -20,15 +20,13 @@
 		<method name="geometry_is_valid" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the geometry handle is valid and ready for use.
-				A valid geometry can have polygons added and can be used for occlusion calculations.
+				Returns [code]true[/code] if the stored Geometry pointer is non-null. This checks the wrapper pointer, not the native object lifetime.
 			</description>
 		</method>
 		<method name="geometry_is_null" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the geometry handle is null or invalid.
-				A null geometry indicates that the object has not been properly initialized or has been released.
+				Returns [code]true[/code] if the stored Geometry pointer is null. This checks the wrapper pointer, not the native object lifetime.
 			</description>
 		</method>
 		<method name="set_polygon_attributes">
@@ -60,8 +58,7 @@
 			<return type="int" />
 			<param index="0" name="index" type="int" />
 			<description>
-				Returns the number of vertices in the specified polygon.
-				Returns [code]-1[/code] if the polygon index is invalid.
+				Returns the number of vertices in the specified polygon, or [code]0[/code] if the geometry or index is invalid or the query fails.
 			</description>
 		</method>
 		<method name="set_polygon_vertex">
@@ -106,15 +103,13 @@
 			<return type="void" />
 			<param index="0" name="rotation" type="Vector3" />
 			<description>
-				Sets the rotation of this geometry object in world space (in degrees).
-				All polygons in the geometry are transformed by this rotation.
+				Sets the world-space Euler rotation in radians. The Inspector displays this property in degrees.
 			</description>
 		</method>
 		<method name="get_rotation" qualifiers="const">
 			<return type="Vector3" />
 			<description>
-				Returns the rotation of this geometry object in world space (in degrees).
-				The rotation is applied to all polygons in the geometry.
+				Returns the world-space Euler rotation in radians.
 			</description>
 		</method>
 		<method name="set_scale">
@@ -146,14 +141,8 @@
 			<param index="2" name="double_sided" type="bool" />
 			<param index="3" name="vertices" type="PackedVector3Array" />
 			<description>
-				Adds a polygon to this geometry object.
-				- [param direct_occlusion]: Occlusion factor for direct sound path (0.0 = no occlusion, 1.0 = full occlusion)
-				- [param reverb_occlusion]: Occlusion factor for reverb path (0.0 = no occlusion, 1.0 = full occlusion)
-				- [param double_sided]: If [code]true[/code], the polygon blocks sound from both sides. If [code]false[/code], only blocks from the front side.
-				- [param vertices]: Number of vertices in the polygon (must be at least 3)
-				- [param vertices]: Array of vertex positions defining the polygon
-				Returns the index of the newly created polygon, or -1 on failure.
-				[b]Note:[/b] The total number of polygons and vertices is limited by the max_polygons and max_vertices parameters specified when creating the geometry via [method FmodSystem.create_geometry].
+				Adds a polygon using the positions in [param vertices]. The array must contain at least three finite vertices. [param direct_occlusion] and [param reverb_occlusion] are clamped to [code]0.0[/code] through [code]1.0[/code]. [param double_sided] enables occlusion from both sides.
+				Returns the new polygon index, or [code]-1[/code] on failure. Capacity is fixed by [method FmodSystem.create_geometry].
 			</description>
 		</method>
 		<method name="set_active">
@@ -184,17 +173,13 @@
 		<method name="save" qualifiers="const">
 			<return type="PackedByteArray" />
 			<description>
-				Serializes this geometry object to a PackedByteArray.
-				The saved data can be loaded later using [method FmodSystem.load_geometry].
-				This is useful for saving complex geometry to disk or transmitting it over a network.
-				[b]Note:[/b] Use [method get_save_size] to determine the required buffer size beforehand.
+				Serializes the geometry into a newly allocated [PackedByteArray]. Load the saved data with [method FmodSystem.load_geometry]. Returns an empty array on failure.
 			</description>
 		</method>
 		<method name="get_save_size" qualifiers="const">
 			<return type="int" />
 			<description>
-				Returns the size in bytes required to serialize this geometry object.
-				Use this to allocate a buffer for [method save].
+				Returns the serialized size in bytes, or [code]0[/code] on failure. [method save] allocates its output buffer automatically.
 			</description>
 		</method>
 		<method name="release">
@@ -211,7 +196,7 @@
 			The position of this geometry object in world space.
 		</member>
 		<member type="Vector3" name="rotation" setter="set_rotation" getter="get_rotation" default="Vector3(0, 0, 0)">
-			The rotation of this geometry object in world space (in degrees).
+			The world-space Euler rotation in radians, displayed in degrees in the Inspector.
 		</member>
 		<member type="Vector3" name="scale" setter="set_scale" getter="get_scale" default="Vector3(0, 0, 0)">
 			The scale of this geometry object.
@@ -220,6 +205,8 @@
 			Whether this geometry object is active and contributes to occlusion calculations.
 		</member>
 	</members>
-	<signals />
-	<constants />
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

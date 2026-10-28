@@ -4,20 +4,21 @@
 		10-band graphic equalizer audio effect.
 	</brief_description>
 	<description>
-		FmodAudioEffectEQ10 is a 10-band graphic equalizer using FMOD's MULTIBAND_EQ DSP. It provides frequency equalization across ten bands spanning from 31Hz to 16000Hz, suitable for detailed audio shaping.
+		FmodAudioEffectEQ10 is a 10-band graphic equalizer using FMOD's MULTIBAND_EQ DSP. Its initial center frequencies span 31.25 Hz through 16000 Hz.
 		Each band can be individually adjusted for gain (-60 dB to +24 dB), frequency, Q value, and filter type. By default, all bands use peaking filters with a Q value of 0.707.
-		The frequency bands are: 31Hz, 62Hz, 125Hz, 250Hz, 500Hz, 1000Hz, 2000Hz, 4000Hz, 8000Hz, and 16000Hz.
+		The initial center frequencies are 31.25 Hz, 62.5 Hz, 125 Hz, 250 Hz, 500 Hz, 1000 Hz, 2000 Hz, 4000 Hz, 8000 Hz, and 16000 Hz.
 		[b]Note:[/b] For simpler control, use [FmodAudioEffectEQ6]. For professional-grade equalization, use [FmodAudioEffectEQ21].
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods />
+	<methods>
+	</methods>
 	<members>
 		<member name="preset" type="int" setter="set_preset" getter="get_preset" overrides="FmodAudioEffectEQ" enum="FmodAudioEffectEQ.Preset" default="1">
-			The preset is fixed to [constant FmodAudioEffectEQ.PRESET_10_BANDS] for this class.
+			The initial preset is [constant FmodAudioEffectEQ.PRESET_10_BANDS]. The inherited [method FmodAudioEffectEQ.set_preset] can change it and reinitialize the bands.
 		</member>
 		<member type="float" name="band_0_gain" default="0.0">
-			Gain for the first band (31Hz) in decibels. Range: -60 to +24 dB.
+			Gain for the first band (initially 31.25 Hz) in decibels. Range: -60 to +24 dB.
 		</member>
 		<member type="float" name="band_0_frequency" default="31.25">
 			Center frequency for the first band in Hz.
@@ -29,7 +30,7 @@
 			Filter type for the first band. Default is [constant FmodAudioEffectEQ.FILTER_PEAKING].
 		</member>
 		<member type="float" name="band_1_gain" default="0.0">
-			Gain for the second band (62Hz) in decibels. Range: -60 to +24 dB.
+			Gain for the second band (initially 62.5 Hz) in decibels. Range: -60 to +24 dB.
 		</member>
 		<member type="float" name="band_1_frequency" default="62.5">
 			Center frequency for the second band in Hz.
@@ -137,6 +138,8 @@
 			Filter type for the tenth band. Default is [constant FmodAudioEffectEQ.FILTER_PEAKING].
 		</member>
 	</members>
-	<signals />
-	<constants />
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

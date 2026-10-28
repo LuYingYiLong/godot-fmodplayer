@@ -223,6 +223,8 @@
 			Controls voice/4/pan.
 		</member>
 	</members>
-	<signals />
-	<constants />
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

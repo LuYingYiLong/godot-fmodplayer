@@ -82,6 +82,8 @@
 			Requested buffer length in seconds. It must be finite and positive. Capacity uses the current implementation's 48,000-frames-per-second sizing policy, clamped to 512 through 480,000 frames. Changing it clears queued audio while preserving the frame counters.
 		</member>
 	</members>
-	<signals />
-	<constants />
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

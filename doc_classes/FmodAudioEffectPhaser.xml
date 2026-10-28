@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectPhaser" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
-		Phaser effect using flanger DSP for sweeping filter effects.
+		Phaser effect using a modulated chain of six all-pass filters.
 	</brief_description>
 	<description>
-		FmodAudioEffectPhaser creates a phaser effect by using FMOD's flange DSP. It produces a sweeping filter effect by modulating the frequency range of all-pass filters.
-		Note: While phasers and flangers have different underlying principles, this implementation uses flanger DSP to approximate phaser-like effects. Use this effect to add movement, space, and character to audio.
+		FmodAudioEffectPhaser uses a custom DSP with six modulated all-pass stages per channel. The filtered signal is mixed with the original signal, and feedback controls the amount fed back through the filter chain.
+		The modulation sweeps between [member range_min_hz] and [member range_max_hz] at [member rate_hz]. [member depth] controls the filtered signal level added to the original signal.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -14,14 +14,13 @@
 			<return type="void" />
 			<param index="0" name="depth" type="float" />
 			<description>
-				Sets the filter frequency sweep depth. Range: 0.1 to 4.0.
-				Higher values create more pronounced filtering effects.
+				Sets the filtered signal gain added to the original signal, clamped to 0.1 through 4.0.
 			</description>
 		</method>
 		<method name="get_depth" qualifiers="const">
 			<return type="float" />
 			<description>
-				Returns the filter frequency sweep depth.
+				Returns the filtered signal gain added to the original signal.
 			</description>
 		</method>
 		<method name="set_feedback">
@@ -68,8 +67,7 @@
 			<return type="void" />
 			<param index="0" name="rate_hz" type="float" />
 			<description>
-				Sets the modulation rate in Hertz. Range: 0.5 to 20.0.
-				Higher rates create faster sweeping effects.
+				Sets the modulation rate in Hz, clamped to 0.01 through 20.0.
 			</description>
 		</method>
 		<method name="get_rate_hz" qualifiers="const">
@@ -81,7 +79,7 @@
 	</methods>
 	<members>
 		<member type="float" name="depth" setter="set_depth" getter="get_depth" default="1.0">
-			The filter frequency sweep depth. Range: 0.1 to 4.0. Higher values create more pronounced filtering effects.
+			The gain of the filtered signal mixed with the original signal, clamped to 0.1 through 4.0. The default is 1.0. This controls effect intensity rather than the frequency sweep limits.
 		</member>
 		<member type="float" name="feedback" setter="set_feedback" getter="get_feedback" default="0.7">
 			The feedback amount. Range: 0.1 to 0.9. Higher feedback creates more resonant, intense phasing effects.
@@ -93,9 +91,11 @@
 			The minimum frequency of the LFO sweep in Hz. Range: 10 to 10000.
 		</member>
 		<member type="float" name="rate_hz" setter="set_rate_hz" getter="get_rate_hz" default="0.5">
-			The modulation rate in Hz. Range: 0.5 to 20.0. Higher rates create faster sweeping effects.
+			The modulation rate in Hz, clamped to 0.01 through 20.0. The default is 0.5 Hz.
 		</member>
 	</members>
-	<signals />
-	<constants />
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

@@ -4,13 +4,8 @@
 		Custom property editor control for previewing FMOD audio streams in the editor.
 	</brief_description>
 	<description>
-		FmodAudioPreviewProperty provides a visual audio preview widget that displays in the Godot inspector when viewing [FmodAudioStream] resources. It features:
-		- Visual waveform display
-		- Play/pause/stop controls
-		- Playback position indicator
-		- Current time and duration display
-		- Click-to-seek functionality on the waveform
-		The preview is generated asynchronously to avoid blocking the editor.
+		Displays an audio waveform, playback controls, a position indicator, and time labels for [FmodAudioStream] in the inspector. Clicking the waveform seeks playback.
+		Waveform generation is deferred to a later main-thread call; it does not run on a background worker.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -72,7 +67,10 @@
 			</description>
 		</method>
 	</methods>
-	<members />
-	<signals />
-	<constants />
+	<members>
+	</members>
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

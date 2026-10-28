@@ -4,15 +4,7 @@
 		A node for playing FMOD audio streams with full playback control.
 	</brief_description>
 	<description>
-		FmodAudioStreamPlayer is a node that plays [FmodAudioStream] resources using the FMOD audio engine. It provides high-level playback control similar to Godot's built-in AudioStreamPlayer but with FMOD's advanced features.
-		Key features:
-		- Stream playback with play/pause/stop/seek controls
-		- Volume and pitch control in decibels
-		- Automatic playback on node entry (autoplay)
-		- Stereo, surround, or center mix target routing
-		- Bus routing for mixing
-		- Integration with FMOD's channel group system
-		This node is suitable for music, ambient sounds, and any audio that requires full playback control.
+		Plays [FmodAudioStream] resources through FMOD with volume in decibels, a pitch multiplier, playback controls, speaker mix targets, and bus routing.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -21,8 +13,7 @@
 			<return type="void" />
 			<param index="0" name="stream" type="FmodAudioStream" />
 			<description>
-				Sets the [FmodAudioStream] to play. The stream can be changed during playback,
-				which will stop the current playback and start the new stream if playing.
+				Stops the current playback and assigns [param stream]. Playback must be started again with [method play].
 			</description>
 		</method>
 		<method name="get_stream" qualifiers="const">
@@ -35,16 +26,14 @@
 		<method name="preload_stream">
 			<return type="bool" />
 			<description>
-				Preloads the assigned stream by creating its internal [FmodSound] before playback starts.
-				This reduces first-play latency when the stream is later played.
+				Preloads the assigned stream by creating its internal [FmodSound]. Returns [code]false[/code] if no stream is assigned or sound creation fails.
 			</description>
 		</method>
 		<method name="play">
 			<return type="void" />
 			<param index="0" name="from_position" type="float" default="0.0" />
 			<description>
-				Starts playing the assigned stream from the specified position in seconds.
-				If [param from_position] is negative, playback starts from the beginning.
+				Starts or restarts playback at [param from_position], in seconds. Use a nonnegative position.
 			</description>
 		</method>
 		<method name="seek">
@@ -72,8 +61,7 @@
 		<method name="is_playing" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if audio is currently playing.
-				Note that this returns [code]false[/code] when paused, even though playback is active.
+				Returns [code]true[/code] while a playback channel is active, including while paused.
 			</description>
 		</method>
 		<method name="set_stream_paused">
@@ -92,8 +80,7 @@
 		<method name="get_playback_position" qualifiers="const">
 			<return type="float" />
 			<description>
-				Returns the current playback position in seconds.
-				Returns [code]0.0[/code] if not playing.
+				Returns the playback position in seconds, including while paused. Returns [code]0.0[/code] if there is no valid playback channel.
 			</description>
 		</method>
 		<method name="set_volume_db">
@@ -143,14 +130,13 @@
 			<return type="void" />
 			<param index="0" name="enable" type="bool" />
 			<description>
-				Enables or disables autoplay. When enabled, the stream starts playing automatically when the node enters the scene tree.
+				Sets [member auto_play]. Automatic playback is deferred until the node is ready and is disabled in the editor.
 			</description>
 		</method>
 		<method name="is_autoplay_enabled" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if autoplay is enabled.
-				When enabled, playback starts automatically when the node enters the scene tree.
+				Returns whether [member auto_play] is enabled.
 			</description>
 		</method>
 		<method name="set_preload_on_set_stream">
@@ -170,8 +156,8 @@
 			<return type="void" />
 			<param index="0" name="bus" type="StringName" />
 			<description>
-				Sets the audio bus to route this player's output to.
-				The bus name should match a bus in the [FmodAudioBusLayout].
+				Selects the bus used when the next playback channel is created. Changing this value does not reroute an existing channel.
+				If the bus is not found in [FmodAudioBusLayout], playback uses the master channel group.
 			</description>
 		</method>
 		<method name="get_bus" qualifiers="const">
@@ -202,7 +188,7 @@
 			The speaker mix target used by this player.
 		</member>
 		<member type="bool" name="auto_play" setter="set_auto_play" getter="is_autoplay_enabled" default="false">
-			If [code]true[/code], audio plays automatically when the node enters the scene tree.
+			If [code]true[/code], defers playback until the node is ready, outside the editor.
 		</member>
 		<member type="bool" name="preload_on_set_stream" setter="set_preload_on_set_stream" getter="is_preload_on_set_stream_enabled" default="false">
 			If [code]true[/code], assigning a stream creates its internal [FmodSound] immediately instead of waiting for the first playback.
@@ -214,7 +200,7 @@
 	<signals>
 		<signal name="finished">
 			<description>
-				Emitted when finished.
+				Emitted when the playback channel ends. Calling [method stop] or replacing [member stream] does not emit this signal.
 			</description>
 		</signal>
 	</signals>

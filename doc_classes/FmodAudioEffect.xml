@@ -31,7 +31,10 @@
 			</description>
 		</method>
 	</methods>
-	<members />
-	<signals />
-	<constants />
+	<members>
+	</members>
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

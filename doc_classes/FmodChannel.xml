@@ -14,15 +14,13 @@
 		<method name="channel_is_valid" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the Channel handle is valid and active.
-				A valid channel can be controlled and queried for playback information.
+				Returns [code]true[/code] if this wrapper stores a non-null Channel pointer. This does not check whether FMOD has stopped or stolen the channel. Use [method FmodChannelControl.is_playing] to query playback.
 			</description>
 		</method>
 		<method name="channel_is_null" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the Channel handle is null or invalid.
-				A null channel indicates that the sound has finished playing or the channel has been released.
+				Returns [code]true[/code] if this wrapper has no Channel pointer. Playback ending or stopping does not automatically clear the stored pointer.
 			</description>
 		</method>
 		<method name="set_frequency">
@@ -96,18 +94,13 @@
 			<return type="void" />
 			<param index="0" name="channel_group" type="FmodChannelGroup" />
 			<description>
-				Sets the [FmodChannelGroup] that this channel outputs to.
-				All audio from this channel will be routed through the specified channel group,
-				allowing for sub-mixing and group-level effects processing.
-				Set to [code]null[/code] to route to the master channel group.
+				Routes this channel to the supplied [FmodChannelGroup] and stores that wrapper for [method get_channel_group]. The group must be non-null and contain a valid FMOD handle.
 			</description>
 		</method>
 		<method name="get_channel_group" qualifiers="const">
 			<return type="FmodChannelGroup" />
 			<description>
-				Returns the [FmodChannelGroup] that this channel outputs to.
-				If no channel group has been set, returns [code]null[/code].
-				The channel group determines the sub-mix that this channel's audio is routed through.
+				Returns the group wrapper last assigned through [method set_channel_group], or [code]null[/code] if no group is cached. This method does not query the current routing from FMOD.
 			</description>
 		</method>
 		<method name="set_loop_count">
@@ -189,13 +182,10 @@
 	</methods>
 	<members>
 		<member type="float" name="frequency" setter="set_frequency" getter="get_frequency" default="0.0">
-			Playback frequency in Hertz (Hz). Default is 0, which means the sound's native sample rate.
-			Changing this value affects both playback speed and pitch proportionally.
-			[b]Note:[/b] 0 indicates the default frequency; the actual frequency depends on the sound's sample rate.
+			Playback frequency in Hz. Changing it affects both playback speed and pitch. Values assigned to this property must be greater than [code]0.0[/code]. A wrapper without a Channel pointer reports [code]0.0[/code].
 		</member>
 		<member type="int" name="priority" setter="set_priority" getter="get_priority" default="0">
-			Virtual voice priority (0 = highest, 256 = lowest). Default is 0.
-			Lower priority channels are virtualized first when FMOD runs out of physical voices.
+			Virtual voice priority from [code]0[/code] (highest) to [code]256[/code] (lowest). A playing channel inherits its initial priority from the sound defaults. Lower-priority channels are virtualized first.
 		</member>
 		<member type="Object" name="channel_group" setter="set_channel_group" getter="get_channel_group">
 			The [FmodChannelGroup] this channel outputs to. If not set, outputs to the master channel group.
@@ -219,12 +209,7 @@
 		<signal name="virtualvoice">
 			<param index="0" name="is_becoming_virtual" type="bool" />
 			<description>
-				Emitted when this channel becomes virtualized or returns to being a real voice.
-				- [code]true[/code]: The channel is becoming virtual (silently processing without hardware voice)
-				- [code]false[/code]: The channel is becoming real (has been assigned a hardware voice)
-				This happens automatically as part of FMOD's virtual voice system when there are more
-				playing sounds than available physical voices. Channels with lower [member priority]
-				are more likely to become virtualized.
+				Emitted when the channel becomes virtual ([param is_becoming_virtual] is [code]true[/code]) or real ([code]false[/code]). Channels with larger priority numbers have lower priority and are virtualized first when voices are scarce.
 			</description>
 		</signal>
 		<signal name="syncpoint">
@@ -248,5 +233,6 @@
 			</description>
 		</signal>
 	</signals>
-	<constants />
+	<constants>
+	</constants>
 </class>

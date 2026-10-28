@@ -24,7 +24,7 @@ namespace godot {
 		ClassDB::bind_method(D_METHOD("apply_mute", "mute"), &FmodAudioBus::apply_mute);
 
 		ClassDB::bind_method(D_METHOD("set_solo", "solo"), &FmodAudioBus::set_solo);
-		ClassDB::bind_method(D_METHOD("is_solo"), &FmodAudioBus::is_mute);
+		ClassDB::bind_method(D_METHOD("is_solo"), &FmodAudioBus::is_solo);
 
 		ClassDB::bind_method(D_METHOD("set_bypass", "bypass"), &FmodAudioBus::set_bypass);
 		ClassDB::bind_method(D_METHOD("is_bypass"), &FmodAudioBus::is_bypass);

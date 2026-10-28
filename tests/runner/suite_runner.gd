@@ -5,6 +5,8 @@ const SPECTRUM_TEST: Script = preload("uid://wsi7yl1eksc4")
 const SDK_SMOKE_TEST: Script = preload("uid://c0i5v0a75fpfe")
 const CAPTURE_TEST: Script = preload("uid://dhyb1t6prj2bc")
 const REVERB_TEST: Script = preload("uid://cpe7geegh4xgh")
+const MATRIX_TEST: Script = preload("uid://b5tsw1j6s0dyw")
+const BUS_TEST: Script = preload("uid://c0y0kdx4qn6l5")
 const SUITES: Array[String] = [
 	"all",
 	"regression",
@@ -13,6 +15,7 @@ const SUITES: Array[String] = [
 	"profile",
 	"reverb",
 	"capture",
+	"routing",
 ]
 
 var _suite: String = "all"
@@ -43,6 +46,12 @@ func run(arguments: PackedStringArray) -> Dictionary:
 		return _finish(false, "Capture baseline mode requires the capture suite")
 	_configure_offline_audio()
 	var summary: String = "FMOD tests\n\n"
+	if _suite in ["all", "regression", "routing",]:
+		if not MATRIX_TEST.new().run(_output_dir):
+			return _finish(false, "Mix matrix regression failed")
+		if not BUS_TEST.new().run(_output_dir):
+			return _finish(false, "Audio bus regression failed")
+		summary += "Mix matrix and audio bus regression: passed\n"
 	if _suite in ["all", "regression", "spectrum",]:
 		if not SPECTRUM_TEST.new().run():
 			return _finish(false, "Spectrum snapshot regression failed")

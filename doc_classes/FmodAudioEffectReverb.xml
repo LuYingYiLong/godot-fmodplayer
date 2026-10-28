@@ -126,10 +126,10 @@
 			High-pass filter applied to the reverb input. Range: 0.0 to 1.0. Higher values remove more low frequencies from the reverb, preventing muddiness in the reverberated signal.
 		</member>
 		<member type="float" name="predelay_feedback" setter="set_predelay_feedback" getter="get_predelay_feedback" default="0.4">
-			The amount of feedback in the predelay section. Range: 0.0 to 1.0. Controls how much of the predelay output is fed back into itself, affecting the density of early reflections.
+			The feedback amount in the predelay section, clamped to 0.0 through 0.98. The default is 0.4. It controls how much of the predelay output is fed back into the delay.
 		</member>
 		<member type="float" name="predelay_msec" setter="set_predelay_msec" getter="get_predelay_msec" default="150.0">
-			The delay time before the reverb tail begins, measured in milliseconds. Range: 0.0 to 300.0 ms. Simulates the time it takes for sound to reach the first reflecting surfaces in a room.
+			The predelay time in milliseconds, clamped to 0.0 through 500.0. The default is 150.0 ms. It delays the signal entering the reverb network.
 		</member>
 		<member type="float" name="room_size" setter="set_room_size" getter="get_room_size" default="0.8">
 			The size of the simulated acoustic space. Range: 0.0 to 1.0. Higher values create the impression of larger spaces (halls, cathedrals) with longer decay times, while lower values simulate smaller rooms.
@@ -141,6 +141,8 @@
 			The level of the reverberated (wet) signal. Range: 0.0 to 1.0. Controls how much of the processed reverb signal is mixed with the dry signal. A value of 0.0 produces no reverb effect.
 		</member>
 	</members>
-	<signals />
-	<constants />
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

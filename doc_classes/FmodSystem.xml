@@ -13,21 +13,21 @@
 		<method name="system_is_valid" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the internal FMOD System object is valid and ready for use.
+				Returns [code]true[/code] if this wrapper holds a non-null FMOD System pointer. This does not check whether [method init] has succeeded.
 			</description>
 		</method>
 		<method name="system_is_null" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the internal FMOD System object is null (not created).
+				Returns [code]true[/code] if this wrapper holds no FMOD System pointer. A created but uninitialized system returns [code]false[/code].
 			</description>
 		</method>
 		<method name="create_system" qualifiers="static">
 			<return type="FmodSystem" />
 			<description>
-				Creates and initializes a new FmodSystem instance with the specified maximum number of channels and initialization flags.
-				The max_channels parameter limits the total number of simultaneously playing channels (range: 0-4096).
-				The flags parameter specifies initialization options using [enum FmodInitFlags] bitmask.
+				Creates and returns a new, uninitialized [FmodSystem]. Returns [code]null[/code] if creation fails.
+				Configure the system as needed, then call [method init] to initialize it.
+				To use the system managed by [FmodServer], call [method FmodServer.get_main_system].
 			</description>
 		</method>
 		<method name="init">
@@ -35,21 +35,23 @@
 			<param index="0" name="max_channels" type="int" default="32" />
 			<param index="1" name="flags" type="int" enum="FmodSystem.FmodInitFlags" default="0" />
 			<description>
-				Initializes the FMOD System with the specified maximum number of channels and initialization flags.
-				The max_channels parameter limits the total number of simultaneously playing channels (range: 0-4096).
-				The flags parameter is a bitmask of [enum FmodInitFlags] values.
+				Initializes a system created by [method create_system].
+				[param max_channels] sets the maximum number of simultaneously playing channels and must be greater than [code]0[/code].
+				[param flags] is a bitmask of [enum FmodInitFlags] values.
 			</description>
 		</method>
 		<method name="close">
 			<return type="void" />
 			<description>
 				Closes the connection to the output device and returns the system to an uninitialized state without releasing the object. The system can be reinitialized by calling [method init] again.
+				This method rejects borrowed system wrappers, such as those returned by [method FmodDSP.get_system_object].
 			</description>
 		</method>
 		<method name="release">
 			<return type="void" />
 			<description>
 				Closes the system connection and releases all associated resources. After calling this method, the system object is no longer valid and should not be used.
+				This method rejects borrowed system wrappers, such as those returned by [method FmodDSP.get_system_object].
 			</description>
 		</method>
 		<method name="update">
@@ -75,7 +77,7 @@
 			<return type="void" />
 			<param index="0" name="output_type" type="int" enum="FmodSystem.FmodOutputType" />
 			<description>
-				Sets the output interface type used to run the mixer. Must be called before [method init].
+				Sets the output interface type used to run the mixer. Call this before [method init] for portability across platforms.
 				Common options include [constant FMOD_OUTPUT_TYPE_AUTODETECT], [constant FMOD_OUTPUT_TYPE_WASAPI] (Windows), and [constant FMOD_OUTPUT_TYPE_NOSOUND] (silent mode).
 			</description>
 		</method>
@@ -121,8 +123,7 @@
 			<return type="void" />
 			<param index="0" name="num_software_channels" type="int" />
 			<description>
-				Sets the maximum number of software channels for the mixer.
-				This determines how many channels can be mixed in software when hardware voices are exhausted.
+				Sets the maximum number of real, software-mixed channels. Additional playing channels may become virtual when this limit is reached.
 				Must be called before [method init].
 			</description>
 		</method>
@@ -262,7 +263,7 @@
 			<description>
 				Sets the number of 3D listeners in the scene.
 				Multiple listeners can be used for split-screen multiplayer or other scenarios.
-				Maximum number of listeners is platform-dependent.
+				[param num_listeners] must be between [code]1[/code] and [code]8[/code], inclusive.
 			</description>
 		</method>
 		<method name="get_3d_num_listeners" qualifiers="const">
@@ -539,7 +540,8 @@
 			<return type="void" />
 			<param index="0" name="callback" type="Callable" />
 			<description>
-				Sets 3d rolloff callback.
+				Sets the custom distance attenuation callback. The callback receives the distance and must return a [float] attenuation value.
+				The script callback is invoked only on the main thread. Calls from other threads return [code]1.0[/code] without invoking it. Only one system can be the active callback target at a time.
 			</description>
 		</method>
 		<method name="get_3d_rolloff_callback" qualifiers="const">
@@ -629,8 +631,9 @@
 			<param index="3" name="hop" type="int" />
 			<description>
 				Retrieves the default mixing matrix used to convert audio from one speaker mode to another.
-				This matrix maps source channels to destination channels for upmixing or downmixing.
-				The hop parameter specifies the stride between matrix rows.
+				The returned array is always compact and ordered by target channel, then source channel. Its length is the source channel count multiplied by the target channel count.
+				[param hop] controls the temporary FMOD matrix row stride. A nonpositive value uses the source channel count; a positive value must be at least that count and no greater than [code]32[/code]. It does not add padding to the returned array.
+				[param array_length] controls temporary storage. A positive value must be at least the target channel count multiplied by the effective row stride; a nonpositive value allocates the required size automatically. Raw speaker modes and invalid arguments return an empty array.
 			</description>
 		</method>
 		<method name="get_speaker_mode_channels" qualifiers="const">
@@ -656,7 +659,7 @@
 			<param index="1" name="mode" type="int" default="0" />
 			<param index="2" name="resampler_method" type="int" enum="FmodSystem.FmodResamplerMethod" default="0" />
 			<description>
-				Creates a [FmodSound] from audio data loaded in memory. The data array must remain valid while the sound is in use. This is useful for loading sounds from encrypted files or network streams.
+				Creates a [FmodSound] from audio data loaded in memory and adds [constant FMOD_MODE_OPENMEMORY] to [param mode]. The returned sound retains the data array, so the caller does not need to keep a separate reference to it.
 				The mode parameter specifies creation options using [enum FmodMode] flags.
 			</description>
 		</method>
@@ -677,6 +680,7 @@
 			<param index="2" name="resampler_method" type="int" enum="FmodSystem.FmodResamplerMethod" default="0" />
 			<description>
 				Creates a streaming [FmodSound] from a file. Streams decode audio data on-the-fly, which is memory-efficient for large files like background music.
+				For [code]res://[/code] paths, the wrapper loads the whole encoded file into memory and retains it for the lifetime of the sound; decoding still happens as a stream.
 				The mode parameter specifies creation options using [enum FmodMode] flags.
 			</description>
 		</method>
@@ -754,7 +758,7 @@
 			<return type="FmodChannel" />
 			<param index="0" name="id" type="int" />
 			<description>
-				Retrieves a [FmodChannel] handle by its ID. Channels are assigned IDs sequentially as they are allocated.
+				Retrieves a [FmodChannel] by its channel index, as returned by [method FmodChannel.get_index]. Returns [code]null[/code] if the lookup fails. Channel indices may be reused and are not persistent playback IDs.
 			</description>
 		</method>
 		<method name="get_dsp_info_by_type" qualifiers="const">
@@ -1060,7 +1064,8 @@
 			Controls 3d max world size.
 		</member>
 	</members>
-	<signals />
+	<signals>
+	</signals>
 	<constants>
 		<constant name="FMOD_INIT_FLAG_NORMAL" value="0" enum="FmodInitFlags">
 			Normal initialization, no special flags.
@@ -1078,7 +1083,7 @@
 			Enables lowpass gain and 3D occlusion features on channels, and automatic use of the Geometry API.
 		</constant>
 		<constant name="FMOD_INIT_FLAG_CHANNEL_DISTANCEFILTER" value="512" enum="FmodInitFlags">
-			All 3D-based voices have software lowpass and highpass filters added to the DSP chain as an automatic distance-based bandpass filter. Use [code]set_advanced_settings[/code] to adjust center frequencies.
+			All 3D-based voices have software lowpass and highpass filters added to the DSP chain as an automatic distance-based bandpass filter. Use [method set_distance_filter_center_freq] to adjust the default center frequency.
 		</constant>
 		<constant name="FMOD_INIT_FLAG_PROFILE_ENABLE" value="65536" enum="FmodInitFlags">
 			Enables TCP/IP profiling host, allowing FMOD Studio or FMOD Profiler to connect and view memory, CPU, and DSP graphs in real-time.
@@ -1292,7 +1297,7 @@
 			Opens a raw audio file with no format parsing. Requires manual specification of format parameters.
 		</constant>
 		<constant name="FMOD_MODE_OPENONLY" value="8192" enum="FmodMode">
-			Opens the file for metadata reading only. No audio data is loaded and the sound cannot be played.
+			Opens a sound without prebuffering or reading audio data. Use [method FmodSound.read_data] to decode and read its audio data.
 		</constant>
 		<constant name="FMOD_MODE_ACCURATETIME" value="16384" enum="FmodMode">
 			Calculates accurate length and position information for VBR formats like MP3. Increases opening time.
@@ -1304,7 +1309,7 @@
 			Opens the sound asynchronously without blocking. Check [method FmodSound.get_open_state] to determine when the sound is ready.
 		</constant>
 		<constant name="FMOD_MODE_UNIQUE" value="131072" enum="FmodMode">
-			Creates a unique sound instance that is not shared with other sounds referencing the same file.
+			Allows only one playback of this sound at a time.
 		</constant>
 		<constant name="FMOD_MODE_3D_HEADRELATIVE" value="262144" enum="FmodMode">
 			3D sound position is relative to the listener's head orientation.

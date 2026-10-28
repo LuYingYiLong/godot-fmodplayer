@@ -17,29 +17,28 @@
 		<method name="sound_group_is_valid" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the SoundGroup handle is valid.
+				Returns [code]true[/code] if this wrapper holds a non-null FMOD SoundGroup pointer. This does not query the native handle for validity.
 			</description>
 		</method>
 		<method name="sound_group_is_null" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the SoundGroup handle is null or invalid.
+				Returns [code]true[/code] if this wrapper holds no FMOD SoundGroup pointer.
 			</description>
 		</method>
 		<method name="set_max_audible">
 			<return type="void" />
 			<param index="0" name="max_audible" type="int" />
 			<description>
-				Sets the maximum number of sounds in this group that can be audible simultaneously.
-				Set to [code]0[/code] for no limit.
+				Sets the maximum number of playbacks from this group that can be audible simultaneously. [param max_audible] must be nonnegative in this wrapper; [code]0[/code] permits no audible playbacks.
+				FMOD uses [code]-1[/code] for an unlimited group, but this wrapper setter currently rejects that value.
 				When this limit is exceeded, the [member behavior] determines how new sounds are handled.
 			</description>
 		</method>
 		<method name="get_max_audible" qualifiers="const">
 			<return type="int" />
 			<description>
-				Returns the maximum number of sounds in this group that can be audible simultaneously.
-				Returns [code]0[/code] if there is no limit or the sound group is invalid.
+				Returns the maximum number of simultaneous audible playbacks. FMOD returns [code]-1[/code] for an unlimited group. Returns [code]0[/code] if this wrapper has no sound group or the query fails.
 			</description>
 		</method>
 		<method name="set_max_audible_behavior">
@@ -61,16 +60,13 @@
 			<return type="void" />
 			<param index="0" name="speed" type="float" />
 			<description>
-				Sets the speed at which sounds fade in/out when being muted/unmuted.
-				Higher values result in faster fades.
-				This affects sounds muted due to [constant BEHAVIOR_MUTE] or being stolen.
+				Sets the fade duration in seconds for [constant BEHAVIOR_MUTE]. [param speed] must be nonnegative; [code]0.0[/code] disables fading, and larger values produce longer fades.
 			</description>
 		</method>
 		<method name="get_mute_fade_speed" qualifiers="const">
 			<return type="float" />
 			<description>
-				Returns the speed at which sounds fade in/out when being muted/unmuted due to the max audible behavior.
-				Higher values result in faster fades.
+				Returns the fade duration in seconds used by [constant BEHAVIOR_MUTE]. A value of [code]0.0[/code] means no fading.
 			</description>
 		</method>
 		<method name="set_volume_db">
@@ -138,19 +134,20 @@
 	</methods>
 	<members>
 		<member type="int" name="max_audible" setter="set_max_audible" getter="get_max_audible" default="0">
-			Maximum number of simultaneously audible sounds in this group. [code]0[/code] means no limit.
+			Maximum simultaneous audible playbacks. FMOD uses [code]-1[/code] for unlimited playback; this wrapper setter accepts only nonnegative values, with [code]0[/code] permitting no audible playbacks.
 		</member>
 		<member type="int" enum="FmodSoundGroup.Behavior" name="behavior" setter="set_max_audible_behavior" getter="get_max_audible_behavior" default="0">
 			The behavior when max audible sounds is exceeded. See [enum Behavior].
 		</member>
 		<member type="float" name="mute_fade_speed" setter="set_mute_fade_speed" getter="get_mute_fade_speed" default="0.0">
-			Speed at which sounds fade when being muted/unmuted due to max audible behavior.
+			Fade duration in seconds for [constant BEHAVIOR_MUTE]. Larger values produce longer fades; [code]0.0[/code] disables fading.
 		</member>
 		<member type="float" name="volume_db" setter="set_volume_db" getter="get_volume_db" default="0.0">
 			Volume of this sound group in decibels, applied to all contained sounds.
 		</member>
 	</members>
-	<signals />
+	<signals>
+	</signals>
 	<constants>
 		<constant name="BEHAVIOR_FAIL" value="0" enum="Behavior">
 			When max audible is reached, [method FmodSystem.play_sound] calls fail for new sounds.

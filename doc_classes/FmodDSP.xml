@@ -29,14 +29,14 @@
 			<return type="Dictionary" />
 			<param index="0" name="index" type="int" />
 			<description>
-				Gets the DSP and connection at the specified input index. Returns a dictionary with [code]output[/code] and [code]output_connection[/code].
+				Gets the DSP and connection at the specified input index. Returns a dictionary with [code]input[/code] and [code]input_connection[/code], or an empty dictionary on failure.
 			</description>
 		</method>
 		<method name="get_output" qualifiers="const">
 			<return type="Dictionary" />
 			<param index="0" name="index" type="int" />
 			<description>
-				Gets the DSP and connection at the specified output index. Returns a dictionary with [code]input[/code] and [code]input_connection[/code].
+				Gets the DSP and connection at the specified output index. Returns a dictionary with [code]output[/code] and [code]output_connection[/code], or an empty dictionary on failure.
 			</description>
 		</method>
 		<method name="get_num_inputs" qualifiers="const">
@@ -245,7 +245,7 @@
 		<method name="release">
 			<return type="void" />
 			<description>
-				Releases the DSP unit and frees its memory.
+				Releases an owned DSP unit and frees its memory. Borrowed DSP handles returned by graph or channel queries cannot be released through this method.
 			</description>
 		</method>
 		<method name="get_type" qualifiers="const">
@@ -269,7 +269,7 @@
 		<method name="get_system_object" qualifiers="const">
 			<return type="FmodSystem" />
 			<description>
-				Gets the parent FMOD system object.
+				Returns a borrowed wrapper for the parent FMOD system, or [code]null[/code] on failure. The returned wrapper cannot close or release the system.
 			</description>
 		</method>
 		<method name="set_create_callback">
@@ -450,7 +450,8 @@
 			Whether the DSP is bypassed (input passes through unprocessed).
 		</member>
 	</members>
-	<signals />
+	<signals>
+	</signals>
 	<constants>
 		<constant name="DSP_MODE_FILTER" value="0" enum="FmodDSPMode">Processes input audio.</constant>
 		<constant name="DSP_MODE_GENERATOR" value="1" enum="FmodDSPMode">Generates audio without input.</constant>

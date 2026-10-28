@@ -30,6 +30,8 @@
 			<param index="3" name="inchannel_hop" type="int" default="0" />
 			<description>
 				Sets a 2D pan matrix that maps signals from input channels (columns) to output speakers (rows).
+				[param outchannels] and [param inchannels] must be between [code]1[/code] and [code]32[/code]. [param inchannel_hop] is the row stride: [code]0[/code] uses [param inchannels]; otherwise it must be at least [param inchannels] and at most [code]32[/code].
+				The input must contain at least [code](outchannels - 1) * effective_hop + inchannels[/code] elements. Padding after the last row is optional. Invalid dimensions, strides, and short arrays are rejected before calling FMOD; the caller's array is unchanged.
 			</description>
 		</method>
 		<method name="get_mix_matrix" qualifiers="const">
@@ -38,7 +40,9 @@
 			<param index="1" name="inchannels" type="int" />
 			<param index="2" name="inchannel_hop" type="int" default="0" />
 			<description>
-				Gets the 2D pan matrix that maps signals from input channels (columns) to output speakers (rows).
+				Returns the connection's matrix in row-major order, using [param outchannels] rows and a row stride of [param inchannel_hop], or [param inchannels] when the stride is [code]0[/code]. The array contains [code]outchannels * effective_hop[/code] elements, including zero-filled padding and unused rows or columns.
+				Channel counts must be between [code]1[/code] and [code]32[/code]. An explicit stride must be between [param inchannels] and [code]32[/code]. The requested dimensions must hold the actual FMOD matrix; otherwise an empty array is returned and an error is reported.
+				FMOD writes into a separate buffer sized for its maximum channel width before values are copied to the returned array. Native dimensions cannot overflow a smaller requested destination.
 			</description>
 		</method>
 		<method name="get_input" qualifiers="const">
@@ -65,7 +69,8 @@
 			The volume mix level of the connection in dB.
 		</member>
 	</members>
-	<signals />
+	<signals>
+	</signals>
 	<constants>
 		<constant name="DSPCONNECTION_TYPE_STANDARD" value="0" enum="FmodDSPConnectionType">
 			Standard connection type where the input DSP's output is fed directly to the output DSP's input.
@@ -80,7 +85,7 @@
 			Send sidechain connection type combining send and sidechain behavior.
 		</constant>
 		<constant name="DSPCONNECTION_TYPE_PREALLOCATED" value="4" enum="FmodDSPConnectionType">
-			Preallocated connection type for internal FMOD use.
+			Identifies a preallocated connection created by [method FmodSystem.create_dsp_connection] for attaching through [method FmodDSP.add_input_preallocated].
 		</constant>
 		<constant name="DSPCONNECTION_TYPE_MAX" value="5" enum="FmodDSPConnectionType">
 			Maximum number of connection types.

@@ -6,7 +6,7 @@
 	<description>
 		FmodAudioEffectCompressor is a dynamic range compression effect that reduces the volume of loud sounds while leaving quiet sounds unchanged. It is commonly used to control dynamics, prevent clipping, and make audio more consistent in loudness.
 		The compressor works by measuring the input level and reducing gain when it exceeds a specified threshold. The amount of reduction is determined by the ratio, and the response time is controlled by attack and release parameters.
-		This effect can also apply gain makeup to compensate for the volume reduction caused by compression, and supports sidechain input for ducking and other advanced techniques.
+		This effect supports makeup gain and a dry/wet mix for parallel compression. Sidechain routing is not implemented; setting [member sidechain] only stores the requested bus name.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -108,24 +108,26 @@
 			The threshold level in decibels (dB) above which compression begins. Range: -60 dB to 0 dB. Default: 0 dB. Signals below this level pass through unaffected; signals above are reduced according to the ratio. Lower threshold values result in more compression.
 		</member>
 		<member type="float" name="ratio" setter="set_ratio" getter="get_ratio" default="4.0">
-			The compression ratio, which determines how much the signal is compressed when it exceeds the threshold. Range: 1.0 to 50.0. Default: 4.0. A ratio of 4:1 means that for every 4 dB the input exceeds the threshold, the output increases by only 1 dB. Higher ratios result in more aggressive compression.
+			The compression ratio, clamped to 1.0 through 48.0. The default is 4.0: for every 4 dB the input exceeds the threshold, the output increases by 1 dB.
 		</member>
 		<member type="float" name="gain_db" setter="set_gain" getter="get_gain" default="0.0">
-			The gain makeup applied after compression, in decibels (dB). Range: -30 dB to +30 dB. Default: 0 dB. Use this to compensate for the volume reduction caused by compression and bring the output level back up.
+			The makeup gain applied after compression, in decibels. Clamped to -20.0 through +20.0 dB; the default is 0.0 dB.
 		</member>
 		<member type="float" name="attack_us" setter="set_attack_us" getter="get_attack_us" default="20.0">
-			The attack time in microseconds (μs). This is the time it takes for the compressor to start reducing gain after the input signal exceeds the threshold. Range: 0 to 100000 μs (100 ms). Default: 20000 μs (20 ms). Shorter attack times respond faster but may cause distortion; longer times preserve transients.
+			The requested attack time in microseconds, clamped to 20.0 through 2000.0. The stored default is 20.0 microseconds. The value is converted to milliseconds for FMOD and clamped to a minimum of 0.1 ms, so requests below 100 microseconds use an effective attack time of 100 microseconds.
 		</member>
 		<member type="float" name="release_ms" setter="set_release_ms" getter="get_release_ms" default="250.0">
-			The release time in milliseconds (ms). This is the time it takes for the compressor to return to unity gain after the input signal falls below the threshold. Range: 10 ms to 10000 ms. Default: 250 ms. Longer release times produce smoother, more natural results; shorter times may cause pumping artifacts.
+			The release time in milliseconds, clamped to 20.0 through 2000.0. The default is 250.0 ms. It controls how quickly compression recovers after the input level falls below the threshold.
 		</member>
 		<member type="float" name="mix" setter="set_mix" getter="get_mix" default="1.0">
 			The mix between dry (unprocessed) and wet (compressed) signal, as a value from 0.0 to 1.0. Default: 1.0 (fully wet). A value of 0.0 outputs only the dry signal, 1.0 outputs only the compressed signal, and intermediate values blend the two. This enables parallel compression effects.
 		</member>
 		<member type="StringName" name="sidechain" setter="set_sidechain" getter="get_sidechain" default="&amp;&quot;&quot;">
-			The name of the sidechain bus used to trigger compression. When set, the compressor uses the level of the specified bus instead of the input signal to control the gain reduction. This enables sidechain compression (ducking), where one signal controls the compression of another. Empty string means no sidechain is used.
+			Stores a requested sidechain bus name. Sidechain routing is not implemented, so this property does not change which signal controls compression. The default is an empty name.
 		</member>
 	</members>
-	<signals />
-	<constants />
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

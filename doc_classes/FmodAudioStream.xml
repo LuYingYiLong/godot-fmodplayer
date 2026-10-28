@@ -301,9 +301,9 @@
 			<param index="0" name="path" type="String" />
 			<param index="1" name="flags" type="int" default="1" />
 			<description>
-				Loads an audio stream from a file path. The path can be a Godot resource path (e.g., [code]"res://audio/music.mp3"[/code]) or an absolute file path.
-				The [param flags] parameter specifies the creation mode flags (bitmask of [enum CreateMode]). Defaults to [constant MODE_STREAM] for streaming playback from disk.
-				Returns an empty reference if the file cannot be opened or read.
+				Reads the entire file at [param path] into [member audio_data] and returns a new stream. Resource paths and absolute file paths are supported.
+				[param flags] controls FMOD decoding and playback using [enum CreateMode]. The default [constant MODE_STREAM] streams decoding from the in-memory data, not directly from disk.
+				Returns [code]null[/code] if the file cannot be opened or contains no readable data.
 			</description>
 		</method>
 	</methods>
@@ -317,7 +317,7 @@
 			Default value is [constant MODE_STREAM] (1).
 		</member>
 		<member type="int" name="length_override" setter="set_length_override" getter="get_length_override" default="0">
-			Optional byte length override. A value of [code]0[/code] uses the imported data size.
+			Optional byte length passed to FMOD, clamped to the size of [member audio_data]. A value of [code]0[/code] uses the complete data size.
 		</member>
 		<member type="int" name="file_offset" setter="set_file_offset" getter="get_file_offset" default="0">
 			Optional byte offset passed to [code]FMOD_CREATESOUNDEXINFO.fileoffset[/code]. Leave at [code]0[/code] for normal imported files.
@@ -365,13 +365,14 @@
 			Forces this sound creation call to ignore a custom FMOD file system, if one has been configured.
 		</member>
 	</members>
-	<signals />
+	<signals>
+	</signals>
 	<constants>
 		<constant name="MODE_DEFAULT" value="0" enum="CreateMode">
-			Default creation mode. No special flags are set.
+			With no flags set, creates a non-looping 2D sample. The resource property default is [constant MODE_STREAM].
 		</constant>
 		<constant name="MODE_STREAM" value="1" enum="CreateMode">
-			Stream the audio from memory. The audio data is read progressively rather than being fully decoded at once. This reduces memory usage for large files but may have higher CPU overhead during playback.
+			Decodes the in-memory audio data progressively. The complete source file remains in [member audio_data]; streaming avoids decoding the entire sound into PCM at creation time.
 		</constant>
 		<constant name="MODE_SAMPLE" value="2" enum="CreateMode">
 			Load the entire audio file as a sample into memory. This allows for faster playback and lower CPU usage, but consumes more memory. Best suited for short sound effects.

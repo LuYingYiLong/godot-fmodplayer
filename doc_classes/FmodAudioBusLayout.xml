@@ -4,13 +4,7 @@
 		Manages the layout and hierarchy of audio buses.
 	</brief_description>
 	<description>
-		FmodAudioBusLayout manages the complete hierarchy of audio buses in the FMOD audio system. It maintains a collection of [FmodAudioBus] instances and their relationships.
-		The layout automatically synchronizes with Godot's AudioServer bus layout, allowing seamless integration with Godot's built-in audio system.
-		Key features:
-		- Bus hierarchy management (master bus + sub-buses)
-		- Volume, solo, and mute state control per bus
-		- Effect chain management for each bus
-		- Synchronization with Godot AudioServer
+		Stores [FmodAudioBus] instances and their routing, mixing state, and effects. The layout managed by [FmodServer] is synchronized from [AudioServer]; an independently created layout requires explicit synchronization.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -20,8 +14,8 @@
 			<param index="0" name="name" type="String" />
 			<param index="1" name="parent" type="FmodAudioBus" default="null" />
 			<description>
-				Creates a new audio bus with the specified [param name] and optional [param parent].
-				The master bus is created automatically and should not be created manually.
+				Creates a bus with [param name] and routes it to [param parent]'s channel group. An omitted parent routes to the master group. A parent without an initialized channel group is rejected without adding a bus.
+				[method sync_from_audio_server] creates the master bus when needed.
 			</description>
 		</method>
 		<method name="get_audio_bus" qualifiers="const">
@@ -89,7 +83,7 @@
 			<return type="bool" />
 			<param index="0" name="name" type="String" />
 			<description>
-				Returns [code]true[/code] if the specified bus is muted.
+				Returns the bus's stored user mute flag. It does not include muting caused by another bus's solo state.
 			</description>
 		</method>
 		<method name="set_bus_bypass">
@@ -143,19 +137,21 @@
 		<method name="sync_from_audio_server">
 			<return type="void" />
 			<description>
-				Synchronizes the entire bus layout with Godot's AudioServer.
-				This creates/updates buses to match the AudioServer layout and copies all state.
-				Called automatically when the bus layout changes in Godot.
+				Synchronizes bus names, routing, volume, mute, solo, and supported enabled effects from [AudioServer]. Unsupported effect types are skipped.
+				The layout managed by [FmodServer] is synchronized automatically. Independently created layouts must be synchronized explicitly.
 			</description>
 		</method>
 		<method name="sync_from_audio_server_if_changed">
 			<return type="bool" />
 			<description>
-				Sync from audio server if changed.
+				Checks for changes and updates the layout or bus state when needed. Returns [code]true[/code] when an update was triggered. Bus and effect-slot checks are spread across calls, so a single call may not detect every change.
 			</description>
 		</method>
 	</methods>
-	<members />
-	<signals />
-	<constants />
+	<members>
+	</members>
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

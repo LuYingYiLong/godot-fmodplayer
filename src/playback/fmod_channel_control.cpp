@@ -477,9 +477,9 @@ namespace godot {
 	) {
 		ERR_FAIL_COND(!channel_control);
 		ERR_FAIL_COND_MSG(matrix.is_empty(), "Matrix data is empty");
-		ERR_FAIL_COND_MSG(outchannels <= 0, "outchannels must be > 0");
-		ERR_FAIL_COND_MSG(inchannels <= 0, "inchannels must be > 0");
-		ERR_FAIL_COND_MSG(inchannel_hop < 0, "inchannel_hop must be >= 0");
+		ERR_FAIL_COND_MSG(outchannels <= 0 || outchannels > FMOD_MAX_CHANNEL_WIDTH, "outchannels must be between 1 and FMOD_MAX_CHANNEL_WIDTH");
+		ERR_FAIL_COND_MSG(inchannels <= 0 || inchannels > FMOD_MAX_CHANNEL_WIDTH, "inchannels must be between 1 and FMOD_MAX_CHANNEL_WIDTH");
+		ERR_FAIL_COND_MSG(inchannel_hop < 0 || inchannel_hop > FMOD_MAX_CHANNEL_WIDTH, "inchannel_hop must be between 0 and FMOD_MAX_CHANNEL_WIDTH");
 		ERR_FAIL_COND_MSG(inchannel_hop > 0 && inchannel_hop < inchannels, "inchannel_hop must be 0 or >= inchannels");
 
 		const int effective_hop = inchannel_hop > 0 ? inchannel_hop : inchannels;
@@ -512,6 +512,7 @@ namespace godot {
 			&inchannels,
 			inchannel_hop
 		), Dictionary());
+		ERR_FAIL_COND_V_MSG(outchannels < 0 || outchannels > FMOD_MAX_CHANNEL_WIDTH || inchannels < 0 || inchannels > FMOD_MAX_CHANNEL_WIDTH, Dictionary(), "FMOD returned invalid matrix dimensions");
 
 		PackedFloat32Array matrix;
 		matrix.resize(outchannels * inchannels);

@@ -26,13 +26,13 @@
 		<method name="sound_is_valid" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Sound is valid.
+				Returns [code]true[/code] if this wrapper holds a non-null FMOD Sound pointer. For nonblocking sounds, use [method get_open_state] to check loading progress.
 			</description>
 		</method>
 		<method name="sound_is_null" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Sound is null.
+				Returns [code]true[/code] if this wrapper holds no FMOD Sound pointer.
 			</description>
 		</method>
 		<method name="get_name" qualifiers="const">
@@ -128,15 +128,8 @@
 			<param index="0" name="offset" type="int" />
 			<param index="1" name="length" type="int" />
 			<description>
-				Locks a region of the sound's sample data for direct access. This allows reading or modifying the raw PCM data. Returns an [FmodSoundLock] object that provides access to the locked memory region.
-
-				[b]Note:[/b] Always ensure the [FmodSoundLock] is freed (goes out of scope) to unlock the data.
-
-				[b]Example:[/b]
-				[codeblock]
-				var lock: FmodSoundLock = sound.lock(0, sound.get_length(FmodSystem.FMOD_TIME_UNIT_PCMBYTES))
-				# Access data through lock object
-				[/codeblock]
+				Locks a region of the sound buffer and returns a [FmodSoundLock] for reading copies of the PCM data. [param offset] and [param length] are measured in bytes. Returns [code]null[/code] if locking fails.
+				Keep this sound alive until the lock is unlocked. Modifying arrays returned by [FmodSoundLock] does not modify the sound buffer.
 			</description>
 		</method>
 		<method name="get_music_num_channels" qualifiers="const">
@@ -235,7 +228,8 @@
 			<return type="void" />
 			<param index="0" name="callback" type="Callable" />
 			<description>
-				Sets pcmread callback.
+				Stores the PCM read callback on this wrapper.
+				The current sound creation methods do not register the corresponding native FMOD callback; assigning a [Callable] here does not enable callback delivery.
 			</description>
 		</method>
 		<method name="get_pcmread_callback" qualifiers="const">
@@ -248,7 +242,8 @@
 			<return type="void" />
 			<param index="0" name="callback" type="Callable" />
 			<description>
-				Sets pcmsetpos callback.
+				Stores the PCM position callback on this wrapper.
+				The current sound creation methods do not register the corresponding native FMOD callback; assigning a [Callable] here does not enable callback delivery.
 			</description>
 		</method>
 		<method name="get_pcmsetpos_callback" qualifiers="const">
@@ -261,7 +256,8 @@
 			<return type="void" />
 			<param index="0" name="callback" type="Callable" />
 			<description>
-				Sets nonblock callback.
+				Stores the nonblocking load callback on this wrapper.
+				The current sound creation methods do not register the corresponding native FMOD callback; assigning a [Callable] here does not enable callback delivery.
 			</description>
 		</method>
 		<method name="get_nonblock_callback" qualifiers="const">
@@ -271,8 +267,10 @@
 			</description>
 		</method>
 	</methods>
-	<members />
-	<signals />
+	<members>
+	</members>
+	<signals>
+	</signals>
 	<constants>
 		<constant name="FMOD_SOUND_TYPE_UNKNOWN" value="0" enum="FmodSoundType">
 			Unknown or unsupported audio format.

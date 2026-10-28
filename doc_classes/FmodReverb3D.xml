@@ -4,14 +4,9 @@
 		Represents a 3D reverb zone for spatial audio reverberation effects.
 	</brief_description>
 	<description>
-		FmodReverb3D creates a spherical reverb zone in 3D space that applies environmental reverberation to sounds based on their distance from the reverb center. This allows you to create realistic spatial audio environments where sounds become more reverberant as they enter specific areas (like caves, halls, or rooms).
-		Key features:
-		- Spherical reverb zone with configurable min/max distance
-		- Full control over reverb parameters (decay time, delays, diffusion, density)
-		- High and low frequency control for realistic room modeling
-		- Smooth transition as sounds enter/exit the reverb zone
-		When a sound source is within the min_distance, it receives full reverb. Between min and max distance, the reverb amount fades based on the rolloff curve. Beyond max_distance, no reverb is applied.
-		[b]Note:[/b] Use [method FmodSystem.create_reverb_3d] to create instances of this class.
+		Represents a spherical 3D reverb environment whose contribution depends on the listener position. The reverb has full influence inside [code]min_distance[/code] and fades out by [code]max_distance[/code].
+		FMOD blends the environments that cover the listener. When none covers the listener, FMOD uses the global reverb settings.
+		Create an instance with [method FmodSystem.create_reverb_3d].
 	</description>
 	<tutorials>
 	</tutorials>
@@ -19,15 +14,13 @@
 		<method name="reverb_3d_is_valid" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the reverb handle is valid and ready for use.
-				A valid reverb can have its parameters modified and will contribute to the audio output.
+				Returns [code]true[/code] if the stored Reverb3D pointer is non-null. This checks the wrapper pointer, not the native object lifetime.
 			</description>
 		</method>
 		<method name="reverb_3d_is_null" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the reverb handle is null or invalid.
-				A null reverb indicates that the object has not been properly initialized or has been released.
+				Returns [code]true[/code] if the stored Reverb3D pointer is null. This checks the wrapper pointer, not the native object lifetime.
 			</description>
 		</method>
 		<method name="set_3d_attributes">
@@ -77,8 +70,7 @@
 		<method name="get_active" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if this reverb zone is active and processing audio.
-				Inactive reverb zones do not contribute to the audio output.
+				Returns the configured active state. Check [method reverb_3d_is_valid] separately to determine whether this wrapper holds a reverb handle.
 			</description>
 		</method>
 		<method name="release">
@@ -92,11 +84,7 @@
 			<return type="void" />
 			<param index="0" name="decay_time" type="float" />
 			<description>
-				Sets the reverberation decay time in milliseconds (range: 0.0 to 20000.0).
-				This controls how long the reverb tail lasts. Typical values:
-				- Small room: 200-800 ms
-				- Large room: 800-1500 ms
-				- Hall/Cave: 1500-3000 ms
+				Sets the reverb decay time in milliseconds, clamped to [code]100.0[/code] through [code]20000.0[/code]. The initial value is [code]1500.0[/code].
 			</description>
 		</method>
 		<method name="get_decay_time" qualifiers="const">
@@ -155,25 +143,20 @@
 			<return type="void" />
 			<param index="0" name="hf_decay_ratio" type="float" />
 			<description>
-				Sets the high frequency decay ratio in percent (range: 10.0 to 100.0, default: 50.0).
-				Controls how quickly high frequencies decay compared to mid frequencies.
-				Lower values simulate air absorption in large spaces or soft materials.
+				Sets the high-frequency to mid-frequency decay-time ratio in percent, clamped to [code]10.0[/code] through [code]200.0[/code]. The initial value is [code]83.0[/code].
 			</description>
 		</method>
 		<method name="get_hf_decay_ratio" qualifiers="const">
 			<return type="float" />
 			<description>
-				Returns the high frequency decay ratio (0.0 to 100.0).
-				Percentage of the high frequency decay time relative to the mid-frequency decay time.
-				Lower values simulate air absorption in large spaces.
+				Returns the high-frequency to mid-frequency decay-time ratio in percent, from [code]10.0[/code] to [code]200.0[/code].
 			</description>
 		</method>
 		<method name="set_diffusion">
 			<return type="void" />
 			<param index="0" name="diffusion" type="float" />
 			<description>
-				Sets the echo density (range: 0.0 to 100.0, default: 50.0).
-				Controls how dense the late reverb tail sounds. Higher values sound smoother and more natural.
+				Sets the late-reverb echo density in percent, clamped to [code]0.0[/code] through [code]100.0[/code]. The initial value is [code]100.0[/code].
 			</description>
 		</method>
 		<method name="get_diffusion" qualifiers="const">
@@ -194,8 +177,7 @@
 		<method name="get_density" qualifiers="const">
 			<return type="float" />
 			<description>
-				Returns the modal density value (0.0 to 100.0).
-				Controls the coloration of the late reverb decay. Higher values result in more metallic ringing.
+				Returns the modal density of the late reverb in percent, from [code]0.0[/code] to [code]100.0[/code].
 			</description>
 		</method>
 		<method name="set_low_shelf_frequency">
@@ -217,9 +199,7 @@
 			<return type="void" />
 			<param index="0" name="low_shelf_gain" type="float" />
 			<description>
-				Sets the low shelf gain in dB (range: -100.0 to 100.0, default: 0.0).
-				Boosts or cuts low frequency reverb to simulate room size and materials.
-				Positive values simulate larger rooms or hard surfaces.
+				Sets the low-shelf gain in dB, clamped to [code]-36.0[/code] through [code]12.0[/code]. The initial value is [code]0.0[/code].
 			</description>
 		</method>
 		<method name="get_low_shelf_gain" qualifiers="const">
@@ -233,38 +213,33 @@
 			<return type="void" />
 			<param index="0" name="high_cut" type="float" />
 			<description>
-				Sets the high frequency cutoff in dB (range: -100.0 to 0.0, default: 0.0).
-				Attenuates high frequency reflections to simulate soft materials or air absorption.
+				Sets the high-cut frequency in Hz, clamped to [code]20.0[/code] through [code]20000.0[/code]. The initial value is [code]14500.0[/code].
 			</description>
 		</method>
 		<method name="get_high_cut" qualifiers="const">
 			<return type="float" />
 			<description>
-				Returns the high frequency cutoff relative to the room effect in dB.
-				Controls the level of high frequency reflections.
+				Returns the high-cut frequency in Hz.
 			</description>
 		</method>
 		<method name="set_early_late_mix">
 			<return type="void" />
 			<param index="0" name="early_late_mix" type="float" />
 			<description>
-				Sets the early reflections level in dB (range: -100.0 to 100.0, default: 50.0).
-				Controls the balance between early reflections and the late reverb tail.
+				Sets the early/late reflection mix in percent, clamped to [code]0.0[/code] through [code]100.0[/code]. The initial value is [code]96.0[/code].
 			</description>
 		</method>
 		<method name="get_early_late_mix" qualifiers="const">
 			<return type="float" />
 			<description>
-				Returns the early reflections level relative to the room effect in dB.
-				Controls the balance between early reflections and the late reverb tail.
+				Returns the early/late reflection mix in percent.
 			</description>
 		</method>
 		<method name="set_wet_level">
 			<return type="void" />
 			<param index="0" name="wet_level" type="float" />
 			<description>
-				Sets the wet (reverb) signal level in dB (range: -100.0 to 20.0, default: -6.0).
-				Controls the overall loudness of the reverb effect.
+				Sets the wet reverb level in dB, clamped to [code]-80.0[/code] through [code]20.0[/code]. The initial value is [code]-8.0[/code].
 			</description>
 		</method>
 		<method name="get_wet_level" qualifiers="const">
@@ -307,15 +282,17 @@
 			Low shelf gain in dB.
 		</member>
 		<member type="float" name="high_cut" setter="set_high_cut" getter="get_high_cut" default="14500.0">
-			High frequency cutoff in dB.
+			High-cut frequency in Hz.
 		</member>
 		<member type="float" name="early_late_mix" setter="set_early_late_mix" getter="get_early_late_mix" default="96.0">
-			Early reflections level relative to room effect.
+			Early/late reflection mix in percent.
 		</member>
 		<member type="float" name="wet_level" setter="set_wet_level" getter="get_wet_level" default="-8.0">
 			Wet signal level in dB.
 		</member>
 	</members>
-	<signals />
-	<constants />
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

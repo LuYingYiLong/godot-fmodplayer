@@ -4,7 +4,7 @@
 		Scene node wrapper for an FMOD 3D reverb zone.
 	</brief_description>
 	<description>
-		FmodReverbZone3D creates and owns an internal [FmodReverb3D] object while it is inside the scene tree. The node position is used as the center of the spherical reverb zone. [member min_distance] receives the full reverb effect, and the effect fades out until [member max_distance].
+		FmodReverbZone3D owns an internal [FmodReverb3D] while inside the scene tree. Its global position is the center of the reverb environment. The environment has full influence when the listener is within [member min_distance], and fades out at [member max_distance].
 	</description>
 	<tutorials>
 	</tutorials>
@@ -290,7 +290,8 @@
 			Overall wet level in dB.
 		</member>
 	</members>
-	<signals />
+	<signals>
+	</signals>
 	<constants>
 		<constant name="PRESET_CUSTOM" value="0" enum="Preset">
 			Custom user-edited reverb properties.

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodSoundLock" inherits="RefCounted" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
-		Provides direct access to sound sample data for reading or modification.
+		Locks sound sample data and exposes copies for reading.
 	</brief_description>
 	<description>
-		FmodSoundLock is used to lock a region of sound data for direct access. This allows reading or modifying the raw sample data of a sound.
-		When a sound is locked, FMOD provides one or two pointers to the data (two pointers are used if the locked region wraps around the end of the sound buffer).
-		[b]Important:[/b] Always call [method unlock] when finished accessing the data, or use the RAII pattern (let the object go out of scope) to automatically unlock.
-		[b]Note:[/b] Locking a sound may be expensive as it can block the mixer thread. Use sparingly and for short durations.
+		FmodSoundLock locks a region of sound data and copies its contents into [PackedByteArray] values returned by [method get_data1] and [method get_data2]. Editing these arrays does not write back to the sound.
+		A locked region can have two portions if it wraps around the end of the sound buffer.
+		Keep the source [FmodSound] alive until [method unlock] is called. The lock stores a native pointer and does not retain the sound wrapper.
+		Call [method unlock] when finished. Destroying the lock object also unlocks the region.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -23,15 +23,13 @@
 		<method name="get_data1" qualifiers="const">
 			<return type="PackedByteArray" />
 			<description>
-				Returns the first portion of locked data as a byte array.
-				This contains the majority of the locked region in most cases.
+				Returns a copy of the first portion of the locked data. Returns an empty array after unlocking. Editing the returned array does not modify the sound.
 			</description>
 		</method>
 		<method name="get_data2" qualifiers="const">
 			<return type="PackedByteArray" />
 			<description>
-				Returns the second portion of locked data as a byte array.
-				This is only non-empty when the locked region wraps around the end of the sound buffer.
+				Returns a copy of the second portion of the locked data, which is present only when the region wraps around the end of the sound buffer. Returns an empty array after unlocking. Editing the returned array does not modify the sound.
 			</description>
 		</method>
 		<method name="is_locked" qualifiers="const">
@@ -41,7 +39,10 @@
 			</description>
 		</method>
 	</methods>
-	<members />
-	<signals />
-	<constants />
+	<members>
+	</members>
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

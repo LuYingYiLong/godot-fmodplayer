@@ -61,18 +61,22 @@
 		<method name="generate_bus_layout" qualifiers="static">
 			<return type="void" />
 			<description>
-				Generate bus layout.
+				Synchronizes FMOD audio buses and their effects with the current Godot [AudioServer] bus layout.
 			</description>
 		</method>
 		<method name="reset_main_system" qualifiers="static">
 			<return type="void" />
 			<param index="0" name="system" type="FmodSystem" />
 			<description>
-				Reset main system.
+				Replaces the main system with [param system]. Configure and initialize the new system before calling this method; this method does not initialize it.
+				Clears the current bus layout, releases the previous system, and rebuilds the buses for the new system from [AudioServer]. Objects belonging to the previous system must not be reused.
 			</description>
 		</method>
 	</methods>
-	<members />
-	<signals />
-	<constants />
+	<members>
+	</members>
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

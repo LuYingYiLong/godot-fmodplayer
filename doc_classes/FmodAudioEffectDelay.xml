@@ -222,6 +222,8 @@
 			The lowpass filter cutoff frequency for the feedback loop in Hz. Lower values create darker echoes.
 		</member>
 	</members>
-	<signals />
-	<constants />
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

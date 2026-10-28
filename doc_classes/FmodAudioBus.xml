@@ -41,8 +41,7 @@
 		<method name="get_parent" qualifiers="const">
 			<return type="FmodChannelGroup" />
 			<description>
-				Returns the parent [FmodChannelGroup] that this bus outputs to.
-				Returns [code]null[/code] for the master bus.
+				Returns the explicitly stored parent channel group. This cache may differ from native routing after a layout synchronization. Query the channel group's [method FmodChannelGroup.get_parent_group] for its current native parent.
 			</description>
 		</method>
 		<method name="get_bus_name" qualifiers="const">
@@ -54,7 +53,7 @@
 		<method name="release">
 			<return type="void" />
 			<description>
-				Release.
+				Removes this bus's effects and clears its channel-group references. Releases the native channel group for buses other than [code]Master[/code].
 			</description>
 		</method>
 		<method name="add_effect">
@@ -62,9 +61,8 @@
 			<param index="0" name="effect" type="FmodAudioEffect" />
 			<param index="1" name="index" type="int" default="0" />
 			<description>
-				Adds an audio effect to this bus at the specified [param index] in the effect chain.
-				If [param index] is negative or exceeds the current effect count, the effect is appended to the end.
-				The effect chain is processed in order, with each effect feeding into the next.
+				Inserts [param effect] into the stored effect list at [param index] and applies it to this bus.
+				The list index is clamped between [code]0[/code] and [method get_effect_count]. It does not specify the FMOD DSP insertion position.
 			</description>
 		</method>
 		<method name="remove_effect">
@@ -106,63 +104,58 @@
 			<return type="void" />
 			<param index="0" name="mute" type="bool" />
 			<description>
-				Sets the mute state of this bus.
-				Muted buses produce no audible output.
+				Stores the user mute flag. Call [method apply_mute] to apply it, or use [method FmodAudioBusLayout.set_bus_mute] to update muting across the layout.
 			</description>
 		</method>
 		<method name="is_mute" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if this bus is muted.
+				Returns the stored user mute flag. A bus can also be muted by another bus's solo state.
 			</description>
 		</method>
 		<method name="apply_mute">
 			<return type="void" />
 			<param index="0" name="mute" type="bool" />
 			<description>
-				Apply mute.
+				Applies the stored mute flag and solo state to the channel group. The [param mute] argument means that any bus in the layout is soloed; this bus is muted when that argument is [code]true[/code] and its own solo flag is [code]false[/code].
 			</description>
 		</method>
 		<method name="set_solo">
 			<return type="void" />
 			<param index="0" name="solo" type="bool" />
 			<description>
-				Sets the solo state of this bus.
-				When any bus is soloed, only soloed buses are audible.
+				Stores the solo flag. Use [method FmodAudioBusLayout.set_bus_solo] to also recompute muting across the layout.
 			</description>
 		</method>
 		<method name="is_solo" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if this bus is in solo mode.
-				When any bus is soloed, only soloed buses produce audible output.
+				Returns the stored solo flag, independently of the user mute flag. Use [method FmodAudioBusLayout.set_bus_solo] to apply solo muting across the layout.
 			</description>
 		</method>
 		<method name="set_bypass">
 			<return type="void" />
 			<param index="0" name="bypass" type="bool" />
 			<description>
-				Enables or disables effects bypass for this bus.
-				When [code]true[/code], effects are not processed.
+				Stores the bypass flag. Call [method sync_bypass] to apply it to the channel group's DSPs.
 			</description>
 		</method>
 		<method name="is_bypass" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if effects bypass is enabled for this bus.
-				When bypassed, effects are not processed but the audio still passes through.
+				Returns the stored bypass flag. [method sync_bypass] applies this flag to the channel group's DSPs.
 			</description>
 		</method>
 		<method name="sync_bypass">
 			<return type="void" />
 			<description>
-				Sync bypass.
+				Applies the stored bypass flag to every DSP currently in this bus's channel group.
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member type="float" name="volume" default="0.0">
-			Controls volume.
+		<member type="float" name="volume" setter="set_volume_db" getter="get_volume_db" default="0.0">
+			Bus volume in decibels. A value of [code]0.0[/code] is unity gain.
 		</member>
 		<member type="bool" name="solo" setter="set_solo" getter="is_solo" default="false">
 			Controls solo.
@@ -174,6 +167,8 @@
 			Controls bypass.
 		</member>
 	</members>
-	<signals />
-	<constants />
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

@@ -7,7 +7,7 @@
 		FmodAudioEffectSpectrumAnalyzer analyzes the frequency content of audio passing through an audio bus in real-time using Fast Fourier Transform (FFT). This is essential for creating audio visualizations such as spectrum analyzers, equalizer displays, or reactive audio effects.
 		The effect processes incoming audio and provides frequency magnitude data that can be queried using [method get_magnitude_for_frequency_range]. You can analyze specific frequency ranges (e.g., bass, midrange, treble) independently.
 		Queries reuse a spectrum snapshot while the bus DSP clock is unchanged. The next audio block automatically refreshes the snapshot, including when manually mixing multiple blocks in one game frame. Changing [member fft_size] or attaching the effect to another bus invalidates the snapshot.
-		The [member fft_size] determines the frequency resolution: larger FFT sizes provide finer frequency detail but require more processing and have worse time resolution. The [member buffer_length] affects how much audio history is kept for analysis.
+		The [member fft_size] determines the analysis window and frequency resolution. Larger FFT sizes provide finer frequency detail at the cost of time resolution and processing work. [member buffer_length] is currently stored for compatibility and does not change the FFT window or retain audio history.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -90,13 +90,14 @@
 	<members>
 		<member type="bool" name="immediate_mode" setter="set_immediate_mode" getter="get_immediate_mode" default="false">Calculates FFT data synchronously. Useful for offline processing and same-frame queries.</member>
 		<member type="float" name="buffer_length" setter="set_buffer_length" getter="get_buffer_length" default="2.0">
-			The internal buffer length in seconds used for spectrum analysis. A larger buffer provides more stable analysis results but increases latency. The default value of 2.0 seconds is suitable for most visualization applications.
+			Stored compatibility value in seconds, clamped to 0.1 through 10.0. The default is 2.0. The current implementation does not use this property to allocate history, smooth results, or change analysis latency.
 		</member>
 		<member type="int" enum="FmodAudioEffectSpectrumAnalyzer.FFTSize" name="fft_size" setter="set_fft_size" getter="get_fft_size" default="2">
 			The FFT (Fast Fourier Transform) size used for spectrum analysis. Larger FFT sizes provide better frequency resolution (more frequency bins) but worse time resolution and higher CPU usage. See [enum FFTSize] for available options. The default [constant FFT_SIZE_1024] provides a good balance for general visualization.
 		</member>
 	</members>
-	<signals />
+	<signals>
+	</signals>
 	<constants>
 		<constant name="FFT_SIZE_256" value="0" enum="FFTSize">
 			256-point FFT. Lower frequency resolution but better time resolution. Useful for analyzing transient sounds or when low latency is required.
@@ -114,7 +115,7 @@
 			4096-point FFT. Very high frequency resolution but poor time resolution. Best for analyzing low-frequency content or when precise frequency detection is needed.
 		</constant>
 		<constant name="FFT_SIZE_MAX" value="5" enum="FFTSize">
-			Maximum FFT size option. Provides the highest frequency resolution available.
+			Sentinel marking the end of the FFT size enumeration. It is not a valid size and is rejected by [method set_fft_size].
 		</constant>
 		<constant name="MAGNITUDE_AVERAGE" value="0" enum="MagnitudeMode">
 			Calculates the average magnitude across the specified frequency range. This provides a smoother response that represents the overall energy in the range.

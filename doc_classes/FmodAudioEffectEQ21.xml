@@ -11,10 +11,11 @@
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods />
+	<methods>
+	</methods>
 	<members>
 		<member name="preset" type="int" setter="set_preset" getter="get_preset" overrides="FmodAudioEffectEQ" enum="FmodAudioEffectEQ.Preset" default="2">
-			The preset is fixed to [constant FmodAudioEffectEQ.PRESET_21_BANDS] for this class.
+			The initial preset is [constant FmodAudioEffectEQ.PRESET_21_BANDS]. The inherited [method FmodAudioEffectEQ.set_preset] can change it and reinitialize the bands.
 		</member>
 		<member type="float" name="band_0_gain" default="0.0">
 			Gain for the first band (22Hz) in decibels. Range: -60 to +24 dB.
@@ -269,6 +270,8 @@
 			Filter type for the twenty-first band. Default is [constant FmodAudioEffectEQ.FILTER_PEAKING].
 		</member>
 	</members>
-	<signals />
-	<constants />
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

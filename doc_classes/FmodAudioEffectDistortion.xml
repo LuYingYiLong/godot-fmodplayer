@@ -83,7 +83,7 @@
 			<return type="void" />
 			<param index="0" name="oversample" type="int" />
 			<description>
-				Sets the oversampling factor. Higher values reduce aliasing artifacts.
+				Stores the oversampling setting, clamped to 1 through 16. The current DSP does not use this setting, so it does not change the audio processing.
 			</description>
 		</method>
 		<method name="get_oversample" qualifiers="const">
@@ -110,10 +110,11 @@
 			The high-frequency preservation cutoff in Hz. Frequencies above this value are preserved and mixed back with the distorted signal to maintain clarity.
 		</member>
 		<member type="int" name="oversample" setter="set_oversample" getter="get_oversample" default="4">
-			The oversampling factor. Higher values reduce aliasing artifacts at the cost of more CPU usage.
+			Stored oversampling setting, clamped to 1 through 16. The default is 4. The current implementation does not perform oversampling and does not use this value in the DSP.
 		</member>
 	</members>
-	<signals />
+	<signals>
+	</signals>
 	<constants>
 		<constant name="MODE_CLIP" value="0" enum="Mode">
 			Hard clipping distortion. Creates harsh, aggressive distortion by sharply limiting the signal.
@@ -122,7 +123,7 @@
 			Arctangent soft clipping. Creates smooth, tube-like distortion with gradual saturation.
 		</constant>
 		<constant name="MODE_LOFI" value="2" enum="Mode">
-			Lo-fi reduction. Reduces bit depth and sample rate for a retro digital sound.
+			Lo-fi amplitude quantization controlled by [member drive]. The current implementation uses the same quantizer as [constant MODE_BITCRUSH] and does not reduce the sample rate.
 		</constant>
 		<constant name="MODE_OVERDRIVE" value="3" enum="Mode">
 			Overdrive. Simulates analog tube amplifier distortion with warm, musical saturation.

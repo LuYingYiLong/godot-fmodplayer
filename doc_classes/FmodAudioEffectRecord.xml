@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectRecord" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
-		Records audio input or output to a WAV file.
+		Captures audio passing through a bus and exposes it as a WAV resource.
 	</brief_description>
 	<description>
 		FmodAudioEffectRecord captures audio data passing through an audio bus and records it to an internal buffer. When recording is complete, the captured audio can be saved as an [AudioStreamWAV] resource.
@@ -15,7 +15,7 @@
 			<return type="void" />
 			<param index="0" name="record" type="bool" />
 			<description>
-				Sets [member recording_active].
+				Starts or stops recording. Changing from inactive to active clears the previous recording and allocates a new capture buffer. Setting the current state again does nothing. Stopping preserves captured samples for [method get_recording].
 			</description>
 		</method>
 		<method name="is_recording_active" qualifiers="const">
@@ -40,7 +40,7 @@
 		<method name="get_recording" qualifiers="const">
 			<return type="AudioStreamWAV" />
 			<description>
-				Returns the recorded audio as an [AudioStreamWAV] resource. The returned audio stream can be played back, saved to disk, or used like any other audio resource. This method should be called after setting [member recording_active] to [code]false[/code] to stop the recording.
+				Returns a new [AudioStreamWAV] containing a copy of the captured samples, or [code]null[/code] if no audio has been recorded. It does not consume or clear the recording. Stop recording first when a completed recording is required.
 			</description>
 		</method>
 		<method name="get_waveform_snapshot" qualifiers="const">
@@ -48,19 +48,20 @@
 			<param index="0" name="width" type="int" default="512" />
 			<param index="1" name="seconds" type="float" default="5.0" />
 			<description>
-				Returns waveform snapshot.
+				Returns a waveform envelope for the latest [param seconds] of recorded audio. A nonpositive duration uses the entire recording. For each of [param width] horizontal buckets, two [Vector2] elements contain the normalized x position and the minimum or maximum sample value, in that order. Channels are averaged and amplitudes are clamped to -1.0 through 1.0. Returns an empty array for a nonpositive width or no recorded audio; otherwise the array has [code]width * 2[/code] elements.
 			</description>
 		</method>
 	</methods>
 	<members>
 		<member type="int" enum="FmodAudioEffectRecord.Format" name="format" setter="set_format" getter="get_format" default="1">
-			The audio format used for recording. See [enum Format] for available options. The default [constant FORMAT_16_BITS] provides good quality and reasonable file size.
+			The sample format used when [method get_recording] exports the captured floating-point samples. Changing it does not change the capture buffer. [constant FORMAT_IMA_ADPCM] currently exports 16-bit PCM, like [constant FORMAT_16_BITS].
 		</member>
 		<member type="bool" name="recording_active" setter="set_recording_active" getter="is_recording_active" default="false">
 			If [code]true[/code], the effect is currently recording audio from the bus. Set to [code]true[/code] to start recording and [code]false[/code] to stop. After stopping, call [method get_recording] to retrieve the captured audio.
 		</member>
 	</members>
-	<signals />
+	<signals>
+	</signals>
 	<constants>
 		<constant name="FORMAT_8_BITS" value="0" enum="Format">
 			8-bit PCM audio format. Smaller file size but lower audio quality with audible quantization noise. Suitable for low-quality recordings or when memory is constrained.
@@ -69,7 +70,7 @@
 			16-bit PCM audio format (default). Good balance between audio quality and file size. Recommended for most recording applications.
 		</constant>
 		<constant name="FORMAT_IMA_ADPCM" value="2" enum="Format">
-			IMA ADPCM compressed audio format. Significantly smaller file size with acceptable quality. Useful when storage space is limited, though slightly lower quality than PCM formats.
+			IMA ADPCM request value. The current implementation exports 16-bit PCM WAV data for this setting; it does not encode IMA ADPCM.
 		</constant>
 	</constants>
 </class>

@@ -5,7 +5,7 @@
 	</brief_description>
 	<description>
 		FmodAudioEffectHardLimiter is a brick-wall limiter that prevents the audio signal from exceeding a specified ceiling level. It ensures that the output never goes above the threshold, effectively preventing clipping and distortion that can occur when signals exceed 0 dBFS.
-		Unlike a compressor which gradually reduces gain, a hard limiter applies instantaneous limiting to peaks, making it ideal for final output protection and maximizing loudness without distortion.
+		The limiter uses look-ahead processing with approximately 2 ms of audio delay to control peaks, followed by the configured release. It limits sampled peaks; it does not measure reconstructed inter-sample peaks.
 		The limiter can also apply pre-gain to boost the signal before limiting, allowing you to maximize perceived loudness while staying within safe levels.
 	</description>
 	<tutorials>
@@ -53,15 +53,17 @@
 	</methods>
 	<members>
 		<member type="float" name="ceiling_db" setter="set_ceiling_db" getter="get_ceiling_db" default="-0.3">
-			The maximum output level in decibels (dB). Range: -12.0 dB to 0.0 dB. Default: -0.3 dB. The signal will never exceed this level. Setting this slightly below 0 dB (e.g., -0.3 dB) provides safety headroom to prevent inter-sample peaks from clipping.
+			The output sample-peak ceiling in decibels, clamped to -24.0 through 0.0 dB. The default is -0.3 dB. Leaving headroom below 0 dB can reduce clipping risk, but this is not a true-peak limiter.
 		</member>
 		<member type="float" name="pre_gain_db" setter="set_pre_gain_db" getter="get_pre_gain_db" default="0.0">
-			The gain applied to the signal before limiting, in decibels (dB). Range: -30 dB to +30 dB. Default: 0 dB. Use positive values to boost quiet signals before limiting, which can increase perceived loudness. The limiting stage ensures the final output never exceeds the ceiling regardless of pre-gain.
+			The gain applied before limiting, in decibels, clamped to -24.0 through +24.0 dB. The default is 0.0 dB.
 		</member>
 		<member type="float" name="release" setter="set_release" getter="get_release" default="0.1">
-			The release time in seconds. Range: 0.001 to 1.0 seconds. Default: 0.1 seconds. This controls how quickly the limiter stops reducing gain after the signal drops below the ceiling. Longer release times produce smoother results but may reduce transients; shorter times are more transparent but may cause pumping.
+			The release time in seconds, clamped to 0.01 through 3.0. The default is 0.1 seconds. It controls how quickly gain recovers after limiting.
 		</member>
 	</members>
-	<signals />
-	<constants />
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

@@ -57,16 +57,14 @@ namespace godot {
 		const int inchannel_hop
 	) {
 		ERR_FAIL_COND(!dsp_connection);
-		ERR_FAIL_COND_MSG(matrix.size() == 0, "Matrix data is empty");
-		ERR_FAIL_COND_MSG(outchannels <= 0, "outchannels must be > 0");
-		ERR_FAIL_COND_MSG(inchannels <= 0, "inchannels must be > 0");
+		ERR_FAIL_COND_MSG(outchannels <= 0 || outchannels > FMOD_MAX_CHANNEL_WIDTH, "outchannels must be between 1 and FMOD_MAX_CHANNEL_WIDTH");
+		ERR_FAIL_COND_MSG(inchannels <= 0 || inchannels > FMOD_MAX_CHANNEL_WIDTH, "inchannels must be between 1 and FMOD_MAX_CHANNEL_WIDTH");
+		ERR_FAIL_COND_MSG(inchannel_hop < 0 || inchannel_hop > FMOD_MAX_CHANNEL_WIDTH, "inchannel_hop must be between 0 and FMOD_MAX_CHANNEL_WIDTH");
+		ERR_FAIL_COND_MSG(inchannel_hop > 0 && inchannel_hop < inchannels, "inchannel_hop must be 0 or >= inchannels");
 
-		// 验证矩阵大小是否符合预期
-		int expected_size = outchannels * inchannels;
-		if (inchannel_hop > 0) {
-			// 如果指定了 hop，矩阵大小应该是 outchannels * inchannel_hop
-			expected_size = outchannels * inchannel_hop;
-		}
+		// 先限制通道与步长范围，再计算大小，避免有符号整数乘法溢出
+		const int effective_hop = inchannel_hop > 0 ? inchannel_hop : inchannels;
+		const int expected_size = (outchannels - 1) * effective_hop + inchannels;
 
 		ERR_FAIL_COND_MSG(matrix.size() < expected_size,
 			vformat("Matrix size (%d) is smaller than expected (%d)", matrix.size(), expected_size));
@@ -89,26 +87,36 @@ namespace godot {
 		const int inchannel_hop
 	) const {
 		ERR_FAIL_COND_V_MSG(!dsp_connection, PackedFloat32Array(), "DSPConnection is null");
-		ERR_FAIL_COND_V_MSG(outchannels <= 0, PackedFloat32Array(), "outchannels must be > 0");
-		ERR_FAIL_COND_V_MSG(inchannels <= 0, PackedFloat32Array(), "inchannels must be > 0");
+		ERR_FAIL_COND_V_MSG(outchannels <= 0 || outchannels > FMOD_MAX_CHANNEL_WIDTH, PackedFloat32Array(), "outchannels must be between 1 and FMOD_MAX_CHANNEL_WIDTH");
+		ERR_FAIL_COND_V_MSG(inchannels <= 0 || inchannels > FMOD_MAX_CHANNEL_WIDTH, PackedFloat32Array(), "inchannels must be between 1 and FMOD_MAX_CHANNEL_WIDTH");
+		ERR_FAIL_COND_V_MSG(inchannel_hop < 0 || inchannel_hop > FMOD_MAX_CHANNEL_WIDTH, PackedFloat32Array(), "inchannel_hop must be between 0 and FMOD_MAX_CHANNEL_WIDTH");
+		ERR_FAIL_COND_V_MSG(inchannel_hop > 0 && inchannel_hop < inchannels, PackedFloat32Array(), "inchannel_hop must be 0 or >= inchannels");
 
-		// 计算矩阵大小：输出通道数 × 输入通道数
-		const int matrix_size = outchannels * inchannels;
-
-		// 分配内存获取实际数据
-		PackedFloat32Array matrix;
-		matrix.resize(matrix_size);
-
-		// 获取实际值（FMOD 可能会修改这些值）
-		int actual_outchannels = outchannels;
-		int actual_inchannels = inchannels;
+		// FMOD 返回实际行列数，不把传入值当作容量限制
+		// 固定最大尺寸也避免了先查询尺寸、后读取期间的矩阵变化
+		float buffer[FMOD_MAX_CHANNEL_WIDTH * FMOD_MAX_CHANNEL_WIDTH] = {};
+		int actual_outchannels = 0;
+		int actual_inchannels = 0;
 
 		FMOD_ERR_CHECK_V(dsp_connection->getMixMatrix(
-			matrix.ptrw(),								// 可写指针
+			buffer,
 			&actual_outchannels,
 			&actual_inchannels,
-			inchannel_hop
+			FMOD_MAX_CHANNEL_WIDTH
 		), PackedFloat32Array());
+		ERR_FAIL_COND_V_MSG(actual_outchannels < 0 || actual_outchannels > FMOD_MAX_CHANNEL_WIDTH || actual_inchannels < 0 || actual_inchannels > FMOD_MAX_CHANNEL_WIDTH, PackedFloat32Array(), "FMOD returned invalid matrix dimensions");
+		ERR_FAIL_COND_V_MSG(actual_outchannels > outchannels || actual_inchannels > inchannels, PackedFloat32Array(), "Requested matrix dimensions are smaller than the FMOD matrix");
+
+		const int effective_hop = inchannel_hop > 0 ? inchannel_hop : inchannels;
+		PackedFloat32Array matrix;
+		ERR_FAIL_COND_V(matrix.resize(outchannels * effective_hop) != OK, PackedFloat32Array());
+		matrix.fill(0.0f);
+		float* output = matrix.ptrw();
+		for (int out = 0; out < actual_outchannels; out++) {
+			for (int in = 0; in < actual_inchannels; in++) {
+				output[out * effective_hop + in] = buffer[out * FMOD_MAX_CHANNEL_WIDTH + in];
+			}
+		}
 
 		return matrix;
 	}

@@ -42,9 +42,11 @@
 			The amplification level in decibels (dB). Range: -80 dB to +24 dB. Default value of 0 dB means no change to the signal. Negative values attenuate the signal, positive values amplify it.
 		</member>
 		<member type="float" name="volume_linear" setter="set_volume_linear" getter="get_volume_linear">
-			The amplification level as a linear value. Range: 0.0 to 4.0 (approximate). A value of 1.0 means unity gain (no change), values below 1.0 attenuate, and values above 1.0 amplify. This is automatically converted to/from [member volume_db].
+			The amplification level as a linear value. It is converted to [member volume_db] and clamped to that property's -80 to +24 dB range, corresponding to approximately 0.0001 to 15.8489. A value of 1.0 is unity gain; setting 0.0 produces the minimum gain rather than silence.
 		</member>
 	</members>
-	<signals />
-	<constants />
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

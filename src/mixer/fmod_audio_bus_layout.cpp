@@ -424,10 +424,16 @@ namespace godot {
 		Ref<FmodSystem> system = FmodServer::get_main_system();
 		ERR_FAIL_COND_MSG(system.is_null(), "FMOD System is null");
 		ERR_FAIL_COND_MSG(audio_buses_map.has(name), "Name is already taken");
+		Ref<FmodChannelGroup> parent_group;
+		if (parent.is_valid()) {
+			parent_group = parent->get_bus();
+			ERR_FAIL_COND_MSG(parent_group.is_null() || parent_group->channel_control_is_null(), "Parent bus is not initialized");
+		}
 
 		Ref<FmodAudioBus> new_bus;
 		new_bus.instantiate();
-		new_bus->init_bus(name, parent);
+		new_bus->init_bus(name, parent_group);
+		ERR_FAIL_COND_MSG(new_bus->get_bus().is_null(), "Failed to initialize audio bus");
 		audio_buses_map[name] = new_bus;
 	}
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioEffectFilter" inherits="FmodAudioEffect" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
-		A multi-mode filter effect supporting lowpass, highpass, and bandpass filter types.
+		Low-pass filter effect with adjustable cutoff, slope, gain, and resonance.
 	</brief_description>
 	<description>
-		FmodAudioEffectFilter is a versatile filter that can operate in multiple modes (lowpass, highpass, bandpass) to shape the frequency content of an audio signal. It provides control over cutoff frequency, rolloff steepness, gain, and resonance.
-		This effect is useful for removing unwanted frequencies, creating muffled or telephone-like sounds, isolating frequency bands, or adding character to audio through resonance.
+		FmodAudioEffectFilter configures one low-pass band in FMOD's MULTIBAND_EQ DSP. It exposes cutoff frequency, slope, gain, and resonance settings. It does not expose high-pass or band-pass modes; use [FmodAudioEffectEQ] for those filter types.
+		Use this effect to attenuate high frequencies, create muffled audio, or emphasize the cutoff region through resonance.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -65,7 +65,7 @@
 	</methods>
 	<members>
 		<member type="float" name="cutoff_hz" setter="set_cutoff_hz" getter="get_cutoff_hz" default="2000.0">
-			The cutoff frequency of the filter in Hertz (Hz). Frequencies above this point are attenuated (lowpass), below this point are attenuated (highpass), or a band around this point is passed (bandpass) depending on the filter mode.
+			The low-pass cutoff frequency in Hz, clamped to 1.0 through 20500.0. Frequencies above the cutoff are attenuated.
 		</member>
 		<member type="int" enum="FmodAudioEffectFilter.FilterDB" name="db" setter="set_db" getter="get_db" default="0">
 			The rolloff steepness of the filter, specified in dB per octave. Determines how sharply frequencies beyond the cutoff are attenuated. See [enum FilterDB] for available values.
@@ -77,7 +77,8 @@
 			The amount of resonance (boost) applied around the cutoff frequency. Range: 0.0 to 1.0. Higher values create a more pronounced peak at the cutoff frequency, useful for creating vocal-like or synthesizer filter effects.
 		</member>
 	</members>
-	<signals />
+	<signals>
+	</signals>
 	<constants>
 		<constant name="FILTER_6DB" value="0" enum="FilterDB">
 			6 dB per octave rolloff. Gentle slope, minimal effect on neighboring frequencies.
@@ -86,7 +87,7 @@
 			12 dB per octave rolloff. Moderate slope, good for general filtering purposes.
 		</constant>
 		<constant name="FILTER_18DB" value="2" enum="FilterDB">
-			18 dB per octave rolloff. Steep slope, stronger frequency isolation.
+			Compatibility slope option. The current implementation maps this value to the same 24 dB/octave low-pass filter as [constant FILTER_24DB].
 		</constant>
 		<constant name="FILTER_24DB" value="3" enum="FilterDB">
 			24 dB per octave rolloff. Very steep slope, aggressive filtering with minimal bleed-through of unwanted frequencies.

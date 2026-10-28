@@ -4,19 +4,18 @@
 		Editor plugin for installing FMOD Android libraries into the Android build template.
 	</brief_description>
 	<description>
-		ModifyAndroidBuildTemplatePlugin is an editor-only plugin that simplifies the installation of FMOD Android libraries into Godot's Android build template. It provides a GUI for selecting the FMOD Android API folder and automatically copies the required files (fmod.jar and native libraries) to the correct locations.
-		This plugin adds a menu item "Install FMOD Android Libraries" to the editor's Tools menu. When activated, it:
-		1. Checks if the Android build template is installed
-		2. Prompts for the FMOD Android API folder location
-		3. Copies fmod.jar to the libs folder
-		4. Copies native libraries for all supported architectures (arm64-v8a, armeabi-v7a, x86, x86_64)
-		5. Creates separate debug and release configurations
-		[b]Note:[/b] This is an editor-only class and is not available in exported projects.
+		Adds [code]Configure FMOD Android Export[/code] to the editor Tools menu. Accepts an extracted FMOD Core Android SDK folder or a [code].tar.gz[/code]/[code].tgz[/code] archive and presents the proposed changes for review.
+		Configures the installed Android build template: copies [code]fmod.jar[/code] and available ABI runtime libraries into debug, dev, and release directories; copies available arm64 extension libraries; updates Gradle dependencies and Java runtime initialization.
+		This class is only available in the editor.
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods />
-	<members />
-	<signals />
-	<constants />
+	<methods>
+	</methods>
+	<members>
+	</members>
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

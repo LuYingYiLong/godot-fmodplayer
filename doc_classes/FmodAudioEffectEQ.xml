@@ -168,13 +168,14 @@
 			Controls band 5 filter type.
 		</member>
 	</members>
-	<signals />
+	<signals>
+	</signals>
 	<constants>
 		<constant name="PRESET_6_BANDS" value="0" enum="Preset">
 			6-band equalizer preset with frequencies: 32Hz, 100Hz, 320Hz, 1000Hz, 3200Hz, 10000Hz.
 		</constant>
 		<constant name="PRESET_10_BANDS" value="1" enum="Preset">
-			10-band graphic equalizer preset with frequencies: 31Hz, 62Hz, 125Hz, 250Hz, 500Hz, 1000Hz, 2000Hz, 4000Hz, 8000Hz, 16000Hz.
+			10-band equalizer preset with initial frequencies: 31.25 Hz, 62.5 Hz, 125 Hz, 250 Hz, 500 Hz, 1000 Hz, 2000 Hz, 4000 Hz, 8000 Hz, 16000 Hz.
 		</constant>
 		<constant name="PRESET_21_BANDS" value="2" enum="Preset">
 			21-band graphic equalizer preset with frequencies: 22Hz, 32Hz, 44Hz, 63Hz, 90Hz, 125Hz, 175Hz, 250Hz, 350Hz, 500Hz, 700Hz, 1000Hz, 1400Hz, 2000Hz, 2800Hz, 4000Hz, 5600Hz, 8000Hz, 11000Hz, 16000Hz, 22000Hz.

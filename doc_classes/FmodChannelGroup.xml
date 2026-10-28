@@ -18,15 +18,13 @@
 		<method name="channel_group_is_valid" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the ChannelGroup handle is valid and can be used for operations.
-				A valid channel group can be controlled and queried for information about its contents.
+				Returns [code]true[/code] if the stored ChannelGroup pointer is non-null. This checks the wrapper pointer, not the native object lifetime.
 			</description>
 		</method>
 		<method name="channel_group_is_null" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the ChannelGroup handle is null or invalid.
-				A null channel group indicates that the group has been released or was never properly initialized.
+				Returns [code]true[/code] if the stored ChannelGroup pointer is null. This checks the wrapper pointer, not the native object lifetime.
 			</description>
 		</method>
 		<method name="get_num_channels" qualifiers="const">
@@ -77,9 +75,7 @@
 		<method name="get_parent_group" qualifiers="const">
 			<return type="FmodChannelGroup" />
 			<description>
-				Returns the parent [FmodChannelGroup] that this group outputs to.
-				Returns [code]null[/code] if this group outputs directly to the master channel group.
-				Use this to traverse up the channel group hierarchy.
+				Returns the parent [FmodChannelGroup] that this group outputs to, including the master group when it is the parent. Returns [code]null[/code] if there is no parent or the query fails.
 			</description>
 		</method>
 		<method name="get_name" qualifiers="const">
@@ -93,14 +89,14 @@
 		<method name="release">
 			<return type="void" />
 			<description>
-				Releases this ChannelGroup and all its resources.
-				After calling this method, all channels feeding into this group will be stopped,
-				and the group becomes invalid. The ChannelGroup handle should not be used after release.
-				[b]Note:[/b] This does not release child groups; they remain valid but will be disconnected from this group.
+				Releases this ChannelGroup. Its input channels and child groups are moved to the master channel group. After a successful release, this wrapper has no FMOD handle.
 			</description>
 		</method>
 	</methods>
-	<members />
-	<signals />
-	<constants />
+	<members>
+	</members>
+	<signals>
+	</signals>
+	<constants>
+	</constants>
 </class>

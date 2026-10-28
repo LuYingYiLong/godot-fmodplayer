@@ -17,6 +17,7 @@
 ```powershell
 .\build_debug_to_test.bat
 .\tools\run_tests.ps1 -Suite regression
+.\tools\run_tests.ps1 -Suite routing
 .\tools\run_tests.ps1 -Suite smoke
 .\tools\run_tests.ps1 -Suite spectrum
 .\tools\run_tests.ps1 -Suite capture
@@ -28,7 +29,8 @@ python tools/run_native_tests.py
 
 | 入口 | 内容 |
 |------|------|
-| `regression` | SDK、频谱、Capture、混响正确性检查 |
+| `regression` | 混音矩阵、总线、SDK、频谱、Capture、混响正确性检查 |
+| `routing` | 矩阵步长、边界、独奏绑定和总线父级回归 |
 | `smoke` | FMOD 2.04 API、效果器及音频资源冒烟检查 |
 | `spectrum` | 频谱快照复用回归 |
 | `capture` | Capture 回归和专项计时 |

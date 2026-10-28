@@ -4,8 +4,7 @@
 		Abstract base class that provides common functionality for Channel and ChannelGroup.
 	</brief_description>
 	<description>
-		FmodChannelControl is an abstract base class that provides shared functionality for both [FmodChannel] (single channel playback control) and [FmodChannelGroup] (channel mixing group). It handles playback control, volume management, panning, filtering, DSP chain configuration, and sample-accurate scheduling.
-		This class cannot be instantiated directly - use [FmodChannel] or [FmodChannelGroup] instead.
+		FmodChannelControl provides shared playback, volume, spatialization, DSP-chain, and scheduling operations for [FmodChannel] and [FmodChannelGroup]. Obtain an initialized channel or group from [FmodSystem]; a newly instantiated base object has no FMOD handle.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -13,13 +12,13 @@
 		<method name="channel_control_is_valid" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the underlying FMOD::ChannelControl object is valid and can be used for operations.
+				Returns [code]true[/code] if this wrapper stores a non-null ChannelControl pointer. It does not validate the native handle or check whether a channel is still playing.
 			</description>
 		</method>
 		<method name="channel_control_is_null" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the underlying FMOD::ChannelControl object is null (not initialized or already released).
+				Returns [code]true[/code] if this wrapper has no ChannelControl pointer. A stopped channel can still have a non-null stored pointer.
 			</description>
 		</method>
 		<method name="is_playing" qualifiers="const">
@@ -31,7 +30,7 @@
 		<method name="stop">
 			<return type="void" />
 			<description>
-				Stops playback of the channel (or all channels in nested ChannelGroups). The channel becomes invalid after stopping and cannot be reused.
+				Stops this channel, or all channels in this group and its nested groups. A stopped Channel handle becomes invalid; a ChannelGroup remains available for subsequent playback.
 			</description>
 		</method>
 		<method name="set_paused">
@@ -51,7 +50,7 @@
 			<return type="void" />
 			<param index="0" name="mode" type="int" enum="FmodSystem.FmodMode" />
 			<description>
-				Sets the playback mode flags that control the behavior of this channel. Mode flags include loop settings (LOOP_OFF, LOOP_NORMAL, LOOP_BIDI), spatial audio settings (2D, 3D with various rolloff types), and creation options (CREATESTREAM, CREATESAMPLE). See [enum FmodSystem.FmodMode] for all available options.
+				Sets supported playback mode flags, including looping and 2D/3D spatialization. See [enum FmodSystem.FmodMode] for the flags; sound creation flags must be supplied when creating the sound.
 			</description>
 		</method>
 		<method name="get_mode" qualifiers="const">
@@ -342,6 +341,7 @@
 			<param index="2" name="inchannels" type="int" />
 			<param index="3" name="inchannel_hop" type="int" default="0" />
 			<description>
+				Channel counts must be between [code]1[/code] and [code]32[/code]. [param inchannel_hop] must be [code]0[/code] or between [param inchannels] and [code]32[/code]. The input must include every active element; padding after the last row is optional. Invalid dimensions, strides, and short arrays are rejected before calling FMOD.
 				Sets a custom mix matrix that maps input channels (columns) to output speaker channels (rows).
 				The matrix is row-major. If [param inchannel_hop] is [code]0[/code], each row is assumed to contain [param inchannels] values.
 			</description>
@@ -480,22 +480,19 @@
 		<method name="get_fade_points" qualifiers="const">
 			<return type="Dictionary" />
 			<description>
-				Returns a [Dictionary] containing fade point information with the following keys:
-				- [code]"num_points"[/code] ([code skip-lint]int[/code]): The number of fade points currently set.
-				- [code]"point_dspclock"[/code] ([code skip-lint]int[/code]): The DSP clock of the fade point (for single-point queries).
-				- [code]"point_volume"[/code] ([code skip-lint]float[/code]): The volume level of the fade point (for single-point queries).
+				Returns a dictionary containing [code]num_points[/code] (int), [code]point_dspclocks[/code] (PackedInt64Array), and [code]point_volumes[/code] (PackedFloat32Array). Matching array indices describe the clock and linear volume of each fade point. Returns an empty dictionary on failure.
 			</description>
 		</method>
 		<method name="set_callback">
 			<return type="void" />
 			<description>
-				Sets up a callback for receiving notifications from FMOD about channel events. When enabled, the [signal callback_received] signal will be emitted when FMOD events occur on this channel.
+				Installs the wrapper callback for FMOD channel events. Notifications are deferred to Godot. [FmodChannel] emits its specific signals such as [signal FmodChannel.ended]; the base implementation emits [signal callback_received].
 			</description>
 		</method>
 		<method name="clear_callback">
 			<return type="void" />
 			<description>
-				Clears the callback set by [method set_callback]. After calling this, the [signal callback_received] signal will no longer be emitted when FMOD events occur.
+				Removes the FMOD callback installed by [method set_callback], stopping both base and derived channel-event notifications for this handle.
 			</description>
 		</method>
 	</methods>
@@ -545,5 +542,6 @@
 			</description>
 		</signal>
 	</signals>
-	<constants />
+	<constants>
+	</constants>
 </class>
