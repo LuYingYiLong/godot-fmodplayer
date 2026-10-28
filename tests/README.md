@@ -18,6 +18,7 @@
 .\build_debug_to_test.bat
 .\tools\run_tests.ps1 -Suite regression
 .\tools\run_tests.ps1 -Suite routing
+.\tools\run_tests.ps1 -Suite spatial
 .\tools\run_tests.ps1 -Suite smoke
 .\tools\run_tests.ps1 -Suite spectrum
 .\tools\run_tests.ps1 -Suite capture
@@ -29,8 +30,9 @@ python tools/run_native_tests.py
 
 | 入口 | 内容 |
 |------|------|
-| `regression` | 混音矩阵、总线、SDK、频谱、Capture、混响正确性检查 |
+| `regression` | 3D 空间音频、混音矩阵、总线、SDK、频谱、Capture、混响正确性检查 |
 | `routing` | 矩阵步长、边界、独奏绑定和总线父级回归 |
+| `spatial` | 3D 滤波、禁用距离衰减、角度检查器元数据和场景保存回归 |
 | `smoke` | FMOD 2.04 API、效果器及音频资源冒烟检查 |
 | `spectrum` | 频谱快照复用回归 |
 | `capture` | Capture 回归和专项计时 |
@@ -41,6 +43,8 @@ python tools/run_native_tests.py
 | `run_native_tests.py` | C++ 环形缓冲检查，分别构建单精度和双精度 |
 
 自动场景入口为 `runner/automated.tscn`，命令行脚本显式选择它。编辑器检查会临时启用 `editor/plugin.cfg`，结束后恢复项目配置。原生检查使用 MSVC 或 `CXX` 指定的 C++ 编译器。
+
+`spatial` 使用启用了 `CHANNEL_DISTANCEFILTER` 的离线系统，保存双音 WAV、角度往返场景和 `spatial_audio_regression.json` 到本次日志目录。完整套件随后重建常规离线系统，其他回归和性能测量保持原有初始化参数。手动测试项目也已启用 `audio/fmod/init_flags/channel_distance_filter`；实际项目需启用此设置并重新运行，距离滤波才会生效。
 
 构建脚本将完整插件复制到 `tests/addons/fmod_player`，并从本机 SDK 补入 `fmod.dll`。已有构建可用 `.\tools\run_tests.ps1 -PrepareOnly` 同步；`-Import` 刷新导入缓存。首次导入时脚本临时使用主场景资源路径，结束后恢复项目配置中的 UID。
 
@@ -65,7 +69,7 @@ python3 tools/run_native_tests.py
 | 目录 | 用途 |
 |------|------|
 | `runner/` | 参数、离线音频配置、套件调度和自动场景入口 |
-| `regression/` | SDK、Capture、频谱和混响正确性检查 |
+| `regression/` | 3D 空间音频、矩阵、总线、SDK、Capture、频谱和混响正确性检查 |
 | `benchmarks/` | DSP、Capture 和混响性能测量 |
 | `manual/` | 测试菜单、播放对比和空间音频场景 |
 | `editor/` | 编辑器属性翻译测试插件 |

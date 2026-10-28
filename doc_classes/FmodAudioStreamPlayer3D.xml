@@ -172,14 +172,14 @@
 			<param index="0" name="distance" type="float" />
 			<description>
 				Sets the maximum rolloff distance multiplier, clamped to at least [code]0.01[/code]. FMOD receives [param distance] multiplied by [member unit_size]. The attenuation model determines behavior beyond that distance.
-				In [constant ATTENUATION_DISABLED] mode, the implementation overrides FMOD's maximum distance with the floating-point upper limit.
+				In [constant ATTENUATION_DISABLED] mode, a flat custom rolloff curve keeps distance gain at unity regardless of this setting.
 			</description>
 		</method>
 		<method name="get_max_distance" qualifiers="const">
 			<return type="float" />
 			<description>
 				Returns the maximum rolloff distance multiplier. Multiply it by [member unit_size] to obtain the distance passed to FMOD.
-				In [constant ATTENUATION_DISABLED] mode, the implementation overrides FMOD's maximum distance with the floating-point upper limit.
+				In [constant ATTENUATION_DISABLED] mode, a flat custom rolloff curve keeps distance gain at unity regardless of this setting.
 			</description>
 		</method>
 		<method name="set_bus">
@@ -229,7 +229,7 @@
 			<return type="void" />
 			<param index="0" name="angle" type="float" />
 			<description>
-				Sets the inner emission angle in degrees.
+				Sets the inner emission angle in degrees, clamped to [code]0.0[/code] through [code]90.0[/code]. The inspector and saved scenes use degrees without conversion.
 				Sound is at full volume within this cone and attenuated outside.
 			</description>
 		</method>
@@ -245,7 +245,7 @@
 			<return type="void" />
 			<param index="0" name="db" type="float" />
 			<description>
-				Sets the attenuation outside the emission cone in dB.
+				Sets the attenuation outside the emission cone in dB, clamped to [code]-80.0[/code] through [code]0.0[/code].
 				More negative values create a sharper directional effect.
 			</description>
 		</method>
@@ -273,13 +273,13 @@
 			<return type="void" />
 			<param index="0" name="db" type="float" />
 			<description>
-				Stored distance-filter level, clamped to [code]-80.0[/code] through [code]0.0[/code]. Despite its name, the current implementation passes this value directly as FMOD custom_level without converting decibels to a linear level.
+				Sets [member attenuation_filter_db]. Updates the native filter immediately during playback.
 			</description>
 		</method>
 		<method name="get_attenuation_filter_db" qualifiers="const">
 			<return type="float" />
 			<description>
-				Stored distance-filter level, clamped to [code]-80.0[/code] through [code]0.0[/code]. Despite its name, the current implementation passes this value directly as FMOD custom_level without converting decibels to a linear level.
+				Returns [member attenuation_filter_db] in dB.
 			</description>
 		</method>
 		<method name="set_doppler_tracking">
@@ -328,7 +328,7 @@
 		</member>
 		<member type="float" name="max_distance" setter="set_max_distance" getter="get_max_distance" default="10.0">
 			Maximum rolloff distance multiplier. The distance passed to FMOD is this value multiplied by [member unit_size]; it is not a universal hard cutoff.
-			In [constant ATTENUATION_DISABLED] mode, the implementation overrides FMOD's maximum distance with the floating-point upper limit.
+			In [constant ATTENUATION_DISABLED] mode, a flat custom rolloff curve keeps distance gain at unity regardless of this setting.
 		</member>
 		<member type="StringName" name="bus" setter="set_bus" getter="get_bus" default="&amp;&quot;Master&quot;">
 			The name of the audio bus to route output to.
@@ -340,16 +340,17 @@
 			If [code]true[/code], enables directional emission cone.
 		</member>
 		<member type="float" name="emission_angle" setter="set_emission_angle" getter="get_emission_angle" default="45.0">
-			Inner emission angle in degrees for directional sound projection.
+			Inner emission angle in degrees, clamped to [code]0.0[/code] through [code]90.0[/code]. The inspector and saved scenes use degrees without conversion.
 		</member>
 		<member type="float" name="emission_angle_filter_attenuation_db" setter="set_emission_angle_filter_attenuation_db" getter="get_emission_angle_filter_attenuation_db" default="-12.0">
-			Attenuation outside the emission cone in dB.
+			Attenuation outside the emission cone in dB, clamped to [code]-80.0[/code] through [code]0.0[/code].
 		</member>
 		<member type="float" name="attenuation_filter_cutoff_hz" setter="set_attenuation_filter_cutoff_hz" getter="get_attenuation_filter_cutoff_hz" default="5000.0">
 			Center frequency passed to FMOD's custom distance filter, in Hz. Clamped to [code]10.0[/code] through [code]22050.0[/code].
 		</member>
 		<member type="float" name="attenuation_filter_db" setter="set_attenuation_filter_db" getter="get_attenuation_filter_db" default="0.0">
-			Stored distance-filter level, clamped to [code]-80.0[/code] through [code]0.0[/code]. Despite its name, the current implementation passes this value directly as FMOD custom_level without converting decibels to a linear level.
+			Distance-filter level in dB, clamped to [code]-80.0[/code] through [code]0.0[/code]. [code]0.0[/code] bypasses filtering; more negative values increase filtering around [member attenuation_filter_cutoff_hz]. This controls filter strength, not a uniform volume reduction.
+			The player converts dB to the native filter amount as [code]1 - pow(10, db / 20)[/code]. Requires [code]audio/fmod/init_flags/channel_distance_filter[/code] to be enabled before the FMOD system is initialized. Restart the project after changing this setting.
 		</member>
 		<member type="int" name="doppler_tracking" setter="set_doppler_tracking" getter="get_doppler_tracking" default="0">
 			Doppler effect tracking mode. See [enum DopplerTracking].
@@ -374,7 +375,7 @@
 			Uses FMOD linear rolloff between [member unit_size] and [member max_distance] multiplied by [member unit_size].
 		</constant>
 		<constant name="ATTENUATION_DISABLED" value="3" enum="AttenuationModel">
-			The current implementation uses inverse rolloff with a very large maximum distance. Distance attenuation is still applied in this mode.
+			Uses a flat custom rolloff curve with unity gain at every distance. Preserves 3D panning, Doppler and emission-cone settings. [member unit_size] and [member max_distance] do not affect distance gain in this mode.
 		</constant>
 		<constant name="DOPPLER_TRACKING_DISABLED" value="0" enum="DopplerTracking">
 			Doppler effect is disabled. No pitch changes based on velocity.

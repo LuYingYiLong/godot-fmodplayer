@@ -53,6 +53,7 @@ namespace godot {
 		void _update_3d_attributes();
 		void _update_velocity(double delta);
 		void _apply_attenuation_settings();
+		void _apply_distance_filter();
 		void _sync_process_pause_state();
 
 	protected:

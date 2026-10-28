@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 fmod/software_sample_rate=48000
 fmod/speaker_mode=3
+fmod/init_flags/channel_distance_filter=true
 
 [debug]
 

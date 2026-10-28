@@ -7,6 +7,7 @@ const CAPTURE_TEST: Script = preload("uid://dhyb1t6prj2bc")
 const REVERB_TEST: Script = preload("uid://cpe7geegh4xgh")
 const MATRIX_TEST: Script = preload("uid://b5tsw1j6s0dyw")
 const BUS_TEST: Script = preload("uid://c0y0kdx4qn6l5")
+const SPATIAL_TEST: Script = preload("uid://bh81rpq0y6z7n")
 const SUITES: Array[String] = [
 	"all",
 	"regression",
@@ -16,6 +17,7 @@ const SUITES: Array[String] = [
 	"reverb",
 	"capture",
 	"routing",
+	"spatial",
 ]
 
 var _suite: String = "all"
@@ -44,8 +46,14 @@ func run(arguments: PackedStringArray) -> Dictionary:
 		return _finish(false, "Unknown test suite: " + _suite)
 	if _capture_baseline and _suite != "capture":
 		return _finish(false, "Capture baseline mode requires the capture suite")
-	_configure_offline_audio()
+	_configure_offline_audio(_suite in ["all", "regression", "spatial",])
 	var summary: String = "FMOD tests\n\n"
+	if _suite in ["all", "regression", "spatial",]:
+		if not SPATIAL_TEST.new().run(_output_dir):
+			return _finish(false, "3D spatial audio regression failed")
+		summary += "3D spatial audio regression: passed\n"
+		if _suite != "spatial":
+			_configure_offline_audio()
 	if _suite in ["all", "regression", "routing",]:
 		if not MATRIX_TEST.new().run(_output_dir):
 			return _finish(false, "Mix matrix regression failed")
@@ -89,13 +97,16 @@ func run(arguments: PackedStringArray) -> Dictionary:
 	return _finish(true, summary + "\nResults: " + _output_dir)
 
 
-func _configure_offline_audio() -> void:
+func _configure_offline_audio(distance_filter: bool = false) -> void:
 	# 自动测试使用独立离线进程，手动场景保持正常音频输出
 	var system: FmodSystem = FmodSystem.create_system()
 	system.set_output(FmodSystem.FMOD_OUTPUT_TYPE_NOSOUND_NRT)
 	system.set_software_format(48000, FmodSystem.FMOD_SPEAKER_MODE_STEREO, 0)
 	system.set_dsp_buffer_size(1024, 4)
-	system.init(32, FmodSystem.FMOD_INIT_FLAG_STREAM_FROM_UPDATE)
+	var flags: int = FmodSystem.FMOD_INIT_FLAG_STREAM_FROM_UPDATE
+	if distance_filter:
+		flags |= FmodSystem.FMOD_INIT_FLAG_CHANNEL_DISTANCEFILTER
+	system.init(32, flags)
 	FmodServer.reset_main_system(system)
 	print("TEST_AUDIO_CONFIG output=", system.get_output(), " ", system.get_software_format())
 

@@ -6,6 +6,7 @@
 #include <godot_cpp/classes/time.hpp>
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/window.hpp>
+#include <cmath>
 
 namespace godot {
 	void FmodAudioStreamPlayer3D::_bind_methods() {
@@ -94,8 +95,8 @@ namespace godot {
 
 		ADD_GROUP("Emission Angle", "emission_angle");
 		ADD_PROPERTY(PropertyInfo(Variant::BOOL, "emission_angle_enabled"), "set_emission_angle_enabled", "is_emission_angle_enabled");
-		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "emission_angle", PROPERTY_HINT_RANGE, "0,180,0.1,radians_as_degrees"), "set_emission_angle", "get_emission_angle");
-		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "emission_angle_filter_attenuation_db", PROPERTY_HINT_RANGE, "-80,80,suffix:dB"), "set_emission_angle_filter_attenuation_db", "get_emission_angle_filter_attenuation_db");
+		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "emission_angle", PROPERTY_HINT_RANGE, "0,90,0.1,degrees"), "set_emission_angle", "get_emission_angle");
+		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "emission_angle_filter_attenuation_db", PROPERTY_HINT_RANGE, "-80,0,0.1,suffix:dB"), "set_emission_angle_filter_attenuation_db", "get_emission_angle_filter_attenuation_db");
 
 		ADD_GROUP("Attenuation Filter", "attenuation_filter_");
 		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "attenuation_filter_cutoff_hz", PROPERTY_HINT_RANGE, "10,22050,1,suffix:Hz"), "set_attenuation_filter_cutoff_hz", "get_attenuation_filter_cutoff_hz");
@@ -240,7 +241,7 @@ namespace godot {
 
 		channel->set_3d_min_distance(fmod_min_dist);
 		channel->set_3d_max_distance(fmod_max_dist);
-		channel->set_3d_distance_filter(true, attenuation_filter_db, attenuation_filter_cutoff_hz);
+		_apply_distance_filter();
 
 		unsigned int mode = FmodSystem::FMOD_MODE_3D;
 		switch (attenuation_model) {
@@ -254,12 +255,23 @@ namespace godot {
 			mode |= FmodSystem::FMOD_MODE_3D_LINEARROLLOFF;
 			break;
 		case ATTENUATION_DISABLED:
-			channel->set_3d_max_distance(3.402823e+38f);
-			mode |= FmodSystem::FMOD_MODE_3D_INVERSEROLLOFF;
+			mode |= FmodSystem::FMOD_MODE_3D_CUSTOMROLLOFF;
 			break;
 		}
 
 		channel->set_mode(static_cast<FmodSystem::FmodMode>(mode));
+		if (attenuation_model == ATTENUATION_DISABLED) {
+			channel->set_flat_3d_rolloff();
+		}
+	}
+
+	void FmodAudioStreamPlayer3D::_apply_distance_filter() {
+		Ref<FmodChannel> channel = internal_player->get_channel();
+		if (channel.is_valid() && channel->channel_control_is_valid()) {
+			// FMOD 2.04 的滤波程度从 0（旁路）到 1（最大），0 dB 保持原始信号
+			const float filter_amount = 1.0f - std::pow(10.0f, attenuation_filter_db / 20.0f);
+			channel->set_3d_distance_filter(true, filter_amount, attenuation_filter_cutoff_hz);
+		}
 	}
 
 	void FmodAudioStreamPlayer3D::set_stream(Ref<FmodAudioStream> new_stream) {
@@ -380,6 +392,7 @@ namespace godot {
 	}
 
 	void FmodAudioStreamPlayer3D::set_attenuation_model(const AttenuationModel p_model) {
+		ERR_FAIL_COND(p_model < ATTENUATION_INVERSE_DISTANCE || p_model > ATTENUATION_DISABLED);
 		attenuation_model = p_model;
 		_apply_attenuation_settings();
 	}
@@ -421,10 +434,7 @@ namespace godot {
 
 	void FmodAudioStreamPlayer3D::set_attenuation_filter_cutoff_hz(const float p_freq) {
 		attenuation_filter_cutoff_hz = Math::clamp(p_freq, 10.0f, 22050.0f);
-		Ref<FmodChannel> channel = internal_player->get_channel();
-		if (channel.is_valid() && channel->channel_control_is_valid()) {
-			channel->set_3d_distance_filter(true, attenuation_filter_db, attenuation_filter_cutoff_hz);
-		}
+		_apply_distance_filter();
 	}
 
 	float FmodAudioStreamPlayer3D::get_attenuation_filter_cutoff_hz() const {
@@ -433,10 +443,7 @@ namespace godot {
 
 	void FmodAudioStreamPlayer3D::set_attenuation_filter_db(const float p_db) {
 		attenuation_filter_db = Math::clamp(p_db, -80.0f, 0.0f);
-		Ref<FmodChannel> channel = internal_player->get_channel();
-		if (channel.is_valid() && channel->channel_control_is_valid()) {
-			channel->set_3d_distance_filter(true, attenuation_filter_db, attenuation_filter_cutoff_hz);
-		}
+		_apply_distance_filter();
 	}
 
 	float FmodAudioStreamPlayer3D::get_attenuation_filter_db() const {

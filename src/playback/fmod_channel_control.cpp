@@ -315,6 +315,16 @@ namespace godot {
 		FMOD_ERR_CHECK(channel_control->set3DCustomRolloff(custom_rolloff_points.data(), num_points));
 	}
 
+	void FmodChannelControl::set_flat_3d_rolloff() {
+		ERR_FAIL_COND(!channel_control);
+		// FMOD 不复制曲线数据，使用整个进程期间有效且不再修改的存储
+		static FMOD_VECTOR points[] = {
+			{ 0.0f, 1.0f, 0.0f },
+			{ 1.0f, 1.0f, 0.0f },
+		};
+		FMOD_ERR_CHECK(channel_control->set3DCustomRolloff(points, 2));
+	}
+
 	PackedVector3Array FmodChannelControl::get_3d_custom_rolloff() const {
 		if (!channel_control) return PackedVector3Array();
 		FMOD_VECTOR* fmod_points = nullptr;

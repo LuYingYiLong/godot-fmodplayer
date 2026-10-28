@@ -66,6 +66,7 @@ namespace godot {
 		Dictionary get_3d_cone_settings() const;					// 获取基于方向的三维锥形模拟遮挡的角度和衰减水平
 		void set_3d_custom_rolloff(const PackedVector3Array points);// 设置一个自定义的三维距离衰减滚出形状
 		PackedVector3Array get_3d_custom_rolloff() const;			// 获取一个自定义的三维距离衰减滚出形状
+		void set_flat_3d_rolloff(); // 内部播放器使用的恒定曲线，不注册为脚本方法
 		void set_3d_distance_filter(
 			const bool custom,
 			const float custom_level,

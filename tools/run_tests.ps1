@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('profile', 'spectrum', 'reverb', 'capture', 'all', 'regression', 'smoke', 'editor', 'routing')]
+    [ValidateSet('profile', 'spectrum', 'reverb', 'capture', 'all', 'regression', 'smoke', 'editor', 'routing', 'spatial')]
     [string]$Suite = 'all',
     [ValidatePattern('^[a-zA-Z0-9_-]+$')]
     [string]$Label = 'run',
