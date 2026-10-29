@@ -1,0 +1,6 @@
+[gd_resource type="FmodAudioEffectFilter" format=3]
+
+[resource]
+cutoff_hz = 2000.0
+db = 1
+resonance = 0.9

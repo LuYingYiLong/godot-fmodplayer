@@ -3,6 +3,9 @@ extends EditorPlugin
 
 const PANNER_TEST: Script = preload("uid://baniq7dsj03n6")
 const EQ_TEST: Script = preload("uid://bytlq7sae4d6k")
+const FILTER_TEST: Script = preload("uid://bykw2cfx5q3ua")
+const COMPRESSOR_TEST: Script = preload("uid://bu0tqv2p3knw7")
+const CAPTURE_TEST: Script = preload("uid://boc5jv28m3rxa")
 
 const EXPECTED: Dictionary = {
 	"Show Startup Banner": "显示启动横幅",
@@ -60,6 +63,9 @@ func _run() -> void:
 	report.close()
 	passed = await PANNER_TEST.new().run(output_dir, tree) and passed
 	passed = await EQ_TEST.new().run(output_dir, tree) and passed
+	passed = await FILTER_TEST.new().run(output_dir, tree) and passed
+	passed = await COMPRESSOR_TEST.new().run(output_dir, tree) and passed
+	passed = await CAPTURE_TEST.new().run(output_dir, tree) and passed
 	if passed:
 		print("TESTS_PASSED output=", output_dir)
 	else:

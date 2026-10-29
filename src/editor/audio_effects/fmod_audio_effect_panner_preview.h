@@ -16,7 +16,6 @@ namespace godot {
 		void _on_effect_changed();
 		void _connect_effect();
 		void _disconnect_effect();
-		void _update_minimum_height();
 		float _get_plot_inset() const;
 		void _edit_pan_at(float p_x, bool p_changing);
 

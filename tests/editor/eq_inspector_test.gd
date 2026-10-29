@@ -61,6 +61,7 @@ func _test_effect(native_class: StringName, output_dir: String, tree: SceneTree)
 	_mouse_button(preview, original, false)
 	_expect(is_equal_approx(effect.get_band_frequency(band), target_frequency), "%s read-only preview rejects input" % native_class)
 	preview.read_only = false
+	await _test_q_scroll(effect, preview, band, tree)
 	_mouse_button(preview, target, true)
 	_mouse_motion(preview, Vector2(-40.0, preview.size.y + 40.0), true)
 	_expect(effect.get_band_frequency(band) == 10.0 and effect.get_band_gain_db(band) == -60.0, "%s drag clamps lower boundaries" % native_class)
@@ -92,6 +93,69 @@ func _test_effect(native_class: StringName, output_dir: String, tree: SceneTree)
 	_expect(effect.get_signal_connection_list(&"changed").size() < connections, "%s resource switch disconnects preview" % native_class)
 
 
+func _test_q_scroll(effect: FmodAudioEffectEQ, preview: EditorProperty, selected_band: int, tree: SceneTree) -> void:
+	var native_class: String = effect.get_class()
+	var inspector: EditorInspector = EditorInterface.get_inspector()
+	var manager: EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
+	var history: UndoRedo = manager.get_history_undo_redo(manager.get_object_history_id(effect))
+	var original_scroll: int = inspector.scroll_vertical
+	var original_q: float = effect.get_band_q(0)
+	var other_q: float = effect.get_band_q(selected_band)
+	var frequency: float = effect.get_band_frequency(0)
+	var gain: float = effect.get_band_gain_db(0)
+	var position: Vector2 = _position(preview, frequency, gain)
+	history.clear_history()
+	_mouse_motion(preview, position, false)
+	_mouse_wheel(preview, position, MOUSE_BUTTON_WHEEL_UP)
+	_expect(is_equal_approx(effect.get_band_q(0), original_q * 1.1) and effect.get_band_q(selected_band) == other_q, "%s wheel edits hovered band instead of previously selected band" % native_class)
+	_mouse_wheel(preview, position, MOUSE_BUTTON_WHEEL_UP)
+	var increased_q: float = effect.get_band_q(0)
+	_expect(is_equal_approx(float(effect.get("band_0_q")), original_q * 1.21), "%s consecutive wheel steps update native Q property" % native_class)
+	_expect(history.get_history_count() == 1, "%s consecutive Q wheel steps merge into one undo action" % native_class)
+	history.undo()
+	_expect(is_equal_approx(effect.get_band_q(0), original_q), "%s undo restores Q before scrolling" % native_class)
+	history.redo()
+	_expect(is_equal_approx(effect.get_band_q(0), increased_q), "%s redo restores scrolled Q" % native_class)
+	_mouse_wheel(preview, position, MOUSE_BUTTON_WHEEL_DOWN)
+	_mouse_wheel(preview, position, MOUSE_BUTTON_WHEEL_DOWN)
+	_expect(is_equal_approx(effect.get_band_q(0), original_q), "%s reverse wheel steps decrease Q" % native_class)
+	_expect(effect.get_band_frequency(0) == frequency and effect.get_band_gain_db(0) == gain, "%s Q scrolling preserves frequency and gain" % native_class)
+	_expect(inspector.scroll_vertical == original_scroll, "%s wheel over band does not scroll inspector" % native_class)
+	effect.set_band_q(0, 10.0)
+	history.clear_history()
+	_mouse_wheel(preview, position, MOUSE_BUTTON_WHEEL_UP)
+	_expect(effect.get_band_q(0) == 10.0 and history.get_history_count() == 0, "%s maximum Q consumes wheel without redundant undo" % native_class)
+	_mouse_wheel(preview, position, MOUSE_BUTTON_WHEEL_DOWN)
+	_expect(effect.get_band_q(0) < 10.0, "%s wheel can leave maximum Q" % native_class)
+	effect.set_band_q(0, 0.01)
+	history.clear_history()
+	_mouse_wheel(preview, position, MOUSE_BUTTON_WHEEL_DOWN)
+	_expect(is_equal_approx(effect.get_band_q(0), 0.01) and history.get_history_count() == 0, "%s minimum Q consumes wheel without redundant undo" % native_class)
+	_mouse_wheel(preview, position, MOUSE_BUTTON_WHEEL_UP)
+	_expect(effect.get_band_q(0) > 0.01, "%s wheel can leave minimum Q" % native_class)
+	effect.set_band_q(0, 1.0)
+	_mouse_wheel(preview, position, MOUSE_BUTTON_WHEEL_UP, 0.5)
+	_expect(is_equal_approx(effect.get_band_q(0), sqrt(1.1)), "%s Q scrolling respects fractional wheel factors" % native_class)
+	var q_before_ignored_events: float = effect.get_band_q(0)
+	_mouse_wheel(preview, position, MOUSE_BUTTON_WHEEL_UP, 1.0, false)
+	_mouse_wheel(preview, position, MOUSE_BUTTON_WHEEL_UP, 1.0, true, true)
+	_expect(effect.get_band_q(0) == q_before_ignored_events, "%s released and canceled wheel events do not edit Q" % native_class)
+	preview.read_only = true
+	_mouse_wheel(preview, position, MOUSE_BUTTON_WHEEL_DOWN)
+	_expect(effect.get_band_q(0) == q_before_ignored_events, "%s read-only preview rejects Q scrolling" % native_class)
+	preview.read_only = false
+	inspector.scroll_vertical = 0
+	await _settle(tree)
+	var outside: Vector2 = Vector2(preview.size.x * 0.5, preview.size.y - 10.0 * EditorInterface.get_editor_scale())
+	_mouse_wheel(preview, outside, MOUSE_BUTTON_WHEEL_DOWN)
+	await _settle(tree)
+	_expect(effect.get_band_q(0) == q_before_ignored_events and inspector.scroll_vertical > 0, "%s wheel outside band passes through to inspector scrolling" % native_class)
+	inspector.scroll_vertical = original_scroll
+	effect.set_band_q(0, original_q)
+	history.clear_history()
+	await _settle(tree)
+
+
 func _settle(tree: SceneTree) -> void:
 	for frame: int in range(4):
 		await tree.process_frame
@@ -116,6 +180,17 @@ func _mouse_button(preview: Control, position: Vector2, pressed: bool) -> void:
 func _mouse_motion(preview: Control, position: Vector2, pressed: bool) -> void:
 	var event: InputEventMouseMotion = InputEventMouseMotion.new()
 	event.button_mask = MOUSE_BUTTON_MASK_LEFT if pressed else 0
+	event.position = preview.get_global_transform_with_canvas() * position
+	event.global_position = event.position
+	preview.get_viewport().push_input(event, true)
+
+
+func _mouse_wheel(preview: Control, position: Vector2, button: MouseButton, factor: float = 1.0, pressed: bool = true, canceled: bool = false) -> void:
+	var event: InputEventMouseButton = InputEventMouseButton.new()
+	event.button_index = button
+	event.factor = factor
+	event.pressed = pressed
+	event.canceled = canceled
 	event.position = preview.get_global_transform_with_canvas() * position
 	event.global_position = event.position
 	preview.get_viewport().push_input(event, true)

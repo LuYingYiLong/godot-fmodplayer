@@ -215,10 +215,13 @@ namespace godot {
 	}
 
 	void FmodAudioEffectCapture::clear_buffer() {
-		std::lock_guard<std::mutex> lock(buffer_mutex);
-		ring_buffer.clear();
-		pushed_frames.store(0);
-		discarded_frames.store(0);
+		{
+			std::lock_guard<std::mutex> lock(buffer_mutex);
+			ring_buffer.clear();
+			pushed_frames.store(0);
+			discarded_frames.store(0);
+		}
+		emit_changed();
 	}
 
 	PackedVector2Array FmodAudioEffectCapture::get_buffer(const int64_t frames) {
@@ -260,6 +263,7 @@ namespace godot {
 		ERR_FAIL_COND_MSG(!std::isfinite(p_buffer_length) || p_buffer_length <= 0, "Buffer length must be finite and positive");
 		buffer_length = p_buffer_length;
 		_update_buffer_size();
+		emit_changed();
 	}
 
 	double FmodAudioEffectCapture::get_buffer_length() const {

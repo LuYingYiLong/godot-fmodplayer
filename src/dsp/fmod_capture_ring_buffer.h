@@ -77,6 +77,19 @@ namespace godot {
 			used_frames -= to_read;
 			return to_read;
 		}
+
+		// Copy unread stereo frames without advancing the consumer.
+		size_t peek(Vector2* data, size_t frames) const {
+			if (!data) return 0;
+			const size_t to_copy = std::min(frames, data_left());
+			if (to_copy == 0) return 0;
+			const size_t first = std::min(to_copy, buffer.size() - read_pos);
+			std::memcpy(data, buffer.data() + read_pos, first * sizeof(Vector2));
+			if (first < to_copy) {
+				std::memcpy(data + first, buffer.data(), (to_copy - first) * sizeof(Vector2));
+			}
+			return to_copy;
+		}
 	};
 
 }

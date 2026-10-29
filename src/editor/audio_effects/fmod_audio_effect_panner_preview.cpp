@@ -23,7 +23,7 @@ namespace godot {
 		set_draw_label(false);
 		set_draw_background(false);
 		set_clip_contents(true);
-		_update_minimum_height();
+		set_custom_minimum_size(Vector2(0.0f, 160.0f * get_preview_scale()));
 	}
 
 	void FmodAudioEffectPannerPreview::set_effect(const Ref<FmodAudioEffectPanner>& p_effect) {
@@ -58,7 +58,6 @@ namespace godot {
 	void FmodAudioEffectPannerPreview::_notification(int p_what) {
 		switch (p_what) {
 		case NOTIFICATION_ENTER_TREE:
-			_update_minimum_height();
 			_connect_effect();
 			break;
 		case NOTIFICATION_EXIT_TREE:
@@ -66,7 +65,6 @@ namespace godot {
 			_disconnect_effect();
 			break;
 		case NOTIFICATION_THEME_CHANGED:
-			_update_minimum_height();
 			queue_redraw();
 			break;
 		case NOTIFICATION_RESIZED:
@@ -74,11 +72,6 @@ namespace godot {
 			queue_redraw();
 			break;
 		}
-	}
-
-	void FmodAudioEffectPannerPreview::_update_minimum_height() {
-		// EditorProperty 自行计算原生最小尺寸，使用 custom_minimum_size 为绘图区保留高度
-		set_custom_minimum_size(Vector2(0.0f, 160.0f * get_preview_scale()));
 	}
 
 	float FmodAudioEffectPannerPreview::_get_plot_inset() const {
@@ -153,7 +146,7 @@ namespace godot {
 		const int font_size = get_theme_default_font_size();
 		const float scale = get_preview_scale();
 		const float padding = 8.0f * scale;
-		const float radius = 6.0f * scale;
+		const float radius = 4.0f * scale;
 		const float font_height = font->get_height(font_size);
 		const float ascent = font->get_ascent(font_size);
 		draw_rect(Rect2(Vector2(), size), background);

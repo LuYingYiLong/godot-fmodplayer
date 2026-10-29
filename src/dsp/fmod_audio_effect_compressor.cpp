@@ -106,8 +106,13 @@ namespace godot {
 	}
 
 	void FmodAudioEffectCompressor::set_threshold(float p_threshold) {
-		threshold = CLAMP(p_threshold, -60.0f, 0.0f);
+		const float value = CLAMP(p_threshold, -60.0f, 0.0f);
+		if (threshold == value) {
+			return;
+		}
+		threshold = value;
 		_update_dsp_params();
+		emit_changed();
 	}
 
 	float FmodAudioEffectCompressor::get_threshold() const {
@@ -115,8 +120,13 @@ namespace godot {
 	}
 
 	void FmodAudioEffectCompressor::set_ratio(float p_ratio) {
-		ratio = CLAMP(p_ratio, 1.0f, 48.0f);
+		const float value = CLAMP(p_ratio, 1.0f, 48.0f);
+		if (ratio == value) {
+			return;
+		}
+		ratio = value;
 		_update_dsp_params();
+		emit_changed();
 	}
 
 	float FmodAudioEffectCompressor::get_ratio() const {
@@ -124,8 +134,13 @@ namespace godot {
 	}
 
 	void FmodAudioEffectCompressor::set_gain(float p_gain) {
-		gain = CLAMP(p_gain, -20.0f, 20.0f);
+		const float value = CLAMP(p_gain, -20.0f, 20.0f);
+		if (gain == value) {
+			return;
+		}
+		gain = value;
 		_update_dsp_params();
+		emit_changed();
 	}
 
 	float FmodAudioEffectCompressor::get_gain() const {
@@ -151,8 +166,13 @@ namespace godot {
 	}
 
 	void FmodAudioEffectCompressor::set_mix(float p_mix) {
-		mix = CLAMP(p_mix, 0.0f, 1.0f);
+		const float value = CLAMP(p_mix, 0.0f, 1.0f);
+		if (mix == value) {
+			return;
+		}
+		mix = value;
 		_update_dsp_params();
+		emit_changed();
 	}
 
 	float FmodAudioEffectCompressor::get_mix() const {

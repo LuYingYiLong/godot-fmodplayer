@@ -14,7 +14,13 @@
 
 Panner 检查器：选中 `manual/panner_preview.tres`，左键点击或拖动上方声像图调节 `Pan`，也可使用下方原生参数。拖出左右边界会限制为 `-1` 和 `1`，支持撤销重做。视图使用编辑器主题颜色。
 
-EQ 检查器：选中 `manual/eq6_preview.tres`、`eq10_preview.tres` 或 `eq21_preview.tres`。拖动频段控制点，横向调节频率，纵向调节峰值/搁架滤波的增益；低通、高通、带通、陷波和全通类型仅调节频率。支持撤销重做、只读状态和预设切换。曲线是根据滤波参数计算的近似响应，未使用实时频谱；打开预览不会创建额外音频 DSP。
+EQ 检查器：选中 `manual/eq6_preview.tres`、`eq10_preview.tres` 或 `eq21_preview.tres`。拖动频段控制点，横向调节频率，纵向调节峰值/搁架滤波的增益；低通、高通、带通、陷波和全通类型仅调节频率。悬停在控制点上滚动滚轮调节 Q：向上增大，向下减小，每格约 10%，范围 `0.01–10`。支持撤销重做、只读状态和预设切换。曲线是根据滤波参数计算的近似响应，未使用实时频谱；打开预览不会创建额外音频 DSP。
+
+Filter 检查器：选中 `manual/filter_preview.tres`，横向拖动节点调节截止频率，12/18/24 dB 模式还可纵向调节 resonance。图表只保留 0 dB 参考线，使用编辑器主题颜色，最小高度为 160。曲线为近似响应，18 dB 按当前实现绘制为 24 dB；低通不使用 MULTIBAND_EQ 的 gain 参数。支持撤销重做与只读状态。
+
+Compressor 检查器：选中 `manual/compressor_preview.tres`，左右拖动圆形拐点调阈值，上下拖动右侧方点调压缩比（向下增大）。阈值范围 `-60–0 dB`，压缩比范围 `1:1–48:1`，支持撤销重做和只读状态。曲线是包含 Gain、Mix 的静态硬拐点近似，Attack/Release 的时间响应不在图中显示；Mix 为 0 时仍可拖动调节压缩比。最小高度为 160，颜色取自编辑器主题。
+
+Capture 检查器：选中 `manual/capture_preview.tres`，显示时间刻度和每段未读立体声数据的最小/最大振幅。预览读取当前编辑器进程中的 Capture 实例，未挂载资源显示空缓冲时间轴；F5 的独立运行进程拥有独立缓冲。修改 `buffer_length` 会调整时间范围并清空数据。视图最小高度 160，仅可见时以 10 Hz 刷新；快照复用缓存，读取位置及计数保持不变。编辑器测试会生成离线音频并保存实测预览截图。
 
 ## 自动测试
 
@@ -43,8 +49,8 @@ python tools/run_native_tests.py
 | `reverb` | 混响音频、尾音回归和专项计时 |
 | `profile` | DSP 效果器性能测量 |
 | `all` | 保留原行为：全部回归加 DSP 性能测量 |
-| `editor` | 在完整编辑器生命周期中检查属性翻译及 Panner、EQ 检查器 |
-| `run_native_tests.py` | C++ 环形缓冲单/双精度检查及 EQ 预览响应模型检查 |
+| `editor` | 在完整编辑器生命周期中检查属性翻译及 Panner、EQ、Filter、Compressor、Capture 检查器 |
+| `run_native_tests.py` | C++ 环形缓冲单/双精度、Capture 快照与峰值、EQ/Filter/Compressor 响应模型检查 |
 
 自动场景入口为 `runner/automated.tscn`，命令行脚本显式选择它。编辑器检查会临时启用 `editor/plugin.cfg`，结束后恢复项目配置。原生检查使用 MSVC 或 `CXX` 指定的 C++ 编译器。
 
@@ -79,7 +85,7 @@ python3 tools/run_native_tests.py
 | `benchmarks/` | DSP、Capture 和混响性能测量 |
 | `manual/` | 测试菜单、播放对比和空间音频场景 |
 | `editor/` | 编辑器属性翻译测试插件 |
-| `native/` | C++ 环形缓冲测试 |
+| `native/` | C++ 环形缓冲与预览响应模型测试 |
 | `assets/` | 音频素材、材质和 shader |
 | `addons/` | 本地部署的完整插件副本 |
 

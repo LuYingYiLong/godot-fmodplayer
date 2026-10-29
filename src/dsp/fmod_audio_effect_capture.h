@@ -29,6 +29,8 @@ namespace godot {
 		virtual void _on_dsp_release(FMOD_DSP_STATE* dsp_state) override;
 
 	private:
+		friend class FmodAudioEffectCapturePreview;
+
 		double buffer_length = 1.0;
 		int buffer_size = 0;
 		AudioRingBuffer ring_buffer;

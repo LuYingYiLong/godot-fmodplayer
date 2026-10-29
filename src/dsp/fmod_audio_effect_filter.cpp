@@ -80,8 +80,13 @@ namespace godot {
 	}
 
 	void FmodAudioEffectFilter::set_cutoff_hz(float p_cutoff_hz) {
-		cutoff_hz = CLAMP(p_cutoff_hz, 1.0f, 20500.0f);
+		const float cutoff = CLAMP(p_cutoff_hz, 1.0f, 20500.0f);
+		if (cutoff_hz == cutoff) {
+			return;
+		}
+		cutoff_hz = cutoff;
 		_update_dsp_params();
+		emit_changed();
 	}
 
 	float FmodAudioEffectFilter::get_cutoff_hz() const {
@@ -89,8 +94,12 @@ namespace godot {
 	}
 
 	void FmodAudioEffectFilter::set_db(FilterDB p_db) {
+		if (db == p_db) {
+			return;
+		}
 		db = p_db;
 		_update_dsp_params();
+		emit_changed();
 	}
 
 	FmodAudioEffectFilter::FilterDB FmodAudioEffectFilter::get_db() const {
@@ -98,8 +107,13 @@ namespace godot {
 	}
 
 	void FmodAudioEffectFilter::set_gain(float p_gain) {
-		gain = CLAMP(p_gain, 0.0f, 4.0f);
+		const float value = CLAMP(p_gain, 0.0f, 4.0f);
+		if (gain == value) {
+			return;
+		}
+		gain = value;
 		_update_dsp_params();
+		emit_changed();
 	}
 
 	float FmodAudioEffectFilter::get_gain() const {
@@ -107,8 +121,13 @@ namespace godot {
 	}
 
 	void FmodAudioEffectFilter::set_resonance(float p_resonance) {
-		resonance = CLAMP(p_resonance, 0.0f, 1.0f);
+		const float value = CLAMP(p_resonance, 0.0f, 1.0f);
+		if (resonance == value) {
+			return;
+		}
+		resonance = value;
 		_update_dsp_params();
+		emit_changed();
 	}
 
 	float FmodAudioEffectFilter::get_resonance() const {

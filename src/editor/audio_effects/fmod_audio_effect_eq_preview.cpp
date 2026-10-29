@@ -15,6 +15,9 @@ namespace godot {
 		constexpr float MAX_FREQUENCY = 22000.0f;
 		constexpr float MIN_GAIN = -60.0f;
 		constexpr float MAX_GAIN = 24.0f;
+		constexpr float MIN_Q = 0.01f;
+		constexpr float MAX_Q = 10.0f;
+		constexpr float Q_SCROLL_RATIO = 1.1f;
 		constexpr int CURVE_POINTS = 384;
 		static_assert(int(fmod_eq_preview::Filter::HIGHPASS_6DB) == FmodAudioEffectEQ::FILTER_HIGHPASS_6DB);
 		static_assert(int(fmod_eq_preview::Filter::PEAKING) == FmodAudioEffectEQ::FILTER_PEAKING);
@@ -181,6 +184,28 @@ namespace godot {
 			return;
 		}
 		Ref<InputEventMouseButton> button = p_event;
+		if (button.is_valid() && (button->get_button_index() == MOUSE_BUTTON_WHEEL_UP || button->get_button_index() == MOUSE_BUTTON_WHEEL_DOWN)) {
+			if (!button->is_pressed() || button->is_canceled() || dragging) {
+				return;
+			}
+			const int band = _hit_band(button->get_position());
+			const float factor = button->get_factor();
+			if (band < 0 || !std::isfinite(factor) || factor <= 0.0f) {
+				return;
+			}
+			const float direction = button->get_button_index() == MOUSE_BUTTON_WHEEL_UP ? 1.0f : -1.0f;
+			const float current_q = effect->get_band_q(band);
+			const float q = CLAMP(current_q * std::pow(Q_SCROLL_RATIO, direction * factor), MIN_Q, MAX_Q);
+			selected_band = band;
+			hovered_band = band;
+			set_default_cursor_shape(CURSOR_MOVE);
+			if (!Math::is_equal_approx(q, current_q)) {
+				emit_changed("band_" + String::num_int64(band) + "_q", q);
+			}
+			queue_redraw();
+			accept_event();
+			return;
+		}
 		if (button.is_valid() && button->get_button_index() == MOUSE_BUTTON_LEFT) {
 			if (button->is_pressed()) {
 				selected_band = _hit_band(button->get_position());

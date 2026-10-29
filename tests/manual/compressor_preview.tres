@@ -1,0 +1,5 @@
+[gd_resource type="FmodAudioEffectCompressor" format=3]
+
+[resource]
+threshold_db = -24.0
+ratio = 4.0

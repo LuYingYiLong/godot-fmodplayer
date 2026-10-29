@@ -1,0 +1,4 @@
+[gd_resource type="FmodAudioEffectCapture" format=3]
+
+[resource]
+buffer_length = 10.0

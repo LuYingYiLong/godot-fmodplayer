@@ -35,6 +35,9 @@
 #include "editor/audio_effects/fmod_audio_effect_inspector.h"
 #include "editor/audio_effects/fmod_audio_effect_panner_preview.h"
 #include "editor/audio_effects/fmod_audio_effect_eq_preview.h"
+#include "editor/audio_effects/fmod_audio_effect_filter_preview.h"
+#include "editor/audio_effects/fmod_audio_effect_compressor_preview.h"
+#include "editor/audio_effects/fmod_audio_effect_capture_preview.h"
 #endif
 #include "geometry/fmod_geometry.h"
 #include "mixer/fmod_audio_bus.h"
@@ -149,6 +152,9 @@ void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 #ifdef TOOLS_ENABLED
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectPannerPreview);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectEQPreview);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectFilterPreview);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectCompressorPreview);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectCapturePreview);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectInspector);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectEditorPlugin);
 		EditorPlugins::add_by_type<FmodAudioEffectEditorPlugin>();
