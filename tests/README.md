@@ -34,6 +34,8 @@ Phaser 检查器：选中 `manual/phaser_preview.tres`，主曲线显示扫频�
 
 StereoEnhance 检查器：选中 `manual/stereo_enhance_preview.tres`，查看扇形雷达参数示意。张角表示 Pan Pullout（0 为中心线，1 为 45°，4 为整个半圆），内弧位置表示 Time Pullout，填充深浅表示 Surround。点击或拖动雷达调整宽度，支持撤销重做和只读状态。L/R 位于左右上角，使用编辑器主题颜色，最小高度 160，几何按参数变化缓存。
 
+Delay 检查器：选中 `manual/delay_preview.tres`，查看同心半圆环线与两路 Tap 节点。半径表示延迟时间，角度表示 Pan，亮度表示电平；拖动节点可同时编辑时间和 Pan，Alt + 点击可选择重叠的另一节点。启用 Feedback 后显示低通滤波前的重复间隔与电平衰减示意。时间范围自动扩展，悬停提示显示范围；拖动期间保持比例，支持撤销重做、只读状态和 Tap 开关。使用编辑器主题颜色，最小高度 160，环线按参数变化缓存。
+
 ## 自动测试
 
 ```powershell
@@ -61,7 +63,7 @@ python tools/run_native_tests.py
 | `reverb` | 混响音频、尾音回归和专项计时 |
 | `profile` | DSP 效果器性能测量 |
 | `all` | 保留原行为：全部回归加 DSP 性能测量 |
-| `editor` | 在完整编辑器生命周期中检查属性翻译及 Panner、EQ、Filter、Compressor、Capture、Amplify、Chorus、Reverb、PitchShift、Phaser、StereoEnhance 检查器 |
+| `editor` | 在完整编辑器生命周期中检查属性翻译及 Panner、EQ、Filter、Compressor、Capture、Amplify、Chorus、Reverb、PitchShift、Phaser、StereoEnhance、Delay 检查器 |
 | `run_native_tests.py` | C++ 环形缓冲单/双精度、Capture 快照与峰值、EQ/Filter/Compressor/Phaser 响应模型检查 |
 
 自动场景入口为 `runner/automated.tscn`，命令行脚本显式选择它。编辑器检查会临时启用 `editor/plugin.cfg`，结束后恢复项目配置。原生检查使用 MSVC 或 `CXX` 指定的 C++ 编译器。

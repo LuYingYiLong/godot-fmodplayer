@@ -1,0 +1,5 @@
+[gd_resource type="FmodAudioEffectDelay" format=3]
+
+[resource]
+tap1_pan = -0.6
+tap2_pan = 0.65

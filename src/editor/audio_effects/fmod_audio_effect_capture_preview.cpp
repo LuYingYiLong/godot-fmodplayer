@@ -78,6 +78,8 @@ namespace godot {
 		switch (p_what) {
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
+			// 检查器重挂接时不会再次触发 READY，等待 Timer 子节点入树后恢复刷新
+			callable_mp(this, &FmodAudioEffectCapturePreview::_update_refresh_timer).call_deferred();
 			break;
 		case NOTIFICATION_READY:
 		case NOTIFICATION_VISIBILITY_CHANGED:

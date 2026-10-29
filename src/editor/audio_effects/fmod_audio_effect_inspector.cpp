@@ -10,6 +10,7 @@
 #include "fmod_audio_effect_pitch_shift_preview.h"
 #include "fmod_audio_effect_phaser_preview.h"
 #include "fmod_audio_effect_stereo_enhance_preview.h"
+#include "fmod_audio_effect_delay_preview.h"
 
 namespace godot {
 	void FmodAudioEffectInspector::_bind_methods() {
@@ -26,10 +27,18 @@ namespace godot {
 			Object::cast_to<FmodAudioEffectReverb>(p_object) != nullptr ||
 			Object::cast_to<FmodAudioEffectPitchShift>(p_object) != nullptr ||
 			Object::cast_to<FmodAudioEffectPhaser>(p_object) != nullptr ||
-			Object::cast_to<FmodAudioEffectStereoEnhance>(p_object) != nullptr;
+			Object::cast_to<FmodAudioEffectStereoEnhance>(p_object) != nullptr ||
+			Object::cast_to<FmodAudioEffectDelay>(p_object) != nullptr;
 	}
 
 	void FmodAudioEffectInspector::_parse_begin(Object* p_object) {
+		FmodAudioEffectDelay* delay = Object::cast_to<FmodAudioEffectDelay>(p_object);
+		if (delay) {
+			FmodAudioEffectDelayPreview* preview = memnew(FmodAudioEffectDelayPreview);
+			preview->set_effect(Ref<FmodAudioEffectDelay>(delay));
+			add_custom_control(preview);
+			return;
+		}
 		FmodAudioEffectStereoEnhance* stereo = Object::cast_to<FmodAudioEffectStereoEnhance>(p_object);
 		if (stereo) {
 			FmodAudioEffectStereoEnhancePreview* preview = memnew(FmodAudioEffectStereoEnhancePreview);

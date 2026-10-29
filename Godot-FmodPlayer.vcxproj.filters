@@ -257,6 +257,9 @@
     <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_stereo_enhance_preview.h">
       <Filter>Header Files\editor\audio_effects</Filter>
     </ClInclude>
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_delay_preview.h">
+      <Filter>Header Files\editor\audio_effects</Filter>
+    </ClInclude>
     <ClInclude Include="src\editor\audio_effects\fmod_phaser_preview_response.h">
       <Filter>Header Files\editor\audio_effects</Filter>
     </ClInclude>
@@ -428,6 +431,9 @@
       <Filter>Source Files\editor\audio_effects</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_stereo_enhance_preview.cpp">
+      <Filter>Source Files\editor\audio_effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_delay_preview.cpp">
       <Filter>Source Files\editor\audio_effects</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_inspector.cpp">

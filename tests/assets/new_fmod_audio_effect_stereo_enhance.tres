@@ -1,3 +1,4 @@
 [gd_resource type="FmodAudioEffectStereoEnhance" format=3 uid="uid://e6t2ngfldqgn"]
 
 [resource]
+pan_pullout = 3.4973364

@@ -12,6 +12,7 @@ const REVERB_TEST: Script = preload("uid://cjv5y8trh2m6p")
 const PITCH_SHIFT_TEST: Script = preload("uid://cx2gm7dnh5qb4")
 const PHASER_TEST: Script = preload("uid://c48swpv3bn2yh")
 const STEREO_ENHANCE_TEST: Script = preload("uid://c53r8xnm6w2jt")
+const DELAY_TEST: Script = preload("uid://b57gm8xq3nf2w")
 
 const EXPECTED: Dictionary = {
 	"Show Startup Banner": "显示启动横幅",
@@ -77,6 +78,7 @@ func _run() -> void:
 	passed = await PITCH_SHIFT_TEST.new().run(output_dir, tree) and passed
 	passed = await PHASER_TEST.new().run(output_dir, tree) and passed
 	passed = await STEREO_ENHANCE_TEST.new().run(output_dir, tree) and passed
+	passed = await DELAY_TEST.new().run(output_dir, tree) and passed
 	passed = await CAPTURE_TEST.new().run(output_dir, tree) and passed
 	if passed:
 		print("TESTS_PASSED output=", output_dir)

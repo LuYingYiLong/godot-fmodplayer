@@ -1,3 +1,4 @@
 [gd_resource type="FmodAudioEffectPitchShift" format=3 uid="uid://bjny63kjgo35d"]
 
 [resource]
+pitch_scale = 2.23

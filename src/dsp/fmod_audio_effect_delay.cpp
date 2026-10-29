@@ -403,8 +403,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDelay::set_dry(float p_dry) {
-		dry = CLAMP(p_dry, 0.0f, 1.0f);
+		p_dry = CLAMP(p_dry, 0.0f, 1.0f);
+		if (dry == p_dry) return;
+		dry = p_dry;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectDelay::get_dry() {
@@ -412,8 +415,10 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDelay::set_tap1_active(bool p_active) {
+		if (tap_1_active == p_active) return;
 		tap_1_active = p_active;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	bool FmodAudioEffectDelay::is_tap1_active() const {
@@ -421,8 +426,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDelay::set_tap1_delay_ms(float p_delay_ms) {
-		tap_1_delay_ms = CLAMP(p_delay_ms, 0.0f, DELAY_MAX_MS);
+		p_delay_ms = CLAMP(p_delay_ms, 0.0f, DELAY_MAX_MS);
+		if (tap_1_delay_ms == p_delay_ms) return;
+		tap_1_delay_ms = p_delay_ms;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectDelay::get_tap1_delay_ms() const {
@@ -430,8 +438,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDelay::set_tap1_level_db(float p_level_db) {
-		tap_1_level = CLAMP(p_level_db, -60.0f, 0.0f);
+		p_level_db = CLAMP(p_level_db, -60.0f, 0.0f);
+		if (tap_1_level == p_level_db) return;
+		tap_1_level = p_level_db;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectDelay::get_tap1_level_db() const {
@@ -439,8 +450,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDelay::set_tap1_pan(float p_pan) {
-		tap_1_pan = CLAMP(p_pan, -1.0f, 1.0f);
+		p_pan = CLAMP(p_pan, -1.0f, 1.0f);
+		if (tap_1_pan == p_pan) return;
+		tap_1_pan = p_pan;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectDelay::get_tap1_pan() const {
@@ -448,8 +462,10 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDelay::set_tap2_active(bool p_active) {
+		if (tap_2_active == p_active) return;
 		tap_2_active = p_active;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	bool FmodAudioEffectDelay::is_tap2_active() const {
@@ -457,8 +473,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDelay::set_tap2_delay_ms(float p_delay_ms) {
-		tap_2_delay_ms = CLAMP(p_delay_ms, 0.0f, DELAY_MAX_MS);
+		p_delay_ms = CLAMP(p_delay_ms, 0.0f, DELAY_MAX_MS);
+		if (tap_2_delay_ms == p_delay_ms) return;
+		tap_2_delay_ms = p_delay_ms;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectDelay::get_tap2_delay_ms() const {
@@ -466,8 +485,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDelay::set_tap2_level_db(float p_level_db) {
-		tap_2_level = CLAMP(p_level_db, -60.0f, 0.0f);
+		p_level_db = CLAMP(p_level_db, -60.0f, 0.0f);
+		if (tap_2_level == p_level_db) return;
+		tap_2_level = p_level_db;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectDelay::get_tap2_level_db() const {
@@ -475,8 +497,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDelay::set_tap2_pan(float p_pan) {
-		tap_2_pan = CLAMP(p_pan, -1.0f, 1.0f);
+		p_pan = CLAMP(p_pan, -1.0f, 1.0f);
+		if (tap_2_pan == p_pan) return;
+		tap_2_pan = p_pan;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectDelay::get_tap2_pan() const {
@@ -484,8 +509,10 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDelay::set_feedback_active(bool p_active) {
+		if (feedback_active == p_active) return;
 		feedback_active = p_active;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	bool FmodAudioEffectDelay::is_feedback_active() const {
@@ -493,8 +520,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDelay::set_feedback_delay_ms(float p_delay_ms) {
-		feedback_delay_ms = CLAMP(p_delay_ms, 0.0f, DELAY_MAX_MS);
+		p_delay_ms = CLAMP(p_delay_ms, 0.0f, DELAY_MAX_MS);
+		if (feedback_delay_ms == p_delay_ms) return;
+		feedback_delay_ms = p_delay_ms;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectDelay::get_feedback_delay_ms() const {
@@ -502,8 +532,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDelay::set_feedback_level_db(float p_level_db) {
-		feedback_level = CLAMP(p_level_db, -60.0f, 0.0f);
+		p_level_db = CLAMP(p_level_db, -60.0f, 0.0f);
+		if (feedback_level == p_level_db) return;
+		feedback_level = p_level_db;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectDelay::get_feedback_level_db() const {
@@ -511,8 +544,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDelay::set_feedback_lowpass(float p_lowpass) {
-		feedback_lowpass = CLAMP(p_lowpass, 1.0f, 16000.0f);
+		p_lowpass = CLAMP(p_lowpass, 1.0f, 16000.0f);
+		if (feedback_lowpass == p_lowpass) return;
+		feedback_lowpass = p_lowpass;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectDelay::get_feedback_lowpass() const {

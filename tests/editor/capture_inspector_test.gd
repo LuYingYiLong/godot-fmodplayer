@@ -27,6 +27,13 @@ func run(output_dir: String, tree: SceneTree) -> bool:
 		if timers.size() == 1:
 			var timer: Timer = timers[0] as Timer
 			_expect(is_equal_approx(timer.wait_time, 0.1) and not timer.is_stopped(), "Visible Capture preview refreshes at 10 Hz")
+			var original_parent: Node = preview.get_parent()
+			var original_index: int = preview.get_index()
+			original_parent.remove_child(preview)
+			original_parent.add_child(preview)
+			original_parent.move_child(preview, original_index)
+			await _settle(tree)
+			_expect(not timer.is_stopped(), "Capture timer resumes after inspector reparents preview")
 			await _capture_if_requested(preview, output_dir.path_join("capture_empty.png"), tree)
 			_fill_capture(effect)
 			var available: int = effect.get_frames_available()
