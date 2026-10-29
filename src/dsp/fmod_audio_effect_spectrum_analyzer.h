@@ -8,6 +8,7 @@
 namespace godot {
 	class FmodAudioEffectSpectrumAnalyzer : public FmodAudioEffect {
 		GDCLASS(FmodAudioEffectSpectrumAnalyzer, FmodAudioEffect)
+		friend class FmodAudioEffectSpectrumAnalyzerPreview;
 
 	public:
 		enum FFTSize {

@@ -11,6 +11,9 @@
 #include "fmod_audio_effect_phaser_preview.h"
 #include "fmod_audio_effect_stereo_enhance_preview.h"
 #include "fmod_audio_effect_delay_preview.h"
+#include "fmod_audio_effect_distortion_preview.h"
+#include "fmod_audio_effect_hard_limiter_preview.h"
+#include "fmod_audio_effect_spectrum_analyzer_preview.h"
 
 namespace godot {
 	void FmodAudioEffectInspector::_bind_methods() {
@@ -28,10 +31,31 @@ namespace godot {
 			Object::cast_to<FmodAudioEffectPitchShift>(p_object) != nullptr ||
 			Object::cast_to<FmodAudioEffectPhaser>(p_object) != nullptr ||
 			Object::cast_to<FmodAudioEffectStereoEnhance>(p_object) != nullptr ||
-			Object::cast_to<FmodAudioEffectDelay>(p_object) != nullptr;
+			Object::cast_to<FmodAudioEffectDelay>(p_object) != nullptr ||
+			Object::cast_to<FmodAudioEffectDistortion>(p_object) != nullptr ||
+			Object::cast_to<FmodAudioEffectHardLimiter>(p_object) != nullptr ||
+			Object::cast_to<FmodAudioEffectSpectrumAnalyzer>(p_object) != nullptr;
 	}
 
 	void FmodAudioEffectInspector::_parse_begin(Object* p_object) {
+		if (FmodAudioEffectDistortion* distortion = Object::cast_to<FmodAudioEffectDistortion>(p_object)) {
+			FmodAudioEffectDistortionPreview* preview = memnew(FmodAudioEffectDistortionPreview);
+			preview->set_effect(Ref<FmodAudioEffectDistortion>(distortion));
+			add_custom_control(preview);
+			return;
+		}
+		if (FmodAudioEffectHardLimiter* limiter = Object::cast_to<FmodAudioEffectHardLimiter>(p_object)) {
+			FmodAudioEffectHardLimiterPreview* preview = memnew(FmodAudioEffectHardLimiterPreview);
+			preview->set_effect(Ref<FmodAudioEffectHardLimiter>(limiter));
+			add_custom_control(preview);
+			return;
+		}
+		if (FmodAudioEffectSpectrumAnalyzer* spectrum = Object::cast_to<FmodAudioEffectSpectrumAnalyzer>(p_object)) {
+			FmodAudioEffectSpectrumAnalyzerPreview* preview = memnew(FmodAudioEffectSpectrumAnalyzerPreview);
+			preview->set_effect(Ref<FmodAudioEffectSpectrumAnalyzer>(spectrum));
+			add_custom_control(preview);
+			return;
+		}
 		FmodAudioEffectDelay* delay = Object::cast_to<FmodAudioEffectDelay>(p_object);
 		if (delay) {
 			FmodAudioEffectDelayPreview* preview = memnew(FmodAudioEffectDelayPreview);

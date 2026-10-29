@@ -162,6 +162,10 @@ namespace godot {
 			if (runtime.release_factor > 0.0f) {
 				runtime.gain = _lerp(runtime.gain_target, 1.0f, 1.0f - runtime.release_factor / release);
 			}
+			else {
+				// 释放完成后恢复单位增益，避免历史 gain bucket 将衰减永久保留下来
+				runtime.gain = 1.0f;
+			}
 
 			if (largest_sample > 0.0f && largest_sample * runtime.gain > ceiling) {
 				runtime.gain_target = ceiling / largest_sample;
@@ -283,8 +287,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectHardLimiter::set_ceiling_db(float p_ceiling_db) {
-		ceiling_db = CLAMP(p_ceiling_db, -24.0f, 0.0f);
+		p_ceiling_db = CLAMP(p_ceiling_db, -24.0f, 0.0f);
+		if (ceiling_db == p_ceiling_db) return;
+		ceiling_db = p_ceiling_db;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectHardLimiter::get_ceiling_db() const {
@@ -292,8 +299,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectHardLimiter::set_pre_gain_db(float p_pre_gain_db) {
-		pre_gain_db = CLAMP(p_pre_gain_db, -24.0f, 24.0f);
+		p_pre_gain_db = CLAMP(p_pre_gain_db, -24.0f, 24.0f);
+		if (pre_gain_db == p_pre_gain_db) return;
+		pre_gain_db = p_pre_gain_db;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectHardLimiter::get_pre_gain_db() const {
@@ -301,8 +311,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectHardLimiter::set_release(float p_release) {
-		release = CLAMP(p_release, 0.01f, 3.0f);
+		p_release = CLAMP(p_release, 0.01f, 3.0f);
+		if (release == p_release) return;
+		release = p_release;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectHardLimiter::get_release() const {

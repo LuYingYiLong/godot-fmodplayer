@@ -1,0 +1,7 @@
+[gd_resource type="FmodAudioEffectDistortion" format=3]
+
+[resource]
+mode = 1
+drive = 0.5
+pre_gain = 6.0
+post_gain = 12.0

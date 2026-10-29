@@ -1,4 +1,5 @@
 #include "dsp/fmod_audio_effect_distortion.h"
+#include "dsp/fmod_distortion_shaper.h"
 #include "core/fmod_server.h"
 #include "core/fmod_system.h"
 #include "playback/fmod_channel_group.h"
@@ -11,6 +12,7 @@
 #include <vector>
 
 namespace godot {
+	static_assert(FmodAudioEffectDistortion::MODE_CLIP == 0 && FmodAudioEffectDistortion::MODE_ATAN == 1 && FmodAudioEffectDistortion::MODE_LOFI == 2 && FmodAudioEffectDistortion::MODE_OVERDRIVE == 3 && FmodAudioEffectDistortion::MODE_WAVESHAPE == 4 && FmodAudioEffectDistortion::MODE_BITCRUSH == 5, "Keep shared shaper mode values in sync");
 	static constexpr uint32_t DISTORTION_DSP_USERDATA_MAGIC = 0x44535452;
 	static constexpr float DISTORTION_TAU = 6.28318530717958647692f;
 
@@ -75,29 +77,7 @@ namespace godot {
 	}
 
 	static float _distortion_process_sample(float sample, int mode, float drive, float atan_mult, float atan_div, float lofi_mult) {
-		switch (mode) {
-			case FmodAudioEffectDistortion::MODE_CLIP: {
-				float sign = sample < 0.0f ? -1.0f : 1.0f;
-				sample = std::pow(std::abs(sample), 1.0001f - drive) * sign;
-				return CLAMP(sample, -1.0f, 1.0f);
-			}
-			case FmodAudioEffectDistortion::MODE_ATAN:
-				return std::atan(sample * atan_mult) * atan_div;
-			case FmodAudioEffectDistortion::MODE_LOFI:
-			case FmodAudioEffectDistortion::MODE_BITCRUSH:
-				return std::floor(sample * lofi_mult + 0.5f) / lofi_mult;
-			case FmodAudioEffectDistortion::MODE_OVERDRIVE: {
-				double x = static_cast<double>(sample) * 0.686306;
-				double z = 1.0 + std::exp(std::sqrt(std::abs(x)) * -0.75);
-				return static_cast<float>((std::exp(x) - std::exp(-x * z)) / (std::exp(x) + std::exp(-x)));
-			}
-			case FmodAudioEffectDistortion::MODE_WAVESHAPE: {
-				float k = 2.0f * drive / (1.00001f - drive);
-				return (1.0f + k) * sample / (1.0f + k * std::abs(sample));
-			}
-		}
-
-		return sample;
+		return fmod_distortion::process_sample(sample, mode, drive, atan_mult, atan_div, lofi_mult);
 	}
 
 	static FMOD_RESULT F_CALL distortion_dsp_process_callback(FMOD_DSP_STATE* dsp_state,
@@ -301,8 +281,10 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDistortion::set_mode(Mode p_mode) {
+		if (mode == p_mode) return;
 		mode = p_mode;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	FmodAudioEffectDistortion::Mode FmodAudioEffectDistortion::get_mode() const {
@@ -310,8 +292,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDistortion::set_pre_gain(float p_gain) {
-		pre_gain = CLAMP(p_gain, -60.0f, 60.0f);
+		p_gain = CLAMP(p_gain, -60.0f, 60.0f);
+		if (pre_gain == p_gain) return;
+		pre_gain = p_gain;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectDistortion::get_pre_gain() const {
@@ -319,8 +304,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDistortion::set_drive(float p_drive) {
-		drive = CLAMP(p_drive, 0.0f, 1.0f);
+		p_drive = CLAMP(p_drive, 0.0f, 1.0f);
+		if (drive == p_drive) return;
+		drive = p_drive;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectDistortion::get_drive() const {
@@ -328,8 +316,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDistortion::set_post_gain(float p_gain) {
-		post_gain = CLAMP(p_gain, -80.0f, 24.0f);
+		p_gain = CLAMP(p_gain, -80.0f, 24.0f);
+		if (post_gain == p_gain) return;
+		post_gain = p_gain;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectDistortion::get_post_gain() const {
@@ -337,8 +328,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDistortion::set_keep_hf_hz(float p_hz) {
-		keep_hf_hz = CLAMP(p_hz, 1.0f, 20500.0f);
+		p_hz = CLAMP(p_hz, 1.0f, 20500.0f);
+		if (keep_hf_hz == p_hz) return;
+		keep_hf_hz = p_hz;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectDistortion::get_keep_hf_hz() const {
@@ -346,7 +340,10 @@ namespace godot {
 	}
 
 	void FmodAudioEffectDistortion::set_oversample(int p_oversample) {
-		oversample = CLAMP(p_oversample, 1, 16);
+		p_oversample = CLAMP(p_oversample, 1, 16);
+		if (oversample == p_oversample) return;
+		oversample = p_oversample;
+		emit_changed();
 	}
 
 	int FmodAudioEffectDistortion::get_oversample() const {

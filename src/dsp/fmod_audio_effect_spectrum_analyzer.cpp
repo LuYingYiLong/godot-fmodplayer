@@ -118,7 +118,10 @@ namespace godot {
 	}
 
 	void FmodAudioEffectSpectrumAnalyzer::set_buffer_length(float p_buffer_length) {
-		buffer_length = CLAMP(p_buffer_length, 0.1f, 10.0f);
+		p_buffer_length = CLAMP(p_buffer_length, 0.1f, 10.0f);
+		if (buffer_length == p_buffer_length) return;
+		buffer_length = p_buffer_length;
+		emit_changed();
 	}
 
 	void FmodAudioEffectSpectrumAnalyzer::set_immediate_mode(bool p_enabled) {
@@ -128,6 +131,7 @@ namespace godot {
 			fft_dsp->set_parameter_bool(FMOD_DSP_FFT_IMMEDIATE_MODE, immediate_mode);
 		}
 		_invalidate_snapshot();
+		emit_changed();
 	}
 
 	bool FmodAudioEffectSpectrumAnalyzer::get_immediate_mode() const {
@@ -140,13 +144,13 @@ namespace godot {
 
 	void FmodAudioEffectSpectrumAnalyzer::set_fft_size(FFTSize p_fft_size) {
 		if (p_fft_size >= FFT_SIZE_256 && p_fft_size < FFT_SIZE_MAX) {
-			if (fft_size != p_fft_size) {
-				_invalidate_snapshot();
-			}
+			if (fft_size == p_fft_size) return;
+			_invalidate_snapshot();
 			fft_size = p_fft_size;
 			if (fft_dsp.is_valid()) {
 				fft_dsp->set_parameter_int(FMOD_DSP_FFT_WINDOWSIZE, _fft_size_to_value(fft_size));
 			}
+			emit_changed();
 		}
 	}
 

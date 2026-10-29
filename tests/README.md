@@ -36,6 +36,14 @@ StereoEnhance 检查器：选中 `manual/stereo_enhance_preview.tres`，查看�
 
 Delay 检查器：选中 `manual/delay_preview.tres`，查看同心半圆环线与两路 Tap 节点。半径表示延迟时间，角度表示 Pan，亮度表示电平；拖动节点可同时编辑时间和 Pan，Alt + 点击可选择重叠的另一节点。启用 Feedback 后显示低通滤波前的重复间隔与电平衰减示意。时间范围自动扩展，悬停提示显示范围；拖动期间保持比例，支持撤销重做、只读状态和 Tap 开关。使用编辑器主题颜色，最小高度 160，环线按参数变化缓存。
 
+Distortion 检查器：选中 `manual/distortion_preview.tres`，显示六种模式的静态输入/输出幅度曲线，整形公式与音频处理共用。纵向拖动调 Drive；Overdrive 模式调 Pre Gain；Shift + 拖动调 Pre Gain，Ctrl + 拖动调 Post Gain。纵轴自动适配输出范围，支持撤销重做和只读状态。Keep HF 控制音频分频；Oversample 保留现有存储行为。
+
+HardLimiter 检查器：选中 `manual/hard_limiter_preview.tres`，显示包含 Pre Gain 和 Ceiling 的稳态限幅折线。上下拖动圆点调 Pre Gain、方点调 Ceiling，支持撤销重做和只读状态。Release 控制恢复时间，静态曲线显示稳态结果。
+
+SpectrumAnalyzer 检查器：选中 `manual/spectrum_analyzer_preview.tres`，显示当前编辑器实例的左右声道 FFT。L 使用主题强调色，R 使用半透明文字色，顶部显示 Hz/bin 分辨率。未挂载资源显示空坐标轴；F5 运行进程有独立实例。预览复用已有快照，仅可见时以 10 Hz 刷新，保持音频路由不变。编辑器测试生成左右声道不同频率的实际 FFT 并保存截图。
+
+除 Record 外，全部 18 个可实例化效果器类（包含 EQ 基类及 EQ6/10/21）均有预览。Record 保留原生检查器。预览最小高度统一为 160，使用编辑器主题颜色。
+
 ## 自动测试
 
 ```powershell
@@ -63,8 +71,8 @@ python tools/run_native_tests.py
 | `reverb` | 混响音频、尾音回归和专项计时 |
 | `profile` | DSP 效果器性能测量 |
 | `all` | 保留原行为：全部回归加 DSP 性能测量 |
-| `editor` | 在完整编辑器生命周期中检查属性翻译及 Panner、EQ、Filter、Compressor、Capture、Amplify、Chorus、Reverb、PitchShift、Phaser、StereoEnhance、Delay 检查器 |
-| `run_native_tests.py` | C++ 环形缓冲单/双精度、Capture 快照与峰值、EQ/Filter/Compressor/Phaser 响应模型检查 |
+| `editor` | 属性翻译、全部效果器的预览覆盖、交互、保存、定时器生命周期及真实 FFT/限幅音频检查 |
+| `run_native_tests.py` | C++ 环形缓冲单/双精度、Capture 快照与峰值、EQ/Filter/Compressor/Phaser 响应及失真整形逐位一致性检查 |
 
 自动场景入口为 `runner/automated.tscn`，命令行脚本显式选择它。编辑器检查会临时启用 `editor/plugin.cfg`，结束后恢复项目配置。原生检查使用 MSVC 或 `CXX` 指定的 C++ 编译器。
 

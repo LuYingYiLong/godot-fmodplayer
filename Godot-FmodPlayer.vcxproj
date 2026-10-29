@@ -171,6 +171,10 @@
     <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_phaser_preview.h" />
     <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_stereo_enhance_preview.h" />
     <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_delay_preview.h" />
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_distortion_preview.h" />
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_hard_limiter_preview.h" />
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_spectrum_analyzer_preview.h" />
+    <ClInclude Include="src\dsp\fmod_distortion_shaper.h" />
     <ClInclude Include="src\editor\audio_effects\fmod_phaser_preview_response.h" />
     <ClInclude Include="src\editor\fmod_audio_importer.h" />
     <ClInclude Include="src\editor\fmod_audio_preview_inspector.h" />
@@ -233,6 +237,9 @@
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_phaser_preview.cpp" />
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_stereo_enhance_preview.cpp" />
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_delay_preview.cpp" />
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_distortion_preview.cpp" />
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_hard_limiter_preview.cpp" />
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_spectrum_analyzer_preview.cpp" />
     <ClCompile Include="src\editor\fmod_audio_importer.cpp" />
     <ClCompile Include="src\editor\fmod_audio_preview_inspector.cpp" />
     <ClCompile Include="src\editor\fmod_audio_preview_property.cpp" />
