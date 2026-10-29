@@ -30,8 +30,7 @@
 			<return type="void" />
 			<param index="0" name="max_audible" type="int" />
 			<description>
-				Sets the maximum number of playbacks from this group that can be audible simultaneously. [param max_audible] must be nonnegative in this wrapper; [code]0[/code] permits no audible playbacks.
-				FMOD uses [code]-1[/code] for an unlimited group, but this wrapper setter currently rejects that value.
+				Sets the maximum number of playbacks from this group that can be audible simultaneously. [code]-1[/code] removes the limit; [code]0[/code] permits no audible playbacks. Values below [code]-1[/code] are rejected without changing the current limit.
 				When this limit is exceeded, the [member behavior] determines how new sounds are handled.
 			</description>
 		</method>
@@ -134,7 +133,7 @@
 	</methods>
 	<members>
 		<member type="int" name="max_audible" setter="set_max_audible" getter="get_max_audible" default="0">
-			Maximum simultaneous audible playbacks. FMOD uses [code]-1[/code] for unlimited playback; this wrapper setter accepts only nonnegative values, with [code]0[/code] permitting no audible playbacks.
+			Maximum simultaneous audible playbacks. [code]-1[/code] removes the limit; [code]0[/code] permits no audible playbacks. Values below [code]-1[/code] are rejected without changing the current limit.
 		</member>
 		<member type="int" enum="FmodSoundGroup.Behavior" name="behavior" setter="set_max_audible_behavior" getter="get_max_audible_behavior" default="0">
 			The behavior when max audible sounds is exceeded. See [enum Behavior].

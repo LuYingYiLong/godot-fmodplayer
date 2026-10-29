@@ -8,6 +8,7 @@ const REVERB_TEST: Script = preload("uid://cpe7geegh4xgh")
 const MATRIX_TEST: Script = preload("uid://b5tsw1j6s0dyw")
 const BUS_TEST: Script = preload("uid://c0y0kdx4qn6l5")
 const SPATIAL_TEST: Script = preload("uid://bh81rpq0y6z7n")
+const SOUND_GROUP_TEST: Script = preload("uid://bdgs1no6x4p8m")
 const SUITES: Array[String] = [
 	"all",
 	"regression",
@@ -65,6 +66,9 @@ func run(arguments: PackedStringArray) -> Dictionary:
 			return _finish(false, "Spectrum snapshot regression failed")
 		summary += "Spectrum snapshot regression: passed\n"
 	if _suite in ["all", "regression", "smoke",]:
+		if not SOUND_GROUP_TEST.new().run(_output_dir):
+			return _finish(false, "Sound group playback limit regression failed")
+		summary += "Sound group playback limit regression: passed\n"
 		if not SDK_SMOKE_TEST.new().run():
 			return _finish(false, "FMOD SDK smoke test failed")
 		summary += "FMOD SDK smoke test: passed\n"

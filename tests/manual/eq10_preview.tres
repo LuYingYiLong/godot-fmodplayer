@@ -1,0 +1,5 @@
+[gd_resource type="FmodAudioEffectEQ10" format=3]
+
+[resource]
+band_2_gain = 4.0
+band_6_gain = -6.0

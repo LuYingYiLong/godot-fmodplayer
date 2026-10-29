@@ -68,7 +68,7 @@ namespace godot {
 
 	void FmodSoundGroup::set_max_audible(const int max_audible) {
 		ERR_FAIL_COND(!sound_group);
-		ERR_FAIL_COND_MSG(max_audible < 0, "max_audible must be >= 0.");
+		ERR_FAIL_COND_MSG(max_audible < -1, "max_audible must be >= -1 (-1 means unlimited).");
 		FMOD_ERR_CHECK(sound_group->setMaxAudible(max_audible));
 	}
 

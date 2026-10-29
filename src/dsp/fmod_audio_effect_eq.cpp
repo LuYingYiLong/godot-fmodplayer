@@ -270,6 +270,7 @@ namespace godot {
 	}
 
 	void FmodAudioEffectEQ::set_preset(Preset p_preset) {
+		ERR_FAIL_COND(p_preset < PRESET_6_BANDS || p_preset > PRESET_21_BANDS);
 		if (preset == p_preset) {
 			return;
 		}
@@ -284,6 +285,8 @@ namespace godot {
 			remove_from_bus(old_bus);
 			apply_to(old_bus);
 		}
+		notify_property_list_changed();
+		emit_changed();
 	}
 
 	FmodAudioEffectEQ::Preset FmodAudioEffectEQ::get_preset() const {
@@ -296,8 +299,13 @@ namespace godot {
 
 	void FmodAudioEffectEQ::set_band_gain_db(int p_band_idx, float p_gain_db) {
 		ERR_FAIL_INDEX(p_band_idx, bands.size());
-		bands.write[p_band_idx].gain_db = CLAMP(p_gain_db, -60.0f, 24.0f);
+		const float gain = CLAMP(p_gain_db, -60.0f, 24.0f);
+		if (bands[p_band_idx].gain_db == gain) {
+			return;
+		}
+		bands.write[p_band_idx].gain_db = gain;
 		_update_band_dsp(p_band_idx);
+		emit_changed();
 	}
 
 	float FmodAudioEffectEQ::get_band_gain_db(int p_band_idx) const {
@@ -308,8 +316,13 @@ namespace godot {
 	void FmodAudioEffectEQ::set_band_frequency(int p_band_idx, float p_frequency) {
 		ERR_FAIL_INDEX(p_band_idx, bands.size());
 		// FMOD 的有效频率范围通常是 10Hz - 22000Hz
-		bands.write[p_band_idx].frequency = CLAMP(p_frequency, 10.0f, 22000.0f);
+		const float frequency = CLAMP(p_frequency, 10.0f, 22000.0f);
+		if (bands[p_band_idx].frequency == frequency) {
+			return;
+		}
+		bands.write[p_band_idx].frequency = frequency;
 		_update_band_dsp(p_band_idx);
+		emit_changed();
 	}
 
 	float FmodAudioEffectEQ::get_band_frequency(int p_band_idx) const {
@@ -319,8 +332,12 @@ namespace godot {
 
 	void FmodAudioEffectEQ::set_band_filter_type(int p_band_idx, FilterType p_type) {
 		ERR_FAIL_INDEX(p_band_idx, bands.size());
+		if (bands[p_band_idx].filter_type == p_type) {
+			return;
+		}
 		bands.write[p_band_idx].filter_type = p_type;
 		_update_band_dsp(p_band_idx);
+		emit_changed();
 	}
 
 	FmodAudioEffectEQ::FilterType FmodAudioEffectEQ::get_band_filter_type(int p_band_idx) const {
@@ -331,8 +348,13 @@ namespace godot {
 	void FmodAudioEffectEQ::set_band_q(int p_band_idx, float p_q) {
 		ERR_FAIL_INDEX(p_band_idx, bands.size());
 		// Q 值范围: 0.01 ~ 10.0 是合理范围
-		bands.write[p_band_idx].q = CLAMP(p_q, 0.01f, 10.0f);
+		const float q = CLAMP(p_q, 0.01f, 10.0f);
+		if (bands[p_band_idx].q == q) {
+			return;
+		}
+		bands.write[p_band_idx].q = q;
 		_update_band_dsp(p_band_idx);
+		emit_changed();
 	}
 
 	float FmodAudioEffectEQ::get_band_q(int p_band_idx) const {

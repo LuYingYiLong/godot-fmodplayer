@@ -177,8 +177,13 @@ namespace godot {
 	}
 
 	void FmodAudioEffectPanner::set_pan(float p_pan) {
-		pan = CLAMP(p_pan, -1.0f, 1.0f);
+		const float new_pan = CLAMP(p_pan, -1.0f, 1.0f);
+		if (pan == new_pan) {
+			return;
+		}
+		pan = new_pan;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectPanner::get_pan() const {

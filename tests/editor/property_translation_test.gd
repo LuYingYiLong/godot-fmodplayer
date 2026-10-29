@@ -1,6 +1,9 @@
 @tool
 extends EditorPlugin
 
+const PANNER_TEST: Script = preload("uid://baniq7dsj03n6")
+const EQ_TEST: Script = preload("uid://bytlq7sae4d6k")
+
 const EXPECTED: Dictionary = {
 	"Show Startup Banner": "显示启动横幅",
 	"Dsp Buffer Size": "DSP 缓冲区大小",
@@ -55,10 +58,12 @@ func _run() -> void:
 		"checks": checks,
 	}, "\t"))
 	report.close()
+	passed = await PANNER_TEST.new().run(output_dir, tree) and passed
+	passed = await EQ_TEST.new().run(output_dir, tree) and passed
 	if passed:
 		print("TESTS_PASSED output=", output_dir)
 	else:
-		push_error("FMOD property translations did not match")
+		push_error("FMOD editor checks failed; see JSON reports")
 	tree.quit(0 if passed else 1)
 
 

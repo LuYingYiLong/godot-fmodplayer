@@ -1,0 +1,4 @@
+[gd_resource type="FmodAudioEffectPanner" format=3]
+
+[resource]
+pan = -0.5

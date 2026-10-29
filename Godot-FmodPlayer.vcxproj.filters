@@ -63,6 +63,12 @@
     <Filter Include="Source Files\spatial">
       <UniqueIdentifier>{5d392228-a08e-422d-9ed4-bcd50be01bab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editor\audio_effects">
+      <UniqueIdentifier>{39fab1cd-4494-4ee2-9bf6-03eb8e24b1bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editor\audio_effects">
+      <UniqueIdentifier>{2ac1fd1f-adb5-4648-8c3c-09b2cfd00c85}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\fmod_server.h">
@@ -203,6 +209,18 @@
     <ClInclude Include="src\editor\fmod_reverb_zone_3d_gizmo_plugin.h">
       <Filter>Header Files\editor</Filter>
     </ClInclude>
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_inspector.h">
+      <Filter>Header Files\editor\audio_effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_panner_preview.h">
+      <Filter>Header Files\editor\audio_effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_eq_preview.h">
+      <Filter>Header Files\editor\audio_effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\audio_effects\fmod_eq_preview_response.h">
+      <Filter>Header Files\editor\audio_effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\fmod_server.cpp">
@@ -339,6 +357,15 @@
     </ClCompile>
     <ClCompile Include="src\nodes\fmod_audio_stream_player_internal.cpp">
       <Filter>Source Files\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_panner_preview.cpp">
+      <Filter>Source Files\editor\audio_effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_eq_preview.cpp">
+      <Filter>Source Files\editor\audio_effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_inspector.cpp">
+      <Filter>Source Files\editor\audio_effects</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

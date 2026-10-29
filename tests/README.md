@@ -12,6 +12,10 @@
 
 两个手动场景都可返回菜单，也可打开 `manual/reverb_test.tscn` 或 `manual/playback_compare.tscn` 按 F6 运行。两份 MP3 内容相同，分别保存 FMOD 和 Godot 导入设置，用于播放对比。
 
+Panner 检查器：选中 `manual/panner_preview.tres`，左键点击或拖动上方声像图调节 `Pan`，也可使用下方原生参数。拖出左右边界会限制为 `-1` 和 `1`，支持撤销重做。视图使用编辑器主题颜色。
+
+EQ 检查器：选中 `manual/eq6_preview.tres`、`eq10_preview.tres` 或 `eq21_preview.tres`。拖动频段控制点，横向调节频率，纵向调节峰值/搁架滤波的增益；低通、高通、带通、陷波和全通类型仅调节频率。支持撤销重做、只读状态和预设切换。曲线是根据滤波参数计算的近似响应，未使用实时频谱；打开预览不会创建额外音频 DSP。
+
 ## 自动测试
 
 ```powershell
@@ -33,16 +37,18 @@ python tools/run_native_tests.py
 | `regression` | 3D 空间音频、混音矩阵、总线、SDK、频谱、Capture、混响正确性检查 |
 | `routing` | 矩阵步长、边界、独奏绑定和总线父级回归 |
 | `spatial` | 3D 滤波、禁用距离衰减、角度检查器元数据和场景保存回归 |
-| `smoke` | FMOD 2.04 API、效果器及音频资源冒烟检查 |
+| `smoke` | SoundGroup 播放限制回归及 FMOD 2.04 API、效果器和音频资源冒烟检查 |
 | `spectrum` | 频谱快照复用回归 |
 | `capture` | Capture 回归和专项计时 |
 | `reverb` | 混响音频、尾音回归和专项计时 |
 | `profile` | DSP 效果器性能测量 |
 | `all` | 保留原行为：全部回归加 DSP 性能测量 |
-| `editor` | 在完整编辑器生命周期中检查属性翻译 |
-| `run_native_tests.py` | C++ 环形缓冲检查，分别构建单精度和双精度 |
+| `editor` | 在完整编辑器生命周期中检查属性翻译及 Panner、EQ 检查器 |
+| `run_native_tests.py` | C++ 环形缓冲单/双精度检查及 EQ 预览响应模型检查 |
 
 自动场景入口为 `runner/automated.tscn`，命令行脚本显式选择它。编辑器检查会临时启用 `editor/plugin.cfg`，结束后恢复项目配置。原生检查使用 MSVC 或 `CXX` 指定的 C++ 编译器。
+
+`smoke`、`regression` 和 `all` 包含 SoundGroup 限制回归，检查方法及属性的 `-1` 取消限制、`0` 禁止可听播放、无效负数和实际并发播放。结果保存为本次日志目录中的 `sound_group_regression.json`。
 
 `spatial` 使用启用了 `CHANNEL_DISTANCEFILTER` 的离线系统，保存双音 WAV、角度往返场景和 `spatial_audio_regression.json` 到本次日志目录。完整套件随后重建常规离线系统，其他回归和性能测量保持原有初始化参数。手动测试项目也已启用 `audio/fmod/init_flags/channel_distance_filter`；实际项目需启用此设置并重新运行，距离滤波才会生效。
 

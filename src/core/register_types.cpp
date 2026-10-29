@@ -31,6 +31,11 @@
 #include "editor/fmod_geometry_mesh_tools_plugin.h"
 #include "editor/fmod_reverb_zone_3d_gizmo_plugin.h"
 #include "editor/modify_android_build_template_plugin.h"
+#ifdef TOOLS_ENABLED
+#include "editor/audio_effects/fmod_audio_effect_inspector.h"
+#include "editor/audio_effects/fmod_audio_effect_panner_preview.h"
+#include "editor/audio_effects/fmod_audio_effect_eq_preview.h"
+#endif
 #include "geometry/fmod_geometry.h"
 #include "mixer/fmod_audio_bus.h"
 #include "mixer/fmod_audio_bus_layout.h"
@@ -141,6 +146,13 @@ void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(FmodGeometryMeshToolsPlugin);
 		GDREGISTER_CLASS(FmodReverbZone3DGizmoPlugin);
 		GDREGISTER_CLASS(ModifyAndroidBuildTemplatePlugin);
+#ifdef TOOLS_ENABLED
+		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectPannerPreview);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectEQPreview);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectInspector);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectEditorPlugin);
+		EditorPlugins::add_by_type<FmodAudioEffectEditorPlugin>();
+#endif
 		return;
 	}
 
