@@ -46,7 +46,7 @@ namespace godot {
 		FmodAudioStreamPlayerInternal();
 		~FmodAudioStreamPlayerInternal();
 
-		void set_channel_ended_callback(const Callable &p_callback);
+		void set_channel_ended_callback(const Callable& p_callback);
 		bool handle_channel_ended();
 		void set_playback_mode(FmodAudioStream::CreateMode p_mode);
 
@@ -83,7 +83,7 @@ namespace godot {
 		void set_preload_on_set_stream(bool p_enable);
 		bool is_preload_on_set_stream_enabled() const;
 
-		void set_bus(const StringName &p_bus);
+		void set_bus(const StringName& p_bus);
 		StringName get_bus() const;
 
 		bool has_channel() const;
