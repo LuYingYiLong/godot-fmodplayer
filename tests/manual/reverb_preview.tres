@@ -1,0 +1,7 @@
+[gd_resource type="FmodAudioEffectReverb" format=3]
+
+[resource]
+room_size = 0.85
+spread = 0.9
+damping = 0.35
+wet = 0.8

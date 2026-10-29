@@ -44,8 +44,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectAmplify::set_volume_db(float p_volume_db) {
-		volume_db = CLAMP(p_volume_db, -80.0f, 24.0f);
+		const float value = CLAMP(p_volume_db, -80.0f, 24.0f);
+		if (volume_db == value) return;
+		volume_db = value;
 		_update_dsp_gains();
+		emit_changed();
 	}
 
 	float FmodAudioEffectAmplify::get_volume_db() const {

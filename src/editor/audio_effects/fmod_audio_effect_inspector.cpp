@@ -4,16 +4,47 @@
 #include "fmod_audio_effect_filter_preview.h"
 #include "fmod_audio_effect_compressor_preview.h"
 #include "fmod_audio_effect_capture_preview.h"
+#include "fmod_audio_effect_amplify_preview.h"
+#include "fmod_audio_effect_chorus_preview.h"
+#include "fmod_audio_effect_reverb_preview.h"
 
 namespace godot {
 	void FmodAudioEffectInspector::_bind_methods() {
 	}
 
 	bool FmodAudioEffectInspector::_can_handle(Object* p_object) const {
-		return Object::cast_to<FmodAudioEffectPanner>(p_object) != nullptr || Object::cast_to<FmodAudioEffectEQ>(p_object) != nullptr || Object::cast_to<FmodAudioEffectFilter>(p_object) != nullptr || Object::cast_to<FmodAudioEffectCompressor>(p_object) != nullptr || Object::cast_to<FmodAudioEffectCapture>(p_object) != nullptr;
+		return Object::cast_to<FmodAudioEffectPanner>(p_object) != nullptr ||
+			Object::cast_to<FmodAudioEffectEQ>(p_object) != nullptr ||
+			Object::cast_to<FmodAudioEffectFilter>(p_object) != nullptr ||
+			Object::cast_to<FmodAudioEffectCompressor>(p_object) != nullptr ||
+			Object::cast_to<FmodAudioEffectCapture>(p_object) != nullptr ||
+			Object::cast_to<FmodAudioEffectAmplify>(p_object) != nullptr ||
+			Object::cast_to<FmodAudioEffectChorus>(p_object) != nullptr ||
+			Object::cast_to<FmodAudioEffectReverb>(p_object) != nullptr;
 	}
 
 	void FmodAudioEffectInspector::_parse_begin(Object* p_object) {
+		FmodAudioEffectReverb* reverb = Object::cast_to<FmodAudioEffectReverb>(p_object);
+		if (reverb) {
+			FmodAudioEffectReverbPreview* preview = memnew(FmodAudioEffectReverbPreview);
+			preview->set_effect(Ref<FmodAudioEffectReverb>(reverb));
+			add_custom_control(preview);
+			return;
+		}
+		FmodAudioEffectChorus* chorus = Object::cast_to<FmodAudioEffectChorus>(p_object);
+		if (chorus) {
+			FmodAudioEffectChorusPreview* preview = memnew(FmodAudioEffectChorusPreview);
+			preview->set_effect(Ref<FmodAudioEffectChorus>(chorus));
+			add_custom_control(preview);
+			return;
+		}
+		FmodAudioEffectAmplify* amplify = Object::cast_to<FmodAudioEffectAmplify>(p_object);
+		if (amplify) {
+			FmodAudioEffectAmplifyPreview* preview = memnew(FmodAudioEffectAmplifyPreview);
+			preview->set_effect(Ref<FmodAudioEffectAmplify>(amplify));
+			add_custom_control(preview);
+			return;
+		}
 		FmodAudioEffectCapture* capture = Object::cast_to<FmodAudioEffectCapture>(p_object);
 		if (capture) {
 			FmodAudioEffectCapturePreview* preview = memnew(FmodAudioEffectCapturePreview);

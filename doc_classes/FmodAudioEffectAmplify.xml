@@ -39,10 +39,10 @@
 	</methods>
 	<members>
 		<member type="float" name="volume_db" setter="set_volume_db" getter="get_volume_db" default="0.0">
-			The amplification level in decibels (dB). Range: -80 dB to +24 dB. Default value of 0 dB means no change to the signal. Negative values attenuate the signal, positive values amplify it.
+			The amplification level in decibels (dB). Range: -80 dB to +24 dB. Default value of 0 dB means no change to the signal. Negative values attenuate the signal, positive values amplify it. The current conversion helper produces silence at -60 dB and below.
 		</member>
 		<member type="float" name="volume_linear" setter="set_volume_linear" getter="get_volume_linear">
-			The amplification level as a linear value. It is converted to [member volume_db] and clamped to that property's -80 to +24 dB range, corresponding to approximately 0.0001 to 15.8489. A value of 1.0 is unity gain; setting 0.0 produces the minimum gain rather than silence.
+			The amplification level as a linear value. A value of 1.0 is unity gain. The setter floors values at 0.001 before converting to [member volume_db]; inputs at or below this floor map to -60 dB. The getter returns 0.0 for stored gains at or below -60 dB, so setting 0.0 produces silence. The maximum stored gain of +24 dB corresponds to approximately 15.8489.
 		</member>
 	</members>
 	<signals>

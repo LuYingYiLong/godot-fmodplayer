@@ -6,6 +6,9 @@ const EQ_TEST: Script = preload("uid://bytlq7sae4d6k")
 const FILTER_TEST: Script = preload("uid://bykw2cfx5q3ua")
 const COMPRESSOR_TEST: Script = preload("uid://bu0tqv2p3knw7")
 const CAPTURE_TEST: Script = preload("uid://boc5jv28m3rxa")
+const AMPLIFY_TEST: Script = preload("uid://bqm8sx7e5r1kc")
+const CHORUS_TEST: Script = preload("uid://c1n6f5rdq3pxv")
+const REVERB_TEST: Script = preload("uid://cjv5y8trh2m6p")
 
 const EXPECTED: Dictionary = {
 	"Show Startup Banner": "显示启动横幅",
@@ -65,6 +68,9 @@ func _run() -> void:
 	passed = await EQ_TEST.new().run(output_dir, tree) and passed
 	passed = await FILTER_TEST.new().run(output_dir, tree) and passed
 	passed = await COMPRESSOR_TEST.new().run(output_dir, tree) and passed
+	passed = await AMPLIFY_TEST.new().run(output_dir, tree) and passed
+	passed = await CHORUS_TEST.new().run(output_dir, tree) and passed
+	passed = await REVERB_TEST.new().run(output_dir, tree) and passed
 	passed = await CAPTURE_TEST.new().run(output_dir, tree) and passed
 	if passed:
 		print("TESTS_PASSED output=", output_dir)

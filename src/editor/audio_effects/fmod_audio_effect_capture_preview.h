@@ -10,7 +10,7 @@ namespace godot {
 	class FmodAudioEffectCapturePreview : public EditorProperty {
 		GDCLASS(FmodAudioEffectCapturePreview, EditorProperty)
 
-			Ref<FmodAudioEffectCapture> effect;
+		Ref<FmodAudioEffectCapture> effect;
 		Timer* refresh_timer = nullptr;
 		std::vector<Vector2> snapshot;
 		std::vector<fmod_capture_preview::PeakRange> ranges;

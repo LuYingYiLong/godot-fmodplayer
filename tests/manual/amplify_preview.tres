@@ -1,0 +1,4 @@
+[gd_resource type="FmodAudioEffectAmplify" format=3]
+
+[resource]
+volume_db = 6.0

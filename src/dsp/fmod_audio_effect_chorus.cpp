@@ -443,9 +443,11 @@ namespace godot {
 
 	void FmodAudioEffectChorus::set_voice_count(int p_voices) {
 		ERR_FAIL_COND(p_voices < 1 || p_voices > MAX_VOICES);
+		if (voice_count == p_voices) return;
 		voice_count = p_voices;
 		_sync_shared_state();
 		notify_property_list_changed();
+		emit_changed();
 	}
 
 	int FmodAudioEffectChorus::get_voice_count() const {
@@ -453,8 +455,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectChorus::set_wet(float amount) {
-		wet = CLAMP(amount, 0.0f, 1.0f);
+		const float value = CLAMP(amount, 0.0f, 1.0f);
+		if (wet == value) return;
+		wet = value;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectChorus::get_wet() const {
@@ -462,8 +467,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectChorus::set_dry(float amount) {
-		dry = CLAMP(amount, 0.0f, 1.0f);
+		const float value = CLAMP(amount, 0.0f, 1.0f);
+		if (dry == value) return;
+		dry = value;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectChorus::get_dry() const {
@@ -472,8 +480,11 @@ namespace godot {
 
 	void FmodAudioEffectChorus::set_voice_delay_ms(int p_voice, float p_delay_ms) {
 		ERR_FAIL_INDEX(p_voice, MAX_VOICES);
-		voice[p_voice].delay = CLAMP(p_delay_ms, 0.0f, static_cast<float>(MAX_DELAY_MS));
+		const float value = CLAMP(p_delay_ms, 0.0f, static_cast<float>(MAX_DELAY_MS));
+		if (voice[p_voice].delay == value) return;
+		voice[p_voice].delay = value;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectChorus::get_voice_delay_ms(int p_voice) const {
@@ -483,8 +494,11 @@ namespace godot {
 
 	void FmodAudioEffectChorus::set_voice_rate_hz(int p_voice, float p_rate_hz) {
 		ERR_FAIL_INDEX(p_voice, MAX_VOICES);
-		voice[p_voice].rate = CLAMP(p_rate_hz, 0.1f, 20.0f);
+		const float value = CLAMP(p_rate_hz, 0.1f, 20.0f);
+		if (voice[p_voice].rate == value) return;
+		voice[p_voice].rate = value;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectChorus::get_voice_rate_hz(int p_voice) const {
@@ -494,8 +508,11 @@ namespace godot {
 
 	void FmodAudioEffectChorus::set_voice_depth_ms(int p_voice, float p_depth_ms) {
 		ERR_FAIL_INDEX(p_voice, MAX_VOICES);
-		voice[p_voice].depth = CLAMP(p_depth_ms, 0.0f, static_cast<float>(MAX_DEPTH_MS));
+		const float value = CLAMP(p_depth_ms, 0.0f, static_cast<float>(MAX_DEPTH_MS));
+		if (voice[p_voice].depth == value) return;
+		voice[p_voice].depth = value;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectChorus::get_voice_depth_ms(int p_voice) const {
@@ -505,8 +522,11 @@ namespace godot {
 
 	void FmodAudioEffectChorus::set_voice_level_db(int p_voice, float p_level_db) {
 		ERR_FAIL_INDEX(p_voice, MAX_VOICES);
-		voice[p_voice].level = CLAMP(p_level_db, -60.0f, 24.0f);
+		const float value = CLAMP(p_level_db, -60.0f, 24.0f);
+		if (voice[p_voice].level == value) return;
+		voice[p_voice].level = value;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectChorus::get_voice_level_db(int p_voice) const {
@@ -516,8 +536,11 @@ namespace godot {
 
 	void FmodAudioEffectChorus::set_voice_cutoff_hz(int p_voice, float p_cutoff_hz) {
 		ERR_FAIL_INDEX(p_voice, MAX_VOICES);
-		voice[p_voice].cutoff = CLAMP(p_cutoff_hz, 1.0f, static_cast<float>(MS_CUTOFF_MAX));
+		const float value = CLAMP(p_cutoff_hz, 1.0f, static_cast<float>(MS_CUTOFF_MAX));
+		if (voice[p_voice].cutoff == value) return;
+		voice[p_voice].cutoff = value;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectChorus::get_voice_cutoff_hz(int p_voice) const {
@@ -527,8 +550,11 @@ namespace godot {
 
 	void FmodAudioEffectChorus::set_voice_pan(int p_voice, float p_pan) {
 		ERR_FAIL_INDEX(p_voice, MAX_VOICES);
-		voice[p_voice].pan = CLAMP(p_pan, -1.0f, 1.0f);
+		const float value = CLAMP(p_pan, -1.0f, 1.0f);
+		if (voice[p_voice].pan == value) return;
+		voice[p_voice].pan = value;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectChorus::get_voice_pan(int p_voice) const {

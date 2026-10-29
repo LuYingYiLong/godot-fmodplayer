@@ -239,6 +239,15 @@
     <ClInclude Include="src\editor\audio_effects\fmod_capture_preview_envelope.h">
       <Filter>Header Files\editor\audio_effects</Filter>
     </ClInclude>
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_amplify_preview.h">
+      <Filter>Header Files\editor\audio_effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_chorus_preview.h">
+      <Filter>Header Files\editor\audio_effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_reverb_preview.h">
+      <Filter>Header Files\editor\audio_effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\fmod_server.cpp">
@@ -389,6 +398,15 @@
       <Filter>Source Files\editor\audio_effects</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_capture_preview.cpp">
+      <Filter>Source Files\editor\audio_effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_amplify_preview.cpp">
+      <Filter>Source Files\editor\audio_effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_chorus_preview.cpp">
+      <Filter>Source Files\editor\audio_effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_reverb_preview.cpp">
       <Filter>Source Files\editor\audio_effects</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_inspector.cpp">

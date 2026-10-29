@@ -616,8 +616,10 @@ namespace godot {
 
 	void FmodAudioEffectReverb::set_damping(float p_damping) {
 		float value = CLAMP(p_damping, 0.0f, 1.0f);
+		if (damping.load() == value) return;
 		damping.store(value);
 		if (reverb_state) reverb_state->damping.store(value);
+		emit_changed();
 	}
 
 	float FmodAudioEffectReverb::get_damping() const {
@@ -626,8 +628,10 @@ namespace godot {
 
 	void FmodAudioEffectReverb::set_dry(float p_dry) {
 		float value = CLAMP(p_dry, 0.0f, 1.0f);
+		if (dry.load() == value) return;
 		dry.store(value);
 		if (reverb_state) reverb_state->dry.store(value);
+		emit_changed();
 	}
 
 	float FmodAudioEffectReverb::get_dry() const {
@@ -636,8 +640,10 @@ namespace godot {
 
 	void FmodAudioEffectReverb::set_hpf(float p_hpf) {
 		float value = CLAMP(p_hpf, 0.0f, 1.0f);
+		if (hipass.load() == value) return;
 		hipass.store(value);
 		if (reverb_state) reverb_state->hipass.store(value);
+		emit_changed();
 	}
 
 	float FmodAudioEffectReverb::get_hpf() const {
@@ -646,8 +652,10 @@ namespace godot {
 
 	void FmodAudioEffectReverb::set_predelay_feedback(float p_predelay_feedback) {
 		float value = CLAMP(p_predelay_feedback, 0.0f, 0.98f);
+		if (predelay_feedback.load() == value) return;
 		predelay_feedback.store(value);
 		if (reverb_state) reverb_state->predelay_feedback.store(value);
+		emit_changed();
 	}
 
 	float FmodAudioEffectReverb::get_predelay_feedback() const {
@@ -656,8 +664,10 @@ namespace godot {
 
 	void FmodAudioEffectReverb::set_predelay_msec(float p_predelay_msec) {
 		float value = CLAMP(p_predelay_msec, 0.0f, 500.0f);
+		if (predelay_msec.load() == value) return;
 		predelay_msec.store(value);
 		if (reverb_state) reverb_state->predelay_msec.store(value);
+		emit_changed();
 	}
 
 	float FmodAudioEffectReverb::get_predelay_msec() const {
@@ -666,8 +676,10 @@ namespace godot {
 
 	void FmodAudioEffectReverb::set_room_size(float p_room_size) {
 		float value = CLAMP(p_room_size, 0.0f, 1.0f);
+		if (room_size.load() == value) return;
 		room_size.store(value);
 		if (reverb_state) reverb_state->room_size.store(value);
+		emit_changed();
 	}
 
 	float FmodAudioEffectReverb::get_room_size() const {
@@ -676,8 +688,10 @@ namespace godot {
 
 	void FmodAudioEffectReverb::set_spread(float p_spread) {
 		float value = CLAMP(p_spread, 0.0f, 1.0f);
+		if (spread.load() == value) return;
 		spread.store(value);
 		if (reverb_state) reverb_state->spread.store(value);
+		emit_changed();
 	}
 
 	float FmodAudioEffectReverb::get_spread() const {
@@ -686,8 +700,10 @@ namespace godot {
 
 	void FmodAudioEffectReverb::set_wet(float p_wet) {
 		float value = CLAMP(p_wet, 0.0f, 1.0f);
+		if (wet.load() == value) return;
 		wet.store(value);
 		if (reverb_state) reverb_state->wet.store(value);
+		emit_changed();
 	}
 
 	float FmodAudioEffectReverb::get_wet() const {

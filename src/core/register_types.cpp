@@ -38,6 +38,9 @@
 #include "editor/audio_effects/fmod_audio_effect_filter_preview.h"
 #include "editor/audio_effects/fmod_audio_effect_compressor_preview.h"
 #include "editor/audio_effects/fmod_audio_effect_capture_preview.h"
+#include "editor/audio_effects/fmod_audio_effect_amplify_preview.h"
+#include "editor/audio_effects/fmod_audio_effect_chorus_preview.h"
+#include "editor/audio_effects/fmod_audio_effect_reverb_preview.h"
 #endif
 #include "geometry/fmod_geometry.h"
 #include "mixer/fmod_audio_bus.h"
@@ -94,7 +97,6 @@ static void add_fmod_project_setting(
 
 void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
-
 		add_fmod_project_setting("audio/fmod/show_startup_banner", true, Variant::BOOL, false, false);
 		add_fmod_project_setting("audio/fmod/max_channels", 32, Variant::INT, true, true, PROPERTY_HINT_RANGE, "1,4095,1");
 		add_fmod_project_setting("audio/fmod/software_channels", 0, Variant::INT, false, true, PROPERTY_HINT_RANGE, "0,4095,1,or_greater");
@@ -155,6 +157,9 @@ void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectFilterPreview);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectCompressorPreview);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectCapturePreview);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectAmplifyPreview);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectChorusPreview);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectReverbPreview);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectInspector);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectEditorPlugin);
 		EditorPlugins::add_by_type<FmodAudioEffectEditorPlugin>();

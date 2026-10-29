@@ -164,6 +164,9 @@
     <ClInclude Include="src\editor\audio_effects\fmod_compressor_preview_response.h" />
     <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_capture_preview.h" />
     <ClInclude Include="src\editor\audio_effects\fmod_capture_preview_envelope.h" />
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_amplify_preview.h" />
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_chorus_preview.h" />
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_reverb_preview.h" />
     <ClInclude Include="src\editor\fmod_audio_importer.h" />
     <ClInclude Include="src\editor\fmod_audio_preview_inspector.h" />
     <ClInclude Include="src\editor\fmod_audio_preview_property.h" />
@@ -218,6 +221,9 @@
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_filter_preview.cpp" />
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_compressor_preview.cpp" />
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_capture_preview.cpp" />
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_amplify_preview.cpp" />
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_chorus_preview.cpp" />
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_reverb_preview.cpp" />
     <ClCompile Include="src\editor\fmod_audio_importer.cpp" />
     <ClCompile Include="src\editor\fmod_audio_preview_inspector.cpp" />
     <ClCompile Include="src\editor\fmod_audio_preview_property.cpp" />

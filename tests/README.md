@@ -22,6 +22,12 @@ Compressor 检查器：选中 `manual/compressor_preview.tres`，左右拖动圆
 
 Capture 检查器：选中 `manual/capture_preview.tres`，显示时间刻度和每段未读立体声数据的最小/最大振幅。预览读取当前编辑器进程中的 Capture 实例，未挂载资源显示空缓冲时间轴；F5 的独立运行进程拥有独立缓冲。修改 `buffer_length` 会调整时间范围并清空数据。视图最小高度 160，仅可见时以 10 Hz 刷新；快照复用缓存，读取位置及计数保持不变。编辑器测试会生成离线音频并保存实测预览截图。
 
+Amplify 检查器：选中 `manual/amplify_preview.tres`，上下拖动连续填充的竖向增益条，范围 `-80–+24 dB`，右侧显示刻度。当前转换函数在 `-60 dB` 及以下输出静音，此时增益条清空。支持撤销重做、只读状态和线性增益同步；视图使用编辑器主题颜色，最小高度 160，按参数变化重绘。
+
+Chorus 检查器：选中 `manual/chorus_preview.tres`，查看一秒范围内的声部调制示意。纵向位置表示 Pan，Rate/Depth 决定波形，Delay 决定起点。L 位于右上、R 位于右下，底部显示 1–4 号声部图例。曲线默认使用紫、绿、黄、红，支持 `voice_1_color` 至 `voice_4_color` 主题颜色覆盖；其他颜色取自编辑器主题。修改原生参数可更新预览，最小高度 160，按需重绘。
+
+Reverb 检查器：选中 `manual/reverb_preview.tres`，查看椭圆环线堆叠的立体空间示意。Room Size/Spread 调整体积和宽度，Predelay/Feedback 调整环线分布，Damping 控制远端淡出，Wet/Dry 控制环线和中心声源亮度。使用编辑器主题颜色，最小高度 160，几何缓存按参数变化更新。
+
 ## 自动测试
 
 ```powershell
@@ -49,7 +55,7 @@ python tools/run_native_tests.py
 | `reverb` | 混响音频、尾音回归和专项计时 |
 | `profile` | DSP 效果器性能测量 |
 | `all` | 保留原行为：全部回归加 DSP 性能测量 |
-| `editor` | 在完整编辑器生命周期中检查属性翻译及 Panner、EQ、Filter、Compressor、Capture 检查器 |
+| `editor` | 在完整编辑器生命周期中检查属性翻译及 Panner、EQ、Filter、Compressor、Capture、Amplify、Chorus、Reverb 检查器 |
 | `run_native_tests.py` | C++ 环形缓冲单/双精度、Capture 快照与峰值、EQ/Filter/Compressor 响应模型检查 |
 
 自动场景入口为 `runner/automated.tscn`，命令行脚本显式选择它。编辑器检查会临时启用 `editor/plugin.cfg`，结束后恢复项目配置。原生检查使用 MSVC 或 `CXX` 指定的 C++ 编译器。

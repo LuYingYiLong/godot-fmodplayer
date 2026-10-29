@@ -1,0 +1,7 @@
+[gd_resource type="FmodAudioEffectChorus" format=3]
+
+[resource]
+voice/1/depth_ms = 12.0
+voice/2/depth_ms = 6.0
+voice/1/pan = -0.6
+voice/2/pan = 0.7
