@@ -41,6 +41,9 @@
 #include "editor/audio_effects/fmod_audio_effect_amplify_preview.h"
 #include "editor/audio_effects/fmod_audio_effect_chorus_preview.h"
 #include "editor/audio_effects/fmod_audio_effect_reverb_preview.h"
+#include "editor/audio_effects/fmod_audio_effect_pitch_shift_preview.h"
+#include "editor/audio_effects/fmod_audio_effect_phaser_preview.h"
+#include "editor/audio_effects/fmod_audio_effect_stereo_enhance_preview.h"
 #endif
 #include "geometry/fmod_geometry.h"
 #include "mixer/fmod_audio_bus.h"
@@ -160,6 +163,9 @@ void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectAmplifyPreview);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectChorusPreview);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectReverbPreview);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectPitchShiftPreview);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectPhaserPreview);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectStereoEnhancePreview);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectInspector);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectEditorPlugin);
 		EditorPlugins::add_by_type<FmodAudioEffectEditorPlugin>();

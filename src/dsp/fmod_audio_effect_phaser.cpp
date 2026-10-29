@@ -261,8 +261,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectPhaser::set_depth(float p_depth) {
-		depth = CLAMP(p_depth, 0.1f, 4.0f);
+		p_depth = CLAMP(p_depth, 0.1f, 4.0f);
+		if (depth == p_depth) return;
+		depth = p_depth;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectPhaser::get_depth() const {
@@ -270,8 +273,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectPhaser::set_feedback(float p_feedback) {
-		feedback = CLAMP(p_feedback, 0.1f, 0.9f);
+		p_feedback = CLAMP(p_feedback, 0.1f, 0.9f);
+		if (feedback == p_feedback) return;
+		feedback = p_feedback;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectPhaser::get_feedback() const {
@@ -279,8 +285,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectPhaser::set_range_max_hz(float p_range_max_hz) {
-		range_max_hz = CLAMP(p_range_max_hz, range_min_hz, 10000.0f);
+		p_range_max_hz = CLAMP(p_range_max_hz, range_min_hz, 10000.0f);
+		if (range_max_hz == p_range_max_hz) return;
+		range_max_hz = p_range_max_hz;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectPhaser::get_range_max_hz() const {
@@ -288,8 +297,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectPhaser::set_range_min_hz(float p_range_min_hz) {
-		range_min_hz = CLAMP(p_range_min_hz, 10.0f, range_max_hz);
+		p_range_min_hz = CLAMP(p_range_min_hz, 10.0f, range_max_hz);
+		if (range_min_hz == p_range_min_hz) return;
+		range_min_hz = p_range_min_hz;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectPhaser::get_range_min_hz() const {
@@ -297,8 +309,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectPhaser::set_rate_hz(float p_rate_hz) {
-		rate_hz = CLAMP(p_rate_hz, 0.01f, 20.0f);
+		p_rate_hz = CLAMP(p_rate_hz, 0.01f, 20.0f);
+		if (rate_hz == p_rate_hz) return;
+		rate_hz = p_rate_hz;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectPhaser::get_rate_hz() const {

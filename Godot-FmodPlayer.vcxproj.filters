@@ -248,6 +248,18 @@
     <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_reverb_preview.h">
       <Filter>Header Files\editor\audio_effects</Filter>
     </ClInclude>
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_pitch_shift_preview.h">
+      <Filter>Header Files\editor\audio_effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_phaser_preview.h">
+      <Filter>Header Files\editor\audio_effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_stereo_enhance_preview.h">
+      <Filter>Header Files\editor\audio_effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\audio_effects\fmod_phaser_preview_response.h">
+      <Filter>Header Files\editor\audio_effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\fmod_server.cpp">
@@ -407,6 +419,15 @@
       <Filter>Source Files\editor\audio_effects</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_reverb_preview.cpp">
+      <Filter>Source Files\editor\audio_effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_pitch_shift_preview.cpp">
+      <Filter>Source Files\editor\audio_effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_phaser_preview.cpp">
+      <Filter>Source Files\editor\audio_effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_stereo_enhance_preview.cpp">
       <Filter>Source Files\editor\audio_effects</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_inspector.cpp">

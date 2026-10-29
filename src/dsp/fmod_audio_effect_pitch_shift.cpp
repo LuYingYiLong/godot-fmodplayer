@@ -70,10 +70,13 @@ namespace godot {
 
 	void FmodAudioEffectPitchShift::set_pitch_scale(float p_pitch_scale) {
 		ERR_FAIL_COND_MSG(!(p_pitch_scale > 0.0f), "Pitch scale must be greater than 0.");
-		pitch_scale = CLAMP(p_pitch_scale, 0.01f, 16.0f);
+		p_pitch_scale = CLAMP(p_pitch_scale, 0.01f, 16.0f);
+		if (pitch_scale == p_pitch_scale) return;
+		pitch_scale = p_pitch_scale;
 		if (!dsp_chain.is_empty() && dsp_chain[0].is_valid()) {
 			dsp_chain[0]->set_parameter_float(0, pitch_scale);
 		}
+		emit_changed();
 	}
 
 	float FmodAudioEffectPitchShift::get_pitch_scale() const {

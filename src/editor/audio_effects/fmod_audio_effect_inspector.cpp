@@ -7,6 +7,9 @@
 #include "fmod_audio_effect_amplify_preview.h"
 #include "fmod_audio_effect_chorus_preview.h"
 #include "fmod_audio_effect_reverb_preview.h"
+#include "fmod_audio_effect_pitch_shift_preview.h"
+#include "fmod_audio_effect_phaser_preview.h"
+#include "fmod_audio_effect_stereo_enhance_preview.h"
 
 namespace godot {
 	void FmodAudioEffectInspector::_bind_methods() {
@@ -20,10 +23,34 @@ namespace godot {
 			Object::cast_to<FmodAudioEffectCapture>(p_object) != nullptr ||
 			Object::cast_to<FmodAudioEffectAmplify>(p_object) != nullptr ||
 			Object::cast_to<FmodAudioEffectChorus>(p_object) != nullptr ||
-			Object::cast_to<FmodAudioEffectReverb>(p_object) != nullptr;
+			Object::cast_to<FmodAudioEffectReverb>(p_object) != nullptr ||
+			Object::cast_to<FmodAudioEffectPitchShift>(p_object) != nullptr ||
+			Object::cast_to<FmodAudioEffectPhaser>(p_object) != nullptr ||
+			Object::cast_to<FmodAudioEffectStereoEnhance>(p_object) != nullptr;
 	}
 
 	void FmodAudioEffectInspector::_parse_begin(Object* p_object) {
+		FmodAudioEffectStereoEnhance* stereo = Object::cast_to<FmodAudioEffectStereoEnhance>(p_object);
+		if (stereo) {
+			FmodAudioEffectStereoEnhancePreview* preview = memnew(FmodAudioEffectStereoEnhancePreview);
+			preview->set_effect(Ref<FmodAudioEffectStereoEnhance>(stereo));
+			add_custom_control(preview);
+			return;
+		}
+		FmodAudioEffectPhaser* phaser = Object::cast_to<FmodAudioEffectPhaser>(p_object);
+		if (phaser) {
+			FmodAudioEffectPhaserPreview* preview = memnew(FmodAudioEffectPhaserPreview);
+			preview->set_effect(Ref<FmodAudioEffectPhaser>(phaser));
+			add_custom_control(preview);
+			return;
+		}
+		FmodAudioEffectPitchShift* pitch_shift = Object::cast_to<FmodAudioEffectPitchShift>(p_object);
+		if (pitch_shift) {
+			FmodAudioEffectPitchShiftPreview* preview = memnew(FmodAudioEffectPitchShiftPreview);
+			preview->set_effect(Ref<FmodAudioEffectPitchShift>(pitch_shift));
+			add_custom_control(preview);
+			return;
+		}
 		FmodAudioEffectReverb* reverb = Object::cast_to<FmodAudioEffectReverb>(p_object);
 		if (reverb) {
 			FmodAudioEffectReverbPreview* preview = memnew(FmodAudioEffectReverbPreview);

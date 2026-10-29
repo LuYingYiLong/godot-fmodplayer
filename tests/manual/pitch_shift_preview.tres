@@ -1,0 +1,4 @@
+[gd_resource type="FmodAudioEffectPitchShift" format=3]
+
+[resource]
+pitch_scale = 2.0

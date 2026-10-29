@@ -258,8 +258,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectStereoEnhance::set_pan_pullout(float p_amount) {
-		pan_pullout = CLAMP(p_amount, 0.0f, 4.0f);
+		p_amount = CLAMP(p_amount, 0.0f, 4.0f);
+		if (pan_pullout == p_amount) return;
+		pan_pullout = p_amount;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectStereoEnhance::get_pan_pullout() const {
@@ -267,8 +270,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectStereoEnhance::set_time_pullout(float p_amount) {
-		time_pullout = CLAMP(p_amount, 0.0f, 50.0f);
+		p_amount = CLAMP(p_amount, 0.0f, 50.0f);
+		if (time_pullout == p_amount) return;
+		time_pullout = p_amount;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectStereoEnhance::get_time_pullout() const {
@@ -276,8 +282,11 @@ namespace godot {
 	}
 
 	void FmodAudioEffectStereoEnhance::set_surround(float p_amount) {
-		surround = CLAMP(p_amount, 0.0f, 1.0f);
+		p_amount = CLAMP(p_amount, 0.0f, 1.0f);
+		if (surround == p_amount) return;
+		surround = p_amount;
 		_sync_shared_state();
+		emit_changed();
 	}
 
 	float FmodAudioEffectStereoEnhance::get_surround() const {

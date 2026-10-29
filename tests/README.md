@@ -28,6 +28,12 @@ Chorus 检查器：选中 `manual/chorus_preview.tres`，查看一秒范围内�
 
 Reverb 检查器：选中 `manual/reverb_preview.tres`，查看椭圆环线堆叠的立体空间示意。Room Size/Spread 调整体积和宽度，Predelay/Feedback 调整环线分布，Damping 控制远端淡出，Wet/Dry 控制环线和中心声源亮度。使用编辑器主题颜色，最小高度 160，几何缓存按参数变化更新。
 
+PitchShift 检查器：选中 `manual/pitch_shift_preview.tres`，查看半圆音高仪表盘。中央显示半音（st），外圈显示八度（oct），默认范围 ±2 oct，超出时自动扩展。点击或拖动外圈调整音高；悬停在表盘内滚轮每格调整 1 st，Shift + 滚轮调整 0.1 st，范围跟随 `pitch_scale` 的 `0.01–16`。支持撤销重做和只读状态，使用编辑器主题颜色，最小高度 160，按需重绘。
+
+Phaser 检查器：选中 `manual/phaser_preview.tres`，主曲线显示扫频中点处、原声与滤波支路混合后的幅频响应（左侧 ±36 dB）。半透明参考线显示带反馈的滤波支路相位（右侧 ±180°），中央为 0 dB / 0° 参考线。半透明矩形覆盖 `range_min_hz` 到 `range_max_hz`，拖动左右边缘可调整上下限，支持撤销重做和只读状态。Depth、Feedback 会改变输出响应；Rate 调整扫频速度，静态预览保持不变。使用编辑器主题颜色，最小高度 160，两条曲线共用响应计算并缓存。
+
+StereoEnhance 检查器：选中 `manual/stereo_enhance_preview.tres`，查看扇形雷达参数示意。张角表示 Pan Pullout（0 为中心线，1 为 45°，4 为整个半圆），内弧位置表示 Time Pullout，填充深浅表示 Surround。点击或拖动雷达调整宽度，支持撤销重做和只读状态。L/R 位于左右上角，使用编辑器主题颜色，最小高度 160，几何按参数变化缓存。
+
 ## 自动测试
 
 ```powershell
@@ -55,8 +61,8 @@ python tools/run_native_tests.py
 | `reverb` | 混响音频、尾音回归和专项计时 |
 | `profile` | DSP 效果器性能测量 |
 | `all` | 保留原行为：全部回归加 DSP 性能测量 |
-| `editor` | 在完整编辑器生命周期中检查属性翻译及 Panner、EQ、Filter、Compressor、Capture、Amplify、Chorus、Reverb 检查器 |
-| `run_native_tests.py` | C++ 环形缓冲单/双精度、Capture 快照与峰值、EQ/Filter/Compressor 响应模型检查 |
+| `editor` | 在完整编辑器生命周期中检查属性翻译及 Panner、EQ、Filter、Compressor、Capture、Amplify、Chorus、Reverb、PitchShift、Phaser、StereoEnhance 检查器 |
+| `run_native_tests.py` | C++ 环形缓冲单/双精度、Capture 快照与峰值、EQ/Filter/Compressor/Phaser 响应模型检查 |
 
 自动场景入口为 `runner/automated.tscn`，命令行脚本显式选择它。编辑器检查会临时启用 `editor/plugin.cfg`，结束后恢复项目配置。原生检查使用 MSVC 或 `CXX` 指定的 C++ 编译器。
 
