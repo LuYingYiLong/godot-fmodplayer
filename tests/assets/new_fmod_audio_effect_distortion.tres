@@ -1,3 +1,4 @@
 [gd_resource type="FmodAudioEffectDistortion" format=3 uid="uid://chguk8p11cmia"]
 
 [resource]
+drive = 0.60169494

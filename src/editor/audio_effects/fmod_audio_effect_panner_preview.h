@@ -25,6 +25,7 @@ namespace godot {
 
 	public:
 		FmodAudioEffectPannerPreview();
+
 		void set_effect(const Ref<FmodAudioEffectPanner>& p_effect);
 		void _draw() override;
 		void _gui_input(const Ref<InputEvent>& p_event) override;

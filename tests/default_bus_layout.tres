@@ -1,3 +1,8 @@
 [gd_resource type="AudioBusLayout" format=3 uid="uid://ba8tfqpnd7adx"]
 
+[sub_resource type="AudioEffectDelay" id="AudioEffectDelay_j3pel"]
+resource_name = "Delay"
+
 [resource]
+bus/0/effect/0/effect = SubResource("AudioEffectDelay_j3pel")
+bus/0/effect/0/enabled = true

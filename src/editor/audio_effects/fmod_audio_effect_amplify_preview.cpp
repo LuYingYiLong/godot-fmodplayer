@@ -30,16 +30,21 @@ namespace godot {
 
 	Rect2 FmodAudioEffectAmplifyPreview::_plot_rect() const {
 		const float scale = _scale();
-		return Rect2(Vector2(MAX((get_size().x - 88.0f * scale) * 0.5f, 8.0f * scale), 12.0f * scale), Vector2(MIN(32.0f * scale, MAX(get_size().x - 64.0f * scale, 0.0f)), MAX(get_size().y - 24.0f * scale, 0.0f)));
+		return Rect2(Vector2(8.0f, 12.0f) * scale, Vector2(MAX(get_size().x - 64.0f * scale, 0.0f), MAX(get_size().y - 24.0f * scale, 0.0f)));
 	}
 
 	Vector2 FmodAudioEffectAmplifyPreview::_gain_position(float p_gain) const {
 		const Rect2 plot = _plot_rect();
-		return plot.position + Vector2(plot.size.x * 0.5f, (MAX_GAIN_DB - p_gain) / (MAX_GAIN_DB - MIN_GAIN_DB) * plot.size.y);
+		return plot.position + Vector2(plot.size.x * 0.75f, (MAX_GAIN_DB - p_gain) / (MAX_GAIN_DB - MIN_GAIN_DB) * plot.size.y);
 	}
 
 	bool FmodAudioEffectAmplifyPreview::_hit_handle(const Vector2& p_position) const {
-		return effect.is_valid() && _plot_rect().grow(8.0f * _scale()).has_point(p_position);
+		if (effect.is_null()) return false;
+		const Rect2 plot = _plot_rect();
+		if (plot.size.x < 48.0f * _scale() || plot.size.y < 32.0f * _scale()) return false;
+		const float tolerance = 8.0f * _scale();
+		return p_position.x >= plot.get_center().x && p_position.x <= plot.get_end().x + tolerance &&
+			Math::abs(p_position.y - _gain_position(effect->get_volume_db()).y) <= tolerance;
 	}
 
 	void FmodAudioEffectAmplifyPreview::set_effect(const Ref<FmodAudioEffectAmplify>& p_effect) {
@@ -70,7 +75,7 @@ namespace godot {
 
 	void FmodAudioEffectAmplifyPreview::_on_effect_changed() {
 		if (effect.is_valid()) {
-			set_tooltip_text(tr("Gain") + ": " + String::num(effect->get_volume_db(), 2) + " dB (" + String::num(effect->get_volume_linear(), 4) + "x)\n" + tr("Drag the gain bar vertically to adjust."));
+			set_tooltip_text(tr("Gain") + ": " + String::num(effect->get_volume_db(), 2) + " dB (" + String::num(effect->get_volume_linear(), 4) + "x)\n" + tr("Parameter illustration with a 0 dB reference input. Drag the output line vertically to adjust gain."));
 		}
 		_update_cursor();
 		queue_redraw();
@@ -113,6 +118,7 @@ namespace godot {
 			if (button->is_pressed()) {
 				dragging = _hit_handle(button->get_position());
 				if (!dragging) return;
+				hovered = true;
 				drag_start_position = button->get_position();
 				drag_start_gain = effect->get_volume_db();
 				gesture_changed = false;
@@ -159,36 +165,47 @@ namespace godot {
 
 	void FmodAudioEffectAmplifyPreview::_set_read_only(bool p_read_only) {
 		dragging = false;
-		set_default_cursor_shape(!p_read_only && hovered ? CURSOR_VSIZE : CURSOR_ARROW);
+		hovered = false;
+		set_default_cursor_shape(CURSOR_ARROW);
 		queue_redraw();
 	}
 
 	void FmodAudioEffectAmplifyPreview::_draw() {
 		const Color background = get_theme_color("dark_color_2", "Editor");
-		const Color track = get_theme_color("dark_color_1", "Editor");
 		const Color accent = get_theme_color("accent_color", "Editor");
+		const Color output_color = get_theme_color("error_color", "Editor");
 		const Color muted = get_theme_color("font_disabled_color", "Editor");
 		draw_rect(Rect2(Vector2(), get_size()), background);
 		const float scale = _scale();
 		const Rect2 plot = _plot_rect();
-		if (effect.is_null() || plot.size.x < 8.0f * scale || plot.size.y < 32.0f * scale) return;
-		draw_rect(plot, track);
-		const bool silent = effect->get_volume_linear() <= 0.0f;
-		const float gain_y = _gain_position(effect->get_volume_db()).y;
-		const float fill_top = silent ? plot.get_end().y : gain_y;
-		//if (fill_top < plot.get_end().y) {
-			draw_rect(Rect2(Vector2(plot.position.x, fill_top), Vector2(plot.size.x, plot.get_end().y - fill_top)), accent);
-		//}
-		draw_rect(plot, muted, false, scale);
+		if (effect.is_null() || plot.size.x < 48.0f * scale || plot.size.y < 32.0f * scale) return;
 		const float zero_y = _gain_position(0.0f).y;
-		draw_line(Vector2(plot.position.x - 4.0f * scale, zero_y), Vector2(plot.get_end().x + 8.0f * scale, zero_y), muted, scale);
+		const float gain_y = _gain_position(effect->get_volume_db()).y;
+		const float middle_x = plot.get_center().x;
+		Color grid = muted;
+		grid.a *= 0.5f;
+		draw_line(Vector2(plot.position.x, zero_y), Vector2(plot.get_end().x, zero_y), grid, scale);
+		draw_line(Vector2(plot.position.x, zero_y), Vector2(middle_x, zero_y), accent, 2.0f * scale, true);
+		const bool selected = !is_read_only() && (hovered || dragging);
+		draw_line(Vector2(middle_x, gain_y), Vector2(plot.get_end().x, gain_y), output_color, (selected ? 3.0f : 2.0f) * scale, true);
 		const Ref<Font> font = get_theme_default_font();
 		const int font_size = get_theme_default_font_size();
-		for (int output : { 24, 0, -24, -48, -60, -80 }) {
+		for (int output : { 24, 12, 0, -12, -24, -36, -60, -80 }) {
 			const float y = _gain_position(float(output)).y;
 			draw_line(Vector2(plot.get_end().x + 4.0f * scale, y), Vector2(plot.get_end().x + 8.0f * scale, y), muted, scale);
 			const String label = output > 0 ? String("+") + String::num_int64(output) : (output == 0 ? String("0 dB") : String::num_int64(output));
 			draw_string(font, Vector2(plot.get_end().x + 12.0f * scale, y + font->get_ascent(font_size) * 0.4f), label, HORIZONTAL_ALIGNMENT_LEFT, get_size().x - plot.get_end().x - 16.0f * scale, font_size, muted);
+		}
+		for (int level : { 0, 1 }) {
+			const float y = level == 0 ? zero_y : gain_y;
+			float baseline = y + 3.0f * scale + font->get_ascent(font_size);
+			if (baseline + font->get_descent(font_size) > get_size().y - 2.0f * scale) baseline = y - 4.0f * scale;
+			const float label_width = plot.size.x * 0.5f - 2.0f * scale;
+			const String prefix = level == 0 ? "in " : "out ";
+			const float value = level == 0 ? 0.0f : effect->get_volume_db();
+			String label = prefix + String::num(value, 2).pad_decimals(2) + "dB";
+			if (font->get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1.0f, font_size).x > label_width) label = prefix + String::num(value, 1) + "dB";
+			draw_string(font, Vector2(level == 0 ? plot.position.x : middle_x, baseline), label, HORIZONTAL_ALIGNMENT_LEFT, label_width, font_size, muted);
 		}
 	}
 }

@@ -3,7 +3,6 @@
 [ext_resource type="Material" uid="uid://c0abjll72woxs" path="res://assets/materials/dashed_grid.tres" id="1_v1ufe"]
 [ext_resource type="FmodAudioStream" uid="uid://c6kky7072rqpo" path="res://assets/audio/fmod_playback.mp3" id="2_audio"]
 [ext_resource type="AudioStream" uid="uid://beg02dhxm6bad" path="res://assets/audio/folk_guitar.wav" id="3_hk1pi"]
-
 [ext_resource type="Script" uid="uid://py17r5dqhu3o" path="res://manual/return_menu.gd" id="4_navigation"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_6bcqh"]
@@ -137,8 +136,8 @@ mesh = SubResource("PlaneMesh_wvhbo")
 shape = SubResource("ConcavePolygonShape3D_6bcqh")
 
 [node name="FmodAudioStreamPlayer3D" type="FmodAudioStreamPlayer3D" parent="." unique_id=1512813107]
-auto_play = true
 stream = ExtResource("2_audio")
+auto_play = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 3, 2)
 
 [node name="FmodReverbZone3D" type="FmodReverbZone3D" parent="FmodAudioStreamPlayer3D" unique_id=1856225041]
@@ -185,5 +184,5 @@ mesh = SubResource("BoxMesh_wvhbo")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D3/StaticBody3D" unique_id=319038131]
 shape = SubResource("ConcavePolygonShape3D_6x3we")
 
-[node name="Navigation" type="CanvasLayer" parent="."]
+[node name="Navigation" type="CanvasLayer" parent="." unique_id=1871733512]
 script = ExtResource("4_navigation")

@@ -115,10 +115,8 @@ func _settle(tree: SceneTree) -> void:
 
 func _position(preview: Control, gain: float) -> Vector2:
 	var scale: float = EditorInterface.get_editor_scale()
-	var left: float = maxf((preview.size.x - 88.0 * scale) * 0.5, 8.0 * scale)
-	var width: float = minf(32.0 * scale, maxf(preview.size.x - 64.0 * scale, 0.0))
-	var plot: Rect2 = Rect2(Vector2(left, 12.0 * scale), Vector2(width, preview.size.y - 24.0 * scale))
-	return plot.position + Vector2(plot.size.x * 0.5, (24.0 - gain) / 104.0 * plot.size.y)
+	var plot: Rect2 = Rect2(Vector2(8.0, 12.0) * scale, Vector2(preview.size.x - 64.0 * scale, preview.size.y - 24.0 * scale))
+	return plot.position + Vector2(plot.size.x * 0.75, (24.0 - gain) / 104.0 * plot.size.y)
 
 
 func _mouse_button(preview: Control, position: Vector2, pressed: bool) -> void:

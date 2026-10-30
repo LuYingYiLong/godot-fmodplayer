@@ -33,6 +33,7 @@ namespace godot {
 
 	public:
 		FmodAudioEffectSpectrumAnalyzerPreview();
+
 		void set_effect(const Ref<FmodAudioEffectSpectrumAnalyzer>& p_effect);
 		void _draw() override;
 		void _update_property() override;

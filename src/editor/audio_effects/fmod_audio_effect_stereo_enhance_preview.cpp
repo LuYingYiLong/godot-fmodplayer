@@ -202,7 +202,7 @@ namespace godot {
 				Color delay_color = accent;
 				delay_color.a *= 0.5f;
 				const float delay_radius = radius * (0.25f + 0.65f * effect->get_time_pullout() / 50.0f);
-				draw_arc(center, delay_radius, -PI * 0.5f - half_angle, -PI * 0.5f + half_angle, 48, delay_color, scale, true);
+				draw_arc(center, delay_radius, -PI * 0.5f - half_angle, -PI * 0.5f + half_angle, 48, delay_color, 2.0f * scale, true);
 			}
 		}
 		draw_line(center, radar_point(center, radius, -PI * 0.5f - half_angle), accent, 2.0f * scale, true);

@@ -54,6 +54,7 @@ namespace godot {
 
 	public:
 		FmodAudioEffectDelayPreview();
+
 		void set_effect(const Ref<FmodAudioEffectDelay>& p_effect);
 		void _draw() override;
 		void _gui_input(const Ref<InputEvent>& p_event) override;

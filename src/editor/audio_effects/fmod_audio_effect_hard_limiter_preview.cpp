@@ -119,6 +119,7 @@ namespace godot {
 			if (button->is_pressed()) {
 				dragged_handle = _hit_handle(button->get_position());
 				if (dragged_handle < 0) return;
+				hovered_handle = dragged_handle;
 				drag_start_y = button->get_position().y;
 				drag_start_value = dragged_handle == 1 ? effect->get_ceiling_db() : effect->get_pre_gain_db();
 				gesture_changed = false;
@@ -126,8 +127,10 @@ namespace godot {
 			else if (dragged_handle >= 0) {
 				if (!button->is_canceled()) _edit_at(button->get_position().y, false);
 				dragged_handle = -1;
+				hovered_handle = _hit_handle(button->get_position());
 			}
 			else return;
+			set_default_cursor_shape(dragged_handle >= 0 || hovered_handle >= 0 ? CURSOR_VSIZE : CURSOR_ARROW);
 			queue_redraw();
 			accept_event();
 			return;
@@ -146,7 +149,7 @@ namespace godot {
 	}
 
 	void FmodAudioEffectHardLimiterPreview::_update_property() { _on_effect_changed(); }
-	void FmodAudioEffectHardLimiterPreview::_set_read_only(bool p_read_only) { dragged_handle = -1; set_default_cursor_shape(CURSOR_ARROW); queue_redraw(); }
+	void FmodAudioEffectHardLimiterPreview::_set_read_only(bool p_read_only) { dragged_handle = hovered_handle = -1; set_default_cursor_shape(CURSOR_ARROW); queue_redraw(); }
 
 	void FmodAudioEffectHardLimiterPreview::_draw() {
 		draw_rect(Rect2(Vector2(), get_size()), get_theme_color("dark_color_2", "Editor"));
@@ -161,9 +164,18 @@ namespace godot {
 		draw_line(_point(-80.0f, -80.0f), _point(0.0f, 0.0f), grid, scale, true);
 		draw_line(_point(-80.0f, 0.0f), _point(0.0f, 0.0f), grid, scale);
 		draw_polyline(curve, accent, 2.0f * scale, true);
-		draw_circle(_handle_position(0), (hovered_handle == 0 || dragged_handle == 0 ? 4.5f : 3.5f) * scale, accent, true, -1.0f, true);
-		const float handle_radius = (hovered_handle == 1 || dragged_handle == 1 ? 4.5f : 3.5f) * scale;
-		draw_rect(Rect2(_handle_position(1) - Vector2(handle_radius, handle_radius), Vector2(handle_radius, handle_radius) * 2.0f), accent);
+		for (int handle : { 0, 1 }) {
+			const bool selected = !is_read_only() && (hovered_handle == handle || dragged_handle == handle);
+			const float radius = (selected ? 5.0f : 3.5f) * scale;
+			const Vector2 position = _handle_position(handle);
+			const Color color = selected ? accent : muted;
+			if (handle == 0) {
+				draw_circle(position, radius, color, true, -1.0f, true);
+			}
+			else {
+				draw_rect(Rect2(position - Vector2(radius, radius), Vector2(radius, radius) * 2.0f), color);
+			}
+		}
 		const Ref<Font> font = get_theme_default_font();
 		const int font_size = get_theme_default_font_size();
 		for (int output : { 0, -12, -24, -48, -80 }) {

@@ -1,3 +1,7 @@
 [gd_resource type="FmodAudioEffectEQ10" format=3 uid="uid://x8bconrvobi5"]
 
 [resource]
+band_8_gain = 24.0
+band_8_frequency = 5754.8076
+band_9_gain = -22.13115
+band_9_frequency = 11584.773
