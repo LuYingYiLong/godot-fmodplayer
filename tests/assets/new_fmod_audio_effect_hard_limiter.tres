@@ -1,5 +1,3 @@
 [gd_resource type="FmodAudioEffectHardLimiter" format=3 uid="uid://bbcyq5fswa2na"]
 
 [resource]
-ceiling_db = -24.0
-pre_gain_db = 24.0

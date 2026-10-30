@@ -1,3 +1,5 @@
 [gd_resource type="FmodAudioEffectStereoEnhance" format=3 uid="uid://e6t2ngfldqgn"]
 
 [resource]
+pan_pullout = 1.8924663
+time_pullout_ms = 36.04
