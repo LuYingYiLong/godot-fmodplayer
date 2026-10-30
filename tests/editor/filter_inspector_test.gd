@@ -32,6 +32,7 @@ func run(output_dir: String, tree: SceneTree) -> bool:
 		effect.resonance = 0.8
 		_expect(_changes == 4, "Unchanged filter parameters skip notifications")
 		for slope: int in range(4):
+			await _test_zero_line(preview, effect, slope, output_dir, tree)
 			await _test_drag(preview, effect, slope, tree)
 			await _capture_if_requested(preview, output_dir.path_join("filter_%d.png" % slope), tree)
 		var path: String = output_dir.path_join("filter_preview.tres")
@@ -49,6 +50,38 @@ func run(output_dir: String, tree: SceneTree) -> bool:
 	return not _failed
 
 
+func _test_zero_line(preview: EditorProperty, effect: FmodAudioEffectFilter, slope: int, output_dir: String, tree: SceneTree) -> void:
+	effect.db = slope as FmodAudioEffectFilter.FilterDB
+	var scale: float = EditorInterface.get_editor_scale()
+	var manager: EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
+	var history: UndoRedo = manager.get_history_undo_redo(manager.get_object_history_id(effect))
+	for resonance: float in [0.0, 0.05, 0.5, 1.0,]:
+		effect.cutoff_hz = 2000.0
+		effect.resonance = resonance
+		await _settle(tree)
+		var original_resonance: float = effect.resonance
+		var position: Vector2 = _position(preview, effect)
+		var image: Image = await _capture_if_requested(preview, output_dir.path_join("filter_zero_%d_%s.png" % [slope, resonance,]), tree)
+		if image != null:
+			var above: Color = image.get_pixelv(Vector2i(position - Vector2(0.0, 2.0 * scale)))
+			var background: Color = image.get_pixel(1, 1)
+			_expect(above != background, "Slope %d resonance %s renders handle centered on zero line" % [slope, resonance,])
+		history.clear_history()
+		var offset: Vector2 = Vector2(3.0, -1.0) * scale
+		_mouse_button(preview, position + offset, true)
+		_mouse_button(preview, position + offset, false)
+		_expect(effect.cutoff_hz == 2000.0 and effect.resonance == original_resonance and history.get_history_count() == 0, "Slope %d resonance %s offset click preserves parameters and undo history" % [slope, resonance,])
+		var target: Vector2 = _position_for(preview, 4000.0) + offset
+		_mouse_button(preview, position + offset, true)
+		_mouse_motion(preview, target, true)
+		_mouse_button(preview, target, false)
+		_expect(is_equal_approx(effect.cutoff_hz, 4000.0) and effect.resonance == original_resonance, "Slope %d resonance %s horizontal drag preserves resonance" % [slope, resonance,])
+		_expect(history.get_history_count() == 1, "Slope %d resonance %s horizontal drag is one undo action" % [slope, resonance,])
+		history.undo()
+		_expect(is_equal_approx(effect.cutoff_hz, 2000.0) and effect.resonance == original_resonance, "Slope %d resonance %s horizontal undo restores both parameters" % [slope, resonance,])
+		history.clear_history()
+
+
 func _test_drag(preview: EditorProperty, effect: FmodAudioEffectFilter, slope: int, tree: SceneTree) -> void:
 	effect.db = slope as FmodAudioEffectFilter.FilterDB
 	effect.cutoff_hz = 2000.0
@@ -58,7 +91,7 @@ func _test_drag(preview: EditorProperty, effect: FmodAudioEffectFilter, slope: i
 	var history: UndoRedo = manager.get_history_undo_redo(manager.get_object_history_id(effect))
 	history.clear_history()
 	var original: Vector2 = _position(preview, effect)
-	var target: Vector2 = _position_for(preview, 4000.0, 0.8)
+	var target: Vector2 = _position_for(preview, 4000.0, 0.3)
 	_mouse_button(preview, original, true)
 	_mouse_motion(preview, target, true)
 	_expect(is_equal_approx(effect.cutoff_hz, 4000.0), "Slope %d drag updates cutoff live" % slope)
@@ -96,14 +129,13 @@ func _settle(tree: SceneTree) -> void:
 
 
 func _position(preview: Control, effect: FmodAudioEffectFilter) -> Vector2:
-	return _position_for(preview, effect.cutoff_hz, sqrt(0.5) if effect.db == FmodAudioEffectFilter.FILTER_6DB else maxf(effect.resonance, 0.1))
+	return _position_for(preview, effect.cutoff_hz)
 
 
-func _position_for(preview: Control, cutoff: float, resonance: float) -> Vector2:
+func _position_for(preview: Control, cutoff: float, resonance_delta: float = 0.0) -> Vector2:
 	var scale: float = EditorInterface.get_editor_scale()
 	var plot: Rect2 = Rect2(Vector2(8.0, 8.0) * scale, preview.size - Vector2(16.0, 38.0) * scale)
-	var db: float = 20.0 * log(resonance) / log(10.0)
-	return plot.position + Vector2(log(cutoff) / log(22000.0) * plot.size.x, (24.0 - db) / 84.0 * plot.size.y)
+	return plot.position + Vector2(log(cutoff) / log(22000.0) * plot.size.x, (24.0 / 84.0 - resonance_delta) * plot.size.y)
 
 
 func _mouse_button(preview: Control, position: Vector2, pressed: bool) -> void:
@@ -124,15 +156,18 @@ func _mouse_motion(preview: Control, position: Vector2, pressed: bool) -> void:
 	preview.get_viewport().push_input(event, true)
 
 
-func _capture_if_requested(preview: Control, path: String, tree: SceneTree) -> void:
+func _capture_if_requested(preview: Control, path: String, tree: SceneTree) -> Image:
 	if "--eq-capture" not in OS.get_cmdline_user_args():
-		return
+		return null
 	await _settle(tree)
 	RenderingServer.force_draw()
 	var image: Image = preview.get_viewport().get_texture().get_image()
 	var area: Rect2i = Rect2i(preview.get_global_rect()).intersection(Rect2i(Vector2i.ZERO, image.get_size()))
 	if area.has_area():
-		_expect(image.get_region(area).save_png(path) == OK, "Rendered Filter preview captured")
+		var cropped: Image = image.get_region(area)
+		_expect(cropped.save_png(path) == OK, "Rendered Filter preview captured")
+		return cropped
+	return null
 
 
 func _on_effect_changed() -> void:

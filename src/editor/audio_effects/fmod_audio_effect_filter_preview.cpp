@@ -32,7 +32,7 @@ namespace godot {
 		set_draw_background(false);
 		set_clip_contents(true);
 		set_custom_minimum_size(Vector2(0.0f, 160.0f * _scale()));
-		set_tooltip_text(tr("Approximate low-pass response. Drag the node horizontally to adjust cutoff, vertically to adjust resonance (12/18/24 dB)."));
+		set_tooltip_text(tr("Approximate low-pass response. The cutoff node stays on the 0 dB reference line. Drag horizontally to adjust cutoff, vertically to adjust resonance relative to its starting value (12/18/24 dB)."));
 	}
 
 	float FmodAudioEffectFilterPreview::_scale() const {
@@ -91,15 +91,20 @@ namespace godot {
 			break;
 		case NOTIFICATION_MOUSE_EXIT:
 			hovered = false;
+			if (!dragging) set_default_cursor_shape(CURSOR_ARROW);
 			queue_redraw();
 			break;
 		}
 	}
 
+	float FmodAudioEffectFilterPreview::_zero_line_y() const {
+		const Rect2 plot = _plot_rect();
+		return plot.position.y + MAX_DB / (MAX_DB - MIN_DB) * plot.size.y;
+	}
+
 	Vector2 FmodAudioEffectFilterPreview::_handle_position() const {
 		const Rect2 plot = _plot_rect();
-		const float db = effect->get_db() == FmodAudioEffectFilter::FILTER_6DB ? -3.0103f : 20.0f * std::log10(MAX(effect->get_resonance(), 0.1f));
-		return plot.position + Vector2(frequency_ratio(effect->get_cutoff_hz()) * plot.size.x, (MAX_DB - db) / (MAX_DB - MIN_DB) * plot.size.y);
+		return Vector2(plot.position.x + frequency_ratio(effect->get_cutoff_hz()) * plot.size.x, _zero_line_y());
 	}
 
 	bool FmodAudioEffectFilterPreview::_hit_handle(const Vector2& p_position) const {
@@ -111,9 +116,9 @@ namespace godot {
 		if (effect.is_null() || is_read_only() || plot.size.x <= 0.0f || plot.size.y <= 0.0f) {
 			return;
 		}
-		const float cutoff = CLAMP(std::pow(MAX_FREQUENCY, CLAMP((p_position.x - plot.position.x) / plot.size.x, 0.0f, 1.0f)), MIN_FREQUENCY, MAX_CUTOFF);
-		const float y = CLAMP((p_position.y - plot.position.y) / plot.size.y, 0.0f, 1.0f);
-		const float resonance = effect->get_db() == FmodAudioEffectFilter::FILTER_6DB ? effect->get_resonance() : (y == 1.0f ? 0.0f : CLAMP(std::pow(10.0f, Math::lerp(MAX_DB, MIN_DB, y) / 20.0f), 0.0f, 1.0f));
+		const Vector2 delta = p_position - drag_start_position;
+		const float cutoff = CLAMP(drag_start_cutoff * std::pow(MAX_FREQUENCY / MIN_FREQUENCY, delta.x / plot.size.x), MIN_FREQUENCY, MAX_CUTOFF);
+		const float resonance = effect->get_db() == FmodAudioEffectFilter::FILTER_6DB ? effect->get_resonance() : CLAMP(drag_start_resonance - delta.y / plot.size.y, 0.0f, 1.0f);
 		if (Math::is_equal_approx(cutoff, effect->get_cutoff_hz()) && Math::is_equal_approx(resonance, effect->get_resonance()) && (p_changing || !gesture_changed)) {
 			return;
 		}
@@ -147,16 +152,21 @@ namespace godot {
 				if (!dragging) {
 					return;
 				}
+				drag_start_position = button->get_position();
+				drag_start_cutoff = effect->get_cutoff_hz();
+				drag_start_resonance = effect->get_resonance();
 			}
 			else if (dragging) {
 				if (!button->is_canceled()) {
 					_edit_at(button->get_position(), false);
 				}
 				dragging = false;
+				hovered = _hit_handle(button->get_position());
 			}
 			else {
 				return;
 			}
+			set_default_cursor_shape(dragging || hovered ? (effect->get_db() == FmodAudioEffectFilter::FILTER_6DB ? CURSOR_HSIZE : CURSOR_MOVE) : CURSOR_ARROW);
 			queue_redraw();
 			accept_event();
 			return;
@@ -169,6 +179,8 @@ namespace godot {
 				}
 				else {
 					dragging = false;
+					hovered = _hit_handle(motion->get_position());
+					set_default_cursor_shape(hovered ? (effect->get_db() == FmodAudioEffectFilter::FILTER_6DB ? CURSOR_HSIZE : CURSOR_MOVE) : CURSOR_ARROW);
 				}
 				accept_event();
 			}
@@ -228,7 +240,7 @@ namespace godot {
 		if (curve_dirty) {
 			_rebuild_curve();
 		}
-		const float zero_y = plot.position.y + MAX_DB / (MAX_DB - MIN_DB) * plot.size.y;
+		const float zero_y = _zero_line_y();
 		draw_line(Vector2(plot.position.x, zero_y), Vector2(plot.get_end().x, zero_y), muted, scale);
 		const Ref<Font> font = get_theme_default_font();
 		const int font_size = get_theme_default_font_size();

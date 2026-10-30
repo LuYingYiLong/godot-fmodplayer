@@ -16,7 +16,7 @@ Panner 检查器：选中 `manual/panner_preview.tres`，左键点击或拖动�
 
 EQ 检查器：选中 `manual/eq6_preview.tres`、`eq10_preview.tres` 或 `eq21_preview.tres`。拖动频段控制点，横向调节频率，纵向调节峰值/搁架滤波的增益；低通、高通、带通、陷波和全通类型仅调节频率。悬停在控制点上滚动滚轮调节 Q：向上增大，向下减小，每格约 10%，范围 `0.01–10`。支持撤销重做、只读状态和预设切换。曲线是根据滤波参数计算的近似响应，未使用实时频谱；打开预览不会创建额外音频 DSP。
 
-Filter 检查器：选中 `manual/filter_preview.tres`，横向拖动节点调节截止频率，12/18/24 dB 模式还可纵向调节 resonance。图表只保留 0 dB 参考线，使用编辑器主题颜色，最小高度为 160。曲线为近似响应，18 dB 按当前实现绘制为 24 dB；低通不使用 MULTIBAND_EQ 的 gain 参数。支持撤销重做与只读状态。
+Filter 检查器：选中 `manual/filter_preview.tres`，节点固定在 0 dB 参考线上，横向拖动调节截止频率，12/18/24 dB 模式可相对按下时的值纵向调节 resonance。直接点击或纯横向拖动会保留原 resonance，包括小于 0.1 的值。图表只保留 0 dB 参考线，使用编辑器主题颜色，最小高度为 160。曲线为近似响应，18 dB 按当前实现绘制为 24 dB；低通不使用 MULTIBAND_EQ 的 gain 参数。支持撤销重做与只读状态。
 
 Compressor 检查器：选中 `manual/compressor_preview.tres`，左右拖动圆形拐点调阈值，上下拖动右侧方点调压缩比（向下增大）。阈值范围 `-60–0 dB`，压缩比范围 `1:1–48:1`，支持撤销重做和只读状态。曲线是包含 Gain、Mix 的静态硬拐点近似，Attack/Release 的时间响应不在图中显示；Mix 为 0 时仍可拖动调节压缩比。最小高度为 160，颜色取自编辑器主题。
 

@@ -176,9 +176,9 @@ namespace godot {
 		const bool silent = effect->get_volume_linear() <= 0.0f;
 		const float gain_y = _gain_position(effect->get_volume_db()).y;
 		const float fill_top = silent ? plot.get_end().y : gain_y;
-		if (fill_top < plot.get_end().y) {
+		//if (fill_top < plot.get_end().y) {
 			draw_rect(Rect2(Vector2(plot.position.x, fill_top), Vector2(plot.size.x, plot.get_end().y - fill_top)), accent);
-		}
+		//}
 		draw_rect(plot, muted, false, scale);
 		const float zero_y = _gain_position(0.0f).y;
 		draw_line(Vector2(plot.position.x - 4.0f * scale, zero_y), Vector2(plot.get_end().x + 8.0f * scale, zero_y), muted, scale);

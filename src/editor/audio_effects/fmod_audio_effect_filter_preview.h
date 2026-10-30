@@ -16,10 +16,14 @@ namespace godot {
 		bool hovered = false;
 		bool dragging = false;
 		bool gesture_changed = false;
+		Vector2 drag_start_position;
+		float drag_start_cutoff = 2000.0f;
+		float drag_start_resonance = 0.5f;
 		float sample_rate = 48000.0f;
 
 		float _scale() const;
 		Rect2 _plot_rect() const;
+		float _zero_line_y() const;
 		Vector2 _handle_position() const;
 		bool _hit_handle(const Vector2& p_position) const;
 		void _connect_effect();
