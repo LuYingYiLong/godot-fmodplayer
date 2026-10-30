@@ -4,8 +4,10 @@
 		Global singleton that manages the FMOD audio system lifecycle.
 	</brief_description>
 	<description>
-		FmodServer is a global singleton that manages the FMOD Core API audio system within Godot. It initializes and maintains the main FMOD System instance, registers performance monitors for tracking CPU and file usage, manages the audio bus layout, and connects to Godot's SceneTree for per-frame updates.
-		The server automatically initializes during GDExtension loading and handles all FMOD lifecycle management. It creates performance monitors that can be viewed in Godot's Debugger &gt; Monitor tab to track FMOD's resource usage.
+		Initializes the main [FmodSystem], applies the project's [code]audio/fmod[/code] settings, and updates FMOD once per [SceneTree] process frame. Access the singleton through its static methods.
+		[method get_audio_bus_layout] returns bus configuration; [method get_audio_bus_by_id] and [method get_bus_effect_instance] return the corresponding runtime objects. Each effect slot has an independent runtime instance. Changes to the active configuration are applied on the next update, or immediately with [method flush_bus_updates].
+		With [code]audio/fmod/sync_godot_audio_buses[/code] enabled, Godot's [AudioServer] supplies the configuration. When disabled, the server loads [code]audio/fmod/default_bus_layout[/code], whose default is [code]res://default_fmod_bus_layout.tres[/code]. Changing the synchronization setting requires reloading the project. See [FmodAudioBusLayout] for editing, saving, and the FMOD Audio Dock.
+		Performance monitors are available in Godot's [b]Debugger &gt; Monitors[/b] panel.
 		[b]Performance Monitors:[/b]
 		The following custom monitors are registered with Godot's Performance system:
 		- [code]FmodCPUUsage/DSP[/code]: DSP processing CPU usage percentage
@@ -17,7 +19,6 @@
 		- [code]FmodFileUsage/SampleBytesRead[/code]: Sample bytes read from disk
 		- [code]FmodFileUsage/StreamBytesRead[/code]: Stream bytes read from disk
 		- [code]FmodFileUsage/OtherBytesRead[/code]: Other bytes read from disk
-		[b]Note:[/b] This class is a singleton. Use the static methods directly to access FMOD systems and shared resources.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -69,7 +70,7 @@
 			<return type="FmodAudioBus" />
 			<param index="0" name="name" type="StringName" />
 			<description>
-				Returns the runtime bus named [param name], or [code]null[/code] when it does not exist. Direct runtime edits do not modify or save the layout configuration.
+				Returns the runtime bus named [param name], or [code]null[/code] when it does not exist. After adding a bus, call [method flush_bus_updates] before requesting it in the same frame. Direct runtime edits do not modify or save the layout configuration.
 			</description>
 		</method>
 		<method name="get_audio_bus_by_id" qualifiers="static">
@@ -84,7 +85,7 @@
 			<param index="0" name="bus_id" type="int" />
 			<param index="1" name="slot_id" type="int" />
 			<description>
-				Returns the live effect instance of [param slot_id] on [param bus_id], or [code]null[/code]. Use it for Capture buffers, SpectrumAnalyzer snapshots, and Record output. Each slot has its own instance, even when slots share a configuration resource. Runtime edits are not saved; subsequent configuration edits may update the instance.
+				Returns the live effect instance of [param slot_id] on [param bus_id], or [code]null[/code] if the bus or slot has no applied runtime instance. After adding a slot, call [method flush_bus_updates] before requesting it in the same frame. Use this instance for [FmodAudioEffectCapture] buffers, [FmodAudioEffectSpectrumAnalyzer] snapshots, and [FmodAudioEffectRecord] output. Each slot has its own instance, even when slots share a configuration resource. Runtime edits are not saved; subsequent configuration edits may update the instance.
 			</description>
 		</method>
 		<method name="get_bus_names" qualifiers="static">

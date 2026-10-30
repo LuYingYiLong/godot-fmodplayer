@@ -5,7 +5,8 @@
 	</brief_description>
 	<description>
 		Displays an audio waveform, playback controls, a position indicator, and time labels for [FmodAudioStream] in the inspector. Clicking the waveform seeks playback.
-		Waveform generation is deferred to a later main-thread call; it does not run on a background worker.
+		Shares waveform cache data with the [code]stream[/code] property previews on [FmodAudioStreamPlayer], [FmodAudioStreamPlayer2D], and [FmodAudioStreamPlayer3D]. Waveform generation is deferred to a later main-thread call.
+		Inspector audition uses an internal [FmodAudioStreamPlayer] routed to [code]Master[/code]. In independent bus mode, its levels appear in the visible FMOD Audio Dock. The Dock does not display levels from a separate running game process.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -14,19 +15,13 @@
 			<return type="void" />
 			<param index="0" name="stream" type="FmodAudioStream" />
 			<description>
-				Sets the [FmodAudioStream] to preview. This regenerates the waveform display.
+				Sets the [FmodAudioStream] to preview, stops any current audition, and requests its waveform from the shared cache.
 			</description>
 		</method>
 		<method name="get_stream" qualifiers="const">
 			<return type="FmodAudioStream" />
 			<description>
 				Returns the [FmodAudioStream] currently being previewed.
-			</description>
-		</method>
-		<method name="_draw_waveform">
-			<return type="void" />
-			<description>
-				Internal editor or engine callback.
 			</description>
 		</method>
 		<method name="_draw_indicator">
@@ -55,12 +50,6 @@
 			</description>
 		</method>
 		<method name="_on_finished">
-			<return type="void" />
-			<description>
-				Internal editor or engine callback.
-			</description>
-		</method>
-		<method name="_generate_waveform_async">
 			<return type="void" />
 			<description>
 				Internal editor or engine callback.

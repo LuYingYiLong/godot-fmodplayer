@@ -8,6 +8,7 @@
 		The effect processes incoming audio and provides frequency magnitude data that can be queried using [method get_magnitude_for_frequency_range]. You can analyze specific frequency ranges (e.g., bass, midrange, treble) independently.
 		Queries reuse a spectrum snapshot while the bus DSP clock is unchanged. The next audio block automatically refreshes the snapshot, including when manually mixing multiple blocks in one game frame. Changing [member fft_size] or attaching the effect to another bus invalidates the snapshot.
 		The [member fft_size] determines the analysis window and frequency resolution. Larger FFT sizes provide finer frequency detail at the cost of time resolution and processing work. [member buffer_length] is currently stored for compatibility and does not change the FFT window or retain audio history.
+		When configured in a [FmodAudioBusLayout] slot, obtain its runtime instance with [method FmodServer.get_bus_effect_instance] and query that instance. Shared configuration resources create independent analysis state for each slot.
 	</description>
 	<tutorials>
 	</tutorials>

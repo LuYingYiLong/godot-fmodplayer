@@ -4,9 +4,9 @@
 		Represents an audio bus for mixing with effects support.
 	</brief_description>
 	<description>
-		Runtime mixing bus backed by an FMOD channel group. FmodServer owns buses for the active FmodAudioBusLayout; obtain them with FmodServer.get_audio_bus or FmodServer.get_audio_bus_by_id. Do not release a server-managed bus manually.
-		Use FmodAudioBusLayout to author persistent routing, mixing state, and effect slots. Direct changes to this runtime object do not modify or save the layout. Managed effect instances are per slot; FmodServer.get_bus_effect_instance provides access by stable IDs.
-		Standalone buses created with init_bus remain available for low-level routing. Their lifetime and effects are managed by the caller.
+		Runtime mixing bus backed by an FMOD channel group. [FmodServer] owns buses for the active [FmodAudioBusLayout]; obtain them with [method FmodServer.get_audio_bus] or [method FmodServer.get_audio_bus_by_id]. The server manages their lifetime.
+		Use [FmodAudioBusLayout] to author routing, mixing state, and effect slots. Direct changes to this runtime object do not modify or save the layout. Managed effect instances are per slot; [method FmodServer.get_bus_effect_instance] provides access by stable IDs.
+		Standalone buses created with [method init_bus] remain available for low-level routing. Their lifetime and effects are managed by the caller.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -37,7 +37,7 @@
 		<method name="get_parent" qualifiers="const">
 			<return type="FmodChannelGroup" />
 			<description>
-				Returns the explicitly stored parent channel group. This cache may differ from native routing after a layout synchronization. Query the channel group's [method FmodChannelGroup.get_parent_group] for its current native parent.
+				Returns the parent stored by [method init_bus] or [method set_parent]. To inspect routing changed directly through the channel group, use [method FmodChannelGroup.get_parent_group] on [method get_bus].
 			</description>
 		</method>
 		<method name="get_bus_name" qualifiers="const">
@@ -49,7 +49,7 @@
 		<method name="release">
 			<return type="void" />
 			<description>
-				Removes this bus's effects and clears its channel-group references. Releases the native channel group for buses other than [code]Master[/code].
+				Removes this bus's effects and clears its channel-group references. Releases the native channel group for buses other than [code]Master[/code]. Call this only for standalone buses whose lifetime you manage; the server releases buses obtained through [FmodServer].
 			</description>
 		</method>
 		<method name="add_effect">
@@ -71,7 +71,7 @@
 		<method name="get_effect_count" qualifiers="const">
 			<return type="int" />
 			<description>
-				Returns effect count.
+				Returns the number of effect instances stored on this runtime bus. Use [method FmodAudioBusLayout.get_bus_effect_ids] for stable slot IDs.
 			</description>
 		</method>
 		<method name="get_effect" qualifiers="const">
@@ -133,19 +133,19 @@
 			<return type="void" />
 			<param index="0" name="bypass" type="bool" />
 			<description>
-				Stores the bypass flag. Call [method sync_bypass] to apply it to the channel group's DSPs.
+				Stores the runtime bypass flag. Call [method sync_bypass] to apply it to this bus's effect instances. For layout-managed slots, use [method FmodAudioBusLayout.set_bus_bypass] so slot enable flags are also respected.
 			</description>
 		</method>
 		<method name="is_bypass" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns the stored bypass flag. [method sync_bypass] applies this flag to the channel group's DSPs.
+				Returns the stored runtime bypass flag. [method sync_bypass] applies it to this bus's effect instances.
 			</description>
 		</method>
 		<method name="sync_bypass">
 			<return type="void" />
 			<description>
-				Applies the stored bypass flag to every DSP currently in this bus's channel group.
+				Applies the stored bypass flag to the DSP chains of this bus's stored effect instances. The channel-group fader and DSPs added separately through low-level APIs are unchanged. Use [method FmodAudioBusLayout.set_bus_bypass] to combine bus bypass with each managed slot's enabled state.
 			</description>
 		</method>
 	</methods>
@@ -154,13 +154,13 @@
 			Bus volume in decibels. A value of [code]0.0[/code] is unity gain.
 		</member>
 		<member type="bool" name="solo" setter="set_solo" getter="is_solo" default="false">
-			Controls solo.
+			Stored solo flag. Use [method FmodAudioBusLayout.set_bus_solo] to update audibility across the active layout.
 		</member>
 		<member type="bool" name="mute" setter="set_mute" getter="is_mute" default="false">
-			Controls mute.
+			Stored user mute flag. [method apply_mute] applies it to the channel group. For the active layout, use [method FmodAudioBusLayout.set_bus_mute].
 		</member>
 		<member type="bool" name="bypass" setter="set_bypass" getter="is_bypass" default="false">
-			Controls bypass.
+			Stored bypass flag. [method sync_bypass] applies it to the stored effect instances. For the active layout, use [method FmodAudioBusLayout.set_bus_bypass].
 		</member>
 	</members>
 	<signals>

@@ -4,8 +4,9 @@
 		Abstract base class for audio effects in the FMOD audio system.
 	</brief_description>
 	<description>
-		FmodAudioEffect is the abstract base class for all audio effects in the FMOD integration. It provides a common interface for applying effects to audio buses (channel groups). Subclasses implement specific effect types such as Amplify, Filter, EQ, Reverb, Delay, etc.
-		The effect can be applied to a [FmodChannelGroup] using [method apply_to] and removed using [method remove_from_bus].
+		Base resource for FMOD audio effects such as Amplify, Filter, EQ, Reverb, and Delay. Add a configuration resource to a [FmodAudioBusLayout] with [method FmodAudioBusLayout.add_bus_effect]. A configuration can be shared by several slots; each slot receives a separate runtime instance and DSP chain. Parameter changes update the bound instances without rebuilding their DSPs.
+		Use [method FmodServer.get_bus_effect_instance] to read live Capture, SpectrumAnalyzer, and Record data. The configuration resource stored in a layout does not hold the slot's audio buffers or analysis state.
+		For standalone routing, apply an effect directly to a [FmodChannelGroup] with [method apply_to] and detach it with [method remove_from_bus]. A directly attached effect instance belongs to one bus at a time.
 	</description>
 	<tutorials>
 	</tutorials>

@@ -4,9 +4,23 @@
 		Serializable configuration for FMOD audio buses and effect slots.
 	</brief_description>
 	<description>
-		Stores ordered bus and effect configuration using stable IDs. Master has ID 0 and remains first. Buses may send to any target that does not create a cycle; reordering only changes display order.
-		Save and load this resource with ResourceSaver and ResourceLoader. Serialized properties use bus/index/... paths and a format version. FMOD channel groups, DSPs, metering, and capture buffers belong to the runtime managed by FmodServer and are not serialized.
-		Set audio/fmod/sync_godot_audio_buses to false and reload the project to use an independent layout. audio/fmod/default_bus_layout defaults to res://default_fmod_bus_layout.tres. A missing or invalid default uses an in-memory Master. The editor Dock saves authoring edits after 0.8 seconds; runtime changes made directly to FmodAudioBus or effect instances do not save configuration.
+		Stores bus configuration in display order. Bus and effect-slot IDs are stable identifiers, separate from array indices. [code]Master[/code] has ID [code]0[/code] and remains first. Sends can target any bus without creating a cycle; moving a bus changes only its display order.
+		Load and save layouts with [ResourceLoader] and [ResourceSaver]. The resource stores a format version and dynamic properties such as [code]bus/0/name[/code] and [code]bus/0/effect/0/effect[/code]. Channel groups, DSP instances, metering data, and capture buffers belong to the runtime managed by [FmodServer].
+		By default, [code]audio/fmod/sync_godot_audio_buses[/code] is [code]true[/code]: Godot's [AudioServer] supplies the bus configuration. To author an independent layout, disable this setting and reload the project. [code]audio/fmod/default_bus_layout[/code] defaults to [code]res://default_fmod_bus_layout.tres[/code]. A missing or invalid default falls back to an in-memory Master; load failures are reported.
+		The [b]FMOD Audio[/b] editor Dock edits the active layout and saves configuration changes after a [code]0.8[/code]-second delay. Loading another layout does not change the project default; use [b]FMOD &gt; Set as Default[/b] for that. The saved default reference uses a resource UID, and the export plugin includes the default layout and its dependencies.
+		In independent mode, the Dock displays levels for audio played inside the editor. It uses the native Audio panel's color settings, holds peaks for [code]1.5[/code] seconds, and stops polling while hidden. Levels from a separate running game process are not displayed. In synchronization mode, the Dock shows a hint and an entry to open Godot's Audio panel; the FMOD bus controls and meters are hidden.
+		Edit the layout returned by [method FmodServer.get_audio_bus_layout] to update its bound runtime on the next server update. Call [method FmodServer.flush_bus_updates] when immediate access to a new bus or slot is needed. Each slot has its own runtime effect; obtain it with [method FmodServer.get_bus_effect_instance]. Direct runtime edits do not modify the configuration resource.
+		[codeblock]
+		# Independent mode: Godot bus synchronization must be disabled
+		var layout: FmodAudioBusLayout = FmodServer.get_audio_bus_layout()
+		var music_id: int = layout.find_bus_id(&amp;"Music")
+		if music_id == -1:
+			music_id = layout.add_bus(&amp;"Music")
+		layout.set_bus_volume_db(music_id, -6.0)
+		var slot_id: int = layout.add_bus_effect(music_id, FmodAudioEffectCapture.new())
+		FmodServer.flush_bus_updates()
+		var capture: FmodAudioEffectCapture = FmodServer.get_bus_effect_instance(music_id, slot_id) as FmodAudioEffectCapture
+		[/codeblock]
 	</description>
 	<tutorials>
 	</tutorials>
@@ -42,7 +56,7 @@
 			<param index="0" name="name" type="StringName" />
 			<param index="1" name="send_id" type="int" default="0" />
 			<description>
-				Adds a bus named [param name] and routes it to [param send_id]. Returns its stable ID, or [code]-1[/code] if the name is empty, contains a comma, is already used, or the target does not exist.
+				Adds a bus named [param name] and routes it to [param send_id]. Returns its stable ID, or [code]-1[/code] if the name is blank, contains a comma, is already used, the target does not exist, or the layout has reached its limit of 4096 buses.
 			</description>
 		</method>
 		<method name="remove_bus">
@@ -65,7 +79,7 @@
 			<param index="0" name="id" type="int" />
 			<param index="1" name="name" type="StringName" />
 			<description>
-				Renames bus [param id] while preserving its ID, routing, and runtime instances. The name must be unique, nonempty, and contain no comma. Master cannot be renamed. Returns [constant OK] on success or [constant ERR_INVALID_PARAMETER].
+				Renames bus [param id] while preserving its ID, routing, and runtime instances. The name must be unique, nonblank, and contain no comma. Master cannot be renamed. Player nodes store bus names; update their [code]bus[/code] properties when renaming a bus. Returns [constant OK] on success or [constant ERR_INVALID_PARAMETER].
 			</description>
 		</method>
 		<method name="can_send_to" qualifiers="const">
@@ -157,7 +171,7 @@
 			<param index="1" name="effect" type="FmodAudioEffect" />
 			<param index="2" name="index" type="int" default="-1" />
 			<description>
-				Inserts [param effect] into bus [param bus_id] before [param index]. A negative index appends it. Returns a stable slot ID, or [code]-1[/code] for an invalid bus, null effect, or out-of-range index. Multiple slots may share a configuration resource; each bound slot receives its own runtime instance.
+				Inserts [param effect] into bus [param bus_id] before [param index]. A negative index appends it. Returns a stable slot ID, or [code]-1[/code] for an invalid bus, null effect, out-of-range index, or a bus with 512 slots. Multiple slots may share a configuration resource; each bound slot receives its own runtime instance. Read live Capture, SpectrumAnalyzer, or Record data through [method FmodServer.get_bus_effect_instance].
 			</description>
 		</method>
 		<method name="remove_bus_effect">

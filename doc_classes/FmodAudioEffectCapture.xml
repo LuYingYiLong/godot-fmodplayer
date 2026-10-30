@@ -6,6 +6,7 @@
 	<description>
 		Captures the signal passing through an audio bus without changing its output. Attach it with [method FmodAudioEffect.apply_to], then read complete stereo frames with [method get_buffer]. Each [Vector2] contains the left sample in [code]x[/code] and the right sample in [code]y[/code]. Mono input is duplicated; input with more than two channels keeps its first two channels.
 		When the ring buffer is full, incoming frames are discarded and unread frames are preserved. [method clear_buffer] clears the queue and resets both counters. Changing [member buffer_length] clears queued audio but keeps the counters.
+		When added through [method FmodAudioBusLayout.add_bus_effect], read from the slot's runtime instance returned by [method FmodServer.get_bus_effect_instance]. The configuration resource remains separate from the capture buffer. The example below uses a directly attached standalone effect.
 		[codeblock]
 		extends Node
 

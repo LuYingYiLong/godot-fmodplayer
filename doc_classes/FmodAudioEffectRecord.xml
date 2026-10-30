@@ -4,6 +4,7 @@
 		Captures audio passing through a bus and exposes it as a WAV resource.
 	</brief_description>
 	<description>
+		When configured in a [FmodAudioBusLayout] slot, use [method FmodServer.get_bus_effect_instance] to obtain the runtime recorder. Start and stop recording, then call [method get_recording] on that instance. The layout's configuration resource does not contain recorded audio.
 		FmodAudioEffectRecord captures audio data passing through an audio bus and records it to an internal buffer. When recording is complete, the captured audio can be saved as an [AudioStreamWAV] resource.
 		This effect is useful for recording gameplay audio, capturing microphone input (when applied to a microphone bus), or creating audio samples from synthesized sounds.
 		To start recording, apply the effect to an audio bus and set [member recording_active] to [code]true[/code]. To stop, set [member recording_active] to [code]false[/code] and call [method get_recording] to retrieve the recorded audio as an [AudioStreamWAV].

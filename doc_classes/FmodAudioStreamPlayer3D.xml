@@ -300,7 +300,7 @@
 	</methods>
 	<members>
 		<member type="FmodAudioStream" name="stream" setter="set_stream" getter="get_stream">
-			The [FmodAudioStream] resource to play.
+			The [FmodAudioStream] resource to play. In the editor, its resource picker displays a waveform preview. Expanding the resource exposes the inspector audition panel, which shares the same waveform cache. Assigning another stream stops current playback.
 		</member>
 		<member type="int" name="attenuation_model" setter="set_attenuation_model" getter="get_attenuation_model" default="2">
 			Distance attenuation model. See [enum AttenuationModel].
@@ -330,7 +330,9 @@
 			Maximum rolloff distance multiplier. The distance passed to FMOD is this value multiplied by [member unit_size]; it is not a universal hard cutoff.
 			In [constant ATTENUATION_DISABLED] mode, a flat custom rolloff curve keeps distance gain at unity regardless of this setting.
 		</member>
-		<member type="StringName" name="bus" setter="set_bus" getter="get_bus" default="&amp;&quot;Master&quot;">Destination bus name from the active FMOD layout. An unknown name falls back to Master. Godot buses provide this list when synchronization is enabled; independent mode uses FmodServer.get_audio_bus_layout.</member>
+		<member type="StringName" name="bus" setter="set_bus" getter="get_bus" default="&amp;&quot;Master&quot;">
+			Destination bus name from [method FmodServer.get_bus_names]. Godot provides the list when bus synchronization is enabled; independent mode uses [method FmodServer.get_audio_bus_layout]. An unknown or renamed destination falls back to [code]Master[/code] when playback starts. Changing the name does not reroute an existing channel.
+		</member>
 		<member type="int" name="area_mask" setter="set_area_mask" getter="get_area_mask" default="1">
 			Stored area mask. Area-based audio filtering is not implemented.
 		</member>
