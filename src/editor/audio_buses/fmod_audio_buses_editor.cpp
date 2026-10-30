@@ -237,7 +237,7 @@ namespace godot {
 		}
 		else {
 			const String path = resolve_path(edited_path);
-			file_label->set_text((unsaved ? "(*) " : "") + (path.is_empty() ? edited_path : path.get_file()));
+			file_label->set_text(path.is_empty() ? edited_path : path.get_file());
 			file_label->set_tooltip_text(path.is_empty() ? edited_path : path);
 			status->set_text("");
 		}

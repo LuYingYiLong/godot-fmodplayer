@@ -1,10 +1,24 @@
 [gd_resource type="FmodAudioBusLayout" format=3 uid="uid://dhi01va618bsj"]
 
 [sub_resource type="FmodAudioEffectReverb" id="FmodAudioEffectReverb_drfan"]
+spread = 0.0
+
+[sub_resource type="FmodAudioEffectEQ10" id="FmodAudioEffectEQ10_drfan"]
+
+[sub_resource type="FmodAudioEffectDelay" id="FmodAudioEffectDelay_drfan"]
+tap1_delay_ms = 115.70248
+tap1_pan = 0.7486682
+tap2_delay_ms = 921.4123
+tap2_pan = 0.82778585
 
 [resource]
-next_slot_id = 2
-bus/0/volume_db = -1.3214893
+next_slot_id = 9
 bus/0/effect/0/id = 1
 bus/0/effect/0/effect = SubResource("FmodAudioEffectReverb_drfan")
-bus/0/effect/0/enabled = true
+bus/0/effect/0/enabled = false
+bus/0/effect/1/id = 2
+bus/0/effect/1/effect = SubResource("FmodAudioEffectEQ10_drfan")
+bus/0/effect/1/enabled = false
+bus/0/effect/2/id = 7
+bus/0/effect/2/effect = SubResource("FmodAudioEffectDelay_drfan")
+bus/0/effect/2/enabled = false
