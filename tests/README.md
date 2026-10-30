@@ -55,12 +55,15 @@ SpectrumAnalyzer 检查器：选中 `manual/spectrum_analyzer_preview.tres`，�
 .\tools\run_audio_bus_tests.ps1 -Full
 .\tools\run_audio_bus_tests.ps1 -Editor
 .\tools\run_audio_bus_tests.ps1 -Editor -SyncGodot
+.\tools\run_audio_bus_tests.ps1 -Editor -Realtime
 .\tools\run_audio_bus_packaging_tests.ps1
 ```
 
 检查配置保存重载、稳定 ID、自由路由和环路拒绝、删除转接、Solo 通路、共享配置的独立实例、参数更新与混响尾音、Dock 控件、翻译和撤销重做。JSON、布局副本、截图和控制台日志保存在同次运行目录。`-Editor -Full` 同时运行全部检查器回归。
 
 打包专项还检查默认文件缺失、无效版本、UID 移动，以及仅导出选定场景时的布局和外部效果器依赖。PCK 在独立目录启动，原生库按 Godot 的 pack-only 导出规则单独准备。
+
+电平回归先检查首次检查器试听、首次展开面板、隐藏后恢复及 Dock 重新进入场景树，再检查连续调参、短峰值、计量开关恢复、效果器增删与旁路，以及 1.5 秒峰值保持和 60 像素/秒回落。`-Realtime` 使用无声输出的后台混音线程；默认使用离线混音。渐变、tint、字体和刻度截图与原生 Audio 面板对照，结果写入同次日志目录。
 
 ```powershell
 .\build_debug_to_test.bat

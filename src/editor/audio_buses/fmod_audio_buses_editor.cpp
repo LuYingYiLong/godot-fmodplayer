@@ -17,6 +17,7 @@
 #include <godot_cpp/classes/resource_uid.hpp>
 #include <godot_cpp/classes/shortcut.hpp>
 #include <godot_cpp/classes/style_box.hpp>
+#include <godot_cpp/classes/time.hpp>
 #include <godot_cpp/classes/v_separator.hpp>
 #include <godot_cpp/classes/window.hpp>
 #include <godot_cpp/variant/callable_method_pointer.hpp>
@@ -131,6 +132,7 @@ namespace godot {
 		add_child(save_timer);
 		meter_timer = memnew(Timer);
 		meter_timer->set_wait_time(1.0 / 30.0);
+		meter_timer->set_one_shot(true);
 		meter_timer->connect("timeout", callable_mp(this, &FmodAudioBusesDock::_meter_timeout));
 		add_child(meter_timer);
 		file_dialog = memnew(EditorFileDialog);
@@ -141,6 +143,8 @@ namespace godot {
 		error_dialog->set_title("FMOD Audio");
 		add_child(error_dialog);
 		connect("visibility_changed", callable_mp(this, &FmodAudioBusesDock::_visibility_changed));
+		// Parent visibility notifications precede propagation to the bus panel.
+		scroll->connect("visibility_changed", callable_mp(this, &FmodAudioBusesDock::_visibility_changed));
 	}
 
 	FmodAudioBusesDock::~FmodAudioBusesDock() {
@@ -155,6 +159,15 @@ namespace godot {
 	}
 
 	void FmodAudioBusesDock::_notification(int what) {
+		if (what == NOTIFICATION_ENTER_TREE) {
+			const auto changed = callable_mp(this, &FmodAudioBusesDock::_server_changed);
+			if (!FmodServer::get_singleton()->is_connected("bus_layout_changed", changed)) {
+				FmodServer::get_singleton()->connect("bus_layout_changed", changed);
+			}
+			// Dock restoration/floating can re-enter without another READY. Wait for
+			// the timer and body children to enter before resuming presentation.
+			callable_mp(this, &FmodAudioBusesDock::_visibility_changed).call_deferred();
+		}
 		if ((what == NOTIFICATION_THEME_CHANGED || what == NOTIFICATION_READY) && scroll) {
 			// The native Audio panel gets its inner padding and background from Tree.
 			scroll->add_theme_stylebox_override("panel", get_theme_stylebox("panel", "Tree"));
@@ -167,7 +180,6 @@ namespace godot {
 				save_blocked = true;
 				_show_error(fmod_editor_translate("The default FMOD bus layout could not be loaded. Create or open a valid layout before saving."));
 			}
-			FmodServer::get_singleton()->connect("bus_layout_changed", callable_mp(this, &FmodAudioBusesDock::_server_changed));
 			_visibility_changed();
 		}
 		else if (what == NOTIFICATION_EXIT_TREE) {
@@ -175,6 +187,7 @@ namespace godot {
 				save_layout();
 			}
 			meter_timer->stop();
+			meter_polling = false;
 			save_timer->stop();
 			if (FmodServer::get_singleton() && FmodServer::get_singleton()->is_connected("bus_layout_changed", callable_mp(this, &FmodAudioBusesDock::_server_changed))) {
 				FmodServer::get_singleton()->disconnect("bus_layout_changed", callable_mp(this, &FmodAudioBusesDock::_server_changed));
@@ -587,24 +600,35 @@ namespace godot {
 	}
 
 	void FmodAudioBusesDock::_visibility_changed() {
-		if (!meter_timer || !is_inside_tree()) {
+		if (!meter_timer || !is_inside_tree() || !meter_timer->is_inside_tree()) {
 			return;
 		}
 		if (is_visible_in_tree() && scroll->is_visible_in_tree()) {
-			meter_timer->start();
+			if (!meter_polling) {
+				meter_polling = true;
+				last_meter_ticks = Time::get_singleton()->get_ticks_usec();
+				meter_timer->start();
+			}
 		}
 		else {
+			meter_polling = false;
 			meter_timer->stop();
 		}
 	}
 
 	void FmodAudioBusesDock::_meter_timeout() {
+		if (!meter_polling) return;
+		const uint64_t now = Time::get_singleton()->get_ticks_usec();
+		const float delta = last_meter_ticks ? float(now - last_meter_ticks) / 1000000.0f : 1.0f / 30.0f;
+		last_meter_ticks = now;
 		for (int i = 0; i < rows->get_child_count(); i++) {
 			auto row = Object::cast_to<FmodAudioBusEditor>(rows->get_child(i));
 			if (row && row->meter) {
-				row->meter->sample(1.0f / 30.0f);
+				row->meter->sample(delta);
 			}
 		}
+		// Re-arm once instead of accumulating missed repeats while the editor stalls.
+		if (meter_polling) meter_timer->start();
 	}
 
 	void FmodAudioBusesDock::_open_godot() {

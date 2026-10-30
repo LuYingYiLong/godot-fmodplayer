@@ -190,6 +190,7 @@ void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_INTERNAL_CLASS(FmodAudioStreamEditorPlugin);
 		EditorPlugins::add_by_type<FmodAudioStreamEditorPlugin>();
 		GDREGISTER_INTERNAL_CLASS(FmodAudioBusMeter);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioBusMeterNotches);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioBusEffectsTree);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioBusEditor);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioBusesDock);

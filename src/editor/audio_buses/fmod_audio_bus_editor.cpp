@@ -38,111 +38,49 @@ namespace godot {
 			: std::cbrt(db / 45.0f) + 1.0f;
 	}
 
-	void FmodAudioBusMeter::_bind_methods() {
+	static bool meter_notch_has_label(float db) {
+		return db >= -6.0f || db == -24.0f || db == -72.0f;
 	}
 
-	void FmodAudioBusMeter::setup(int64_t id) {
-		bus_id = id;
-		set_mouse_filter(MOUSE_FILTER_PASS);
-		set_custom_minimum_size(Vector2(68.0f, 128.0f) * scale());
-		values.assign(2, -100.0f);
-		peaks = values;
-		holds.assign(2, 0.0f);
+	static String meter_notch_text(float db) {
+		return (db >= 0.0f ? "+" : "-") + String::num(std::abs(db), 0) + " dB";
 	}
 
-	FmodAudioBusMeter::~FmodAudioBusMeter() {
-		_release_meter();
+	void FmodAudioBusMeterNotches::_bind_methods() {
 	}
 
-	void FmodAudioBusMeter::_release_meter() {
-		if (metering && FmodServer::get_main_system().is_valid() && !FmodServer::get_main_system()->system_is_null()) {
-			metering->setMeteringEnabled(previous_input, previous_output);
+	Vector2 FmodAudioBusMeterNotches::_get_minimum_size() const {
+		const Ref<Font> font = get_theme_font("font", "Label");
+		const int font_size = get_theme_font_size("font_size", "Label");
+		float width = 0.0f;
+		float height = 0.0f;
+		for (float db = 6.0f; db >= -80.0f; db -= 6.0f) {
+			if (meter_notch_has_label(db)) {
+				width = MAX(width, font->get_string_size(meter_notch_text(db), HORIZONTAL_ALIGNMENT_LEFT, -1.0f, font_size).x);
+				height += font->get_height(font_size);
+			}
 		}
-		metering = nullptr;
+		// Match EditorAudioMeterNotches: a five-pixel notch and two-pixel gap.
+		return Vector2(width + 5.0f + 2.0f, height);
 	}
 
-	void FmodAudioBusMeter::_notification(int what) {
-		if (what == NOTIFICATION_EXIT_TREE || (what == NOTIFICATION_VISIBILITY_CHANGED && !is_visible_in_tree())) {
-			_release_meter();
-		}
+	void FmodAudioBusMeterNotches::_notification(int what) {
 		if (what == NOTIFICATION_THEME_CHANGED) {
+			update_minimum_size();
 			queue_redraw();
 		}
 	}
 
-	void FmodAudioBusMeter::sample(float delta) {
-		if (!is_visible_in_tree()) {
-			_release_meter();
-			return;
-		}
-		auto runtime = FmodServer::get_audio_bus_by_id(bus_id);
-		FMOD::DSP* head = nullptr;
-		if (runtime.is_valid() && runtime->get_bus().is_valid() && runtime->get_bus()->channel_group) {
-			runtime->get_bus()->channel_group->getDSP(FMOD_CHANNELCONTROL_DSP_HEAD, &head);
-		}
-		if (head != metering) {
-			_release_meter();
-			if (head && head->getMeteringEnabled(&previous_input, &previous_output) == FMOD_OK) {
-				metering = head;
-				head->setMeteringEnabled(previous_input, true);
-			}
-		}
-		FMOD_DSP_METERING_INFO info{};
-		if (metering) {
-			metering->getMeteringInfo(nullptr, &info);
-		}
-		const int channels = MAX(2, MIN(8, int(info.numchannels)));
-		if (channels != int(values.size())) {
-			values.assign(channels, -100.0f);
-			peaks = values;
-			holds.assign(channels, 0.0f);
-			set_custom_minimum_size(Vector2(float(channels * 16 + (channels - 1) * 4 + 32), 128.0f) * scale());
-		}
-		for (int i = 0; i < channels; i++) {
-			float value = i < info.numchannels && info.peaklevel[i] > 0.00001f ? 20.0f * std::log10(info.peaklevel[i]) : -100.0f;
-			values[i] = MAX(value, values[i] - 60.0f * delta);
-			if (value >= peaks[i]) {
-				peaks[i] = value;
-				holds[i] = 1.5f;
-			}
-			else if ((holds[i] -= delta) <= 0.0f) {
-				peaks[i] = MAX(value, peaks[i] - 24.0f * delta);
-			}
-		}
-		queue_redraw();
-	}
-
-	void FmodAudioBusMeter::_draw() {
-		const float s = scale(), h = get_size().y;
-		auto settings = EditorInterface::get_singleton()->get_editor_settings();
-		const Ref<Font> font = get_theme_default_font();
-		int font_size = get_theme_default_font_size();
-		for (int i = 0; i < int(values.size()); i++) {
-			const bool active = values[i] > -80.0f;
-			String key = active ? "editors/audio_buses/active_" : "editors/audio_buses/inactive_";
-			Color low = settings->get_setting(key + "min_db_color"), normal = settings->get_setting(key + "normalized_db_color"), high = settings->get_setting(key + "max_db_color");
-			const float x = i * 20.0f * s, fill = CLAMP(fmod_bus_db_to_position(values[i]), 0.0f, 1.0f);
-			const Color tint = settings->get_setting("editors/audio_buses/tint_under_color");
-			for (int y = 0; y < int(h); y++) {
-				float t = 1.0f - y / h;
-				Color c = t < 0.72f ? low.lerp(normal, t / 0.72f) : normal.lerp(high, MIN((t - 0.72f) / 0.02f, 1.0f));
-				if (t > fill) {
-					c *= tint;
-				}
-				draw_line(Vector2(x, y), Vector2(x + 16.0f * s, y), c);
-			}
-			Color marker = get_theme_color("font_color", "Editor");
-			marker.a *= 0.75f;
-			float peak = CLAMP(fmod_bus_db_to_position(peaks[i]), 0.0f, 1.0f);
-			draw_rect(Rect2(x, (h - 2.0f) * (1.0f - peak), 16.0f * s, 2.0f), marker);
-		}
-		const float x = float(values.size() * 20) * s;
-		Color color = get_theme_color("font_color", "Editor");
+	void FmodAudioBusMeterNotches::_draw() {
+		const float s = scale();
+		const Ref<Font> font = get_theme_font("font", "Label");
+		const int font_size = get_theme_font_size("font_size", "Label");
+		const Color color = get_theme_color("font_color", "Editor");
 		for (float db = 6.0f; db >= -80.0f; db -= 6.0f) {
-			float y = h * (1.0f - fmod_bus_db_to_position(db));
-			draw_line(Vector2(x, y), Vector2(x + 4.0f * s, y), color);
-			if (db >= -6.0f || db == -24.0f || db == -72.0f) {
-				draw_string(font, Vector2(x + 6.0f * s, y + font->get_ascent(font_size) * 0.4f), String::num(db, 0), HORIZONTAL_ALIGNMENT_LEFT, -1.0f, font_size, color);
+			const float y = (1.0f - fmod_bus_db_to_position(db)) * get_size().y;
+			draw_line(Vector2(0.0f, y), Vector2(5.0f * s, y), color, std::round(s));
+			if (meter_notch_has_label(db)) {
+				draw_string(font, Vector2(7.0f * s, y + font->get_height(font_size) / 4.0f), meter_notch_text(db), HORIZONTAL_ALIGNMENT_LEFT, -1.0f, font_size, color);
 			}
 		}
 	}
@@ -266,8 +204,13 @@ namespace godot {
 		volume->connect("drag_ended", callable_mp(this, &FmodAudioBusEditor::_drag_ended));
 		volume->connect("gui_input", callable_mp(this, &FmodAudioBusEditor::_volume_input));
 		meter = memnew(FmodAudioBusMeter);
+		meter->set_name("Meter");
 		meter->setup(bus_id);
 		meters->add_child(meter);
+		auto notches = memnew(FmodAudioBusMeterNotches);
+		notches->set_name("MeterScale");
+		notches->set_mouse_filter(MOUSE_FILTER_PASS);
+		meters->add_child(notches);
 		auto bottom_space = memnew(Control);
 		bottom_space->set_custom_minimum_size(Vector2(0.0f, 2.0f * scale()));
 		vb->add_child(bottom_space);

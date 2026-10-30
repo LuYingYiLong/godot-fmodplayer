@@ -4,6 +4,7 @@
 
 [resource]
 next_slot_id = 2
+bus/0/volume_db = -1.3214893
 bus/0/effect/0/id = 1
 bus/0/effect/0/effect = SubResource("FmodAudioEffectReverb_drfan")
 bus/0/effect/0/enabled = true

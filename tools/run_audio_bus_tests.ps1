@@ -2,12 +2,14 @@ param(
     [switch]$Editor,
     [switch]$SyncGodot,
     [switch]$Full,
+    [switch]$Realtime,
     [string]$GodotPath = 'C:/Users/Administrator/Documents/Godot/Godot_v4.7.2-stable_win64_console.exe'
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $label = if ($Editor) { 'audio_buses_editor_' } else { 'audio_buses_runtime_' }
 if ($SyncGodot) { $label += 'sync_' }
+if ($Realtime) { $label += 'realtime_' }
 $run = Join-Path $root ('tests/logs/runs/' + $label + (Get-Date -Format 'yyyyMMdd_HHmmss_fff'))
 $project = Join-Path $run 'project'
 New-Item -ItemType Directory -Force -Path $project, (Join-Path $project 'addons'), (Join-Path $project '.godot') | Out-Null
@@ -18,13 +20,14 @@ Copy-Item -LiteralPath (Join-Path $root 'addons/fmod_player') -Destination (Join
 Copy-Item -LiteralPath (Join-Path $root 'src/thirdparty/fmod/lib/x64/fmod.dll') -Destination (Join-Path $project 'addons/fmod_player/bin/fmod.dll')
 if (-not $SyncGodot) { Copy-Item -LiteralPath (Join-Path $root 'tests/assets/mixer/default_fmod_bus_layout.tres') -Destination (Join-Path $project 'default_fmod_bus_layout.tres') }
 $syncValue = if ($SyncGodot) { 'true' } else { 'false' }
+$outputType = if ($Realtime) { 2 } else { 4 }
 $config = @"
 config_version=5
 [application]
 config/name="FMOD Audio Buses Check"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 [audio]
-fmod/output_type=4
+fmod/output_type=$outputType
 fmod/show_startup_banner=false
 fmod/sync_godot_audio_buses=$syncValue
 [editor_plugins]

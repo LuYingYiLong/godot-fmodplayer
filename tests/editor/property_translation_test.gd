@@ -73,6 +73,7 @@ func _run() -> void:
 	report.close()
 	# 离屏编辑器没有系统鼠标进入事件，初始化 GUI 鼠标状态
 	get_viewport().notification(Node.NOTIFICATION_VP_MOUSE_ENTER)
+	passed = await BUS_DOCK_TEST.new().run_startup(output_dir, tree) and passed
 	passed = await PANNER_TEST.new().run(output_dir, tree) and passed
 	passed = await EQ_TEST.new().run(output_dir, tree) and passed
 	passed = await FILTER_TEST.new().run(output_dir, tree) and passed

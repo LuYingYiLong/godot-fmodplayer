@@ -1,8 +1,14 @@
 @tool
 extends RefCounted
 
+const METER_TEST: Script = preload("uid://de8my4rx6sw2q")
+
 var _checks: Array[Dictionary]
 var _failed: bool
+
+
+func run_startup(output_dir: String, tree: SceneTree) -> bool:
+	return await METER_TEST.new().run_startup(output_dir, tree)
 
 
 func run(output_dir: String, tree: SceneTree) -> bool:
@@ -12,7 +18,7 @@ func run(output_dir: String, tree: SceneTree) -> bool:
 		return false
 	var dock: EditorDock = candidates[0] as EditorDock
 	# 无场景的隔离项目尚未保存底栏高度，展开后测试完整面板
-	dock.custom_minimum_size.y = 350.0 * EditorInterface.get_editor_scale()
+	dock.custom_minimum_size.y = 440.0 * EditorInterface.get_editor_scale()
 	_expect(dock.default_slot == EditorDock.DOCK_SLOT_BOTTOM, "Default Dock slot matches Godot Audio")
 	_expect(dock.available_layouts == (EditorDock.DOCK_LAYOUT_HORIZONTAL | EditorDock.DOCK_LAYOUT_FLOATING), "Native framework owns docking and floating")
 	dock.make_visible()
@@ -48,6 +54,8 @@ func run(output_dir: String, tree: SceneTree) -> bool:
 	else:
 		_expect(bus_panel.visible and not hint.visible, "Independent mode shows the bus panel")
 		_expect(not add.disabled and slider.editable, "Independent layouts are editable")
+		_expect(await METER_TEST.new().run(dock, output_dir, tree), "Real playback, transient peaks, colors and meter fall behavior pass")
+		await _settle(tree)
 		var before: Array = layout.get_state()
 		var undo: EditorUndoRedoManager = EditorInterface.get_editor_undo_redo()
 		var history: UndoRedo = undo.get_history_undo_redo(undo.get_object_history_id(layout))
@@ -208,10 +216,58 @@ func _check_native_panel(dock: EditorDock, body: MarginContainer, bus_panel: Scr
 	var previous_minimum: Vector2 = native_dock.custom_minimum_size
 	native_dock.custom_minimum_size.y = dock.custom_minimum_size.y
 	native_dock.make_visible()
+	await _settle(tree)
+	var native_scales: Array[Node] = native_dock.find_children("*", "EditorAudioMeterNotches", true, false)
+	var fmod_scales: Array[Node] = dock.find_children("*", "FmodAudioBusMeterNotches", true, false)
+	_expect(not native_scales.is_empty() and not fmod_scales.is_empty(), "Both docks expose their dedicated meter scale controls")
+	var native_scale: Control = native_scales[0] as Control if not native_scales.is_empty() else null
+	var fmod_scale: Control = fmod_scales[0] as Control if not fmod_scales.is_empty() else null
+	var native_bars: Array[Node] = native_dock.find_children("*", "TextureProgressBar", true, false)
+	var fmod_bars: Array[Node] = dock.find_children("*", "TextureProgressBar", true, false)
+	_expect(not native_bars.is_empty() and not fmod_bars.is_empty(), "Both meters use native TextureProgressBar rendering")
+	var native_bar: TextureProgressBar = native_bars[0] as TextureProgressBar if not native_bars.is_empty() else null
+	var fmod_bar: TextureProgressBar = fmod_bars[0] as TextureProgressBar if not fmod_bars.is_empty() else null
+	if native_bar != null and fmod_bar != null:
+		for key: StringName in [&"texture_under", &"texture_progress", &"texture_over",]:
+			var actual: GradientTexture2D = fmod_bar.get(key) as GradientTexture2D
+			var expected: GradientTexture2D = native_bar.get(key) as GradientTexture2D
+			_expect(actual != null and expected != null and actual.gradient.colors == expected.gradient.colors and actual.gradient.offsets == expected.gradient.offsets, "Meter %s uses the exact native gradient stops and colors" % key)
+		_expect(fmod_bar.tint_under == native_bar.tint_under and fmod_bar.tint_over == native_bar.tint_over, "Meter uses both native audio-bus tint settings")
+	var native_bar_image: Image = await _capture_meter_scale(native_bar, output_dir.path_join("native_meter_inactive.png"), tree)
+	if native_scale != null and fmod_scale != null:
+		_expect(fmod_scale.get_minimum_size().is_equal_approx(native_scale.get_minimum_size()), "Meter scale minimum width and height match native font metrics")
+		_expect(fmod_scale.get_theme_font(&"font", &"Label") == native_scale.get_theme_font(&"font", &"Label") and fmod_scale.get_theme_font_size(&"font_size", &"Label") == native_scale.get_theme_font_size(&"font_size", &"Label"), "Meter scale uses the native Label font and font size")
+		_expect(fmod_scale.mouse_filter == native_scale.mouse_filter, "Meter scale preserves native mouse filtering")
+	var native_image: Image = await _capture_meter_scale(native_scale, output_dir.path_join("native_meter_scale.png"), tree)
 	await _capture(native_dock, output_dir.path_join("native_audio_dock.png"), tree)
 	native_dock.custom_minimum_size = previous_minimum
 	dock.make_visible()
 	await _settle(tree)
+	if native_scale != null and fmod_scale != null and bus_panel.visible:
+		bus_panel.scroll_vertical = 0
+		await _settle(tree)
+		_expect(fmod_scale.size.is_equal_approx(native_scale.size), "Meter scale layout height and width match the native Audio bus")
+		var fmod_image: Image = await _capture_meter_scale(fmod_scale, output_dir.path_join("fmod_meter_scale.png"), tree)
+		var fmod_bar_image: Image = await _capture_meter_scale(fmod_bar, output_dir.path_join("fmod_meter_inactive.png"), tree)
+		if native_bar_image != null and fmod_bar_image != null:
+			_expect(native_bar_image.get_size() == fmod_bar_image.get_size() and native_bar_image.get_data() == fmod_bar_image.get_data(), "Inactive FMOD meter gradient matches native Audio pixels")
+		if native_image != null and fmod_image != null:
+			_expect(fmod_image.get_size() == native_image.get_size() and fmod_image.get_data() == native_image.get_data(), "Rendered signs, dB suffixes, tick lengths, spacing, and baselines match native Audio pixels")
+		await _capture(dock, output_dir.path_join("fmod_audio_dock_aligned.png"), tree)
+
+
+func _capture_meter_scale(control: Control, path: String, tree: SceneTree) -> Image:
+	if control == null or "--eq-capture" not in OS.get_cmdline_user_args():
+		return null
+	await _settle(tree)
+	RenderingServer.force_draw()
+	var image: Image = control.get_viewport().get_texture().get_image()
+	var rect: Rect2i = Rect2i(control.get_global_rect()).intersection(Rect2i(Vector2i.ZERO, image.get_size()))
+	if not rect.has_area():
+		return null
+	var result: Image = image.get_region(rect)
+	_expect(result.save_png(path) == OK, "Meter scale screenshot captured")
+	return result
 
 
 func _check_sync(layout: FmodAudioBusLayout, tree: SceneTree) -> void:

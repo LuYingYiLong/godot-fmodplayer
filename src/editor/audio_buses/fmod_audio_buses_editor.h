@@ -9,6 +9,9 @@
 #include <godot_cpp/classes/editor_file_dialog.hpp>
 #include <godot_cpp/classes/editor_plugin.hpp>
 #include <godot_cpp/classes/h_box_container.hpp>
+#include <godot_cpp/classes/input_event.hpp>
+#include <godot_cpp/classes/gradient.hpp>
+#include <godot_cpp/classes/gradient_texture2d.hpp>
 #include <godot_cpp/classes/label.hpp>
 #include <godot_cpp/classes/line_edit.hpp>
 #include <godot_cpp/classes/menu_button.hpp>
@@ -18,6 +21,8 @@
 #include <godot_cpp/classes/popup_menu.hpp>
 #include <godot_cpp/classes/scroll_container.hpp>
 #include <godot_cpp/classes/timer.hpp>
+#include <godot_cpp/classes/texture_progress_bar.hpp>
+#include <godot_cpp/classes/style_box_flat.hpp>
 #include <godot_cpp/classes/tree.hpp>
 #include <godot_cpp/classes/v_box_container.hpp>
 #include <godot_cpp/classes/v_slider.hpp>
@@ -30,14 +35,34 @@ namespace godot {
 	class FmodAudioBusesDock;
 	class FmodAudioBusEditor;
 
-	class FmodAudioBusMeter : public Control {
-		GDCLASS(FmodAudioBusMeter, Control)
+	class FmodAudioBusMeter : public HBoxContainer {
+		GDCLASS(FmodAudioBusMeter, HBoxContainer)
 		
 		int64_t bus_id = 0;
 		FMOD::DSP* metering = nullptr;
 		bool previous_input = false, previous_output = false;
-		std::vector<float> values, peaks, holds;
+		struct Channel {
+			TextureProgressBar* bar = nullptr;
+			Panel* peak = nullptr;
+			Timer* hold = nullptr;
+			Ref<StyleBoxFlat> peak_style;
+			float level_db = -100.0f;
+			bool falling = false;
+		};
+		std::vector<Channel> channels;
+		Ref<Gradient> active_gradient, inactive_gradient;
+		Ref<GradientTexture2D> active_texture, inactive_texture;
+		float pending_peaks[8] = {};
+		bool pending_valid = false, pending_active = false;
+		bool last_active = false;
+		float last_peaks[8] = {};
+		uint64_t last_valid_ticks = 0;
 		void _release_meter();
+		void _resize_channels(int count);
+		void _collect_metering();
+		void _update_colors();
+		void _enable_indicator_fall();
+		void _reset_levels();
 
 	protected:
 		static void _bind_methods();
@@ -47,6 +72,17 @@ namespace godot {
 		~FmodAudioBusMeter();
 		void setup(int64_t id);
 		void sample(float delta);
+	};
+
+	class FmodAudioBusMeterNotches : public Control {
+		GDCLASS(FmodAudioBusMeterNotches, Control)
+
+	protected:
+		static void _bind_methods();
+		void _notification(int what);
+
+	public:
+		Vector2 _get_minimum_size() const override;
 		void _draw() override;
 	};
 
@@ -130,6 +166,8 @@ namespace godot {
 		Label* file_label = nullptr, * status = nullptr;
 		MenuButton* extra_menu = nullptr;
 		Timer* save_timer = nullptr, * meter_timer = nullptr;
+		uint64_t last_meter_ticks = 0;
+		bool meter_polling = false;
 		EditorFileDialog* file_dialog = nullptr;
 		AcceptDialog* error_dialog = nullptr;
 		std::vector<Ref<FmodAudioEffect>> observed_effects;
