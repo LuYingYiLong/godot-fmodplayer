@@ -14,6 +14,7 @@ const PHASER_TEST: Script = preload("uid://c48swpv3bn2yh")
 const STEREO_ENHANCE_TEST: Script = preload("uid://c53r8xnm6w2jt")
 const DELAY_TEST: Script = preload("uid://b57gm8xq3nf2w")
 const REMAINING_EFFECTS_TEST: Script = preload("uid://c47pw9yt2fn8k")
+const STREAM_WAVEFORM_TEST: Script = preload("uid://bws4h8t2gr7n5")
 
 const EXPECTED: Dictionary = {
 	"Show Startup Banner": "显示启动横幅",
@@ -23,7 +24,7 @@ const EXPECTED: Dictionary = {
 
 
 func _enter_tree() -> void:
-	get_tree().create_timer(60.0).timeout.connect(_on_timeout)
+	get_tree().create_timer(180.0).timeout.connect(_on_timeout)
 	_run.call_deferred()
 
 
@@ -69,6 +70,8 @@ func _run() -> void:
 		"checks": checks,
 	}, "\t"))
 	report.close()
+	# 离屏编辑器没有系统鼠标进入事件，初始化 GUI 鼠标状态
+	get_viewport().notification(Node.NOTIFICATION_VP_MOUSE_ENTER)
 	passed = await PANNER_TEST.new().run(output_dir, tree) and passed
 	passed = await EQ_TEST.new().run(output_dir, tree) and passed
 	passed = await FILTER_TEST.new().run(output_dir, tree) and passed
@@ -82,6 +85,7 @@ func _run() -> void:
 	passed = await DELAY_TEST.new().run(output_dir, tree) and passed
 	passed = await REMAINING_EFFECTS_TEST.new().run(output_dir, tree) and passed
 	passed = await CAPTURE_TEST.new().run(output_dir, tree) and passed
+	passed = await STREAM_WAVEFORM_TEST.new().run(output_dir, tree) and passed
 	if passed:
 		print("TESTS_PASSED output=", output_dir)
 	else:

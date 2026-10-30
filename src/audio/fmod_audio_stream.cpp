@@ -98,13 +98,13 @@ namespace godot {
 	}
 
 	FmodAudioStream::~FmodAudioStream() {
-		clear();
+		sound.unref();
 	}
 
 	void FmodAudioStream::set_audio_data(const PackedByteArray& p_data) {
-		invalidate_sound();
 		audio_data = p_data;
 		data_loaded = !audio_data.is_empty();
+		invalidate_sound();
 	}
 
 	PackedByteArray FmodAudioStream::get_audio_data() const {
@@ -113,7 +113,7 @@ namespace godot {
 
 	void FmodAudioStream::set_mode_flags(int p_flags) {
 		create_mode_flags = p_flags;
-		invalidate_sound();
+		invalidate_sound(false);
 	}
 
 	int FmodAudioStream::get_mode_flags() const {
@@ -124,7 +124,7 @@ namespace godot {
 		unsigned int new_flags = create_mode_flags | p_flag;
 		if (new_flags != create_mode_flags) {
 			create_mode_flags = new_flags;
-			invalidate_sound();
+			invalidate_sound(false);
 		}
 	}
 
@@ -132,7 +132,7 @@ namespace godot {
 		unsigned int new_flags = create_mode_flags & ~p_flag;
 		if (new_flags != create_mode_flags) {
 			create_mode_flags = new_flags;
-			invalidate_sound();
+			invalidate_sound(false);
 		}
 	}
 
@@ -466,16 +466,16 @@ namespace godot {
 	}
 
 	void FmodAudioStream::clear() {
-		if (sound.is_valid()) {
-			sound.unref();
-		}
 		audio_data.clear();
 		data_loaded = false;
+		invalidate_sound();
 	}
 
-	void FmodAudioStream::invalidate_sound() {
+	void FmodAudioStream::invalidate_sound(bool p_waveform_changed) {
 		if (sound.is_valid()) {
 			sound.unref();
 		}
+		if (p_waveform_changed) waveform_revision++;
+		emit_changed();
 	}
 }

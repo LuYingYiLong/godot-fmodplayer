@@ -28,6 +28,7 @@ namespace godot {
 		// 音频数据（由导入器填充或运行时加载）
 		PackedByteArray audio_data;
 		bool data_loaded = false;
+		uint64_t waveform_revision = 0;
 		Ref<FmodSound> sound;
 		unsigned int create_mode_flags = MODE_STREAM;
 		int length_override = 0;
@@ -124,6 +125,7 @@ namespace godot {
 		// 音频信息
 		double get_length() const;
 		bool is_data_loaded() const;
+		uint64_t get_waveform_revision() const { return waveform_revision; }
 
 		// 运行时加载外部文件
 		static Ref<FmodAudioStream> load_from_file(const String& p_path, int p_flags = MODE_STREAM);
@@ -132,7 +134,7 @@ namespace godot {
 		void clear();
 
 		// 仅使 sound 缓存失效（保留数据），下次 get_sound() 会重新创建
-		void invalidate_sound();
+		void invalidate_sound(bool p_waveform_changed = true);
 	};
 }
 

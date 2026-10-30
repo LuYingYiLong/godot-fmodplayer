@@ -3,6 +3,7 @@
 
 #include "audio/fmod_audio_stream.h"
 #include "nodes/fmod_audio_stream_player.h"
+#include "editor/fmod_audio_waveform.h"
 #include <godot_cpp/classes/button.hpp>
 #include <godot_cpp/classes/color_rect.hpp>
 #include <godot_cpp/classes/control.hpp>
@@ -17,7 +18,7 @@ namespace godot {
 
 	private:
 		// 预览区域
-		ColorRect* _preview = nullptr;
+		FmodAudioWaveformView* _preview = nullptr;
 		Control* _indicator = nullptr;
 
 		// 控制栏
@@ -39,14 +40,8 @@ namespace godot {
 		float playback_position = 0.0f;
 		float stream_duration = 0.0f;
 
-		// 缓存的波形数据
-		PackedVector2Array cached_waveform_points;
-		Ref<FmodAudioStream> cached_waveform_stream;
-		bool waveform_generating = false;
-
-		void _draw_waveform();
+		void _on_waveform_updated();
 		void _draw_indicator();
-		void _generate_waveform_async();
 		void _on_indicator_gui_input(const Ref<InputEvent>& p_event);
 		void _update_playback_position(float p_position);
 		void _update_time_labels();

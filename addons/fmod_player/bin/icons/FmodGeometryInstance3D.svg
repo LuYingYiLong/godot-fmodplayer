@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="_图层_1" data-name="图层_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 16">
-  <!-- Generator: Adobe Illustrator 29.5.1, SVG Export Plug-In . SVG Version: 2.1.0 Build 141)  -->
-  <defs>
-    <style>
-      .st0 {
-        fill: #fc7f7f;
-      }
-    </style>
-  </defs>
-  <path class="st0" d="M3,1c-1.1,0-2,.9-2,2v10c0,1.1.9,2,2,2h10c1.1,0,2-.9,2-2V3c0-1.1-.9-2-2-2H3ZM3,2h10c.55,0,1,.45,1,1v10c0,.55-.45,1-1,1H3c-.55,0-1-.45-1-1V3c0-.55.45-1,1-1Z"/>
-  <rect class="st0" x="3" y="3" width="2" height="2"/>
-  <rect class="st0" x="3" y="11" width="2" height="2"/>
-  <path class="st0" d="M13,8.33v2.36h-1v2.31h-2.25v-5.09c0-.57.1-1.06.29-1.47.25-.52.63-.94,1.13-1.27s1.04-.49,1.58-.49h.24v2.36h-.11c-.28,0-.5.09-.66.28s-.23.46-.23.81v.2h1.01Z"/>
+<svg data-name="图层_1" version="1.1" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <linearGradient id="swatch2">
+   <stop stop-color="#fc7f7f" offset="0"/>
+  </linearGradient>
+  <linearGradient id="linearGradient2" x1="1" x2="15" y1="8" y2="8" gradientUnits="userSpaceOnUse" xlink:href="#swatch2"/>
+  <linearGradient id="linearGradient3" x1="9.75" x2="13" y1="8.84" y2="8.84" gradientUnits="userSpaceOnUse" xlink:href="#swatch2"/>
+  <linearGradient id="linearGradient4" x1="3" x2="5" y1="4" y2="4" gradientUnits="userSpaceOnUse" xlink:href="#swatch2"/>
+  <linearGradient id="linearGradient5" x1="3" x2="5" y1="12" y2="12" gradientUnits="userSpaceOnUse" xlink:href="#swatch2"/>
+ </defs>
+ <path class="st0" d="M3,1c-1.1,0-2,.9-2,2v10c0,1.1.9,2,2,2h10c1.1,0,2-.9,2-2V3c0-1.1-.9-2-2-2H3ZM3,2h10c.55,0,1,.45,1,1v10c0,.55-.45,1-1,1H3c-.55,0-1-.45-1-1V3c0-.55.45-1,1-1Z" fill="url(#linearGradient2)"/>
+ <rect class="st0" x="3" y="3" width="2" height="2" fill="url(#linearGradient4)"/>
+ <rect class="st0" x="3" y="11" width="2" height="2" fill="url(#linearGradient5)"/>
+ <path class="st0" d="M13,8.33v2.36h-1v2.31h-2.25v-5.09c0-.57.1-1.06.29-1.47.25-.52.63-.94,1.13-1.27s1.04-.49,1.58-.49h.24v2.36h-.11c-.28,0-.5.09-.66.28s-.23.46-.23.81v.2h1.01Z" fill="url(#linearGradient3)"/>
 </svg>

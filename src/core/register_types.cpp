@@ -27,6 +27,8 @@
 #include "editor/fmod_audio_importer.h"
 #include "editor/fmod_audio_preview_inspector.h"
 #include "editor/fmod_audio_preview_property.h"
+#include "editor/fmod_audio_stream_property.h"
+#include "editor/fmod_audio_waveform.h"
 #include "editor/fmod_audio_stream_player_3d_gizmo_plugin.h"
 #include "editor/fmod_geometry_mesh_tools_plugin.h"
 #include "editor/fmod_reverb_zone_3d_gizmo_plugin.h"
@@ -154,6 +156,10 @@ void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(AudioImporterFmod);
 		GDREGISTER_CLASS(FmodAudioPreviewInspector);
 		GDREGISTER_CLASS(FmodAudioPreviewProperty);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioWaveform);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioWaveformCache);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioWaveformView);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioStreamPickerPreview);
 		GDREGISTER_CLASS(FmodAudioStreamPlayer3DGizmoPlugin);
 		GDREGISTER_CLASS(FmodGeometryMeshToolsPlugin);
 		GDREGISTER_CLASS(FmodReverbZone3DGizmoPlugin);
@@ -177,6 +183,8 @@ void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectInspector);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectEditorPlugin);
 		EditorPlugins::add_by_type<FmodAudioEffectEditorPlugin>();
+		GDREGISTER_INTERNAL_CLASS(FmodAudioStreamEditorPlugin);
+		EditorPlugins::add_by_type<FmodAudioStreamEditorPlugin>();
 #endif
 		return;
 	}
