@@ -33,6 +33,7 @@ if ARGUMENTS.get("platform") == "android":
     # godot-cpp accesses this key even when a standalone NDK is configured.
     ARGUMENTS.setdefault("ANDROID_HOME", android_home or "")
 
+ARGUMENTS.setdefault("custom_api_file", File("#api/godot_4_7_2.json").abspath)
 env = SConscript("godot-cpp/SConstruct")
 
 env.Append(CPPPATH=["src/"])
@@ -97,6 +98,7 @@ sources = (Glob("src/core/*.cpp") + Glob("src/audio/*.cpp") + Glob("src/playback
 
 if env["target"] in ["editor", "template_debug"]:
     sources += Glob("src/editor/audio_effects/*.cpp")
+    sources += Glob("src/editor/audio_buses/*.cpp")
     doc_data = env.GodotCPPDocData("src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml"))
     sources.append(doc_data)
 

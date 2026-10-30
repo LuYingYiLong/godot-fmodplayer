@@ -1,4 +1,5 @@
 #include "nodes/fmod_audio_stream_player.h"
+#include "mixer/fmod_audio_bus.h"
 
 #include <godot_cpp/classes/audio_server.hpp>
 #include <godot_cpp/classes/engine.hpp>
@@ -58,6 +59,7 @@ namespace godot {
 
 	FmodAudioStreamPlayer::FmodAudioStreamPlayer() {
 		internal_player = new FmodAudioStreamPlayerInternal;
+		if (FmodServer::get_singleton()) FmodServer::get_singleton()->connect("bus_layout_changed", Callable(this, "notify_property_list_changed"));
 		internal_player->set_channel_ended_callback(callable_mp(this, &FmodAudioStreamPlayer::_on_internal_player_finished));
 		internal_player->set_playback_mode(FmodAudioStream::MODE_2D);
 	}
@@ -96,19 +98,8 @@ namespace godot {
 
 	void FmodAudioStreamPlayer::_validate_property(PropertyInfo& p_property) const {
 		if (p_property.name == StringName("bus")) {
-			String bus_list;
-			AudioServer* audio_server = AudioServer::get_singleton();
-
-			if (audio_server) {
-				int bus_count = audio_server->get_bus_count();
-				for (int i = 0; i < bus_count; i++) {
-					if (i > 0) bus_list += ",";
-					bus_list += audio_server->get_bus_name(i);
-				}
-			}
-
 			p_property.hint = PROPERTY_HINT_ENUM;
-			p_property.hint_string = bus_list;
+			p_property.hint_string = String(",").join(FmodServer::get_bus_names());
 		}
 	}
 
@@ -215,12 +206,7 @@ namespace godot {
 	}
 
 	StringName FmodAudioStreamPlayer::get_bus() const {
-		const String bus_name = internal_player->get_bus();
-		for (int i = 0; i < AudioServer::get_singleton()->get_bus_count(); i++) {
-			if (AudioServer::get_singleton()->get_bus_name(i) == bus_name) {
-				return internal_player->get_bus();
-			}
-		}
-		return StringName("Master");
+		const StringName name = internal_player->get_bus();
+		return FmodServer::get_audio_bus(name).is_valid() ? name : StringName("Master");
 	}
 }

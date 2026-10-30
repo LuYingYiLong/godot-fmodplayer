@@ -34,6 +34,7 @@
 #include "editor/fmod_reverb_zone_3d_gizmo_plugin.h"
 #include "editor/modify_android_build_template_plugin.h"
 #ifdef TOOLS_ENABLED
+#include "editor/audio_buses/fmod_audio_buses_editor.h"
 #include "editor/audio_effects/fmod_audio_effect_inspector.h"
 #include "editor/audio_effects/fmod_audio_effect_panner_preview.h"
 #include "editor/audio_effects/fmod_audio_effect_eq_preview.h"
@@ -54,6 +55,7 @@
 #include "geometry/fmod_geometry.h"
 #include "mixer/fmod_audio_bus.h"
 #include "mixer/fmod_audio_bus_layout.h"
+#include "mixer/fmod_audio_bus_runtime.h"
 #include "nodes/fmod_audio_stream_player.h"
 #include "nodes/fmod_audio_stream_player_2d.h"
 #include "nodes/fmod_audio_stream_player_3d.h"
@@ -107,6 +109,8 @@ static void add_fmod_project_setting(
 void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
 		add_fmod_project_setting("audio/fmod/show_startup_banner", true, Variant::BOOL, false, false);
+		add_fmod_project_setting("audio/fmod/sync_godot_audio_buses", true, Variant::BOOL, true, true);
+		add_fmod_project_setting("audio/fmod/default_bus_layout", "res://default_fmod_bus_layout.tres", Variant::STRING, true, true, PROPERTY_HINT_FILE, "*.tres,*.res");
 		add_fmod_project_setting("audio/fmod/max_channels", 32, Variant::INT, true, true, PROPERTY_HINT_RANGE, "1,4095,1");
 		add_fmod_project_setting("audio/fmod/software_channels", 0, Variant::INT, false, true, PROPERTY_HINT_RANGE, "0,4095,1,or_greater");
 		add_fmod_project_setting("audio/fmod/output_type", FmodSystem::FMOD_OUTPUT_TYPE_AUTODETECT, Variant::INT, false, true, PROPERTY_HINT_ENUM, "Autodetect,Unknown,No Sound,WAV Writer,No Sound NRT,WAV Writer NRT,WASAPI,ASIO,PulseAudio,ALSA,CoreAudio,AudioTrack,OpenSL,AudioOut,Audio3D,WebAudio,NNAudio,WinSonic,AAudio,AudioWorklet,AudioWorkletP,PHASE,OHAudio");
@@ -185,6 +189,13 @@ void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 		EditorPlugins::add_by_type<FmodAudioEffectEditorPlugin>();
 		GDREGISTER_INTERNAL_CLASS(FmodAudioStreamEditorPlugin);
 		EditorPlugins::add_by_type<FmodAudioStreamEditorPlugin>();
+		GDREGISTER_INTERNAL_CLASS(FmodAudioBusMeter);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioBusEffectsTree);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioBusEditor);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioBusesDock);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioBusExportPlugin);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioBusesEditorPlugin);
+		EditorPlugins::add_by_type<FmodAudioBusesEditorPlugin>();
 #endif
 		return;
 	}
@@ -226,6 +237,7 @@ void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 
 	GDREGISTER_CLASS(FmodAudioBus);
 	GDREGISTER_CLASS(FmodAudioBusLayout);
+	GDREGISTER_INTERNAL_CLASS(FmodAudioBusRuntime);
 
 	GDREGISTER_CLASS(FmodAudioStream);
 

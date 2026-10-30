@@ -4,13 +4,9 @@
 		Represents an audio bus for mixing with effects support.
 	</brief_description>
 	<description>
-		FmodAudioBus represents an audio mixing bus in the FMOD audio system. Each bus has its own channel group for routing audio, and can have multiple audio effects applied to it.
-		Buses are organized in a hierarchy managed by [FmodAudioBusLayout]. The master bus is the root of this hierarchy, with all other buses ultimately routing through it.
-		Use buses to:
-		- Organize audio into logical categories (Music, SFX, Dialogue, etc.)
-		- Apply effects to groups of sounds
-		- Control volume and routing for entire audio categories
-		- Implement solo/mute functionality for mixing
+		Runtime mixing bus backed by an FMOD channel group. FmodServer owns buses for the active FmodAudioBusLayout; obtain them with FmodServer.get_audio_bus or FmodServer.get_audio_bus_by_id. Do not release a server-managed bus manually.
+		Use FmodAudioBusLayout to author persistent routing, mixing state, and effect slots. Direct changes to this runtime object do not modify or save the layout. Managed effect instances are per slot; FmodServer.get_bus_effect_instance provides access by stable IDs.
+		Standalone buses created with init_bus remain available for low-level routing. Their lifetime and effects are managed by the caller.
 	</description>
 	<tutorials>
 	</tutorials>

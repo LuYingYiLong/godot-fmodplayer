@@ -48,6 +48,20 @@ SpectrumAnalyzer 检查器：选中 `manual/spectrum_analyzer_preview.tres`，�
 
 ## 自动测试
 
+总线专项在 `logs/runs/` 下创建隔离项目，覆盖布局、运行时和真实编辑器交互：
+
+```powershell
+.\tools\run_audio_bus_tests.ps1
+.\tools\run_audio_bus_tests.ps1 -Full
+.\tools\run_audio_bus_tests.ps1 -Editor
+.\tools\run_audio_bus_tests.ps1 -Editor -SyncGodot
+.\tools\run_audio_bus_packaging_tests.ps1
+```
+
+检查配置保存重载、稳定 ID、自由路由和环路拒绝、删除转接、Solo 通路、共享配置的独立实例、参数更新与混响尾音、Dock 控件、翻译和撤销重做。JSON、布局副本、截图和控制台日志保存在同次运行目录。`-Editor -Full` 同时运行全部检查器回归。
+
+打包专项还检查默认文件缺失、无效版本、UID 移动，以及仅导出选定场景时的布局和外部效果器依赖。PCK 在独立目录启动，原生库按 Godot 的 pack-only 导出规则单独准备。
+
 ```powershell
 .\build_debug_to_test.bat
 .\tools\run_tests.ps1 -Suite regression

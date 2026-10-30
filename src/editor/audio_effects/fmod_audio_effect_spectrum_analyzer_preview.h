@@ -10,6 +10,7 @@ namespace godot {
 	class FmodAudioEffectSpectrumAnalyzerPreview : public EditorProperty {
 		GDCLASS(FmodAudioEffectSpectrumAnalyzerPreview, EditorProperty)
 		Ref<FmodAudioEffectSpectrumAnalyzer> effect;
+		Ref<FmodAudioEffectSpectrumAnalyzer> runtime_effect;
 		Timer* refresh_timer = nullptr;
 		std::array<Vector2, 64> magnitudes{};
 		PackedVector2Array left_curve;
@@ -35,6 +36,7 @@ namespace godot {
 		FmodAudioEffectSpectrumAnalyzerPreview();
 
 		void set_effect(const Ref<FmodAudioEffectSpectrumAnalyzer>& p_effect);
+		void set_runtime_effect(const Ref<FmodAudioEffect>& value) { runtime_effect = value; _on_effect_changed(); }
 		void _draw() override;
 		void _update_property() override;
 	};

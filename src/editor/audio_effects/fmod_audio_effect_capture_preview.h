@@ -11,6 +11,7 @@ namespace godot {
 		GDCLASS(FmodAudioEffectCapturePreview, EditorProperty)
 
 		Ref<FmodAudioEffectCapture> effect;
+		Ref<FmodAudioEffectCapture> runtime_effect;
 		Timer* refresh_timer = nullptr;
 		std::vector<Vector2> snapshot;
 		std::vector<fmod_capture_preview::PeakRange> ranges;
@@ -37,6 +38,7 @@ namespace godot {
 		FmodAudioEffectCapturePreview();
 
 		void set_effect(const Ref<FmodAudioEffectCapture>& p_effect);
+		void set_runtime_effect(const Ref<FmodAudioEffect>& value) { runtime_effect = value; _on_effect_changed(); }
 		void _draw() override;
 		void _update_property() override;
 	};

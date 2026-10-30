@@ -1,0 +1,4 @@
+[gd_resource type="FmodAudioEffectEQ10" format=3]
+
+[resource]
+resource_name = "Music EQ"

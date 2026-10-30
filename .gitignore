@@ -389,6 +389,7 @@ AGENTS.md
 # Godot imports, caches and locally staged test binaries
 .godot/
 *.import
+!/addons/fmod_player/translations/*.csv.import
 !/tests/assets/audio/*.import
 /tests/bin/
 /tests/addons/fmod_player/

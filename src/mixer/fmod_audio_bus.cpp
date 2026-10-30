@@ -3,6 +3,7 @@
 #include "dsp/fmod_audio_effect.h"
 
 namespace godot {
+	void FmodAudioBus::set_effect_instances(const Vector<Ref<FmodAudioEffect>>& effects) { audio_effects = effects; }
 	void FmodAudioBus::_bind_methods() {
 		ClassDB::bind_method(D_METHOD("init_bus", "name", "parent"), &FmodAudioBus::init_bus, DEFVAL(Ref<FmodChannelGroup>()));
 		ClassDB::bind_method(D_METHOD("set_parent", "parent"), &FmodAudioBus::set_parent);
@@ -187,12 +188,6 @@ namespace godot {
 
 	void FmodAudioBus::sync_bypass() {
 		ERR_FAIL_COND(bus.is_null());
-		int dsp_count = bus->get_num_dsps();
-		for (int i = 0; i < dsp_count; ++i) {
-			Ref<FmodDSP> dsp = bus->get_dsp(i);
-			if (dsp.is_valid()) {
-				dsp->set_bypass(bypass);
-			}
-		}
+		for (const auto& effect : audio_effects) for (const auto& dsp : effect->get_dsp_chain()) if (dsp.is_valid()) dsp->set_bypass(bypass);
 	}
 }

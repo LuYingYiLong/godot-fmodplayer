@@ -19,7 +19,7 @@
     <img src="https://img.shields.io/github/license/LuYingYiLong/Godot-FmodPlayer?style=flat-square" alt="License" />
   </a>
   <a href="https://godotengine.org">
-    <img src="https://img.shields.io/badge/Godot-4.1%2B-478CBF?style=flat-square&logo=godot-engine" alt="Godot Version" />
+    <img src="https://img.shields.io/badge/Godot-4.7.2%2B-478CBF?style=flat-square&logo=godot-engine" alt="Godot Version" />
   </a>
   <a href="https://godot-fmodplayerdocs.readthedocs.io/en/latest/">
     <img src="https://img.shields.io/badge/docs-online-2ea44f?style=flat-square" alt="Documentation" />
@@ -30,7 +30,7 @@
 
 - Playback nodes: `FmodAudioStreamPlayer`, `FmodAudioStreamPlayer2D`, and `FmodAudioStreamPlayer3D`.
 - Audio import and inspector preview, with streaming and sample loading from files, memory, and Godot PCK resources.
-- Bus synchronization with Godot's `AudioServer`, named bus routing, and channel group controls.
+- A native FMOD Audio Dock, saved bus layouts, free routing, and optional synchronization with Godot's `AudioServer`.
 - DSP effects: gain, filter, EQ6/10/21, chorus, delay, distortion, phaser, pitch shift, reverb, compressor, limiter, stereo enhancement, and panning.
 - Spectrum analysis, sample capture, and bus recording with waveform snapshots.
 - 3D audio with camera-based listeners, distance attenuation, geometry occlusion, and reverb zones.
@@ -54,7 +54,7 @@
 
 ## Building From Source
 
-Requires Godot 4.1+, a C++17 compiler, SCons, and the FMOD Core SDK 2.04. Windows builds use MSVC; Android builds use the Android NDK.
+Requires Godot 4.7.2+, a C++17 compiler, SCons, and the FMOD Core SDK 2.04. Windows builds use MSVC; Android builds use the Android NDK. Builds use the API snapshot in `api/godot_4_7_2.json`; see `api/README.md` to regenerate it.
 
 Initialize the bindings:
 
@@ -106,6 +106,18 @@ This builds arm64 Debug and Release libraries. Pass `arch=x86_64`, `arch=x86_32`
 For APK export, install Godot's Android build template and run **Configure FMOD Android Export** with the same FMOD Android SDK to include the Java and native runtime files.
 
 Local configuration stays in `custom.py`, which is ignored by Git. SCons command-line arguments override it; `FMOD_ANDROID_SDK` supplies an alternative default SDK path.
+
+## Audio Buses
+
+The **FMOD Audio** bottom Dock shows the editor process's FMOD buses and meters in independent mode. By default, **Audio > FMOD > Sync Godot Audio Buses** mirrors Godot's buses and supported effects. The Dock displays a centered synchronization hint; open the native Audio panel through the FMOD menu to edit the source.
+
+Disable synchronization and reload the project to edit an independent FMOD layout. The default is `res://default_fmod_bus_layout.tres`; its first edit creates the file if it is missing. Authoring changes save after 0.8 seconds. **Load**, **Save As**, and **FMOD > Set as Default** are separate operations. The FMOD menu can also convert a Godot layout to a new file.
+
+Bus and effect order support drag and drop, with Ctrl for copying effects. Effect labels open the inspector; checkboxes enable or bypass each slot. The nonlinear volume slider supports Ctrl integer dB steps and **Reset Volume**. All edits support undo and redo. Sends can target any bus that does not create a cycle; reordering preserves routes.
+
+The export plugin includes the independent default layout and its resource dependencies. For selected-scene exports, include `*.gdextension` in Godot's resource include filter so its native extension exporter also handles the library and FMOD dependency.
+
+`FmodAudioBusLayout` stores configuration by stable bus and slot IDs. Use `FmodServer.get_audio_bus(name)` for a runtime bus and `get_bus_effect_instance(bus_id, slot_id)` for live Capture, SpectrumAnalyzer, or Record data. Shared configurations create independent instances per slot. Direct runtime edits do not save the layout. Player nodes store bus names and fall back to Master if a name disappears. Remote game meters and editing are outside this first version.
 
 ## FMOD 2.04 API
 

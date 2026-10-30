@@ -40,6 +40,8 @@ namespace godot {
 		void clear_effects();
 		int get_effect_count() const;
 		Ref<FmodAudioEffect> get_effect(int index) const;
+		void set_effect_instances(const Vector<Ref<FmodAudioEffect>>& effects);
+		void set_runtime_name(const String& name) { bus_name = name; }
 
 		void set_volume_db(const float volume_db);
 		float get_volume_db() const;

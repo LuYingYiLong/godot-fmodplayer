@@ -55,27 +55,84 @@
 		<method name="get_audio_bus_layout" qualifiers="static">
 			<return type="FmodAudioBusLayout" />
 			<description>
-				Returns the audio bus layout used for managing audio buses and their routing. The bus layout synchronizes with Godot's AudioServer bus layout and provides FMOD-specific bus functionality including DSP effects.
+				Returns the current configuration resource. In independent mode, edits are applied to bound runtime instances on the next server update, or immediately through [method flush_bus_updates]. In synchronization mode Godot AudioServer provides the configuration; edit it through the native Audio panel.
+			</description>
+		</method>
+		<method name="set_audio_bus_layout" qualifiers="static">
+			<return type="int" enum="Error" />
+			<param index="0" name="layout" type="FmodAudioBusLayout" />
+			<description>
+				Validates and builds [param layout] before replacing the current runtime graph. Playing channels move to matching bus names or Master. Returns [constant OK] on success, [constant ERR_BUSY] in Godot synchronization mode, [constant ERR_INVALID_DATA] for an invalid resource, or an initialization error. This does not save the resource or change the project default.
+			</description>
+		</method>
+		<method name="get_audio_bus" qualifiers="static">
+			<return type="FmodAudioBus" />
+			<param index="0" name="name" type="StringName" />
+			<description>
+				Returns the runtime bus named [param name], or [code]null[/code] when it does not exist. Direct runtime edits do not modify or save the layout configuration.
+			</description>
+		</method>
+		<method name="get_audio_bus_by_id" qualifiers="static">
+			<return type="FmodAudioBus" />
+			<param index="0" name="id" type="int" />
+			<description>
+				Returns the runtime bus with stable [param id], or [code]null[/code]. Bus IDs remain stable when the layout is reordered or a bus is renamed.
+			</description>
+		</method>
+		<method name="get_bus_effect_instance" qualifiers="static">
+			<return type="FmodAudioEffect" />
+			<param index="0" name="bus_id" type="int" />
+			<param index="1" name="slot_id" type="int" />
+			<description>
+				Returns the live effect instance of [param slot_id] on [param bus_id], or [code]null[/code]. Use it for Capture buffers, SpectrumAnalyzer snapshots, and Record output. Each slot has its own instance, even when slots share a configuration resource. Runtime edits are not saved; subsequent configuration edits may update the instance.
+			</description>
+		</method>
+		<method name="get_bus_names" qualifiers="static">
+			<return type="PackedStringArray" />
+			<description>
+				Returns bus names in the active FMOD layout display order. The three FmodAudioStreamPlayer node classes use this list for their Bus property.
+			</description>
+		</method>
+		<method name="is_syncing_godot_buses" qualifiers="static">
+			<return type="bool" />
+			<description>
+				Returns the startup value of [code]audio/fmod/sync_godot_audio_buses[/code]. Changing this project setting requires reloading the project.
+			</description>
+		</method>
+		<method name="flush_bus_updates" qualifiers="static">
+			<return type="void" />
+			<description>
+				Applies pending configuration and effect parameter changes to the runtime graph immediately. The server normally does this once per frame. This call does not poll Godot AudioServer or save layout files.
+			</description>
+		</method>
+		<method name="create_layout_from_godot" qualifiers="static">
+			<return type="FmodAudioBusLayout" />
+			<description>
+				Creates an independent configuration from the current Godot AudioServer buses and supported effects. Unsupported effects are skipped. This does not activate or save the result. The Dock conversion command also reports skipped effects.
 			</description>
 		</method>
 		<method name="generate_bus_layout" qualifiers="static">
 			<return type="void" />
 			<description>
-				Synchronizes FMOD audio buses and their effects with the current Godot [AudioServer] bus layout.
+				Refreshes the FMOD mirror from Godot AudioServer when synchronization is enabled. Does nothing in independent mode.
 			</description>
 		</method>
 		<method name="reset_main_system" qualifiers="static">
 			<return type="void" />
 			<param index="0" name="system" type="FmodSystem" />
 			<description>
-				Replaces the main system with [param system]. Configure and initialize the new system before calling this method; this method does not initialize it.
-				Clears the current bus layout, releases the previous system, and rebuilds the buses for the new system from [AudioServer]. Objects belonging to the previous system must not be reused.
+				Replaces the main system with [param system]. Configure and initialize the new system before calling this method. Releases the previous runtime instances and system, then rebuilds the active layout configuration on the new system. Objects from the previous system must not be reused.
 			</description>
 		</method>
 	</methods>
 	<members>
 	</members>
 	<signals>
+		<signal name="bus_layout_changed">
+			<description>
+				Emitted after the active layout is replaced or its bus names or display order change. Use it to refresh bus selectors.
+			</description>
+		</signal>
 	</signals>
 	<constants>
 	</constants>

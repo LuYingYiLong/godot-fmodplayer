@@ -69,6 +69,12 @@
     <Filter Include="Source Files\editor\audio_effects">
       <UniqueIdentifier>{2ac1fd1f-adb5-4648-8c3c-09b2cfd00c85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editor\audio_buses">
+      <UniqueIdentifier>{f3b1cc8d-dcf6-4c10-8947-7554c2566a08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editor\audio_buses">
+      <UniqueIdentifier>{e6f2d5b4-73e0-49b7-af4a-e6290c5cf7f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\fmod_server.h">
@@ -275,6 +281,9 @@
     <ClInclude Include="src\editor\audio_effects\fmod_phaser_preview_response.h">
       <Filter>Header Files\editor\audio_effects</Filter>
     </ClInclude>
+    <ClInclude Include="src\editor\audio_buses\fmod_audio_buses_editor.h">
+      <Filter>Header Files\editor\audio_buses</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\fmod_server.cpp">
@@ -459,6 +468,12 @@
     </ClCompile>
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_inspector.cpp">
       <Filter>Source Files\editor\audio_effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\audio_buses\fmod_audio_bus_editor.cpp">
+      <Filter>Source Files\editor\audio_buses</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\audio_buses\fmod_audio_buses_editor.cpp">
+      <Filter>Source Files\editor\audio_buses</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

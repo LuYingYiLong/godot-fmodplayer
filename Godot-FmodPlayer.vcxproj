@@ -154,6 +154,7 @@
     <ClInclude Include="src\dsp\fmod_audio_effect_reverb.h" />
     <ClInclude Include="src\dsp\fmod_audio_effect_spectrum_analyzer.h" />
     <ClInclude Include="src\dsp\fmod_audio_effect_stereo_enhance.h" />
+    <ClInclude Include="src\editor\audio_buses\fmod_audio_buses_editor.h" />
     <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_inspector.h" />
     <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_panner_preview.h" />
     <ClInclude Include="src\editor\audio_effects\fmod_audio_effect_eq_preview.h" />
@@ -224,6 +225,8 @@
     <ClCompile Include="src\dsp\fmod_audio_effect_reverb.cpp" />
     <ClCompile Include="src\dsp\fmod_audio_effect_spectrum_analyzer.cpp" />
     <ClCompile Include="src\dsp\fmod_audio_effect_stereo_enhance.cpp" />
+    <ClCompile Include="src\editor\audio_buses\fmod_audio_buses_editor.cpp" />
+    <ClCompile Include="src\editor\audio_buses\fmod_audio_bus_editor.cpp" />
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_inspector.cpp" />
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_panner_preview.cpp" />
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_eq_preview.cpp" />

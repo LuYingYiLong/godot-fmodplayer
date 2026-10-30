@@ -2,6 +2,7 @@
 
 #include "core/fmod_server.h"
 #include "mixer/fmod_audio_bus_layout.h"
+#include "mixer/fmod_audio_bus.h"
 #include <godot_cpp/classes/audio_server.hpp>
 
 namespace godot {
@@ -67,7 +68,7 @@ namespace godot {
 	Ref<FmodChannelGroup> FmodAudioStreamPlayerInternal::_get_bus_channel_group() const {
 		Ref<FmodAudioBusLayout> layout = FmodServer::get_audio_bus_layout();
 		if (layout.is_valid()) {
-			Ref<FmodAudioBus> audio_bus = layout->get_audio_bus(get_bus());
+			Ref<FmodAudioBus> audio_bus = FmodServer::get_audio_bus(get_bus());
 			if (audio_bus.is_valid()) {
 				Ref<FmodChannelGroup> bus_group = audio_bus->get_bus();
 				if (bus_group.is_valid()) {
@@ -322,6 +323,7 @@ namespace godot {
 
 	void FmodAudioStreamPlayerInternal::set_bus(const StringName &p_bus) {
 		bus = p_bus;
+		if (channel.is_valid() && channel->channel_control_is_valid()) channel->set_channel_group(_get_bus_channel_group());
 	}
 
 	StringName FmodAudioStreamPlayerInternal::get_bus() const {

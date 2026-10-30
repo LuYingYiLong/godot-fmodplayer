@@ -6,6 +6,18 @@ extends RefCounted
 
 const LOCALES := ["zh_Hans", "zh_Hant", "ja", "ru"]
 const MESSAGES := {
+	"Sync Godot Audio Buses": {
+		"zh_Hans": "同步 Godot 音频总线",
+		"zh_Hant": "同步 Godot 音訊匯流排",
+		"ja": "Godot オーディオバスを同期",
+		"ru": "Синхронизировать аудиошины Godot",
+	},
+	"Default Bus Layout": {
+		"zh_Hans": "默认总线布局",
+		"zh_Hant": "預設匯流排配置",
+		"ja": "既定のバスレイアウト",
+		"ru": "Схема шин по умолчанию",
+	},
 	"Fmod": {
 		"zh_Hans": "FMOD",
 		"zh_Hant": "FMOD",

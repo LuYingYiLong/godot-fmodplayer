@@ -286,9 +286,7 @@
 		<member type="float" name="panning_strength" setter="set_panning_strength" getter="get_panning_strength" default="1.0">
 			Multiplier for the panning effect strength.
 		</member>
-		<member type="StringName" name="bus" setter="set_bus" getter="get_bus" default="&amp;&quot;Master&quot;">
-			The name of the audio bus to route output to.
-		</member>
+		<member type="StringName" name="bus" setter="set_bus" getter="get_bus" default="&amp;&quot;Master&quot;">Destination bus name from the active FMOD layout. An unknown name falls back to Master. Godot buses provide this list when synchronization is enabled; independent mode uses FmodServer.get_audio_bus_layout.</member>
 		<member type="int" name="area_mask" setter="set_area_mask" getter="get_area_mask" default="1">
 			Stored area mask. Area-based audio filtering is not implemented.
 		</member>

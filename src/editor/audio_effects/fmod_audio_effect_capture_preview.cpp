@@ -36,6 +36,7 @@ namespace godot {
 		if (effect == p_effect) return;
 		_disconnect_effect();
 		effect = p_effect;
+		runtime_effect.unref();
 		snapshot.clear();
 		ranges.clear();
 		last_capacity = last_frames = 0;
@@ -97,6 +98,7 @@ namespace godot {
 	}
 
 	void FmodAudioEffectCapturePreview::_refresh_snapshot() {
+		const Ref<FmodAudioEffectCapture> effect = runtime_effect.is_valid() ? runtime_effect : this->effect;
 		if (effect.is_null() || !is_inside_tree() || !is_visible_in_tree()) return;
 		const size_t columns = size_t(CLAMP(int(_plot_rect().size.x / (16.0f * _scale())), 1, 10));
 		const Ref<FmodSystem> system = FmodServer::get_main_system();

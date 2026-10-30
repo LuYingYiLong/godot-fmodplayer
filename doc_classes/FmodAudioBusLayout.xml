@@ -1,150 +1,232 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="FmodAudioBusLayout" inherits="Resource" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
 	<brief_description>
-		Manages the layout and hierarchy of audio buses.
+		Serializable configuration for FMOD audio buses and effect slots.
 	</brief_description>
 	<description>
-		Stores [FmodAudioBus] instances and their routing, mixing state, and effects. The layout managed by [FmodServer] is synchronized from [AudioServer]; an independently created layout requires explicit synchronization.
+		Stores ordered bus and effect configuration using stable IDs. Master has ID 0 and remains first. Buses may send to any target that does not create a cycle; reordering only changes display order.
+		Save and load this resource with ResourceSaver and ResourceLoader. Serialized properties use bus/index/... paths and a format version. FMOD channel groups, DSPs, metering, and capture buffers belong to the runtime managed by FmodServer and are not serialized.
+		Set audio/fmod/sync_godot_audio_buses to false and reload the project to use an independent layout. audio/fmod/default_bus_layout defaults to res://default_fmod_bus_layout.tres. A missing or invalid default uses an in-memory Master. The editor Dock saves authoring edits after 0.8 seconds; runtime changes made directly to FmodAudioBus or effect instances do not save configuration.
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="create_audio_bus">
-			<return type="void" />
-			<param index="0" name="name" type="String" />
-			<param index="1" name="parent" type="FmodAudioBus" default="null" />
+		<method name="get_bus_count" qualifiers="const">
+			<return type="int" />
 			<description>
-				Creates a bus with [param name] and routes it to [param parent]'s channel group. An omitted parent routes to the master group. A parent without an initialized channel group is rejected without adding a bus.
-				[method sync_from_audio_server] creates the master bus when needed.
+				Returns the number of configured buses, including Master.
 			</description>
 		</method>
-		<method name="get_audio_bus" qualifiers="const">
-			<return type="FmodAudioBus" />
-			<param index="0" name="name" type="String" />
+		<method name="get_bus_ids" qualifiers="const">
+			<return type="PackedInt64Array" />
 			<description>
-				Returns the [FmodAudioBus] with the specified [param name].
-				Returns [code]null[/code] if no bus with that name exists.
+				Returns stable bus IDs in display order. Master is always the first item with ID [code]0[/code]. IDs are not array indices.
 			</description>
 		</method>
-		<method name="has_audio_bus" qualifiers="const">
+		<method name="find_bus_id" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="name" type="StringName" />
+			<description>
+				Returns the ID of the bus named [param name], or [code]-1[/code] when it does not exist.
+			</description>
+		</method>
+		<method name="get_bus_name" qualifiers="const">
+			<return type="StringName" />
+			<param index="0" name="id" type="int" />
+			<description>
+				Returns the name of bus [param id], or an empty [StringName] for an unknown ID.
+			</description>
+		</method>
+		<method name="add_bus">
+			<return type="int" />
+			<param index="0" name="name" type="StringName" />
+			<param index="1" name="send_id" type="int" default="0" />
+			<description>
+				Adds a bus named [param name] and routes it to [param send_id]. Returns its stable ID, or [code]-1[/code] if the name is empty, contains a comma, is already used, or the target does not exist.
+			</description>
+		</method>
+		<method name="remove_bus">
+			<return type="int" enum="Error" />
+			<param index="0" name="id" type="int" />
+			<description>
+				Removes bus [param id] and its effect slots. Buses sending to it are redirected to its previous send target. Bound runtime channels are redirected on the next update. Master cannot be removed. Returns [constant OK] on success or [constant ERR_INVALID_PARAMETER].
+			</description>
+		</method>
+		<method name="move_bus">
+			<return type="int" enum="Error" />
+			<param index="0" name="id" type="int" />
+			<param index="1" name="index" type="int" />
+			<description>
+				Moves bus [param id] to the final display [param index], from [code]1[/code] to [method get_bus_count] minus one. Routing and IDs are preserved. Master cannot be moved. Returns [constant OK] on success or [constant ERR_INVALID_PARAMETER].
+			</description>
+		</method>
+		<method name="rename_bus">
+			<return type="int" enum="Error" />
+			<param index="0" name="id" type="int" />
+			<param index="1" name="name" type="StringName" />
+			<description>
+				Renames bus [param id] while preserving its ID, routing, and runtime instances. The name must be unique, nonempty, and contain no comma. Master cannot be renamed. Returns [constant OK] on success or [constant ERR_INVALID_PARAMETER].
+			</description>
+		</method>
+		<method name="can_send_to" qualifiers="const">
 			<return type="bool" />
-			<param index="0" name="name" type="String" />
+			<param index="0" name="id" type="int" />
+			<param index="1" name="target" type="int" />
 			<description>
-				Returns [code]true[/code] if a bus with the specified [param name] exists in the layout.
+				Returns whether bus [param id] can send to [param target]. Both buses must exist. Master sends to the output device; self-sends and cycles are rejected. Display order does not restrict sends.
 			</description>
 		</method>
-		<method name="remove_audio_bus">
-			<return type="void" />
-			<param index="0" name="name" type="String" />
+		<method name="set_bus_send">
+			<return type="int" enum="Error" />
+			<param index="0" name="id" type="int" />
+			<param index="1" name="target" type="int" />
 			<description>
-				Removes the audio bus with the specified [param name] from the layout.
-				[b]Note:[/b] The master bus cannot be removed.
+				Routes bus [param id] to [param target]. Returns [constant OK] on success or [constant ERR_INVALID_PARAMETER] when [method can_send_to] rejects the route.
 			</description>
 		</method>
-		<method name="set_bus_volume">
+		<method name="get_bus_send" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="id" type="int" />
+			<description>
+				Returns the send target ID of bus [param id], or [code]-1[/code] for an unknown ID. Master returns [code]0[/code].
+			</description>
+		</method>
+		<method name="set_bus_volume_db">
 			<return type="void" />
-			<param index="0" name="name" type="String" />
+			<param index="0" name="id" type="int" />
 			<param index="1" name="volume_db" type="float" />
 			<description>
-				Sets the volume of the specified bus in decibels.
+				Sets the configured volume of bus [param id] in decibels. Non-finite values and unknown IDs are ignored.
 			</description>
 		</method>
-		<method name="get_bus_volume" qualifiers="const">
+		<method name="get_bus_volume_db" qualifiers="const">
 			<return type="float" />
-			<param index="0" name="name" type="String" />
+			<param index="0" name="id" type="int" />
 			<description>
-				Returns the volume of the specified bus in decibels.
-			</description>
-		</method>
-		<method name="set_bus_solo">
-			<return type="void" />
-			<param index="0" name="name" type="String" />
-			<param index="1" name="mute" type="bool" />
-			<description>
-				Sets the solo state of the specified bus.
-			</description>
-		</method>
-		<method name="bus_is_solo" qualifiers="const">
-			<return type="bool" />
-			<param index="0" name="name" type="String" />
-			<description>
-				Returns [code]true[/code] if the specified bus is in solo mode.
+				Returns the configured volume of bus [param id] in decibels, or [code]0.0[/code] for an unknown ID.
 			</description>
 		</method>
 		<method name="set_bus_mute">
 			<return type="void" />
-			<param index="0" name="name" type="String" />
+			<param index="0" name="id" type="int" />
 			<param index="1" name="mute" type="bool" />
 			<description>
-				Sets the mute state of the specified bus.
+				Sets the configured mute flag of bus [param id]. When any bus is soloed, the solo routing path takes precedence over configured mute flags.
 			</description>
 		</method>
-		<method name="bus_is_mute" qualifiers="const">
+		<method name="is_bus_mute" qualifiers="const">
 			<return type="bool" />
-			<param index="0" name="name" type="String" />
+			<param index="0" name="id" type="int" />
 			<description>
-				Returns the bus's stored user mute flag. It does not include muting caused by another bus's solo state.
+				Returns the configured mute flag of bus [param id]. This excludes muting caused by Solo. Returns [code]false[/code] for an unknown ID.
+			</description>
+		</method>
+		<method name="set_bus_solo">
+			<return type="void" />
+			<param index="0" name="id" type="int" />
+			<param index="1" name="solo" type="bool" />
+			<description>
+				Sets the configured solo flag of bus [param id]. Bound runtimes keep each soloed bus and its path to Master audible, and mute unrelated buses.
+			</description>
+		</method>
+		<method name="is_bus_solo" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="id" type="int" />
+			<description>
+				Returns the configured solo flag of bus [param id], or [code]false[/code] for an unknown ID.
 			</description>
 		</method>
 		<method name="set_bus_bypass">
 			<return type="void" />
-			<param index="0" name="name" type="String" />
-			<param index="1" name="mute" type="bool" />
+			<param index="0" name="id" type="int" />
+			<param index="1" name="bypass" type="bool" />
 			<description>
-				Enables or disables effects bypass for the specified bus.
+				Sets bypass for the managed effect slots on bus [param id]. Slot configuration and DSP state are retained. This does not bypass the bus fader or unrelated DSPs added through low-level APIs.
 			</description>
 		</method>
-		<method name="bus_is_bypass" qualifiers="const">
+		<method name="is_bus_bypass" qualifiers="const">
 			<return type="bool" />
-			<param index="0" name="name" type="String" />
+			<param index="0" name="id" type="int" />
 			<description>
-				Returns [code]true[/code] if effects bypass is enabled for the specified bus.
+				Returns the configured bypass flag of bus [param id], or [code]false[/code] for an unknown ID.
 			</description>
 		</method>
 		<method name="add_bus_effect">
-			<return type="void" />
-			<param index="0" name="bus_name" type="String" />
+			<return type="int" />
+			<param index="0" name="bus_id" type="int" />
 			<param index="1" name="effect" type="FmodAudioEffect" />
-			<param index="2" name="index" type="int" default="0" />
+			<param index="2" name="index" type="int" default="-1" />
 			<description>
-				Adds an [FmodAudioEffect] to the specified bus at the given [param index] in the effect chain.
+				Inserts [param effect] into bus [param bus_id] before [param index]. A negative index appends it. Returns a stable slot ID, or [code]-1[/code] for an invalid bus, null effect, or out-of-range index. Multiple slots may share a configuration resource; each bound slot receives its own runtime instance.
 			</description>
 		</method>
 		<method name="remove_bus_effect">
-			<return type="void" />
-			<param index="0" name="bus_name" type="String" />
-			<param index="1" name="index" type="int" />
+			<return type="int" enum="Error" />
+			<param index="0" name="bus_id" type="int" />
+			<param index="1" name="slot_id" type="int" />
 			<description>
-				Removes the effect at the specified [param index] from the named bus.
+				Removes slot [param slot_id] from bus [param bus_id]. Returns [constant OK] on success or [constant ERR_INVALID_PARAMETER].
 			</description>
 		</method>
-		<method name="get_bus_effect_count" qualifiers="const">
-			<return type="int" />
-			<param index="0" name="bus_name" type="String" />
+		<method name="move_bus_effect">
+			<return type="int" enum="Error" />
+			<param index="0" name="bus_id" type="int" />
+			<param index="1" name="slot_id" type="int" />
+			<param index="2" name="target_bus" type="int" />
+			<param index="3" name="index" type="int" />
 			<description>
-				Returns bus effect count.
+				Moves slot [param slot_id] from [param bus_id] to [param target_bus], inserting it before [param index] in the target list before removal. The index may equal the target slot count to append. The stable slot ID and bound DSP state are preserved. Returns [constant OK] on success or [constant ERR_INVALID_PARAMETER].
+			</description>
+		</method>
+		<method name="set_bus_effect_enabled">
+			<return type="void" />
+			<param index="0" name="bus_id" type="int" />
+			<param index="1" name="slot_id" type="int" />
+			<param index="2" name="enabled" type="bool" />
+			<description>
+				Sets whether slot [param slot_id] on bus [param bus_id] is enabled. Disabled slots retain their runtime instances in bypass. The bus bypass flag also bypasses enabled slots. Unknown IDs are ignored.
+			</description>
+		</method>
+		<method name="is_bus_effect_enabled" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="bus_id" type="int" />
+			<param index="1" name="slot_id" type="int" />
+			<description>
+				Returns the configured enabled flag of slot [param slot_id] on bus [param bus_id], or [code]false[/code] for unknown IDs.
 			</description>
 		</method>
 		<method name="get_bus_effect" qualifiers="const">
 			<return type="FmodAudioEffect" />
-			<param index="0" name="bus_name" type="String" />
-			<param index="1" name="index" type="int" />
+			<param index="0" name="bus_id" type="int" />
+			<param index="1" name="slot_id" type="int" />
 			<description>
-				Returns the [FmodAudioEffect] at the specified [param index] on the named bus.
-				Returns [code]null[/code] if the bus or effect doesn't exist.
+				Returns the configuration resource for slot [param slot_id] on bus [param bus_id], or [code]null[/code]. Use [method FmodServer.get_bus_effect_instance] to access live Capture, SpectrumAnalyzer, or Record data.
 			</description>
 		</method>
-		<method name="sync_from_audio_server">
-			<return type="void" />
+		<method name="get_bus_effect_ids" qualifiers="const">
+			<return type="PackedInt64Array" />
+			<param index="0" name="bus_id" type="int" />
 			<description>
-				Synchronizes bus names, routing, volume, mute, solo, and supported enabled effects from [AudioServer]. Unsupported effect types are skipped.
-				The layout managed by [FmodServer] is synchronized automatically. Independently created layouts must be synchronized explicitly.
+				Returns stable slot IDs for bus [param bus_id] in processing order, or an empty array for an unknown bus.
 			</description>
 		</method>
-		<method name="sync_from_audio_server_if_changed">
-			<return type="bool" />
+		<method name="set_state">
+			<return type="int" enum="Error" />
+			<param index="0" name="state" type="Array" />
 			<description>
-				Checks for changes and updates the layout or bus state when needed. Returns [code]true[/code] when an update was triggered. Bus and effect-slot checks are spread across calls, so a single call may not detect every change.
+				Atomically replaces the bus configuration with [param state], using the format returned by [method get_state]. Returns [constant OK] on success or [constant ERR_INVALID_DATA], preserving the previous configuration when validation fails. The layout accepts up to 4096 buses and 512 slots per bus.
+			</description>
+		</method>
+		<method name="get_state" qualifiers="const">
+			<return type="Array" />
+			<description>
+				Returns an ordered array of bus dictionaries containing [code]id[/code], [code]name[/code], [code]send_id[/code], [code]volume_db[/code], [code]solo[/code], [code]mute[/code], [code]bypass_fx[/code], and [code]effects[/code]. Each effect dictionary contains [code]id[/code], [code]effect[/code], and [code]enabled[/code]. Effect resources are shared references. Use with [method set_state] for structural undo and redo.
+			</description>
+		</method>
+		<method name="validate" qualifiers="const">
+			<return type="int" enum="Error" />
+			<description>
+				Returns [constant OK] for a supported format version, a valid Master, unique names and IDs, non-null effect resources, finite volumes, and acyclic routes. Otherwise returns [constant ERR_INVALID_DATA].
 			</description>
 		</method>
 	</methods>

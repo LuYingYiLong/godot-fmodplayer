@@ -18,8 +18,9 @@ func run(output_dir: String) -> bool:
 		0, Vector3.ZERO, Vector3.ZERO, Vector3(0.0, 0.0, 1.0), Vector3.UP
 	)
 	var layout: FmodAudioBusLayout = FmodServer.get_audio_bus_layout()
-	layout.create_audio_bus("Spatial regression")
-	var audio_bus: FmodAudioBus = layout.get_audio_bus("Spatial regression")
+	layout.add_bus("Spatial regression")
+	FmodServer.flush_bus_updates()
+	var audio_bus: FmodAudioBus = FmodServer.get_audio_bus("Spatial regression")
 	_bus = audio_bus.get_bus()
 	_capture = FmodAudioEffectCapture.new()
 	_capture.apply_to(_bus)
@@ -211,8 +212,9 @@ func _render_rms(player: FmodAudioStreamPlayer3D, capture: FmodAudioEffectCaptur
 
 
 func _check_independent_player(layout: FmodAudioBusLayout, stream: FmodAudioStream) -> void:
-	layout.create_audio_bus("Spatial linear peer")
-	var bus: FmodAudioBus = layout.get_audio_bus("Spatial linear peer")
+	layout.add_bus("Spatial linear peer")
+	FmodServer.flush_bus_updates()
+	var bus: FmodAudioBus = FmodServer.get_audio_bus("Spatial linear peer")
 	var capture: FmodAudioEffectCapture = FmodAudioEffectCapture.new()
 	capture.apply_to(bus.get_bus())
 	var peer: FmodAudioStreamPlayer3D = FmodAudioStreamPlayer3D.new()
@@ -230,8 +232,8 @@ func _check_independent_player(layout: FmodAudioBusLayout, stream: FmodAudioStre
 	peer.stop()
 	peer.free()
 	capture.remove_from_bus(bus.get_bus())
-	bus.release()
-	layout.remove_audio_bus("Spatial linear peer")
+	layout.remove_bus(layout.find_bus_id("Spatial linear peer"))
+	FmodServer.flush_bus_updates()
 
 
 func _same_level(left: float, right: float) -> bool:
@@ -244,8 +246,8 @@ func _cleanup(layout: FmodAudioBusLayout, bus: FmodAudioBus) -> void:
 	_channel = null
 	_capture.remove_from_bus(_bus)
 	_capture = null
-	bus.release()
-	layout.remove_audio_bus("Spatial regression")
+	layout.remove_bus(layout.find_bus_id("Spatial regression"))
+	FmodServer.flush_bus_updates()
 
 
 func _expect(condition: bool, label: String) -> void:

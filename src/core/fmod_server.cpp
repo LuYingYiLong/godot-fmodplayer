@@ -3,6 +3,8 @@
 #include "fmod_server.h"
 #include "mixer/fmod_audio_bus.h"
 #include "mixer/fmod_audio_bus_layout.h"
+#include "mixer/fmod_audio_bus_runtime.h"
+#include <godot_cpp/classes/resource_loader.hpp>
 #include "playback/fmod_channel.h"
 #include "playback/fmod_channel_group.h"
 
@@ -226,6 +228,8 @@ namespace godot {
 	FmodServer* FmodServer::singleton = nullptr;
 	Ref<FmodSystem> FmodServer::main_system;
 	Ref<FmodAudioBusLayout> FmodServer::audio_bus_layout = Ref<FmodAudioBusLayout>();
+	Ref<FmodAudioBusRuntime> FmodServer::bus_runtime;
+	bool FmodServer::sync_godot_buses = true;
 	Vector2 FmodServer::camera_2d_pos;
 	float FmodServer::camera_2d_rot = 0.0f;
 
@@ -236,6 +240,15 @@ namespace godot {
 		ClassDB::bind_static_method("FmodServer", D_METHOD("get_main_system"), &FmodServer::get_main_system);
 		ClassDB::bind_static_method("FmodServer", D_METHOD("get_master_channel_group"), &FmodServer::get_master_channel_group);
 		ClassDB::bind_static_method("FmodServer", D_METHOD("get_audio_bus_layout"), &FmodServer::get_audio_bus_layout);
+		ClassDB::bind_static_method("FmodServer", D_METHOD("set_audio_bus_layout", "layout"), &FmodServer::set_audio_bus_layout);
+		ClassDB::bind_static_method("FmodServer", D_METHOD("get_audio_bus", "name"), &FmodServer::get_audio_bus);
+		ClassDB::bind_static_method("FmodServer", D_METHOD("get_audio_bus_by_id", "id"), &FmodServer::get_audio_bus_by_id);
+		ClassDB::bind_static_method("FmodServer", D_METHOD("get_bus_effect_instance", "bus_id", "slot_id"), &FmodServer::get_bus_effect_instance);
+		ClassDB::bind_static_method("FmodServer", D_METHOD("get_bus_names"), &FmodServer::get_bus_names);
+		ClassDB::bind_static_method("FmodServer", D_METHOD("is_syncing_godot_buses"), &FmodServer::is_syncing_godot_buses);
+		ClassDB::bind_static_method("FmodServer", D_METHOD("flush_bus_updates"), &FmodServer::flush_bus_updates);
+		ClassDB::bind_static_method("FmodServer", D_METHOD("create_layout_from_godot"), &FmodServer::create_layout_from_godot);
+		ADD_SIGNAL(MethodInfo("bus_layout_changed"));
 		ClassDB::bind_static_method("FmodServer", D_METHOD("generate_bus_layout"), &FmodServer::generate_bus_layout);
 		ClassDB::bind_static_method("FmodServer", D_METHOD("reset_main_system", "system"), &FmodServer::reset_main_system);
 	}
@@ -297,6 +310,17 @@ namespace godot {
 
 		// 初始化总线布局
 		audio_bus_layout.instantiate();
+		sync_godot_buses = _get_fmod_setting_bool(settings, "audio/fmod/sync_godot_audio_buses", true);
+		if (!sync_godot_buses) {
+			const String path = _get_fmod_setting_string(settings, "audio/fmod/default_bus_layout", "res://default_fmod_bus_layout.tres");
+			if (ResourceLoader::get_singleton()->exists(path)) {
+				Ref<FmodAudioBusLayout> saved = ResourceLoader::get_singleton()->load(path);
+				if (saved.is_valid() && saved->validate() == OK) audio_bus_layout = saved;
+				else WARN_PRINT("FMOD: invalid default bus layout; using Master.");
+			} else if (path != "res://default_fmod_bus_layout.tres") WARN_PRINT("FMOD: default bus layout is missing; using Master.");
+		}
+		bus_runtime.instantiate();
+		bus_runtime->initialize(audio_bus_layout);
 		_register_performance_monitors();
 	}
 
@@ -319,8 +343,8 @@ namespace godot {
 
 		// 释放 FMODSystem
 		// Release DSPs and bus wrappers while the FMOD system is still alive.
+		if (bus_runtime.is_valid()) { bus_runtime->clear(); bus_runtime.unref(); }
 		if (audio_bus_layout.is_valid()) {
-			audio_bus_layout->clear();
 			audio_bus_layout.unref();
 		}
 
@@ -405,7 +429,7 @@ namespace godot {
 		}
 
 		AudioServer* audio_server = AudioServer::get_singleton();
-		if (audio_server) {
+		if (audio_server && sync_godot_buses) {
 			if (!audio_server_connected) {
 				Callable bus_layout_callable(this, "_build_bus_layout");
 				if (bus_layout_callable.is_valid() && !audio_server->is_connected("bus_layout_changed", bus_layout_callable)) {
@@ -430,7 +454,7 @@ namespace godot {
 				}
 			}
 		}
-		else {
+		else if (sync_godot_buses) {
 			retry_needed = true;
 		}
 
@@ -451,9 +475,7 @@ namespace godot {
 	void FmodServer::_update_fmod() {
 		if (!singleton || main_system.is_null()) return;
 
-		if (audio_bus_layout.is_valid()) {
-			audio_bus_layout->sync_from_audio_server_if_changed();
-		}
+		if (bus_runtime.is_valid()) bus_runtime->process(sync_godot_buses);
 
 		// 更新监听者位置
 		SceneTree* tree = Object::cast_to<SceneTree>(Engine::get_singleton()->get_main_loop());
@@ -537,7 +559,7 @@ namespace godot {
 	}
 
 	void FmodServer::generate_bus_layout() {
-		audio_bus_layout->sync_from_audio_server();
+		if (singleton) singleton->_build_bus_layout();
 	}
 
 	void FmodServer::reset_main_system(Ref<FmodSystem> p_system) {
@@ -546,23 +568,33 @@ namespace godot {
 			return;
 		}
 		// Bus groups and DSPs belong to the old system and must be released first.
-		if (audio_bus_layout.is_valid()) {
-			audio_bus_layout->clear();
-		}
+		if (bus_runtime.is_valid()) bus_runtime->clear();
 		if (main_system.is_valid() && !main_system->system_is_null()) {
 			main_system->release();
 		}
 		main_system = p_system;
-		if (audio_bus_layout.is_valid()) {
-			audio_bus_layout->sync_from_audio_server();
-		}
+		if (bus_runtime.is_valid()) bus_runtime->initialize(audio_bus_layout);
 	}
 
 	void FmodServer::_build_bus_layout() {
-		if (audio_bus_layout.is_valid()) {
-			audio_bus_layout->sync_from_audio_server();
-		}
+		if (bus_runtime.is_valid() && sync_godot_buses) bus_runtime->process(true);
 	}
+	Error FmodServer::set_audio_bus_layout(const Ref<FmodAudioBusLayout>& data) {
+		if (sync_godot_buses) return ERR_BUSY;
+		if (data.is_null() || data->validate() != OK) return ERR_INVALID_DATA;
+		Ref<FmodAudioBusRuntime> candidate; candidate.instantiate();
+		const Error error = candidate->initialize(data); if (error != OK) return error;
+		if (bus_runtime.is_valid()) { bus_runtime->move_channels_to(candidate.ptr()); bus_runtime->clear(); }
+		bus_runtime = candidate; audio_bus_layout = data;
+		if (singleton) singleton->emit_signal("bus_layout_changed"); return OK;
+	}
+	Ref<FmodAudioBus> FmodServer::get_audio_bus(const StringName& name) { return audio_bus_layout.is_valid() ? get_audio_bus_by_id(audio_bus_layout->find_bus_id(name)) : Ref<FmodAudioBus>(); }
+	Ref<FmodAudioBus> FmodServer::get_audio_bus_by_id(int64_t id) { return bus_runtime.is_valid() ? bus_runtime->get_bus(id) : Ref<FmodAudioBus>(); }
+	Ref<FmodAudioEffect> FmodServer::get_bus_effect_instance(int64_t id, int64_t slot) { return bus_runtime.is_valid() ? bus_runtime->get_effect(id, slot) : Ref<FmodAudioEffect>(); }
+	PackedStringArray FmodServer::get_bus_names() { PackedStringArray names; if (audio_bus_layout.is_valid()) for (const auto& b : audio_bus_layout->get_buses()) names.push_back(b.name); return names; }
+	bool FmodServer::is_syncing_godot_buses() { return sync_godot_buses; }
+	void FmodServer::flush_bus_updates() { if (bus_runtime.is_valid()) bus_runtime->process(false); }
+	Ref<FmodAudioBusLayout> FmodServer::create_layout_from_godot() { Ref<FmodAudioBusRuntime> converter; converter.instantiate(); return converter->import_godot(); }
 
 	double FmodServer::_get_dsp() const {
 		if (!singleton || main_system.is_null()) return 0.0;

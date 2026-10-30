@@ -65,15 +65,60 @@ public partial class FmodServer : GodotObject
 		public new static readonly StringName GetMainSystem = "get_main_system";
 		public new static readonly StringName GetMasterChannelGroup = "get_master_channel_group";
 		public new static readonly StringName GetAudioBusLayout = "get_audio_bus_layout";
+		public new static readonly StringName SetAudioBusLayout = "set_audio_bus_layout";
+		public new static readonly StringName GetAudioBus = "get_audio_bus";
+		public new static readonly StringName GetAudioBusById = "get_audio_bus_by_id";
+		public new static readonly StringName GetBusEffectInstance = "get_bus_effect_instance";
+		public new static readonly StringName GetBusNames = "get_bus_names";
+		public new static readonly StringName IsSyncingGodotBuses = "is_syncing_godot_buses";
+		public new static readonly StringName FlushBusUpdates = "flush_bus_updates";
+		public new static readonly StringName CreateLayoutFromGodot = "create_layout_from_godot";
+		public new static readonly StringName GenerateBusLayout = "generate_bus_layout";
+		public new static readonly StringName ResetMainSystem = "reset_main_system";
 	}
 
-	public new static FmodSystem GetMainSystem() => 
+	public static class GDExtensionSignalName
+	{
+		public static readonly StringName BusLayoutChanged = "bus_layout_changed";
+	}
+
+	public new static FmodSystem GetMainSystem() =>
 		FmodSystem.Bind(ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.GetMainSystem, []).As<GodotObject>());
 
-	public new static FmodChannelGroup GetMasterChannelGroup() => 
-		FmodChannelGroup.Bind(ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.GetMasterChannelGroup, []).As<RefCounted>());
+	public new static FmodChannelGroup GetMasterChannelGroup() =>
+		FmodChannelGroup.Bind(ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.GetMasterChannelGroup, []).As<GodotObject>());
 
-	public new static FmodAudioBusLayout GetAudioBusLayout() => 
-		FmodAudioBusLayout.Bind(ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.GetAudioBusLayout, []).As<Resource>());
+	public new static FmodAudioBusLayout GetAudioBusLayout() =>
+		FmodAudioBusLayout.Bind(ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.GetAudioBusLayout, []).As<GodotObject>());
+
+	public new static Error SetAudioBusLayout(FmodAudioBusLayout layout) =>
+		(Error)ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.SetAudioBusLayout, [layout]).AsInt64();
+
+	public new static FmodAudioBus GetAudioBus(StringName name) =>
+		FmodAudioBus.Bind(ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.GetAudioBus, [name]).As<GodotObject>());
+
+	public new static FmodAudioBus GetAudioBusById(long id) =>
+		FmodAudioBus.Bind(ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.GetAudioBusById, [id]).As<GodotObject>());
+
+	public new static FmodAudioEffect GetBusEffectInstance(long busId, long slotId) =>
+		FmodAudioEffect.Bind(ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.GetBusEffectInstance, [busId, slotId]).As<GodotObject>());
+
+	public new static string[] GetBusNames() =>
+		ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.GetBusNames, []).As<string[]>();
+
+	public new static bool IsSyncingGodotBuses() =>
+		ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.IsSyncingGodotBuses, []).As<bool>();
+
+	public new static void FlushBusUpdates() =>
+		ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.FlushBusUpdates, []);
+
+	public new static FmodAudioBusLayout CreateLayoutFromGodot() =>
+		FmodAudioBusLayout.Bind(ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.CreateLayoutFromGodot, []).As<GodotObject>());
+
+	public new static void GenerateBusLayout() =>
+		ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.GenerateBusLayout, []);
+
+	public new static void ResetMainSystem(FmodSystem system) =>
+		ClassDB.ClassCallStatic(NativeName, GDExtensionMethodName.ResetMainSystem, [system]);
 
 }

@@ -1,0 +1,18 @@
+source,zh_Hans,zh_Hant,ja,ru
+FMOD Audio,FMOD 音频,FMOD 音訊,FMOD オーディオ,Аудио FMOD
+Duplicate Effect,复制效果器,複製效果器,エフェクトを複製,Дублировать эффект
+Duplicate Bus Effect,复制总线效果器,複製匯流排效果器,バスエフェクトを複製,Дублировать эффект шины
+FMOD Bus Layout,FMOD 总线布局,FMOD 匯流排配置,FMOD バスレイアウト,Схема шин FMOD
+Godot Audio Buses,Godot 音频总线,Godot 音訊匯流排,Godot オーディオバス,Аудиошины Godot
+Open Godot Audio Panel,打开 Godot 音频面板,開啟 Godot 音訊面板,Godot のオーディオパネルを開く,Открыть панель аудио Godot
+Set as Default,设为默认,設為預設,既定に設定,Сделать схемой по умолчанию
+Create FMOD Layout from Godot,从 Godot 创建 FMOD 布局,從 Godot 建立 FMOD 配置,Godot から FMOD レイアウトを作成,Создать схему FMOD из Godot
+Synchronizing with Godot Audio Buses. Edit the source layout in the Godot Audio panel.,正在同步 Godot 音频总线。请在 Godot 音频面板中编辑源布局,正在同步 Godot 音訊匯流排。請在 Godot 音訊面板編輯來源配置,Godot のオーディオバスと同期中です。Godot のオーディオパネルで編集してください。,Синхронизация с аудиошинами Godot. Редактируйте исходную схему в панели аудио Godot.
+The default FMOD bus layout could not be loaded. Create or open a valid layout before saving.,无法加载默认 FMOD 总线布局。请创建或打开有效布局后再保存,無法載入預設 FMOD 匯流排配置。請建立或開啟有效配置後再儲存,既定の FMOD バスレイアウトを読み込めません。有効なレイアウトを作成または開いてください。,Не удалось загрузить схему шин FMOD по умолчанию. Создайте или откройте корректную схему перед сохранением.
+Disable Godot bus synchronization and reload the project to edit an FMOD layout.,关闭 Godot 总线同步并重新加载项目后可编辑 FMOD 布局,關閉 Godot 匯流排同步並重新載入專案後即可編輯 FMOD 配置,FMOD レイアウトを編集するには Godot バス同期を無効にしてプロジェクトを再読み込みしてください。,Для редактирования схемы FMOD отключите синхронизацию шин Godot и перезагрузите проект.
+Cannot load the default FMOD bus layout.,无法加载默认 FMOD 总线布局,無法載入預設 FMOD 匯流排配置,既定の FMOD バスレイアウトを読み込めません。,Не удалось загрузить схему шин FMOD по умолчанию.
+Cannot load FMOD bus layout: %s,无法加载 FMOD 总线布局：%s,無法載入 FMOD 匯流排配置：%s,FMOD バスレイアウトを読み込めません: %s,Не удалось загрузить схему шин FMOD: %s
+Cannot save FMOD bus layout: %s,无法保存 FMOD 总线布局：%s,無法儲存 FMOD 匯流排配置：%s,FMOD バスレイアウトを保存できません: %s,Не удалось сохранить схему шин FMOD: %s
+Load FMOD Bus Layout,加载 FMOD 总线布局,載入 FMOD 匯流排配置,FMOD バスレイアウトを読み込む,Загрузить схему шин FMOD
+Save FMOD Bus Layout,保存 FMOD 总线布局,儲存 FMOD 匯流排配置,FMOD バスレイアウトを保存,Сохранить схему шин FMOD
+Unsupported Godot effects were skipped:\n%s,已跳过不支持的 Godot 效果器：\n%s,已略過不支援的 Godot 效果器：\n%s,未対応の Godot エフェクトをスキップしました:\n%s,Пропущены неподдерживаемые эффекты Godot:\n%s

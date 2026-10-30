@@ -1,0 +1,9 @@
+[gd_resource type="FmodAudioBusLayout" format=3 uid="uid://dhi01va618bsj"]
+
+[sub_resource type="FmodAudioEffectReverb" id="FmodAudioEffectReverb_drfan"]
+
+[resource]
+next_slot_id = 2
+bus/0/effect/0/id = 1
+bus/0/effect/0/effect = SubResource("FmodAudioEffectReverb_drfan")
+bus/0/effect/0/enabled = true

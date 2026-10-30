@@ -17,9 +17,12 @@ config/icon="res://icon.svg"
 
 [audio]
 
+buses/default_bus_layout="uid://ba8tfqpnd7adx"
 fmod/software_sample_rate=48000
 fmod/speaker_mode=3
 fmod/init_flags/channel_distance_filter=true
+fmod/sync_godot_audio_buses=false
+fmod/default_bus_layout="uid://dhi01va618bsj"
 
 [debug]
 

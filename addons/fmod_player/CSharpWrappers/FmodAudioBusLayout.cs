@@ -62,70 +62,122 @@ public partial class FmodAudioBusLayout : Resource
 
 	public new static class GDExtensionMethodName
 	{
-		public new static readonly StringName CreateAudioBus = "create_audio_bus";
-		public new static readonly StringName GetAudioBus = "get_audio_bus";
-		public new static readonly StringName HasAudioBus = "has_audio_bus";
-		public new static readonly StringName RemoveAudioBus = "remove_audio_bus";
-		public new static readonly StringName SetBusVolume = "set_bus_volume";
-		public new static readonly StringName GetBusVolume = "get_bus_volume";
-		public new static readonly StringName SetBusSolo = "set_bus_solo";
-		public new static readonly StringName BusIsSolo = "bus_is_solo";
+		public new static readonly StringName GetBusCount = "get_bus_count";
+		public new static readonly StringName GetBusIds = "get_bus_ids";
+		public new static readonly StringName FindBusId = "find_bus_id";
+		public new static readonly StringName GetBusName = "get_bus_name";
+		public new static readonly StringName AddBus = "add_bus";
+		public new static readonly StringName RemoveBus = "remove_bus";
+		public new static readonly StringName MoveBus = "move_bus";
+		public new static readonly StringName RenameBus = "rename_bus";
+		public new static readonly StringName CanSendTo = "can_send_to";
+		public new static readonly StringName SetBusSend = "set_bus_send";
+		public new static readonly StringName GetBusSend = "get_bus_send";
+		public new static readonly StringName SetBusVolumeDb = "set_bus_volume_db";
+		public new static readonly StringName GetBusVolumeDb = "get_bus_volume_db";
 		public new static readonly StringName SetBusMute = "set_bus_mute";
-		public new static readonly StringName BusIsMute = "bus_is_mute";
+		public new static readonly StringName IsBusMute = "is_bus_mute";
+		public new static readonly StringName SetBusSolo = "set_bus_solo";
+		public new static readonly StringName IsBusSolo = "is_bus_solo";
 		public new static readonly StringName SetBusBypass = "set_bus_bypass";
-		public new static readonly StringName BusIsBypass = "bus_is_bypass";
+		public new static readonly StringName IsBusBypass = "is_bus_bypass";
 		public new static readonly StringName AddBusEffect = "add_bus_effect";
 		public new static readonly StringName RemoveBusEffect = "remove_bus_effect";
+		public new static readonly StringName MoveBusEffect = "move_bus_effect";
+		public new static readonly StringName SetBusEffectEnabled = "set_bus_effect_enabled";
+		public new static readonly StringName IsBusEffectEnabled = "is_bus_effect_enabled";
 		public new static readonly StringName GetBusEffect = "get_bus_effect";
-		public new static readonly StringName SyncFromAudioServer = "sync_from_audio_server";
+		public new static readonly StringName GetBusEffectIds = "get_bus_effect_ids";
+		public new static readonly StringName SetState = "set_state";
+		public new static readonly StringName GetState = "get_state";
+		public new static readonly StringName Validate = "validate";
 	}
 
-	public new void CreateAudioBus(string name, FmodAudioBus parent = null) => 
-		Call(GDExtensionMethodName.CreateAudioBus, [name, parent]);
+	public new long GetBusCount() =>
+		Call(GDExtensionMethodName.GetBusCount, []).As<long>();
 
-	public new FmodAudioBus GetAudioBus(string name) => 
-		FmodAudioBus.Bind(Call(GDExtensionMethodName.GetAudioBus, [name]).As<RefCounted>());
+	public new long[] GetBusIds() =>
+		Call(GDExtensionMethodName.GetBusIds, []).As<long[]>();
 
-	public new bool HasAudioBus(string name) => 
-		Call(GDExtensionMethodName.HasAudioBus, [name]).As<bool>();
+	public new long FindBusId(StringName name) =>
+		Call(GDExtensionMethodName.FindBusId, [name]).As<long>();
 
-	public new void RemoveAudioBus(string name) => 
-		Call(GDExtensionMethodName.RemoveAudioBus, [name]);
+	public new StringName GetBusName(long id) =>
+		Call(GDExtensionMethodName.GetBusName, [id]).As<StringName>();
 
-	public new void SetBusVolume(string name, double volumeDb) => 
-		Call(GDExtensionMethodName.SetBusVolume, [name, volumeDb]);
+	public new long AddBus(StringName name, long sendId = 0) =>
+		Call(GDExtensionMethodName.AddBus, [name, sendId]).As<long>();
 
-	public new double GetBusVolume(string name) => 
-		Call(GDExtensionMethodName.GetBusVolume, [name]).As<double>();
+	public new Error RemoveBus(long id) =>
+		(Error)Call(GDExtensionMethodName.RemoveBus, [id]).AsInt64();
 
-	public new void SetBusSolo(string name, bool mute) => 
-		Call(GDExtensionMethodName.SetBusSolo, [name, mute]);
+	public new Error MoveBus(long id, long index) =>
+		(Error)Call(GDExtensionMethodName.MoveBus, [id, index]).AsInt64();
 
-	public new bool BusIsSolo(string name) => 
-		Call(GDExtensionMethodName.BusIsSolo, [name]).As<bool>();
+	public new Error RenameBus(long id, StringName name) =>
+		(Error)Call(GDExtensionMethodName.RenameBus, [id, name]).AsInt64();
 
-	public new void SetBusMute(string name, bool mute) => 
-		Call(GDExtensionMethodName.SetBusMute, [name, mute]);
+	public new bool CanSendTo(long id, long target) =>
+		Call(GDExtensionMethodName.CanSendTo, [id, target]).As<bool>();
 
-	public new bool BusIsMute(string name) => 
-		Call(GDExtensionMethodName.BusIsMute, [name]).As<bool>();
+	public new Error SetBusSend(long id, long target) =>
+		(Error)Call(GDExtensionMethodName.SetBusSend, [id, target]).AsInt64();
 
-	public new void SetBusBypass(string name, bool mute) => 
-		Call(GDExtensionMethodName.SetBusBypass, [name, mute]);
+	public new long GetBusSend(long id) =>
+		Call(GDExtensionMethodName.GetBusSend, [id]).As<long>();
 
-	public new bool BusIsBypass(string name) => 
-		Call(GDExtensionMethodName.BusIsBypass, [name]).As<bool>();
+	public new void SetBusVolumeDb(long id, double volumeDb) =>
+		Call(GDExtensionMethodName.SetBusVolumeDb, [id, volumeDb]);
 
-	public new void AddBusEffect(string busName, FmodAudioEffect effect, long index = 0) => 
-		Call(GDExtensionMethodName.AddBusEffect, [busName, effect, index]);
+	public new double GetBusVolumeDb(long id) =>
+		Call(GDExtensionMethodName.GetBusVolumeDb, [id]).As<double>();
 
-	public new void RemoveBusEffect(string busName, long index) => 
-		Call(GDExtensionMethodName.RemoveBusEffect, [busName, index]);
+	public new void SetBusMute(long id, bool mute) =>
+		Call(GDExtensionMethodName.SetBusMute, [id, mute]);
 
-	public new FmodAudioEffect GetBusEffect(string busName, long index) => 
-		FmodAudioEffect.Bind(Call(GDExtensionMethodName.GetBusEffect, [busName, index]).As<Resource>());
+	public new bool IsBusMute(long id) =>
+		Call(GDExtensionMethodName.IsBusMute, [id]).As<bool>();
 
-	public new void SyncFromAudioServer() => 
-		Call(GDExtensionMethodName.SyncFromAudioServer, []);
+	public new void SetBusSolo(long id, bool solo) =>
+		Call(GDExtensionMethodName.SetBusSolo, [id, solo]);
+
+	public new bool IsBusSolo(long id) =>
+		Call(GDExtensionMethodName.IsBusSolo, [id]).As<bool>();
+
+	public new void SetBusBypass(long id, bool bypass) =>
+		Call(GDExtensionMethodName.SetBusBypass, [id, bypass]);
+
+	public new bool IsBusBypass(long id) =>
+		Call(GDExtensionMethodName.IsBusBypass, [id]).As<bool>();
+
+	public new long AddBusEffect(long busId, FmodAudioEffect effect, long index = -1) =>
+		Call(GDExtensionMethodName.AddBusEffect, [busId, effect, index]).As<long>();
+
+	public new Error RemoveBusEffect(long busId, long slotId) =>
+		(Error)Call(GDExtensionMethodName.RemoveBusEffect, [busId, slotId]).AsInt64();
+
+	public new Error MoveBusEffect(long busId, long slotId, long targetBus, long index) =>
+		(Error)Call(GDExtensionMethodName.MoveBusEffect, [busId, slotId, targetBus, index]).AsInt64();
+
+	public new void SetBusEffectEnabled(long busId, long slotId, bool enabled) =>
+		Call(GDExtensionMethodName.SetBusEffectEnabled, [busId, slotId, enabled]);
+
+	public new bool IsBusEffectEnabled(long busId, long slotId) =>
+		Call(GDExtensionMethodName.IsBusEffectEnabled, [busId, slotId]).As<bool>();
+
+	public new FmodAudioEffect GetBusEffect(long busId, long slotId) =>
+		FmodAudioEffect.Bind(Call(GDExtensionMethodName.GetBusEffect, [busId, slotId]).As<GodotObject>());
+
+	public new long[] GetBusEffectIds(long busId) =>
+		Call(GDExtensionMethodName.GetBusEffectIds, [busId]).As<long[]>();
+
+	public new Error SetState(Godot.Collections.Array state) =>
+		(Error)Call(GDExtensionMethodName.SetState, [state]).AsInt64();
+
+	public new Godot.Collections.Array GetState() =>
+		Call(GDExtensionMethodName.GetState, []).As<Godot.Collections.Array>();
+
+	public new Error Validate() =>
+		(Error)Call(GDExtensionMethodName.Validate, []).AsInt64();
 
 }

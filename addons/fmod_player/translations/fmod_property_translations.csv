@@ -1,4 +1,6 @@
 source,zh_Hans,zh_Hant,ja,ru
+Sync Godot Audio Buses,同步 Godot 音频总线,同步 Godot 音訊匯流排,Godot オーディオバスを同期,Синхронизировать аудиошины Godot
+Default Bus Layout,默认总线布局,預設匯流排配置,既定のバスレイアウト,Схема шин по умолчанию
 Fmod,FMOD,FMOD,FMOD,FMOD
 3d,3D,3D,3D,3D
 Init Flags,初始化标志,初始化標誌,初期化フラグ,Флаги инициализации

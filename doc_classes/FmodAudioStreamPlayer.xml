@@ -193,9 +193,7 @@
 		<member type="bool" name="preload_on_set_stream" setter="set_preload_on_set_stream" getter="is_preload_on_set_stream_enabled" default="false">
 			If [code]true[/code], assigning a stream creates its internal [FmodSound] immediately instead of waiting for the first playback.
 		</member>
-		<member type="StringName" name="bus" setter="set_bus" getter="get_bus" default="&amp;&quot;Master&quot;">
-			The name of the audio bus to route output to.
-		</member>
+		<member type="StringName" name="bus" setter="set_bus" getter="get_bus" default="&amp;&quot;Master&quot;">Destination bus name from the active FMOD layout. An unknown name falls back to Master. Godot buses provide this list when synchronization is enabled; independent mode uses FmodServer.get_audio_bus_layout.</member>
 	</members>
 	<signals>
 		<signal name="finished">
