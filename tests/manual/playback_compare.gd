@@ -16,7 +16,7 @@ func _ready() -> void:
 	_add_button(controls, "停止", _on_stop_pressed)
 	_status = Label.new()
 	_status.position = Vector2(16.0, 144.0)
-	_status.text = "两个音源使用相同 MP3，分别通过 FMOD 和 Godot 导入"
+	_status.text = "两个音源使用相同 WAV，分别通过 FMOD 和 Godot 导入"
 	$Navigation.add_child(_status)
 
 

@@ -1,6 +1,6 @@
 extends RefCounted
 
-const AUDIO_FIXTURE_UID: String = "uid://c6kky7072rqpo"
+const AUDIO_FIXTURE_UID: String = "uid://cngt7pbf4svfk"
 
 const EFFECT_CLASSES: Array[StringName] = [
 	&"FmodAudioEffectAmplify",

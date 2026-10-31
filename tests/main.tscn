@@ -20,8 +20,9 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Options" type="VBoxContainer" parent="Center" unique_id=936910164]
-custom_minimum_size = Vector2(560, 0)
+custom_minimum_size = Vector2(620, 0)
 layout_mode = 2
+theme_override_constants/separation = 12
 
 [node name="Title" type="Label" parent="Center/Options" unique_id=1521323869]
 layout_mode = 2
@@ -40,11 +41,13 @@ text = "FMOD / Godot 2D 播放对比"
 [node name="RunRegression" type="Button" parent="Center/Options" unique_id=415252122]
 unique_name_in_owner = true
 layout_mode = 2
-text = "运行自动回归测试"
+text = "运行数值回归（8 项）"
 
 [node name="Logs" type="Button" parent="Center/Options" unique_id=1776279809]
+unique_name_in_owner = true
 layout_mode = 2
-text = "打开测试日志目录"
+disabled = true
+text = "查看回归报告"
 
 [node name="Status" type="Label" parent="Center/Options" unique_id=1001862719]
 unique_name_in_owner = true

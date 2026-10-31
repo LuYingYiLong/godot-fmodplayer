@@ -15,4 +15,4 @@ script = ExtResource("1_runner")
 layout_mode = 0
 offset_left = 24.0
 offset_top = 24.0
-text = "Preparing FMOD tests..."
+text = "正在准备数值回归..."

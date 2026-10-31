@@ -12,43 +12,27 @@ git submodule update --init --recursive
 
 You need a compatible Godot 4 executable, a C++17 compiler, Python, SCons, and the FMOD Core SDK 2.04 for your target platform. Windows builds use MSVC; Android builds also need the Android SDK and NDK.
 
-Follow the [build instructions](README.md#building-from-source) to place the SDK headers and libraries. Keep headers, import libraries, and runtime libraries from the same FMOD release. Store local SDK paths in the ignored `custom.py` file or pass them to SCons.
+Follow the [online documentation](https://godot-fmodplayerdocs.readthedocs.io/en/latest/) to place the SDK headers and libraries. Keep headers, import libraries, and runtime libraries from the same FMOD release. Store local SDK paths in the ignored `custom.py` file or pass them to SCons.
 
 Keep FMOD SDK files and runtime libraries, including `fmod.dll` and `libfmod*.so`, out of patches. Tests use a local copy of the runtime.
 
 ## Build and test
 
-Run commands from the repository root. On Windows, set the paths for your machine:
-
-```powershell
-$godot = "C:\path\to\Godot.exe"
-$runtime = "C:\path\to\FMOD\api\core\lib\x64\fmod.dll"
-
-scons platform=windows target=template_debug arch=x86_64 optimize=speed_trace debug_symbols=yes copy_to_tests=yes "fmod_runtime=$runtime" -j16
-.\tools\run_tests.ps1 -Suite regression -Import -GodotPath $godot -FmodRuntime $runtime
-```
-
-This SCons command creates an optimized `template_debug` extension with matching PDB symbols. `copy_to_tests=yes` copies the complete addon and local runtime to `tests/addons/fmod_player`, including script-only changes when the binary is up to date. The test runner's `-Import` flag refreshes Godot imports. Staged extension binaries belong in `tests/addons/fmod_player/bin`; test logs and reports belong in `tests/logs`.
-
-Run the suite relevant to your change: `smoke`, `capture`, `spectrum`, `reverb`, or `profile`. The `regression` suite runs correctness checks; `all -Quick` keeps the combined regression and benchmark workflow. Use `-Suite editor` for property translations and `python tools/run_native_tests.py` for the C++ ring-buffer tests. For interactive checks, open `tests/project.godot` and press F5 for the test menu.
-
-For Linux, build with the Linux SDK and run the test script:
+Build the extension and stage the complete addon in the test project. From the repository root on Windows:
 
 ```sh
-export FMOD_LINUX_SDK=/path/to/fmodstudioapi20400linux
-export GODOT_BIN=/path/to/Godot
-scons platform=linux target=template_debug arch=x86_64 copy_to_tests=yes -j2
-scons platform=linux target=template_release arch=x86_64 -j2
-bash tools/run_tests_linux.sh --suite=regression
+scons platform=windows target=template_debug copy_to_tests=yes
 ```
 
-See [tests/README.md](tests/README.md) for individual suites, Release testing, log locations, and performance comparisons. Android build and export instructions are in the [README](README.md#android).
+On Linux, configure the FMOD Linux SDK and use `platform=linux`. The build copies the local FMOD runtime as well; `fmod_runtime=/path/to/runtime` overrides its source. Close the test project before replacing a native library, then reopen `tests/project.godot` in Godot.
+
+Press **F5** for the test menu. Use the playback comparison and 3D audio scenes to listen and interact, or click **Run numerical regression** (运行数值回归) for the eight retained correctness checks. The menu displays individual results and opens the latest report folder. Inspector previews, bus editing, localization, and gizmos are checked directly in the editor.
+
+See [tests/README.md](tests/README.md) for the controls and editor checklist. You do not need a separate command-line test runner.
 
 ### Performance changes
 
-Measure a baseline before editing the implementation. Use the same compiler options, test scripts, audio configuration, and workload for both versions. Run the full measurements without `-Quick` and retain the build hashes and reports in `tests/logs`.
-
-Use `tools/compare_capture.py` or `tools/compare_reverb.py` for the corresponding effect. Include timing results and audio correctness checks in the PR. Describe any intended change to audio output, latency, or memory use.
+Use the same compiler options, audio configuration, and workload when measuring before and after a change. Include measurements and a repeatable reproduction in the PR, along with the numerical regression results. Describe any intended changes to audio output, latency, or memory use.
 
 ## Code style
 
@@ -74,10 +58,7 @@ The panel supports search, untranslated/review filters, message context, multili
 
 `fmod_check.gd` starts the shared GDScript translation service before checking the FMOD runtime. C++ editor text uses `src/editor/fmod_editor_translation.h`. Use `fmod_editor_translate()` for dynamic UI text and `FMOD_EDITOR_TEXT()` for literal menu keys that Godot translates automatically. Preserve runtime identifiers, resource names, file paths, and enum values.
 
-```sh
-python -m pip install -r tools/requirements-docs.txt
-python tools/check_localization.py --report tests/logs/localization_catalogs.json
-```
+Check language switching, placeholder preservation, and saved catalog changes directly in the Godot editor.
 
 ## Documentation
 
@@ -85,18 +66,7 @@ Maintain English API descriptions in `doc_classes/*.xml`. These files supply bot
 
 Maintain Chinese API descriptions in `addons/fmod_player/translations/documentation/zh_CN.po`. Each message matches an entire XML description after Godot removes indentation and surrounding whitespace. Preserve documentation tags such as `[param frames]` and `[method get_buffer]`. Class names, signatures, and reference targets remain unchanged. The plugin registers this catalog in `godot.documentation`; both editor help and the website use it.
 
-Install the catalog tools and refresh messages after editing XML:
-
-```sh
-python -m pip install -r tools/requirements-docs.txt
-python tools/documentation_translations.py extract
-python tools/documentation_translations.py update
-# Review fuzzy entries and translate new messages in the PO.
-python tools/documentation_translations.py check --strict
-python tools/test_documentation_translations.py
-```
-
-Empty or fuzzy translations fall back to English. `check --strict` requires complete translations and checks documentation references and markup. Translation-only edits need addon deployment; they do not require rebuilding the extension. See `tests/README.md` for the isolated offline-help regression command.
+Use **Project > Tools > FMOD Translations** to extract and review messages after editing XML. Empty or fuzzy translations fall back to English. Translation-only edits need addon deployment; they do not require rebuilding the extension. Verify the result in Godot's built-in class help.
 
 Website guides and generation tools live in the separate [documentation repository](https://github.com/LuYingYiLong/godot-fmodplayer-docs). Its `classref/translations` directory contains a checked snapshot of the plugin PO. Generated class RST files, translated XML, and snapshot files are script outputs.
 

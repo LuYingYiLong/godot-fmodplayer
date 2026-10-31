@@ -3,7 +3,6 @@ extends RefCounted
 var _system: FmodSystem
 var _bus: FmodChannelGroup
 var _checks: Array[Dictionary]
-var _baseline: bool
 var _failed: bool
 var _source_frame: int
 var _last_start: int
@@ -11,8 +10,7 @@ var _source_channels: int
 var _expected_channels: int = 2
 
 
-func run(output_dir: String, baseline: bool = false) -> bool:
-	_baseline = baseline
+func run(output_dir: String) -> bool:
 	_system = FmodServer.get_main_system()
 	_bus = _system.get_master_channel_group()
 	var initial_dsps: int = _bus.get_num_dsps()
@@ -46,20 +44,19 @@ func run(output_dir: String, baseline: bool = false) -> bool:
 	for block: int in range(8):
 		_mix()
 	var available: int = capture.get_frames_available()
-	_expect(available == 4800, "Full buffer stores 4800 complete frames", true)
+	_expect(available == 4800, "Full buffer stores 4800 complete frames")
 	_expect(capture.get_pushed_frames() == 8192, "Pushed frame counter")
-	_expect(capture.get_discarded_frames() == 8192 - available, "Overflow counter balances complete frames", true)
+	_expect(capture.get_discarded_frames() == 8192 - available, "Overflow counter balances complete frames")
 	_check_samples(capture.get_buffer(available), first_start, "Overflow preserves oldest frames")
 	for block: int in range(8):
 		_mix()
 		var samples: PackedVector2Array = capture.get_buffer(capture.get_frames_available())
 		_expect(samples.size() == 1024, "Frame count after overflow")
-		_check_samples(samples, _last_start, "Stereo alignment after overflow", true)
+		_check_samples(samples, _last_start, "Stereo alignment after overflow")
 	capture.clear_buffer()
 	_expect(capture.get_frames_available() == 0 and capture.get_pushed_frames() == 0 and capture.get_discarded_frames() == 0, "Clear resets queue and counters")
 	_expect(capture.can_get_buffer(0) and capture.get_buffer(0).is_empty(), "Zero frame request")
-	if not _baseline:
-		_expect(not capture.can_get_buffer(-1) and capture.get_buffer(-1).is_empty(), "Negative frame request")
+	_expect(not capture.can_get_buffer(-1) and capture.get_buffer(-1).is_empty(), "Negative frame request")
 	_mix()
 	_check_samples(capture.get_buffer(1000000), _last_start, "Oversized request clamps to available frames")
 	capture.buffer_length = 0.0107
@@ -93,9 +90,9 @@ func run(output_dir: String, baseline: bool = false) -> bool:
 	_expect(_bus.get_num_dsps() == initial_dsps, "Capture leaves no DSP nodes attached")
 	var report: FileAccess = FileAccess.open(output_dir.path_join("capture_regression.json"), FileAccess.WRITE)
 	assert(report != null)
-	report.store_string(JSON.stringify({"baseline_mode": _baseline, "accepted": not _failed, "checks": _checks,}, "\t"))
+	report.store_string(JSON.stringify({"accepted": not _failed, "checks": _checks,}, "\t"))
 	report.close()
-	print("CAPTURE_REGRESSION accepted=", not _failed, " baseline=", _baseline)
+	print("CAPTURE_REGRESSION accepted=", not _failed)
 	return not _failed
 
 
@@ -121,18 +118,17 @@ func _generate_stereo(samples: PackedFloat32Array, frames: int, channels: int, _
 	return {"output": samples,}
 
 
-func _check_samples(samples: PackedVector2Array, start: int, label: String, known_overflow: bool = false) -> void:
+func _check_samples(samples: PackedVector2Array, start: int, label: String) -> void:
 	var matched: bool = not samples.is_empty()
 	for index: int in range(samples.size()):
 		var left: float = float((start + index) % 4096) / 4096.0 - 0.5
 		var right: float = left if _expected_channels == 1 else 0.25 - left * 0.5
 		matched = matched and samples[index] == Vector2(left, right)
-	_expect(matched, label, known_overflow)
+	_expect(matched, label)
 
 
-func _expect(condition: bool, label: String, known_overflow: bool = false) -> void:
-	var expected_failure: bool = not condition and _baseline and known_overflow
-	_checks.append({"name": label, "passed": condition, "expected_baseline_failure": expected_failure,})
+func _expect(condition: bool, label: String) -> void:
+	_checks.append({"name": label, "passed": condition,})
 	if not condition:
-		print("CAPTURE_CHECK_FAILED ", label, " expected_baseline=", expected_failure)
-		_failed = _failed or not expected_failure
+		print("CAPTURE_CHECK_FAILED ", label)
+		_failed = true

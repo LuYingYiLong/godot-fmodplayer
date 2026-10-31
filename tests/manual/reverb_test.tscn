@@ -116,6 +116,7 @@ script = SubResource("GDScript_ifow5")
 shape = SubResource("CapsuleShape3D_wvhbo")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player" unique_id=2024548343]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.423684, 0, 7.8122864)
 mesh = SubResource("CapsuleMesh_wvhbo")
 
 [node name="Near" type="Node3D" parent="Player" unique_id=1373470161]

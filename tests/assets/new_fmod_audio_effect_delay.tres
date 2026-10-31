@@ -1,7 +1,0 @@
-[gd_resource type="FmodAudioEffectDelay" format=3 uid="uid://d3ee4t0aqokew"]
-
-[resource]
-tap1_delay_ms = 377.73682
-tap1_pan = -0.6900302
-tap2_delay_ms = 743.8421
-tap2_pan = 0.58409333
