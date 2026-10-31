@@ -45,6 +45,7 @@ Create sound occluders from collision shapes or meshes, place reverb zones, and 
 1. Install from the [Godot Asset Library](https://godotengine.org/asset-library/asset/4905) or copy `addons/fmod_player` from a [GitHub release](https://github.com/LuYingYiLong/Godot-FmodPlayer/releases) into your project.
 2. On Windows, copy `api/core/lib/x64/fmod.dll` from the matching FMOD **2.04** [Core SDK](https://www.fmod.com/download) into `addons/fmod_player/bin`.
 3. Enable **FMOD Player** under **Project > Project Settings > Plugins**.
+4. Import audio as an FMOD audio resource, assign it to a player node, choose a bus, and enable `auto_play` or call `play()`.
 
 ## Platform Support
 
