@@ -49,8 +49,7 @@ if ARGUMENTS.get("platform") == "android":
     # godot-cpp accesses this key even when a standalone NDK is configured.
     ARGUMENTS.setdefault("ANDROID_HOME", android_home or "")
 
-ARGUMENTS.setdefault("custom_api_file", File("#api/godot_4_7_2.json").abspath)
-env = SConscript("godot-cpp/SConstruct")
+env = SConscript("godot-cpp/SConstruct", {"api_version": "4.7"})
 
 env.Append(CPPPATH=["src/"])
 

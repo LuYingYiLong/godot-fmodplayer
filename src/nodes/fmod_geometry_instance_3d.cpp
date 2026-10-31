@@ -462,12 +462,12 @@ namespace godot {
 		int rings = MAX(3, segments / 2);
 
 		for (int y = 0; y < rings; y++) {
-			float phi0 = -Math_PI * 0.5f + Math_PI * static_cast<float>(y) / static_cast<float>(rings);
-			float phi1 = -Math_PI * 0.5f + Math_PI * static_cast<float>(y + 1) / static_cast<float>(rings);
+			float phi0 = -Math::PI * 0.5f + Math::PI * static_cast<float>(y) / static_cast<float>(rings);
+			float phi1 = -Math::PI * 0.5f + Math::PI * static_cast<float>(y + 1) / static_cast<float>(rings);
 
 			for (int x = 0; x < segments; x++) {
-				float theta0 = Math_TAU * static_cast<float>(x) / static_cast<float>(segments);
-				float theta1 = Math_TAU * static_cast<float>(x + 1) / static_cast<float>(segments);
+				float theta0 = Math::TAU * static_cast<float>(x) / static_cast<float>(segments);
+				float theta1 = Math::TAU * static_cast<float>(x + 1) / static_cast<float>(segments);
 
 				Vector3 a(Math::cos(phi0) * Math::cos(theta0), Math::sin(phi0), Math::cos(phi0) * Math::sin(theta0));
 				Vector3 b(Math::cos(phi0) * Math::cos(theta1), Math::sin(phi0), Math::cos(phi0) * Math::sin(theta1));
@@ -487,8 +487,8 @@ namespace godot {
 		Vector3 bottom_center(0.0f, -half_height, 0.0f);
 
 		for (int i = 0; i < segments; i++) {
-			float a0 = Math_TAU * static_cast<float>(i) / static_cast<float>(segments);
-			float a1 = Math_TAU * static_cast<float>(i + 1) / static_cast<float>(segments);
+			float a0 = Math::TAU * static_cast<float>(i) / static_cast<float>(segments);
+			float a1 = Math::TAU * static_cast<float>(i + 1) / static_cast<float>(segments);
 			Vector3 bottom0(Math::cos(a0) * p_radius, -half_height, Math::sin(a0) * p_radius);
 			Vector3 bottom1(Math::cos(a1) * p_radius, -half_height, Math::sin(a1) * p_radius);
 			Vector3 top0(Math::cos(a0) * p_radius, half_height, Math::sin(a0) * p_radius);

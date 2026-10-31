@@ -38,8 +38,8 @@ namespace godot {
 		int index = 0;
 
 		for (int i = 0; i < segments; i++) {
-			float a0 = Math_TAU * static_cast<float>(i) / static_cast<float>(segments);
-			float a1 = Math_TAU * static_cast<float>(i + 1) / static_cast<float>(segments);
+			float a0 = Math::TAU * static_cast<float>(i) / static_cast<float>(segments);
+			float a1 = Math::TAU * static_cast<float>(i + 1) / static_cast<float>(segments);
 			float x0 = Math::cos(a0) * p_radius;
 			float y0 = Math::sin(a0) * p_radius;
 			float x1 = Math::cos(a1) * p_radius;

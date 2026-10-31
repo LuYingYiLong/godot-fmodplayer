@@ -86,8 +86,8 @@ namespace godot {
 			// 八分之一象限中的点数，因此总共有 8 * points_in_octant 个点
 			// 这对应于圆的平滑度
 			const uint32_t points_in_octant = 15;
-			const real_t octant_angle = Math_PI / 4;
-			const real_t inc = (Math_PI / (4 * points_in_octant));
+			const real_t octant_angle = Math::PI / 4;
+			const real_t inc = (Math::PI / (4 * points_in_octant));
 			const real_t radius_squared = radius * radius;
 			real_t r = 0.0f;
 
@@ -152,8 +152,8 @@ namespace godot {
 			const float radius = Math::sin(ha);
 
 			const uint32_t points_in_octant = 7;
-			const real_t octant_angle = Math_PI / 4;
-			const real_t inc = (Math_PI / (4 * points_in_octant));
+			const real_t octant_angle = Math::PI / 4;
+			const real_t inc = (Math::PI / (4 * points_in_octant));
 			const real_t radius_squared = radius * radius;
 			real_t r = 0;
 
