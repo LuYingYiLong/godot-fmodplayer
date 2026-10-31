@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://jxwo0eyc6poh"]
 
 [ext_resource type="Texture2D" uid="uid://b12kk2b45w4nj" path="res://icon.svg" id="1_6grgh"]
-[ext_resource type="FmodAudioStream" uid="uid://c6kky7072rqpo" path="res://assets/audio/fmod_playback.mp3" id="2_b1c8y"]
-[ext_resource type="AudioStream" uid="uid://b886po5g22ig3" path="res://assets/audio/godot_playback.mp3" id="3_6grgh"]
+[ext_resource type="FmodAudioStream" uid="uid://cngt7pbf4svfk" path="res://assets/audio/fmod_playback.wav" id="3_wuya1"]
 [ext_resource type="Script" uid="uid://py17r5dqhu3o" path="res://manual/return_menu.gd" id="4_navigation"]
+[ext_resource type="AudioStream" uid="uid://cr5c1bjb12iuq" path="res://assets/audio/godot_playback.wav" id="4_wuya1"]
 [ext_resource type="Script" uid="uid://b6rkw4ha5vade" path="res://manual/playback_compare.gd" id="5_controls"]
 
 [node name="PlaybackCompare" type="Node2D" unique_id=687407975]
@@ -14,7 +14,7 @@ position = Vector2(280, 320)
 texture = ExtResource("1_6grgh")
 
 [node name="FmodAudioStreamPlayer2D" type="FmodAudioStreamPlayer2D" parent="Sprite2D" unique_id=1438163962]
-stream = ExtResource("2_b1c8y")
+stream = ExtResource("3_wuya1")
 
 [node name="Sprite2D2" type="Sprite2D" parent="." unique_id=1661931463]
 modulate = Color(1, 0.43, 0.43, 1)
@@ -22,7 +22,7 @@ position = Vector2(840, 320)
 texture = ExtResource("1_6grgh")
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Sprite2D2" unique_id=1381174580]
-stream = ExtResource("3_6grgh")
+stream = ExtResource("4_wuya1")
 
 [node name="Navigation" type="CanvasLayer" parent="." unique_id=881403787]
 script = ExtResource("4_navigation")

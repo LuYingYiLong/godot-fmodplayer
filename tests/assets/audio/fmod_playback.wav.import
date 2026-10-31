@@ -2,13 +2,13 @@
 
 importer="fmod_audio"
 type="FmodAudioStream"
-uid="uid://c6kky7072rqpo"
-path="res://.godot/imported/fmod_playback.mp3-9a8d87c4c78fad7187c297107b6d225d.res"
+uid="uid://cngt7pbf4svfk"
+path="res://.godot/imported/fmod_playback.wav-39f6de8b7f5a7f14595cdb357fc7bbe9.res"
 
 [deps]
 
-source_file="res://assets/audio/fmod_playback.mp3"
-dest_files=["res://.godot/imported/fmod_playback.mp3-9a8d87c4c78fad7187c297107b6d225d.res"]
+source_file="res://assets/audio/fmod_playback.wav"
+dest_files=["res://.godot/imported/fmod_playback.wav-39f6de8b7f5a7f14595cdb357fc7bbe9.res"]
 
 [params]
 

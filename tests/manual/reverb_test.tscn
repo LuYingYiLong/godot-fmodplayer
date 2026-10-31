@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bto84iuntkj2l"]
 
 [ext_resource type="Material" uid="uid://c0abjll72woxs" path="res://assets/materials/dashed_grid.tres" id="1_v1ufe"]
-[ext_resource type="FmodAudioStream" uid="uid://c6kky7072rqpo" path="res://assets/audio/fmod_playback.mp3" id="2_audio"]
+[ext_resource type="FmodAudioStream" uid="uid://cngt7pbf4svfk" path="res://assets/audio/fmod_playback.wav" id="2_2fai1"]
 [ext_resource type="AudioStream" uid="uid://beg02dhxm6bad" path="res://assets/audio/folk_guitar.wav" id="3_hk1pi"]
 [ext_resource type="Script" uid="uid://py17r5dqhu3o" path="res://manual/return_menu.gd" id="4_navigation"]
 
@@ -136,7 +136,7 @@ mesh = SubResource("PlaneMesh_wvhbo")
 shape = SubResource("ConcavePolygonShape3D_6bcqh")
 
 [node name="FmodAudioStreamPlayer3D" type="FmodAudioStreamPlayer3D" parent="." unique_id=1512813107]
-stream = ExtResource("2_audio")
+stream = ExtResource("2_2fai1")
 auto_play = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 3, 2)
 
