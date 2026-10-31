@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "editor/fmod_geometry_mesh_tools_plugin.h"
 
 #include "nodes/fmod_geometry_instance_3d.h"
@@ -24,6 +25,20 @@ namespace godot {
 
 	void FmodGeometryMeshToolsPlugin::_notification(int p_what) {
 		switch (p_what) {
+            case NOTIFICATION_TRANSLATION_CHANGED: {
+                if (menu_button) {
+                    PopupMenu* popup = menu_button->get_popup();
+                    const char* labels[] = {
+                        FMOD_EDITOR_TEXT("Create Trimesh Occluder"),
+                        FMOD_EDITOR_TEXT("Create Single Convex Occluder"),
+                        FMOD_EDITOR_TEXT("Create Simplified Convex Occluder"),
+                        FMOD_EDITOR_TEXT("Create Bounding Box Occluder"),
+                    };
+                    for (int i = 0; i < 4; ++i) popup->set_item_text(i, fmod_editor_translate(labels[i]));
+                    popup->set_item_text(5, fmod_editor_translate("Create Mesh Resource Occluder"));
+                    menu_button->set_tooltip_text(fmod_editor_translate("Create FMOD occlusion geometry from the selected MeshInstance3D."));
+                }
+            } break;
 			case NOTIFICATION_ENTER_TREE: {
 				_create_toolbar_menu();
 			} break;
@@ -62,22 +77,24 @@ namespace godot {
 		}
 
 		menu_button = memnew(MenuButton);
+		menu_button->set_translation_domain("godot.editor");
 		menu_button->set_text("FMOD Geometry");
-		menu_button->set_tooltip_text("Create FMOD occlusion geometry from the selected MeshInstance3D.");
+		menu_button->set_tooltip_text(fmod_editor_translate("Create FMOD occlusion geometry from the selected MeshInstance3D."));
 		menu_button->show();
 
 		PopupMenu* popup = menu_button->get_popup();
-		popup->add_item("Create Trimesh Occluder", MENU_CREATE_TRIMESH);
-		popup->add_item("Create Single Convex Occluder", MENU_CREATE_CONVEX);
-		popup->add_item("Create Simplified Convex Occluder", MENU_CREATE_SIMPLIFIED_CONVEX);
-		popup->add_item("Create Bounding Box Occluder", MENU_CREATE_BOUNDING_BOX);
+		popup->add_item(fmod_editor_translate("Create Trimesh Occluder"), MENU_CREATE_TRIMESH);
+		popup->add_item(fmod_editor_translate("Create Single Convex Occluder"), MENU_CREATE_CONVEX);
+		popup->add_item(fmod_editor_translate("Create Simplified Convex Occluder"), MENU_CREATE_SIMPLIFIED_CONVEX);
+		popup->add_item(fmod_editor_translate("Create Bounding Box Occluder"), MENU_CREATE_BOUNDING_BOX);
 		popup->add_separator();
-		popup->add_item("Create Mesh Resource Occluder", MENU_CREATE_MESH_RESOURCE);
+		popup->add_item(fmod_editor_translate("Create Mesh Resource Occluder"), MENU_CREATE_MESH_RESOURCE);
 		popup->connect("id_pressed", callable_mp(this, &FmodGeometryMeshToolsPlugin::_on_menu_id_pressed));
 
 		add_control_to_container(EditorPlugin::CONTAINER_SPATIAL_EDITOR_MENU, menu_button);
 
 		error_dialog = memnew(AcceptDialog);
+		error_dialog->set_translation_domain("godot.editor");
 		error_dialog->set_title("FMOD Geometry");
 		EditorInterface::get_singleton()->get_base_control()->add_child(error_dialog);
 	}
@@ -114,35 +131,35 @@ namespace godot {
 	void FmodGeometryMeshToolsPlugin::_create_fmod_geometry_from_selection(MenuOption p_option) {
 		std::vector<MeshInstance3D*> selected_meshes = _get_selected_mesh_instances();
 		if (selected_meshes.empty()) {
-			_show_error("Select one or more MeshInstance3D nodes first.");
+			_show_error(fmod_editor_translate("Select one or more MeshInstance3D nodes first."));
 			return;
 		}
 
 		Node* scene_root = EditorInterface::get_singleton()->get_edited_scene_root();
 		if (!scene_root) {
-			_show_error("No edited scene root is available.");
+			_show_error(fmod_editor_translate("No edited scene root is available."));
 			return;
 		}
 
 		String action_name;
 		switch (p_option) {
 			case MENU_CREATE_TRIMESH:
-				action_name = "Create FMOD Trimesh Occluder";
+				action_name = fmod_editor_translate("Create FMOD Trimesh Occluder");
 				break;
 			case MENU_CREATE_CONVEX:
-				action_name = "Create FMOD Convex Occluder";
+				action_name = fmod_editor_translate("Create FMOD Convex Occluder");
 				break;
 			case MENU_CREATE_SIMPLIFIED_CONVEX:
-				action_name = "Create FMOD Simplified Convex Occluder";
+				action_name = fmod_editor_translate("Create FMOD Simplified Convex Occluder");
 				break;
 			case MENU_CREATE_BOUNDING_BOX:
-				action_name = "Create FMOD Bounding Box Occluder";
+				action_name = fmod_editor_translate("Create FMOD Bounding Box Occluder");
 				break;
 			case MENU_CREATE_MESH_RESOURCE:
-			action_name = "Create FMOD Mesh Resource Occluder";
+			action_name = fmod_editor_translate("Create FMOD Mesh Resource Occluder");
 				break;
 			default:
-				action_name = "Create FMOD Geometry Occluder";
+				action_name = fmod_editor_translate("Create FMOD Geometry Occluder");
 				break;
 		}
 
@@ -211,7 +228,7 @@ namespace godot {
 
 		if (created_count == 0) {
 			undo_redo->commit_action();
-			_show_error("Could not create FMOD geometry from the selected MeshInstance3D nodes.");
+			_show_error(fmod_editor_translate("Could not create FMOD geometry from the selected MeshInstance3D nodes."));
 			return;
 		}
 

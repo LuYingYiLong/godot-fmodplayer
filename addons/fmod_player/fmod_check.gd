@@ -6,12 +6,20 @@ extends EditorPlugin
 
 const FMOD_DOWNLOAD_URL: String = "https://www.fmod.com/download"
 const FMOD_DOCS_URL: String = "https://github.com/LuYingYiLong/Godot-FmodPlayer#quick-start"
+# 引导依赖在 UID 缓存建立前解析
+const TranslationService: Script = preload("res://addons/fmod_player/translations/fmod_translation_service.gd")
 
 var warning_dialog: AcceptDialog
 var main_plugin: EditorPlugin
+var _translation_service: Node
+var _translation_dialog: AcceptDialog
 
 
 func _enter_tree() -> void:
+	_translation_service = TranslationService.new()
+	add_child(_translation_service)
+	set_translation_domain(&"godot.editor")
+	add_tool_menu_item("FMOD Translations", _open_translation_tools)
 	# Check if FMOD runtime library exists
 	if not _check_fmod_runtime():
 		_show_fmod_missing_warning()
@@ -22,10 +30,20 @@ func _enter_tree() -> void:
 
 
 func _exit_tree() -> void:
+	remove_tool_menu_item("FMOD Translations")
+	if _translation_dialog:
+		_translation_dialog.queue_free()
 	_unload_main_plugin()
 	if warning_dialog:
 		warning_dialog.queue_free()
 		warning_dialog = null
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED and warning_dialog:
+		warning_dialog.title = tr("FMOD Runtime Missing")
+		warning_dialog.dialog_text = _get_warning_text()
+		warning_dialog.ok_button_text = tr("Open FMOD Download Page")
 
 
 func _check_fmod_runtime() -> bool:
@@ -46,16 +64,16 @@ func _check_fmod_runtime() -> bool:
 
 
 func _show_fmod_missing_warning() -> void:
-	push_warning("[FmodPlayer] FMOD runtime library not found! Please install FMOD Engine.")
+	push_warning(tr("FMOD runtime library was not detected."))
 	if DisplayServer.get_name() == "headless":
 		return
 
 	# Create warning dialog
 	warning_dialog = AcceptDialog.new()
-	warning_dialog.title = "FMOD Runtime Missing"
+	warning_dialog.title = tr("FMOD Runtime Missing")
 	warning_dialog.dialog_text = _get_warning_text()
-	warning_dialog.ok_button_text = "Open FMOD Download Page"
-	warning_dialog.add_cancel_button("Install Later")
+	warning_dialog.ok_button_text = tr("Open FMOD Download Page")
+	warning_dialog.add_cancel_button(tr("Install Later"))
 
 	warning_dialog.confirmed.connect(func() -> void:
 		OS.shell_open(FMOD_DOWNLOAD_URL)
@@ -66,20 +84,18 @@ func _show_fmod_missing_warning() -> void:
 
 
 func _get_warning_text() -> String:
-	return """Welcome to the FmodPlayer Plugin!
-FMOD runtime library was not detected.
-Due to FMOD's license restrictions, we cannot distribute it with the plugin.
-Please follow these steps:
-1. Visit https://www.fmod.com/download
-2. Register/Login to your FMOD account
-3. Download FMOD Engine
-4. Copy the runtime library to the plugin directory based on your platform:
-   Windows: fmod.dll → addons/fmod_player/bin/
-   Linux:   libfmodL.so.15 and libfmod.so.15 → addons/fmod_player/bin/
-   macOS:   libfmod.dylib → addons/fmod_player/bin/
-5. Restart Godot Editor
-For detailed instructions, please check the documentation.
-Would you like to open the download page?"""
+	return tr("Install the FMOD Core SDK 2.04, copy the matching runtime library to addons/fmod_player/bin/, then restart Godot.") + "\n\n" + tr("Windows: fmod.dll\nLinux: libfmodL.so.15 / libfmod.so.15\nmacOS: libfmod.dylib")
+
+
+func _open_translation_tools() -> void:
+	if _translation_dialog == null:
+		_translation_dialog = AcceptDialog.new()
+		_translation_dialog.title = "FMOD Translations"
+		_translation_dialog.set_translation_domain(&"godot.editor")
+		var scene: PackedScene = load("uid://dccdv74ostt1m") as PackedScene
+		_translation_dialog.add_child(scene.instantiate())
+		EditorInterface.get_base_control().add_child(_translation_dialog)
+	_translation_dialog.popup_centered(Vector2i(1080, 720) * EditorInterface.get_editor_scale())
 
 
 func _show_dialog_deferred() -> void:

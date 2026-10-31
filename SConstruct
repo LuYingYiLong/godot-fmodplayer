@@ -172,7 +172,6 @@ else:
         env.Append(CCFLAGS=["/Z7"])
     env.Append(CCFLAGS=["/utf-8"])
     env.Append(CXXFLAGS=["/utf-8"])
-    env.Append(CCFLAGS=["/wd4828"])
 
     env.Append(LIBPATH=["src/thirdparty/fmod/lib/x64"])
     env.Append(LIBS=["fmod_vc"])

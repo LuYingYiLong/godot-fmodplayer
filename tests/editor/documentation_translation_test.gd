@@ -13,7 +13,7 @@ func run(output_dir: String, tree: SceneTree) -> bool:
 	_expect(translation != null, "Documentation PO loads as a Translation resource")
 	if translation == null:
 		return false
-	var plugin: EditorPlugin = _find_main_plugin(tree.root)
+	var plugin: Node = tree.get_first_node_in_group(&"fmod_translation_services")
 	_expect(plugin != null, "Main plugin was loaded through the normal editor lifecycle")
 	if plugin == null:
 		return false
@@ -41,7 +41,7 @@ func run(output_dir: String, tree: SceneTree) -> bool:
 	await _check_help("FmodAudioBus", "用于混音的音频总线", "bus_zh", output_dir, tree)
 	await _check_help("FmodAudioEffectCapture", "丢弃新帧", "capture_zh", output_dir, tree)
 	# 模拟引擎重载文档翻译域，再触发插件的延迟注册
-	domain.remove_translation(translation)
+	plugin.unregister_catalogs()
 	_expect(domain.translate(BUS_MESSAGE) == BUS_MESSAGE, "Removing the plugin catalog restores English")
 	EditorInterface.get_editor_settings().emit_signal(&"settings_changed")
 	await _settle(tree)
@@ -53,10 +53,10 @@ func run(output_dir: String, tree: SceneTree) -> bool:
 	TranslationServer.set_locale("zh_CN")
 	await _settle(tree)
 	_expect(domain.translate(BUS_MESSAGE) == translation.get_message(BUS_MESSAGE), "zh_CN and zh_Hans select the same Simplified Chinese catalog")
-	plugin.call(&"_remove_fmod_translations")
+	plugin.unregister_catalogs()
 	_expect(domain.translate(BUS_MESSAGE) == BUS_MESSAGE, "Plugin cleanup removes its own documentation catalog")
 	_expect(domain.translate(&"FMOD_DOCUMENTATION_TEST_SENTINEL") == &"保留其他插件的翻译", "Plugin cleanup preserves unrelated documentation translations")
-	plugin.call(&"_queue_fmod_translations_update")
+	plugin.queue_registration()
 	await _settle(tree)
 	_expect(domain.translate(BUS_MESSAGE) == translation.get_message(BUS_MESSAGE), "Plugin registration works again after cleanup")
 	domain.remove_translation(sentinel)

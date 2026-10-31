@@ -7,6 +7,8 @@
 #include <godot_cpp/classes/ref_counted.hpp>
 
 #include <vector>
+#include <atomic>
+#include <memory>
 
 namespace godot {
 	class FmodSound;
@@ -20,6 +22,7 @@ namespace godot {
 
 	class FmodSystem : public RefCounted {
 		GDCLASS(FmodSystem, RefCounted)
+		friend class FmodAudioStream;
 
 	public:
 		// 初始化标志
@@ -177,6 +180,7 @@ namespace godot {
 
 	private:
 		FMOD::System* system = nullptr;
+		std::shared_ptr<std::atomic_bool> sound_lifetime = std::make_shared<std::atomic_bool>(true);
 		bool owns_system = false;
 		mutable std::vector<FMOD_DSP_DESCRIPTION*> dsp_descriptions;
 

@@ -93,6 +93,7 @@ namespace godot {
 
 	private:
 		bool owns_sound = false;
+		std::shared_ptr<std::atomic_bool> system_lifetime;
 		mutable int64_t next_sync_point_id = 1;
 		mutable std::unordered_map<int64_t, FMOD_SYNCPOINT*> sync_points;
 
@@ -120,7 +121,7 @@ namespace godot {
 		bool sound_is_valid() const;									// 检查声音是否有效
 		bool sound_is_null() const;										// 检查声音是否无效
 
-		void setup(FMOD::Sound* p_sound, bool p_owns_sound = true);
+		void setup(FMOD::Sound* p_sound, bool p_owns_sound = true, std::shared_ptr<std::atomic_bool> p_system_lifetime = {});
 
 		// 格式信息
 		String get_name() const;										// 获取一个声音的名称

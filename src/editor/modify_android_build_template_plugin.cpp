@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "modify_android_build_template_plugin.h"
 
 #include <godot_cpp/classes/accept_dialog.hpp>
@@ -18,7 +19,7 @@
 #include <godot_cpp/classes/v_box_container.hpp>
 
 namespace godot {
-	static constexpr const char* TOOL_MENU_NAME = "Configure FMOD Android Export";
+	static constexpr const char* TOOL_MENU_NAME = FMOD_EDITOR_TEXT("Configure FMOD Android Export");
 	static constexpr const char* FMOD_JAR_GRADLE_LINE = "    implementation files(\"libs/fmod.jar\")";
 	static constexpr const char* FMOD_JAVA_MARKER = "// FMOD Android runtime.";
 
@@ -27,6 +28,20 @@ namespace godot {
 
 	void ModifyAndroidBuildTemplatePlugin::_notification(int p_what) {
 		switch (p_what) {
+            case NOTIFICATION_TRANSLATION_CHANGED: {
+                if (sdk_select_dialog) {
+                    bool visible = sdk_select_dialog->is_visible();
+                    if (file_path) selected_fmod_path = file_path->get_text();
+                    _free_sdk_select_dialog();
+                    _create_sdk_select_dialog();
+                    if (visible) sdk_select_dialog->popup_centered();
+                }
+                if (review_dialog) {
+                    bool visible = review_dialog->is_visible();
+                    _create_review_dialog(_build_review_summary(pending_sdk));
+                    if (visible) review_dialog->popup_centered();
+                }
+            } break;
 			case NOTIFICATION_ENTER_TREE: {
 				add_tool_menu_item(TOOL_MENU_NAME, callable_mp(this, &ModifyAndroidBuildTemplatePlugin::_open_configure_dialog));
 			} break;
@@ -42,9 +57,8 @@ namespace godot {
 	void ModifyAndroidBuildTemplatePlugin::_open_configure_dialog() {
 		String error;
 		if (!_validate_android_template(error)) {
-			_create_dialog_to_editor(
-				"Android Build Template Missing",
-				error + "\n\nInstall it from: Project > Install Android Build Template..."
+			_create_dialog_to_editor(fmod_editor_translate("Android Build Template Missing"),
+				error + "\n\n" + fmod_editor_translate("Install it from: Project > Install Android Build Template...")
 			);
 			return;
 		}
@@ -57,19 +71,18 @@ namespace godot {
 		_free_sdk_select_dialog();
 
 		sdk_select_dialog = memnew(ConfirmationDialog);
-		sdk_select_dialog->set_title("Configure FMOD Android Export");
+		sdk_select_dialog->set_title(fmod_editor_translate("Configure FMOD Android Export"));
 		sdk_select_dialog->set_min_size(Vector2(820, 220));
-		sdk_select_dialog->get_ok_button()->set_text("Review Changes");
+		sdk_select_dialog->get_ok_button()->set_text(fmod_editor_translate("Review Changes"));
 
 		VBoxContainer* main_vbox = memnew(VBoxContainer);
 		main_vbox->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 		sdk_select_dialog->add_child(main_vbox);
 
 		Label* info_label = memnew(Label);
-		info_label->set_text(
-			"Select the extracted FMOD Core Android SDK folder, or the downloaded .tar.gz/.tgz archive.\n"
+		info_label->set_text(fmod_editor_translate("Select the extracted FMOD Core Android SDK folder, or the downloaded .tar.gz/.tgz archive.\n"
 			"The tool will configure the installed Godot Android build template for FMOD Core."
-		);
+		));
 		main_vbox->add_child(info_label);
 
 		HBoxContainer* path_row = memnew(HBoxContainer);
@@ -78,24 +91,24 @@ namespace godot {
 
 		file_path = memnew(LineEdit);
 		file_path->set_h_size_flags(Control::SIZE_EXPAND_FILL);
-		file_path->set_placeholder("Path to FMOD Core Android SDK folder or archive...");
+		file_path->set_placeholder(fmod_editor_translate("Path to FMOD Core Android SDK folder or archive..."));
 		if (!selected_fmod_path.is_empty()) {
 			file_path->set_text(selected_fmod_path);
 		}
 		path_row->add_child(file_path);
 
 		Button* browse_button = memnew(Button);
-		browse_button->set_text("Browse...");
+		browse_button->set_text(fmod_editor_translate("Browse..."));
 		browse_button->connect("pressed", callable_mp(this, &ModifyAndroidBuildTemplatePlugin::_on_browse_pressed));
 		path_row->add_child(browse_button);
 
 		file_dialog = memnew(FileDialog);
 		file_dialog->set_access(FileDialog::ACCESS_FILESYSTEM);
 		file_dialog->set_file_mode(FileDialog::FILE_MODE_OPEN_ANY);
-		file_dialog->set_title("Select FMOD Core Android SDK");
+		file_dialog->set_title(fmod_editor_translate("Select FMOD Core Android SDK"));
 		PackedStringArray filters;
-		filters.append("*.tar.gz,*.tgz ; FMOD Android archive");
-		filters.append("* ; All files");
+		filters.append(String("*.tar.gz,*.tgz ; ") + fmod_editor_translate("FMOD Android archive"));
+		filters.append(String("* ; ") + fmod_editor_translate("All files"));
 		file_dialog->set_filters(filters);
 		file_dialog->connect("file_selected", callable_mp(this, &ModifyAndroidBuildTemplatePlugin::_on_file_dialog_path_selected));
 		file_dialog->connect("dir_selected", callable_mp(this, &ModifyAndroidBuildTemplatePlugin::_on_file_dialog_path_selected));
@@ -111,9 +124,9 @@ namespace godot {
 		_free_review_dialog();
 
 		review_dialog = memnew(ConfirmationDialog);
-		review_dialog->set_title("Review FMOD Android Export Changes");
+		review_dialog->set_title(fmod_editor_translate("Review FMOD Android Export Changes"));
 		review_dialog->set_min_size(Vector2(860, 560));
-		review_dialog->get_ok_button()->set_text("Apply Changes");
+		review_dialog->get_ok_button()->set_text(fmod_editor_translate("Apply Changes"));
 
 		review_text = memnew(RichTextLabel);
 		review_text->set_use_bbcode(false);
@@ -131,6 +144,7 @@ namespace godot {
 
 	void ModifyAndroidBuildTemplatePlugin::_create_dialog_to_editor(const String& p_title, const String& p_text) {
 		AcceptDialog* dialog = memnew(AcceptDialog);
+		dialog->set_translation_domain("godot.editor");
 		dialog->set_title(p_title);
 		dialog->set_text(p_text);
 		EditorInterface::get_singleton()->get_base_control()->add_child(dialog);
@@ -171,14 +185,14 @@ namespace godot {
 
 		selected_fmod_path = file_path->get_text().strip_edges();
 		if (selected_fmod_path.is_empty()) {
-			_create_dialog_to_editor("Path Required", "Please select the FMOD Core Android SDK folder or archive.");
+			_create_dialog_to_editor(fmod_editor_translate("Path Required"), fmod_editor_translate("Please select the FMOD Core Android SDK folder or archive."));
 			return;
 		}
 
 		String error;
 		FmodAndroidSdkInfo info;
 		if (!_resolve_fmod_sdk(selected_fmod_path, info, error)) {
-			_create_dialog_to_editor("Invalid FMOD Android SDK", error);
+			_create_dialog_to_editor(fmod_editor_translate("Invalid FMOD Android SDK"), error);
 			return;
 		}
 
@@ -198,10 +212,10 @@ namespace godot {
 		_free_review_dialog();
 
 		if (err == OK) {
-			_create_dialog_to_editor("FMOD Android Export Configured", "FMOD Android export setup completed successfully.\n\n" + report);
+			_create_dialog_to_editor(fmod_editor_translate("FMOD Android Export Configured"), fmod_editor_translate("FMOD Android export setup completed successfully.") + "\n\n" + report);
 		}
 		else {
-			_create_dialog_to_editor("FMOD Android Export Setup Failed", "The Android build template was not fully configured.\n\n" + report);
+			_create_dialog_to_editor(fmod_editor_translate("FMOD Android Export Setup Failed"), fmod_editor_translate("The Android build template was not fully configured.") + "\n\n" + report);
 		}
 	}
 
@@ -212,7 +226,7 @@ namespace godot {
 	bool ModifyAndroidBuildTemplatePlugin::_validate_android_template(String& r_error) const {
 		String global_template_path = ProjectSettings::get_singleton()->globalize_path(template_path);
 		if (!DirAccess::dir_exists_absolute(global_template_path)) {
-			r_error = "The project does not have an installed Android build template.";
+			r_error = fmod_editor_translate("The project does not have an installed Android build template.");
 			return false;
 		}
 
@@ -223,7 +237,7 @@ namespace godot {
 
 		for (int i = 0; i < required_files.size(); i++) {
 			if (!FileAccess::file_exists(required_files[i])) {
-				r_error = "Missing required Android build template file:\n" + required_files[i];
+				r_error = fmod_editor_translate("Missing required Android build template file:\n") + required_files[i];
 				return false;
 			}
 		}
@@ -245,18 +259,18 @@ namespace godot {
 			search_root = r_info.extracted_root;
 		}
 		else if (!DirAccess::dir_exists_absolute(input_path)) {
-			r_error = "The selected path is not a directory or a supported .tar.gz/.tgz archive:\n" + input_path;
+			r_error = fmod_editor_translate("The selected path is not a directory or a supported .tar.gz/.tgz archive:\n") + input_path;
 			return false;
 		}
 
 		r_info.core_lib_path = _find_core_lib_path(search_root);
 		if (r_info.core_lib_path.is_empty()) {
-			r_error = "Cannot find api/core/lib/fmod.jar under:\n" + search_root + "\n\nSelect the FMOD Core Android SDK root folder or archive.";
+			r_error = fmod_editor_translate("Cannot find api/core/lib/fmod.jar under:\n") + search_root + "\n\n" + fmod_editor_translate("Select the FMOD Core Android SDK root folder or archive.");
 			return false;
 		}
 
 		if (!_has_any_fmod_native_library(r_info.core_lib_path)) {
-			r_error = "Cannot find FMOD native libraries under:\n" + r_info.core_lib_path + "\n\nExpected ABI folders: arm64-v8a, armeabi-v7a, x86, x86_64.";
+			r_error = fmod_editor_translate("Cannot find FMOD native libraries under:\n") + r_info.core_lib_path + "\n\n" + fmod_editor_translate("Expected ABI folders: arm64-v8a, armeabi-v7a, x86, x86_64.");
 			return false;
 		}
 
@@ -267,7 +281,7 @@ namespace godot {
 		String temp_root = OS::get_singleton()->get_temp_dir().path_join("godot_fmod_android_" + String::num_uint64(Time::get_singleton()->get_ticks_msec())).replace("\\", "/");
 		Error err = DirAccess::make_dir_recursive_absolute(temp_root);
 		if (err != OK) {
-			r_error = "Failed to create temporary extraction directory:\n" + temp_root;
+			r_error = fmod_editor_translate("Failed to create temporary extraction directory:\n") + temp_root;
 			return false;
 		}
 
@@ -284,10 +298,8 @@ namespace godot {
 			if (!output.is_empty()) {
 				output_text = String(output[0]);
 			}
-			r_error = "Failed to extract the FMOD archive with the system tar command.\n\n"
-					  "Archive:\n" + p_archive_path + "\n\n"
-					  "Please extract it manually and select the extracted folder.\n\n"
-					  "Command output:\n" + output_text;
+			r_error = fmod_editor_translate("Failed to extract the FMOD archive. Extract it manually and select the extracted folder.")
+                + "\n" + p_archive_path + "\n\n" + output_text;
 			return false;
 		}
 
@@ -344,24 +356,24 @@ namespace godot {
 
 	String ModifyAndroidBuildTemplatePlugin::_build_review_summary(const FmodAndroidSdkInfo& p_info) const {
 		String summary;
-		summary += "FMOD Android export setup will apply the following changes.\n\n";
-		summary += "Android build template:\n  " + template_path + "\n\n";
-		summary += "FMOD Core Android SDK source:\n  " + p_info.input_path + "\n";
+		summary += fmod_editor_translate("FMOD Android export setup will apply the following changes.\n\n");
+		summary += fmod_editor_translate("Android build template:\n  ") + template_path + "\n\n";
+		summary += fmod_editor_translate("FMOD Core Android SDK source:\n  ") + p_info.input_path + "\n";
 		if (!p_info.extracted_root.is_empty()) {
-			summary += "Temporary extraction folder:\n  " + p_info.extracted_root + "\n";
+			summary += fmod_editor_translate("Temporary extraction folder:\n  ") + p_info.extracted_root + "\n";
 		}
-		summary += "Resolved FMOD Core library folder:\n  " + p_info.core_lib_path + "\n\n";
+		summary += fmod_editor_translate("Resolved FMOD Core library folder:\n  ") + p_info.core_lib_path + "\n\n";
 
-		summary += "Files to modify:\n";
+		summary += fmod_editor_translate("Files to modify:\n");
 		summary += "  - res://android/build/gradle.properties\n";
-		summary += "      Ensure android.overridePathCheck=true.\n";
+		summary += fmod_editor_translate("      Ensure android.overridePathCheck=true.\n");
 		summary += "  - res://android/build/build.gradle\n";
-		summary += "      Ensure implementation files(\"libs/fmod.jar\") is present.\n";
+		summary += fmod_editor_translate("      Ensure implementation files(\"libs/fmod.jar\") is present.\n");
 		summary += "  - res://android/build/src/main/java/com/godot/game/GodotApp.java\n";
-		summary += "      Ensure FMOD is loaded before Godot starts.\n";
-		summary += "      Debug/dev builds load fmodL; release builds load fmod.\n\n";
+		summary += fmod_editor_translate("      Ensure FMOD is loaded before Godot starts.\n");
+		summary += fmod_editor_translate("      Debug/dev builds load fmodL; release builds load fmod.\n\n");
 
-		summary += "Files to copy:\n";
+		summary += fmod_editor_translate("Files to copy:\n");
 		summary += "  - fmod.jar -> res://android/build/libs/fmod.jar\n";
 		summary += "  - libfmodL.so -> res://android/build/libs/debug/<ABI>/libfmodL.so\n";
 		summary += "  - libfmodL.so -> res://android/build/libs/dev/<ABI>/libfmodL.so\n";
@@ -370,7 +382,7 @@ namespace godot {
 		summary += "  - libfmod_player.android.template_debug.arm64.so -> res://android/build/libs/dev/arm64-v8a/\n";
 		summary += "  - libfmod_player.android.template_release.arm64.so -> res://android/build/libs/release/arm64-v8a/\n\n";
 
-		summary += "This operation is idempotent: existing matching lines will not be duplicated, and copied files will be overwritten.";
+		summary += fmod_editor_translate("This operation is idempotent: existing matching lines will not be duplicated, and copied files will be overwritten.");
 		return summary;
 	}
 
@@ -404,16 +416,16 @@ namespace godot {
 
 		Error err = _ensure_dir_exists(template_path.path_join("libs"));
 		if (err != OK) {
-			r_report += "- Failed to create res://android/build/libs.\n";
+			r_report += fmod_editor_translate("- Failed to create res://android/build/libs.\n");
 			return err;
 		}
 
 		err = _copy_file(p_core_lib_path.path_join("fmod.jar"), template_path.path_join("libs/fmod.jar"));
 		if (err == OK) {
-			r_report += "- Copied fmod.jar.\n";
+			r_report += fmod_editor_translate("- Copied fmod.jar.\n");
 		}
 		else {
-			r_report += "- Failed to copy fmod.jar.\n";
+			r_report += fmod_editor_translate("- Failed to copy fmod.jar.\n");
 			result = err;
 		}
 
@@ -431,11 +443,11 @@ namespace godot {
 			if (FileAccess::file_exists(source_debug)) {
 				_copy_file(source_debug, template_path.path_join("libs/debug").path_join(abi).path_join("libfmodL.so"));
 				_copy_file(source_debug, template_path.path_join("libs/dev").path_join(abi).path_join("libfmodL.so"));
-				r_report += "- Copied debug/dev FMOD runtime for " + abi + ".\n";
+				r_report += fmod_editor_translate("- Copied debug/dev FMOD runtime for ") + abi + ".\n";
 			}
 			if (FileAccess::file_exists(source_release)) {
 				_copy_file(source_release, template_path.path_join("libs/release").path_join(abi).path_join("libfmod.so"));
-				r_report += "- Copied release FMOD runtime for " + abi + ".\n";
+				r_report += fmod_editor_translate("- Copied release FMOD runtime for ") + abi + ".\n";
 			}
 		}
 
@@ -451,29 +463,29 @@ namespace godot {
 			Error err = _copy_file(debug_src, template_path.path_join("libs/debug/arm64-v8a/libfmod_player.android.template_debug.arm64.so"));
 			if (err == OK) {
 				_copy_file(debug_src, template_path.path_join("libs/dev/arm64-v8a/libfmod_player.android.template_debug.arm64.so"));
-				r_report += "- Copied FMOD GDExtension debug/dev Android library for arm64-v8a.\n";
+				r_report += fmod_editor_translate("- Copied FMOD GDExtension debug/dev Android library for arm64-v8a.\n");
 			}
 			else {
-				r_report += "- Failed to copy FMOD GDExtension debug Android library.\n";
+				r_report += fmod_editor_translate("- Failed to copy FMOD GDExtension debug Android library.\n");
 				result = err;
 			}
 		}
 		else {
-			r_report += "- Skipped FMOD GDExtension debug Android library; source file was not found.\n";
+			r_report += fmod_editor_translate("- Skipped FMOD GDExtension debug Android library; source file was not found.\n");
 		}
 
 		if (FileAccess::file_exists(release_src)) {
 			Error err = _copy_file(release_src, template_path.path_join("libs/release/arm64-v8a/libfmod_player.android.template_release.arm64.so"));
 			if (err == OK) {
-				r_report += "- Copied FMOD GDExtension release Android library for arm64-v8a.\n";
+				r_report += fmod_editor_translate("- Copied FMOD GDExtension release Android library for arm64-v8a.\n");
 			}
 			else {
-				r_report += "- Failed to copy FMOD GDExtension release Android library.\n";
+				r_report += fmod_editor_translate("- Failed to copy FMOD GDExtension release Android library.\n");
 				result = err;
 			}
 		}
 		else {
-			r_report += "- Skipped FMOD GDExtension release Android library; source file was not found.\n";
+			r_report += fmod_editor_translate("- Skipped FMOD GDExtension release Android library; source file was not found.\n");
 		}
 
 		return result;
@@ -483,12 +495,12 @@ namespace godot {
 		String path = template_path.path_join("gradle.properties");
 		String text = _read_text_file(path);
 		if (text.is_empty()) {
-			r_report += "- Failed to read gradle.properties.\n";
+			r_report += fmod_editor_translate("- Failed to read gradle.properties.\n");
 			return FAILED;
 		}
 
 		if (text.contains("android.overridePathCheck=true")) {
-			r_report += "- gradle.properties already enables android.overridePathCheck.\n";
+			r_report += fmod_editor_translate("- gradle.properties already enables android.overridePathCheck.\n");
 			return OK;
 		}
 
@@ -504,10 +516,10 @@ namespace godot {
 		}
 
 		if (!_write_text_file(path, text)) {
-			r_report += "- Failed to update gradle.properties.\n";
+			r_report += fmod_editor_translate("- Failed to update gradle.properties.\n");
 			return FAILED;
 		}
-		r_report += "- Updated gradle.properties.\n";
+		r_report += fmod_editor_translate("- Updated gradle.properties.\n");
 		return OK;
 	}
 
@@ -515,28 +527,28 @@ namespace godot {
 		String path = template_path.path_join("build.gradle");
 		String text = _read_text_file(path);
 		if (text.is_empty()) {
-			r_report += "- Failed to read build.gradle.\n";
+			r_report += fmod_editor_translate("- Failed to read build.gradle.\n");
 			return FAILED;
 		}
 
 		if (text.contains("implementation files(\"libs/fmod.jar\")") || text.contains("implementation files('libs/fmod.jar')")) {
-			r_report += "- build.gradle already includes fmod.jar.\n";
+			r_report += fmod_editor_translate("- build.gradle already includes fmod.jar.\n");
 			return OK;
 		}
 
 		String needle = "\n}\n\nandroid {";
 		int idx = text.find(needle);
 		if (idx < 0) {
-			r_report += "- Failed to locate the dependencies block in build.gradle.\n";
+			r_report += fmod_editor_translate("- Failed to locate the dependencies block in build.gradle.\n");
 			return FAILED;
 		}
 
 		text = text.substr(0, idx) + "\n\n" + FMOD_JAR_GRADLE_LINE + text.substr(idx);
 		if (!_write_text_file(path, text)) {
-			r_report += "- Failed to update build.gradle.\n";
+			r_report += fmod_editor_translate("- Failed to update build.gradle.\n");
 			return FAILED;
 		}
-		r_report += "- Updated build.gradle with fmod.jar dependency.\n";
+		r_report += fmod_editor_translate("- Updated build.gradle with fmod.jar dependency.\n");
 		return OK;
 	}
 
@@ -544,12 +556,12 @@ namespace godot {
 		String path = template_path.path_join("src/main/java/com/godot/game/GodotApp.java");
 		String text = _read_text_file(path);
 		if (text.is_empty()) {
-			r_report += "- Failed to read GodotApp.java.\n";
+			r_report += fmod_editor_translate("- Failed to read GodotApp.java.\n");
 			return FAILED;
 		}
 
 		if (text.contains(FMOD_JAVA_MARKER)) {
-			r_report += "- GodotApp.java already contains the FMOD Android runtime loader.\n";
+			r_report += fmod_editor_translate("- GodotApp.java already contains the FMOD Android runtime loader.\n");
 			return OK;
 		}
 
@@ -581,16 +593,16 @@ namespace godot {
 			idx = cleaned.find(anchor);
 		}
 		if (idx < 0) {
-			r_report += "- Failed to locate GodotApp.onCreate insertion point.\n";
+			r_report += fmod_editor_translate("- Failed to locate GodotApp.onCreate insertion point.\n");
 			return FAILED;
 		}
 
 		cleaned = cleaned.substr(0, idx) + load_block + cleaned.substr(idx);
 		if (!_write_text_file(path, cleaned)) {
-			r_report += "- Failed to update GodotApp.java.\n";
+			r_report += fmod_editor_translate("- Failed to update GodotApp.java.\n");
 			return FAILED;
 		}
-		r_report += "- Updated GodotApp.java to load FMOD before Godot starts.\n";
+		r_report += fmod_editor_translate("- Updated GodotApp.java to load FMOD before Godot starts.\n");
 		return OK;
 	}
 

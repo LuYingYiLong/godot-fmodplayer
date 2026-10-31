@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_filter_preview.h"
 
 #include "core/fmod_server.h"
@@ -32,7 +33,7 @@ namespace godot {
 		set_draw_background(false);
 		set_clip_contents(true);
 		set_custom_minimum_size(Vector2(0.0f, 160.0f * _scale()));
-		set_tooltip_text(tr("Approximate low-pass response. The cutoff node stays on the 0 dB reference line. Drag horizontally to adjust cutoff, vertically to adjust resonance relative to its starting value (12/18/24 dB)."));
+		fmod_set_editor_tooltip(this, "Approximate low-pass response. The cutoff node stays on the 0 dB reference line. Drag horizontally to adjust cutoff, vertically to adjust resonance relative to its starting value (12/18/24 dB).");
 	}
 
 	float FmodAudioEffectFilterPreview::_scale() const {
@@ -78,6 +79,10 @@ namespace godot {
 
 	void FmodAudioEffectFilterPreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			break;
@@ -128,7 +133,7 @@ namespace godot {
 		}
 		else {
 			EditorUndoRedoManager* undo_redo = EditorInterface::get_singleton()->get_editor_undo_redo();
-			undo_redo->create_action(tr("Move filter cutoff"), UndoRedo::MERGE_ENDS, effect.ptr());
+			undo_redo->create_action(fmod_editor_translate("Move filter cutoff"), UndoRedo::MERGE_ENDS, effect.ptr());
 			PackedStringArray properties;
 			properties.push_back("cutoff_hz");
 			properties.push_back("resonance");

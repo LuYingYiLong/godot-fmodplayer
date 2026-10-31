@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_compressor_preview.h"
 #include "fmod_compressor_preview_response.h"
 
@@ -100,21 +101,25 @@ namespace godot {
 		const Handle handle = dragging_handle != HANDLE_NONE ? dragging_handle : hovered_handle;
 		set_default_cursor_shape(is_read_only() || handle == HANDLE_NONE ? CURSOR_ARROW : (handle == HANDLE_SHARED ? CURSOR_MOVE : (handle == HANDLE_THRESHOLD ? CURSOR_HSIZE : CURSOR_VSIZE)));
 		if (effect.is_valid() && handle == HANDLE_THRESHOLD) {
-			set_tooltip_text(tr("Threshold") + ": " + String::num(effect->get_threshold(), 1) + " dB\n" + tr("Drag horizontally to adjust."));
+			set_tooltip_text(fmod_editor_translate("Threshold") + ": " + String::num(effect->get_threshold(), 1) + " dB\n" + fmod_editor_translate("Drag horizontally to adjust."));
 		}
 		else if (effect.is_valid() && handle == HANDLE_RATIO) {
-			set_tooltip_text(tr("Ratio") + ": " + String::num(effect->get_ratio(), 1) + ":1\n" + tr("Drag down to increase compression, up to decrease."));
+			set_tooltip_text(fmod_editor_translate("Ratio") + ": " + String::num(effect->get_ratio(), 1) + ":1\n" + fmod_editor_translate("Drag down to increase compression, up to decrease."));
 		}
 		else if (effect.is_valid() && handle == HANDLE_SHARED) {
-			set_tooltip_text(tr("Drag horizontally for threshold, vertically for ratio."));
+			fmod_set_editor_tooltip(this, "Drag horizontally for threshold, vertically for ratio.");
 		}
 		else {
-			set_tooltip_text(tr("Static input/output curve including Gain and Mix. Drag the round node horizontally for threshold, the square node vertically for ratio. Attack/release timing is not shown."));
+			fmod_set_editor_tooltip(this, "Static input/output curve including Gain and Mix. Drag the round node horizontally for threshold, the square node vertically for ratio. Attack/release timing is not shown.");
 		}
 	}
 
 	void FmodAudioEffectCompressorPreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			break;

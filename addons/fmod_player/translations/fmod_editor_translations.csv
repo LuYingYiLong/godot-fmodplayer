@@ -1,18 +1,456 @@
-source,zh_Hans,zh_Hant,ja,ru
-FMOD Audio,FMOD 音频,FMOD 音訊,FMOD オーディオ,Аудио FMOD
-Duplicate Effect,复制效果器,複製效果器,エフェクトを複製,Дублировать эффект
-Duplicate Bus Effect,复制总线效果器,複製匯流排效果器,バスエフェクトを複製,Дублировать эффект шины
-FMOD Bus Layout,FMOD 总线布局,FMOD 匯流排配置,FMOD バスレイアウト,Схема шин FMOD
-Godot Audio Buses,Godot 音频总线,Godot 音訊匯流排,Godot オーディオバス,Аудиошины Godot
-Open Godot Audio Panel,打开 Godot 音频面板,開啟 Godot 音訊面板,Godot のオーディオパネルを開く,Открыть панель аудио Godot
-Set as Default,设为默认,設為預設,既定に設定,Сделать схемой по умолчанию
-Create FMOD Layout from Godot,从 Godot 创建 FMOD 布局,從 Godot 建立 FMOD 配置,Godot から FMOD レイアウトを作成,Создать схему FMOD из Godot
-Synchronizing with Godot Audio Buses. Edit the source layout in the Godot Audio panel.,正在同步 Godot 音频总线。请在 Godot 音频面板中编辑源布局,正在同步 Godot 音訊匯流排。請在 Godot 音訊面板編輯來源配置,Godot のオーディオバスと同期中です。Godot のオーディオパネルで編集してください。,Синхронизация с аудиошинами Godot. Редактируйте исходную схему в панели аудио Godot.
-The default FMOD bus layout could not be loaded. Create or open a valid layout before saving.,无法加载默认 FMOD 总线布局。请创建或打开有效布局后再保存,無法載入預設 FMOD 匯流排配置。請建立或開啟有效配置後再儲存,既定の FMOD バスレイアウトを読み込めません。有効なレイアウトを作成または開いてください。,Не удалось загрузить схему шин FMOD по умолчанию. Создайте или откройте корректную схему перед сохранением.
-Disable Godot bus synchronization and reload the project to edit an FMOD layout.,关闭 Godot 总线同步并重新加载项目后可编辑 FMOD 布局,關閉 Godot 匯流排同步並重新載入專案後即可編輯 FMOD 配置,FMOD レイアウトを編集するには Godot バス同期を無効にしてプロジェクトを再読み込みしてください。,Для редактирования схемы FMOD отключите синхронизацию шин Godot и перезагрузите проект.
-Cannot load the default FMOD bus layout.,无法加载默认 FMOD 总线布局,無法載入預設 FMOD 匯流排配置,既定の FMOD バスレイアウトを読み込めません。,Не удалось загрузить схему шин FMOD по умолчанию.
-Cannot load FMOD bus layout: %s,无法加载 FMOD 总线布局：%s,無法載入 FMOD 匯流排配置：%s,FMOD バスレイアウトを読み込めません: %s,Не удалось загрузить схему шин FMOD: %s
-Cannot save FMOD bus layout: %s,无法保存 FMOD 总线布局：%s,無法儲存 FMOD 匯流排配置：%s,FMOD バスレイアウトを保存できません: %s,Не удалось сохранить схему шин FMOD: %s
-Load FMOD Bus Layout,加载 FMOD 总线布局,載入 FMOD 匯流排配置,FMOD バスレイアウトを読み込む,Загрузить схему шин FMOD
-Save FMOD Bus Layout,保存 FMOD 总线布局,儲存 FMOD 匯流排配置,FMOD バスレイアウトを保存,Сохранить схему шин FMOD
-Unsupported Godot effects were skipped:\n%s,已跳过不支持的 Godot 效果器：\n%s,已略過不支援的 Godot 效果器：\n%s,未対応の Godot エフェクトをスキップしました:\n%s,Пропущены неподдерживаемые эффекты Godot:\n%s
+"source","context","zh_Hans","zh_Hant","ja","ru"
+"      Debug/dev builds load fmodL; release builds load fmod.
+
+","","      debug/dev 构建加载 fmodL，release 构建加载 fmod。
+
+","      debug/dev 建置載入 fmodL，release 建置載入 fmod。
+
+","      debug/dev は fmodL、release は fmod を読み込みます。
+
+","      Сборки debug/dev загружают fmodL, release — fmod.
+
+"
+"      Ensure FMOD is loaded before Godot starts.
+","","      在 Godot 启动前加载 FMOD。
+","      在 Godot 啟動前載入 FMOD。
+","      Godot の起動前に FMOD を読み込みます。
+","      Загружать FMOD перед запуском Godot.
+"
+"      Ensure android.overridePathCheck=true.
+","","      设置 android.overridePathCheck=true。
+","      設定 android.overridePathCheck=true。
+","      android.overridePathCheck=true を設定します。
+","      Установить android.overridePathCheck=true.
+"
+"      Ensure implementation files(""libs/fmod.jar"") is present.
+","","      添加 implementation files(""libs/fmod.jar"")。
+","      加入 implementation files(""libs/fmod.jar"")。
+","      implementation files(""libs/fmod.jar"") を追加します。
+","      Добавить implementation files(""libs/fmod.jar"").
+"
+"- Copied FMOD GDExtension debug/dev Android library for arm64-v8a.
+","","- 已复制 arm64-v8a 的 FMOD GDExtension debug/dev Android 库。
+","- 已複製 arm64-v8a 的 FMOD GDExtension debug/dev Android 程式庫。
+","- arm64-v8a 用の FMOD GDExtension debug/dev Android ライブラリをコピーしました。
+","- Скопирована библиотека FMOD GDExtension debug/dev Android для arm64-v8a.
+"
+"- Copied FMOD GDExtension release Android library for arm64-v8a.
+","","- 已复制 arm64-v8a 的 FMOD GDExtension release Android 库。
+","- 已複製 arm64-v8a 的 FMOD GDExtension release Android 程式庫。
+","- arm64-v8a 用の FMOD GDExtension release Android ライブラリをコピーしました。
+","- Скопирована библиотека FMOD GDExtension release Android для arm64-v8a.
+"
+"- Copied debug/dev FMOD runtime for ","","- 已复制 debug/dev FMOD 运行库，ABI：","- 已複製 debug/dev FMOD 執行階段程式庫，ABI：","- debug/dev FMOD ランタイムをコピーしました。ABI: ","- Скопирована библиотека FMOD debug/dev для "
+"- Copied fmod.jar.
+","","- 已复制 fmod.jar。
+","- 已複製 fmod.jar。
+","- fmod.jar をコピーしました。
+","- fmod.jar скопирован.
+"
+"- Copied release FMOD runtime for ","","- 已复制 release FMOD 运行库，ABI：","- 已複製 release FMOD 執行階段程式庫，ABI：","- release FMOD ランタイムをコピーしました。ABI: ","- Скопирована библиотека FMOD release для "
+"- Failed to copy FMOD GDExtension debug Android library.
+","","- 无法复制 FMOD GDExtension debug Android library。
+","- 無法複製 FMOD GDExtension debug Android library。
+","- FMOD GDExtension debug Android library をコピーすることができません。
+","- Не удалось скопировать FMOD GDExtension debug Android library.
+"
+"- Failed to copy FMOD GDExtension release Android library.
+","","- 无法复制 FMOD GDExtension release Android library。
+","- 無法複製 FMOD GDExtension release Android library。
+","- FMOD GDExtension release Android library をコピーすることができません。
+","- Не удалось скопировать FMOD GDExtension release Android library.
+"
+"- Failed to copy fmod.jar.
+","","- 无法复制 fmod.jar。
+","- 無法複製 fmod.jar。
+","- fmod.jar をコピーすることができません。
+","- Не удалось скопировать fmod.jar.
+"
+"- Failed to create res://android/build/libs.
+","","- 无法创建 res://android/build/libs。
+","- 無法建立 res://android/build/libs。
+","- res://android/build/libs を作成することができません。
+","- Не удалось создать res://android/build/libs.
+"
+"- Failed to locate GodotApp.onCreate insertion point.
+","","- 找不到 GodotApp.onCreate 插入位置。
+","- 找不到 GodotApp.onCreate 插入位置。
+","- GodotApp.onCreate の挿入位置が見つかりません。
+","- Не найдена точка вставки в GodotApp.onCreate.
+"
+"- Failed to locate the dependencies block in build.gradle.
+","","- 在 build.gradle 中找不到 dependencies 块。
+","- 在 build.gradle 中找不到 dependencies 區塊。
+","- build.gradle に dependencies ブロックが見つかりません。
+","- В build.gradle не найден блок dependencies.
+"
+"- Failed to read GodotApp.java.
+","","- 无法读取 GodotApp.java。
+","- 無法讀取 GodotApp.java。
+","- GodotApp.java を読み込むことができません。
+","- Не удалось прочитать GodotApp.java.
+"
+"- Failed to read build.gradle.
+","","- 无法读取 build.gradle。
+","- 無法讀取 build.gradle。
+","- build.gradle を読み込むことができません。
+","- Не удалось прочитать build.gradle.
+"
+"- Failed to read gradle.properties.
+","","- 无法读取 gradle.properties。
+","- 無法讀取 gradle.properties。
+","- gradle.properties を読み込むことができません。
+","- Не удалось прочитать gradle.properties.
+"
+"- Failed to update GodotApp.java.
+","","- 无法更新 GodotApp.java。
+","- 無法更新 GodotApp.java。
+","- GodotApp.java を更新することができません。
+","- Не удалось обновить GodotApp.java.
+"
+"- Failed to update build.gradle.
+","","- 无法更新 build.gradle。
+","- 無法更新 build.gradle。
+","- build.gradle を更新することができません。
+","- Не удалось обновить build.gradle.
+"
+"- Failed to update gradle.properties.
+","","- 无法更新 gradle.properties。
+","- 無法更新 gradle.properties。
+","- gradle.properties を更新することができません。
+","- Не удалось обновить gradle.properties.
+"
+"- GodotApp.java already contains the FMOD Android runtime loader.
+","","- GodotApp.java 已包含 FMOD Android 运行库加载代码。
+","- GodotApp.java 已包含 FMOD Android 執行階段程式庫載入程式碼。
+","- GodotApp.java には FMOD Android ランタイムの読み込み処理があります。
+","- GodotApp.java уже содержит загрузчик FMOD для Android.
+"
+"- Skipped FMOD GDExtension debug Android library; source file was not found.
+","","- 未找到源文件，已跳过 FMOD GDExtension debug Android 库。
+","- 找不到來源檔案，已略過 FMOD GDExtension debug Android 程式庫。
+","- 元のファイルがないため FMOD GDExtension debug Android ライブラリをスキップしました。
+","- Библиотека FMOD GDExtension debug Android пропущена: исходный файл не найден.
+"
+"- Skipped FMOD GDExtension release Android library; source file was not found.
+","","- 未找到源文件，已跳过 FMOD GDExtension release Android 库。
+","- 找不到來源檔案，已略過 FMOD GDExtension release Android 程式庫。
+","- 元のファイルがないため FMOD GDExtension release Android ライブラリをスキップしました。
+","- Библиотека FMOD GDExtension release Android пропущена: исходный файл не найден.
+"
+"- Updated GodotApp.java to load FMOD before Godot starts.
+","","- 已更新 GodotApp.java，在 Godot 启动前加载 FMOD。
+","- 已更新 GodotApp.java，在 Godot 啟動前載入 FMOD。
+","- Godot の起動前に FMOD を読み込むよう GodotApp.java を更新しました。
+","- GodotApp.java обновлён для загрузки FMOD перед Godot.
+"
+"- Updated build.gradle with fmod.jar dependency.
+","","- 已在 build.gradle 中加入 fmod.jar 依赖。
+","- 已在 build.gradle 中加入 fmod.jar 相依性。
+","- build.gradle に fmod.jar の依存関係を追加しました。
+","- В build.gradle добавлена зависимость fmod.jar.
+"
+"- Updated gradle.properties.
+","","- 已更新 gradle.properties。
+","- 已更新 gradle.properties。
+","- gradle.properties を更新しました。
+","- gradle.properties обновлён.
+"
+"- build.gradle already includes fmod.jar.
+","","- build.gradle 已包含 fmod.jar。
+","- build.gradle 已包含 fmod.jar。
+","- build.gradle には fmod.jar が含まれています。
+","- build.gradle уже содержит fmod.jar.
+"
+"- gradle.properties already enables android.overridePathCheck.
+","","- gradle.properties 已启用 android.overridePathCheck。
+","- gradle.properties 已啟用 android.overridePathCheck。
+","- gradle.properties で android.overridePathCheck は有効です。
+","- В gradle.properties уже включён android.overridePathCheck.
+"
+"2D","","2D","2D","2D","2D"
+"3D","","3D","3D","3D","3D"
+"AIFF","","AIFF","AIFF","AIFF","AIFF"
+"API Documentation","","API 文档","API 文件","API ドキュメント","Документация API"
+"ASF","","ASF","ASF","ASF","ASF"
+"AT9","","AT9","AT9","AT9","AT9"
+"AUDIOQUEUE","","AUDIOQUEUE","AUDIOQUEUE","AUDIOQUEUE","AUDIOQUEUE"
+"Add Effect","","添加效果","新增效果","Effectを追加","Добавить эффект"
+"Add Entry","","添加条目","新增項目","項目を追加","Добавить запись"
+"Add Language","","添加语言","新增語言","言語を追加","Добавить язык"
+"All files","","所有文件","所有檔案","すべてのファイル","Все файлы"
+"Android Build Template Missing","","缺少 Android 构建模板","缺少 Android 建置範本","Android ビルドテンプレートがありません","Отсутствует шаблон сборки Android"
+"Android build template:
+  ","","Android 构建模板：
+  ","Android 建置範本：
+  ","Android ビルドテンプレート:
+  ","Шаблон сборки Android:
+  "
+"Apply Changes","","应用修改","套用修改","変更を適用","Применить изменения"
+"Approximate EQ response. Drag band nodes horizontally to adjust frequency; drag vertically to adjust gain for peaking and shelf filters. Scroll over a node to adjust Q.","","均衡器近似响应。水平拖动频段节点调节频率；峰值和搁架滤波器还可通过垂直拖动调节增益。悬停在节点上滚动滚轮可调节 Q 值。","等化器近似響應。水平拖曳頻段節點以調整頻率；峰值與棚架濾波器也可透過垂直拖曳調整增益。將游標移至節點上並捲動滾輪可調整 Q 值。","EQ の近似応答。バンドのノードを左右にドラッグすると周波数を調整できます。ピーキング／シェルビングフィルターは上下のドラッグでゲインも調整できます。ノード上でホイールを回すと Q 値を調整できます。","Аппроксимация АЧХ эквалайзера. Перетаскивайте узлы полос по горизонтали для изменения частоты; для пиковых и полочных фильтров перетаскивание по вертикали меняет усиление. Колесо мыши над узлом регулирует добротность Q."
+"Approximate low-pass response. The cutoff node stays on the 0 dB reference line. Drag horizontally to adjust cutoff, vertically to adjust resonance relative to its starting value (12/18/24 dB).","","近似低通响应。截止节点保持在 0 dB 参考线上，水平拖动调整截止频率，垂直拖动调整相对起始值的共振（12/18/24 dB）","近似低通響應。截止節點保持在 0 dB 參考線上，水平拖曳調整截止頻率，垂直拖曳調整相對起始值的共振（12/18/24 dB）","ローパスの近似応答です。カットオフノードは 0 dB 基準線上にあります。左右でカットオフ、上下で初期値に対するレゾナンスを調整します（12/18/24 dB）。","Приблизительная характеристика ФНЧ. Узел среза остаётся на линии 0 дБ. Горизонталь меняет срез, вертикаль — резонанс относительно начального значения (12/18/24 дБ)."
+"At least one language is required.","","至少需要一种语言","至少需要一種語言","少なくとも 1 つの言語が必要です。","Требуется хотя бы один язык."
+"Bitstream","","位流","位元串流","ビットストリーム","Битовый поток"
+"Browse...","","浏览…","瀏覽…","参照…","Обзор…"
+"CSV column count does not match the header: %s","","CSV 列数与表头不符：%s","CSV 欄數與標頭不符：%s","CSV の列数がヘッダーと一致しません: %s","Число столбцов CSV не совпадает с заголовком: %s"
+"CSV header must start with source.","","CSV 表头必须以 source 开头","CSV 標頭必須以 source 開頭","CSV ヘッダーの先頭は source にしてください。","Заголовок CSV должен начинаться с source."
+"Cancel","","取消","取消","キャンセル","Отмена"
+"Cannot find FMOD native libraries under:
+","","在以下位置找不到 FMOD 原生库：
+","在下列位置找不到 FMOD 原生程式庫：
+","次の場所に FMOD ネイティブライブラリがありません:
+","Не найдены нативные библиотеки FMOD в:
+"
+"Cannot find api/core/lib/fmod.jar under:
+","","在以下位置找不到 api/core/lib/fmod.jar：
+","在下列位置找不到 api/core/lib/fmod.jar：
+","次の場所に api/core/lib/fmod.jar がありません:
+","Не найден api/core/lib/fmod.jar в:
+"
+"Cannot load FMOD bus layout: %s","","无法加载 FMOD 总线布局：%s","無法載入 FMOD 匯流排配置：%s","FMOD バスレイアウトを読み込めません: %s","Не удалось загрузить схему шин FMOD: %s"
+"Cannot load the default FMOD bus layout.","","无法加载默认 FMOD 总线布局","無法載入預設 FMOD 匯流排配置","既定の FMOD バスレイアウトを読み込めません。","Не удалось загрузить схему шин FMOD по умолчанию."
+"Cannot open file: %s","","无法打开文件：%s","無法開啟檔案：%s","ファイルを開けません: %s","Не удалось открыть файл: %s"
+"Cannot save FMOD bus layout: %s","","无法保存 FMOD 总线布局：%s","無法儲存 FMOD 匯流排配置：%s","FMOD バスレイアウトを保存できません: %s","Не удалось сохранить схему шин FMOD: %s"
+"Cannot save file: %s","","无法保存文件：%s","無法儲存檔案：%s","ファイルを保存できません: %s","Не удалось сохранить файл: %s"
+"Click or drag horizontally to adjust pan: left (-1), center (0), right (1).","","点击或水平拖动调节声像：左声道（-1）、中央（0）、右声道（1）。","按一下或水平拖曳以調整聲像：左聲道（-1）、中央（0）、右聲道（1）。","クリックまたは水平方向のドラッグでパンを調整：左（-1）、中央（0）、右（1）。","Щёлкните или перетащите по горизонтали, чтобы настроить панораму: влево (-1), центр (0), вправо (1)."
+"Configure FMOD Android Export","","配置 FMOD Android 导出","設定 FMOD Android 匯出","FMOD Android エクスポートを設定","Настроить экспорт FMOD для Android"
+"Context","","上下文","上下文","コンテキスト","Контекст"
+"Could not create FMOD geometry from the selected MeshInstance3D nodes.","","无法从所选 MeshInstance3D 节点创建 FMOD 几何体","無法從選取的 MeshInstance3D 節點建立 FMOD 幾何體","選択した MeshInstance3D から FMOD ジオメトリを作成できませんでした。","Не удалось создать геометрию FMOD из выбранных узлов MeshInstance3D."
+"Create Bounding Box Occluder","","创建 包围盒遮挡体","建立 邊界框遮擋體","境界ボックスオクルーダーを作成","Создать окклюдер ограничивающего параллелепипеда"
+"Create FMOD Bounding Box Occluder","","创建 FMOD 包围盒遮挡体","建立 FMOD 邊界框遮擋體","FMOD 境界ボックスオクルーダーを作成","Создать окклюдер FMOD ограничивающего параллелепипеда"
+"Create FMOD Convex Occluder","","创建 FMOD 凸形遮挡体","建立 FMOD 凸形遮擋體","FMOD 凸形状オクルーダーを作成","Создать окклюдер FMOD выпуклой формы"
+"Create FMOD Geometry Occluder","","创建 FMOD 几何体遮挡体","建立 FMOD 幾何體遮擋體","FMOD ジオメトリオクルーダーを作成","Создать окклюдер FMOD геометрии"
+"Create FMOD Layout from Godot","","从 Godot 创建 FMOD 布局","從 Godot 建立 FMOD 配置","Godot から FMOD レイアウトを作成","Создать схему FMOD из Godot"
+"Create FMOD Mesh Resource Occluder","","创建 FMOD 网格资源遮挡体","建立 FMOD 網格資源遮擋體","FMOD メッシュリソースオクルーダーを作成","Создать окклюдер FMOD ресурса сетки"
+"Create FMOD Simplified Convex Occluder","","创建 FMOD 简化凸形遮挡体","建立 FMOD 簡化凸形遮擋體","FMOD 簡略化凸形状オクルーダーを作成","Создать окклюдер FMOD упрощённой выпуклой формы"
+"Create FMOD Trimesh Occluder","","创建 FMOD 三角网格遮挡体","建立 FMOD 三角網格遮擋體","FMOD 三角形メッシュオクルーダーを作成","Создать окклюдер FMOD треугольной сетки"
+"Create FMOD occlusion geometry from the selected MeshInstance3D.","","从所选 MeshInstance3D 创建 FMOD 遮挡几何体","從選取的 MeshInstance3D 建立 FMOD 遮擋幾何體","選択した MeshInstance3D から FMOD 遮蔽ジオメトリを作成します。","Создать геометрию перекрытия FMOD из выбранного MeshInstance3D."
+"Create Mesh Resource Occluder","","创建 网格资源遮挡体","建立 網格資源遮擋體","メッシュリソースオクルーダーを作成","Создать окклюдер ресурса сетки"
+"Create Simplified Convex Occluder","","创建 简化凸形遮挡体","建立 簡化凸形遮擋體","簡略化凸形状オクルーダーを作成","Создать окклюдер упрощённой выпуклой формы"
+"Create Single Convex Occluder","","创建 单个凸形遮挡体","建立 單一凸形遮擋體","単一凸形状オクルーダーを作成","Создать окклюдер единой выпуклой формы"
+"Create Trimesh Occluder","","创建 三角网格遮挡体","建立 三角網格遮擋體","三角形メッシュオクルーダーを作成","Создать окклюдер треугольной сетки"
+"Cubic","","三次","立方","キュービック","Кубический"
+"DLS","","DLS","DLS","DLS","DLS"
+"Default","","默认","預設","デフォルト","По умолчанию"
+"Delay tap layout: radius shows time, angle shows pan, and brightness shows level. Drag a node to edit time and pan. Alt + click selects an overlapping tap.","","延迟抽头布局：半径表示时间，角度表示声像，亮度表示电平。拖动节点调整时间和声像，Alt + 单击选择重叠抽头","延遲抽頭配置：半徑表示時間，角度表示聲像，亮度表示電平。拖曳節點調整時間與聲像，Alt + 點擊選取重疊抽頭","ディレイタップの配置です。半径は時間、角度はパン、明るさはレベルを示します。ノードをドラッグして時間とパンを調整し、Alt + クリックで重なるタップを選択します。","Схема отводов задержки: радиус — время, угол — панорама, яркость — уровень. Перетаскивайте узел для изменения времени и панорамы. Alt + щелчок выбирает перекрывающийся отвод."
+"Delete Entry","","删除条目","刪除項目","項目を削除","Удалить запись"
+"Disable Godot bus synchronization and reload the project to edit an FMOD layout.","","关闭 Godot 总线同步并重新加载项目后可编辑 FMOD 布局","關閉 Godot 匯流排同步並重新載入專案後即可編輯 FMOD 配置","FMOD レイアウトを編集するには Godot バス同期を無効にしてプロジェクトを再読み込みしてください。","Для редактирования схемы FMOD отключите синхронизацию шин Godot и перезагрузите проект."
+"Disabled","","禁用","停用","無効","Отключено"
+"Discard","","忽略","放棄","破棄","Сброс"
+"Drag along the dial to adjust pitch. Scroll: 1 semitone; Shift + scroll: 0.1 semitone. The scale expands beyond two octaves.","","沿表盘拖动调整音高，滚轮每次调整 1 个半音，Shift + 滚轮每次调整 0.1 个半音，超出两倍八度范围时刻度会扩展","沿錶盤拖曳調整音高，滾輪每次調整 1 個半音，Shift + 滾輪每次調整 0.1 個半音，超出兩個八度範圍時刻度會擴展","ダイヤルをドラッグしてピッチを調整します。ホイールは 1 半音、Shift + ホイールは 0.1 半音刻みです。2 オクターブを超えると目盛りが拡張されます。","Перетаскивайте по шкале для настройки высоты. Колесо: 1 полутон; Shift + колесо: 0,1 полутона. Шкала расширяется за пределами двух октав."
+"Drag down to increase compression, up to decrease.","","向下拖动增强压缩，向上拖动减弱压缩","向下拖曳增強壓縮，向上拖曳減弱壓縮","下へドラッグすると圧縮が強く、上へドラッグすると弱くなります。","Вниз — усилить сжатие, вверх — ослабить."
+"Drag horizontally for threshold, vertically for ratio.","","水平拖动调整阈值，垂直拖动调整压缩比","水平拖曳調整閾值，垂直拖曳調整壓縮比","左右のドラッグでしきい値、上下のドラッグで圧縮比を調整します。","Горизонтальное перетаскивание меняет порог, вертикальное — степень сжатия."
+"Drag horizontally to adjust.","","水平拖动调整","水平拖曳調整","左右にドラッグして調整します。","Перетаскивайте по горизонтали для настройки."
+"Duplicate Bus Effect","","复制总线效果器","複製匯流排效果器","バスエフェクトを複製","Дублировать эффект шины"
+"Duplicate Effect","","复制效果器","複製效果器","エフェクトを複製","Дублировать эффект"
+"Duplicate locale: %s","","重复的语言标识：%s","重複的語言代碼：%s","言語コードが重複しています: %s","Повторяющийся код языка: %s"
+"Editor Interface","","编辑器界面","編輯器介面","エディター UI","Интерфейс редактора"
+"Empty or duplicate source: %s","","原文为空或重复：%s","原文為空或重複：%s","原文が空または重複しています: %s","Пустой или повторяющийся исходный текст: %s"
+"Expected ABI folders: arm64-v8a, armeabi-v7a, x86, x86_64.","","需要的 ABI 文件夹：arm64-v8a、armeabi-v7a、x86、x86_64","需要的 ABI 資料夾：arm64-v8a、armeabi-v7a、x86、x86_64","必要な ABI フォルダー: arm64-v8a、armeabi-v7a、x86、x86_64","Ожидаемые папки ABI: arm64-v8a, armeabi-v7a, x86, x86_64."
+"Extract Sources","","提取原文","擷取原文","原文を抽出","Извлечь строки"
+"Extracted sources. Review new entries before saving.","","已提取原文，请复核新增条目后保存","已擷取原文，請複核新增項目後儲存","原文を抽出しました。新しい項目を確認して保存してください。","Строки извлечены. Проверьте новые записи перед сохранением."
+"FADPCM","","FADPCM","FADPCM","FADPCM","FADPCM"
+"FLAC","","FLAC","FLAC","FLAC","FLAC"
+"FMOD Android Export Configured","","FMOD Android 导出已配置","FMOD Android 匯出已設定","FMOD Android エクスポート設定完了","Экспорт FMOD для Android настроен"
+"FMOD Android Export Setup Failed","","FMOD Android 导出配置失败","FMOD Android 匯出設定失敗","FMOD Android エクスポートの設定に失敗","Ошибка настройки экспорта FMOD для Android"
+"FMOD Android archive","","FMOD Android 压缩包","FMOD Android 封存檔","FMOD Android アーカイブ","Архив FMOD Android"
+"FMOD Android export setup completed successfully.","","FMOD Android 导出配置完成","FMOD Android 匯出設定完成","FMOD Android エクスポートの設定が完了しました。","Настройка экспорта FMOD для Android завершена."
+"FMOD Android export setup will apply the following changes.
+
+","","FMOD Android 导出配置将应用以下修改。
+
+","FMOD Android 匯出設定將套用下列修改。
+
+","FMOD Android エクスポートの設定で次の変更を適用します。
+
+","Настройка экспорта FMOD для Android применит следующие изменения.
+
+"
+"FMOD Audio","","FMOD 音频","FMOD 音訊","FMOD オーディオ","Аудио FMOD"
+"FMOD Bus Layout","","FMOD 总线布局","FMOD 匯流排配置","FMOD バスレイアウト","Схема шин FMOD"
+"FMOD Core Android SDK source:
+  ","","FMOD Core Android SDK 来源：
+  ","FMOD Core Android SDK 來源：
+  ","FMOD Core Android SDK の場所:
+  ","Источник FMOD Core Android SDK:
+  "
+"FMOD Geometry","","FMOD 几何遮挡","FMOD 幾何遮擋","FMOD ジオメトリ","Геометрия FMOD"
+"FMOD Runtime Missing","","缺少 FMOD 运行库","缺少 FMOD 執行階段程式庫","FMOD ランタイムが見つかりません","Отсутствует библиотека FMOD"
+"FMOD Translations","","FMOD 本地化","FMOD 本地化","FMOD ローカライズ","Локализация FMOD"
+"FMOD runtime library was not detected.","","未检测到 FMOD 运行库","未偵測到 FMOD 執行階段程式庫","FMOD ランタイムライブラリが見つかりません。","Библиотека FMOD не обнаружена."
+"FSB","","FSB","FSB","FSB","FSB"
+"Failed to create temporary extraction directory:
+","","无法创建临时解压目录：
+","無法建立暫存解壓縮目錄：
+","展開用の一時フォルダーを作成できません:
+","Не удалось создать временную папку для распаковки:
+"
+"Failed to extract the FMOD archive. Extract it manually and select the extracted folder.","","FMOD 压缩包解压失败，请手动解压并选择解压后的文件夹","FMOD 封存檔解壓縮失敗，請手動解壓縮並選取解壓縮後的資料夾","FMOD アーカイブを展開できません。手動で展開し、そのフォルダーを選択してください。","Не удалось распаковать архив FMOD. Распакуйте его вручную и выберите полученную папку."
+"Feedback rings show repeat timing and gain before low-pass filtering.","","反馈环表示低通滤波前的重复时间和增益","回授環表示低通濾波前的重複時間與增益","フィードバックリングはローパス処理前の反復時間とゲインを示します。","Кольца обратной связи показывают время повторов и усиление до ФНЧ."
+"Files to copy:
+","","将复制的文件：
+","將複製的檔案：
+","コピーするファイル:
+","Копируемые файлы:
+"
+"Files to modify:
+","","将修改的文件：
+","將修改的檔案：
+","変更するファイル:
+","Изменяемые файлы:
+"
+"Fuzzy: translation needs review","","待复核：译文需要确认","待複核：譯文需要確認","要確認: 翻訳の確認が必要","Требуется проверка перевода"
+"Gain","","增益","增益","ゲイン","Усиление"
+"Godot Audio Buses","","Godot 音频总线","Godot 音訊匯流排","Godot オーディオバス","Аудиошины Godot"
+"IT","","IT","IT","IT","IT"
+"Install Later","","稍后安装","稍後安裝","後でインストール","Установить позже"
+"Install it from: Project > Install Android Build Template...","","请通过“项目 > 安装 Android 构建模板…”安装","請透過「專案 > 安裝 Android 建置範本…」安裝","「プロジェクト > Android ビルドテンプレートのインストール…」からインストールしてください。","Установите его через «Проект > Установить шаблон сборки Android…»."
+"Install the FMOD Core SDK 2.04, copy the matching runtime library to addons/fmod_player/bin/, then restart Godot.","","安装 FMOD Core SDK 2.04，将匹配的运行库复制到 addons/fmod_player/bin/，然后重启 Godot","安裝 FMOD Core SDK 2.04，將相符的執行階段程式庫複製到 addons/fmod_player/bin/，然後重新啟動 Godot","FMOD Core SDK 2.04 をインストールし、対応するランタイムを addons/fmod_player/bin/ にコピーして Godot を再起動してください。","Установите FMOD Core SDK 2.04, скопируйте соответствующую библиотеку в addons/fmod_player/bin/ и перезапустите Godot."
+"Invalid FMOD Android SDK","","无效的 FMOD Android SDK","無效的 FMOD Android SDK","無効な FMOD Android SDK","Недопустимый FMOD Android SDK"
+"Invalid locale: %s","","无效的语言标识：%s","無效的語言代碼：%s","無効な言語コード: %s","Недопустимый код языка: %s"
+"Linear","","线性","線性","リニア","Линейный"
+"Load FMOD Bus Layout","","加载 FMOD 总线布局","載入 FMOD 匯流排配置","FMOD バスレイアウトを読み込む","Загрузить схему шин FMOD"
+"Locale, e.g. ja or zh_Hant","","语言标识，例如 ja 或 zh_Hant","語言代碼，例如 ja 或 zh_Hant","言語コード（例: ja、zh_Hant）","Код языка, например ja или zh_Hant"
+"Localization backend failed. Install Python and Babel, then check the source repository path.","","本地化工具执行失败，请安装 Python 和 Babel，并检查源码仓库路径","本地化工具執行失敗，請安裝 Python 和 Babel，並檢查原始碼儲存庫路徑","ローカライズ処理に失敗しました。Python と Babel、およびソースリポジトリのパスを確認してください。","Ошибка инструмента локализации. Установите Python и Babel и проверьте путь к исходникам."
+"Loop","","循环","迴圈","ループ","Зациклить"
+"Loop Bidi","","双向循环","雙向循環","双方向ループ","Двунаправленный цикл"
+"Loop Sample","","循环采样","循環取樣","サンプルをループ","Зацикленный сэмпл"
+"MAX","","MAX","MAX","MAX","MAX"
+"MEDIACODEC","","MEDIACODEC","MEDIACODEC","MEDIACODEC","MEDIACODEC"
+"MIDI","","MIDI","MIDI","MIDI","MIDI"
+"MOD","","MOD","MOD","MOD","MOD"
+"MOD Order","","MOD 顺序","MOD 順序","MOD オーダー","Порядок MOD"
+"MOD Pattern","","MOD 模式","MOD 樣式","MOD パターン","Паттерн MOD"
+"MOD Row","","MOD 行","MOD 列","MOD 行","Строка MOD"
+"MPEG","","MPEG","MPEG","MPEG","MPEG"
+"MS","","MS","MS","MS","MS"
+"Max","","最大值","最大","最大値","Макс"
+"Missing required Android build template file:
+","","缺少必需的 Android 构建模板文件：
+","缺少必要的 Android 建置範本檔案：
+","必要な Android ビルドテンプレートのファイルがありません:
+","Отсутствует обязательный файл шаблона сборки Android:
+"
+"Move EQ band","","移动 EQ 频段","移動 EQ 頻段","EQ バンドを移動","Переместить полосу эквалайзера"
+"Move delay tap","","移动延迟抽头","移動延遲抽頭","ディレイタップを移動","Переместить отвод задержки"
+"Move filter cutoff","","移动滤波截止频率","移動濾波截止頻率","フィルターのカットオフを移動","Изменить частоту среза фильтра"
+"No Interpolation","","无插值","無插值","補間なし","Без интерполяции"
+"No edited scene root is available.","","没有正在编辑的场景根节点","沒有正在編輯的場景根節點","編集中のシーンのルートがありません。","Нет корневого узла редактируемой сцены."
+"No translation files found.","","未找到翻译文件","找不到翻譯檔案","翻訳ファイルが見つかりません。","Файлы переводов не найдены."
+"None","","无","無","None","Нет"
+"OGGVORBIS","","OGGVORBIS","OGGVORBIS","OGGVORBIS","OGGVORBIS"
+"OPUS","","OPUS","OPUS","OPUS","OPUS"
+"One-second chorus modulation overview. Vertical position represents pan; rate and depth shape each voice. Curves begin at the base delay.","","显示一秒内的合唱调制，垂直位置表示声像，速率和深度控制各声部曲线，曲线从基础延迟处开始","顯示一秒內的合唱調變，垂直位置表示聲像，速率與深度控制各聲部曲線，曲線從基礎延遲處開始","1 秒間のコーラス変調です。縦位置はパン、レートと深さは各ボイスの形状を示します。曲線は基本ディレイから始まります。","Обзор модуляции хоруса за секунду. Вертикаль показывает панораму; частота и глубина задают кривую каждого голоса. Кривые начинаются с базовой задержки."
+"Open FMOD Download Page","","打开 FMOD 下载页面","開啟 FMOD 下載頁面","FMOD ダウンロードページを開く","Открыть страницу загрузки FMOD"
+"Open Godot Audio Panel","","打开 Godot 音频面板","開啟 Godot 音訊面板","Godot のオーディオパネルを開く","Открыть панель аудио Godot"
+"Output gain (solid, dB) and filtered-path phase (faint, degrees) at the sweep midpoint. The shaded range shows the LFO limits; drag its edges to adjust. Depth and Feedback shape the output response; Rate controls sweep speed.","","显示扫描中点的输出增益（实线，dB）和滤波支路相位（半透明线，度）。阴影表示 LFO 范围，可拖动边缘调整；深度和反馈控制响应形状，速率控制扫描速度","顯示掃描中點的輸出增益（實線，dB）與濾波支路相位（半透明線，度）。陰影表示 LFO 範圍，可拖曳邊緣調整；深度與回授控制響應形狀，速率控制掃描速度","スイープ中央での出力ゲイン（実線、dB）とフィルター経路の位相（半透明、度）です。影は LFO 範囲を示し、端をドラッグして調整します。Depth と Feedback は応答形状、Rate はスイープ速度を制御します。","Выходное усиление (сплошная линия, дБ) и фаза фильтрующей ветви (полупрозрачная, градусы) в середине развёртки. Затенение — пределы LFO; перетаскивайте края для настройки. Depth и Feedback задают форму, Rate — скорость."
+"PCM","","PCM","PCM","PCM","PCM"
+"PCM Bytes","","PCM 字节","PCM 位元組","PCM バイト","Байты PCM"
+"PCM Fraction","","PCM 小数部分","PCM 小數部分","PCM 小数部","Дробная часть PCM"
+"PCM16","","PCM16","PCM16","PCM16","PCM16"
+"PCM24","","PCM24","PCM24","PCM24","PCM24"
+"PCM32","","PCM32","PCM32","PCM32","PCM32"
+"PCM8","","PCM8","PCM8","PCM8","PCM8"
+"PCMFloat","","浮点 PCM","浮點 PCM","浮動小数点 PCM","PCM с плавающей точкой"
+"PLAYLIST","","PLAYLIST","PLAYLIST","PLAYLIST","PLAYLIST"
+"Pan","","声像","聲像","パン","Панорама"
+"Parameter illustration with a 0 dB reference input. Drag the output line vertically to adjust gain.","","以 0 dB 输入为基准显示参数，垂直拖动输出线调整增益","以 0 dB 輸入為基準顯示參數，垂直拖曳輸出線調整增益","0 dB の入力を基準にしたパラメーター図です。出力線を上下にドラッグしてゲインを調整します。","Схема параметров при входе 0 дБ. Перетаскивайте выходную линию по вертикали для настройки усиления."
+"Parameter illustration: fan angle shows Pan Pullout, the inner arc shows Time Pullout, and fill strength shows Surround. Drag the radar to adjust Pan Pullout.","","参数示意：扇形角度表示声像扩展，内弧表示时间扩展，填充强度表示环绕，拖动雷达调整声像扩展","參數示意：扇形角度表示聲像擴展，內弧表示時間擴展，填色強度表示環繞，拖曳雷達調整聲像擴展","扇の角度は Pan Pullout、内側の弧は Time Pullout、塗りの強さは Surround を示します。レーダーをドラッグして Pan Pullout を調整します。","Угол сектора показывает Pan Pullout, внутренняя дуга — Time Pullout, насыщенность заливки — Surround. Перетаскивайте радар для настройки Pan Pullout."
+"Path Required","","需要指定路径","需要指定路徑","パスが必要です","Требуется путь"
+"Path to FMOD Core Android SDK folder or archive...","","FMOD Core Android SDK 文件夹或压缩包路径…","FMOD Core Android SDK 資料夾或封存檔路徑…","FMOD Core Android SDK のフォルダーまたはアーカイブのパス…","Путь к папке или архиву FMOD Core Android SDK…"
+"Peak ranges of unread stereo frames in this editor instance. Attach Capture to an FMOD bus to receive audio.","","显示编辑器实例中未读取立体声帧的峰值范围，将 Capture 连接到 FMOD 总线后可接收音频","顯示編輯器實例中未讀取立體聲影格的峰值範圍，將 Capture 連接到 FMOD 匯流排後可接收音訊","このエディターインスタンスの未読ステレオフレームのピーク範囲です。Capture を FMOD バスに接続して音声を受信します。","Диапазоны пиков непрочитанных стереокадров этого экземпляра редактора. Подключите Capture к шине FMOD для получения звука."
+"Placeholder mismatch (%s): %s","","占位符不匹配（%s）：%s","預留位置不符（%s）：%s","プレースホルダーが一致しません（%s）: %s","Несовпадение подстановок (%s): %s"
+"Please select the FMOD Core Android SDK folder or archive.","","请选择 FMOD Core Android SDK 文件夹或压缩包","請選取 FMOD Core Android SDK 資料夾或封存檔","FMOD Core Android SDK のフォルダーまたはアーカイブを選択してください。","Выберите папку или архив FMOD Core Android SDK."
+"Properties","","属性","屬性","プロパティ","Свойства"
+"Python executable with Babel installed","","已安装 Babel 的 Python 可执行文件","已安裝 Babel 的 Python 執行檔","Babel がインストールされた Python 実行ファイル","Исполняемый файл Python с установленным Babel"
+"RAW","","RAW","RAW","RAW","RAW"
+"Ratio","","压缩比","壓縮比","圧縮比","Степень сжатия"
+"Raw Bytes","","原始字节","原始位元組","生バイト","Необработанные байты"
+"Reload","","重新加载","重新載入","再読み込み","Перезагрузить"
+"Resolved FMOD Core library folder:
+  ","","找到的 FMOD Core 库目录：
+  ","找到的 FMOD Core 程式庫目錄：
+  ","検出した FMOD Core ライブラリフォルダー:
+  ","Найденная папка библиотек FMOD Core:
+  "
+"Reverb parameter illustration. Drag either outer node horizontally to adjust Spread between the L/R reflection rings. Room Size shapes each ring group; Damping fades reflections, Wet controls their brightness, and Dry controls the central source.","","混响参数示意：水平拖动任一外侧节点，调整左右声道反射环之间的扩散。房间大小控制环组形状，阻尼控制反射衰减，湿声控制亮度，干声控制中央声源","殘響參數示意：水平拖曳任一外側節點，調整左右聲道反射環之間的擴散。房間大小控制環組形狀，阻尼控制反射衰減，濕聲控制亮度，乾聲控制中央聲源","リバーブのパラメーター図です。外側のノードを左右にドラッグして L/R 反射リングの Spread を調整します。Room Size は形状、Damping は減衰、Wet は明るさ、Dry は中央の音源を制御します。","Схема параметров реверберации. Перетаскивайте внешний узел по горизонтали для настройки Spread между кольцами L/R. Room Size задаёт форму, Damping — затухание, Wet — яркость отражений, Dry — центральный источник."
+"Review Changes","","预览修改","預覽修改","変更を確認","Просмотреть изменения"
+"Review FMOD Android Export Changes","","预览 FMOD Android 导出修改","預覽 FMOD Android 匯出修改","FMOD Android エクスポートの変更を確認","Изменения экспорта FMOD для Android"
+"S3M","","S3M","S3M","S3M","S3M"
+"Sample","","采样","取樣","サンプル","Сэмпл"
+"Sample (High quality)","","采样（完整解码）","取樣（完整解碼）","サンプル（全体をデコード）","Сэмпл (полное декодирование)"
+"Save","","保存","儲存","保存","Сохранить"
+"Save FMOD Bus Layout","","保存 FMOD 总线布局","儲存 FMOD 匯流排配置","FMOD バスレイアウトを保存","Сохранить схему шин FMOD"
+"Save changes before extracting sources.","","提取原文前请保存修改","擷取原文前請儲存修改","原文を抽出する前に変更を保存してください。","Сохраните изменения перед извлечением строк."
+"Save changes before switching catalogs?","","切换翻译目录前保存修改吗？","切換翻譯目錄前儲存修改嗎？","カタログを切り替える前に変更を保存しますか？","Сохранить изменения перед переключением каталога?"
+"Save or reload changes before changing the PO file.","","切换 PO 文件前请保存或重新加载修改","切換 PO 檔案前請儲存或重新載入修改","PO ファイルを切り替える前に保存または再読み込みしてください。","Перед сменой PO-файла сохраните изменения или перезагрузите файл."
+"Saved and reloaded translations.","","已保存并重新加载翻译","已儲存並重新載入翻譯","翻訳を保存して再読み込みしました。","Переводы сохранены и перезагружены."
+"Search source or translation","","搜索原文或译文","搜尋原文或譯文","原文または翻訳を検索","Поиск по оригиналу или переводу"
+"Select FMOD Core Android SDK","","选择 FMOD Core Android SDK","選取 FMOD Core Android SDK","FMOD Core Android SDK を選択","Выбрать FMOD Core Android SDK"
+"Select one or more MeshInstance3D nodes first.","","请先选择一个或多个 MeshInstance3D 节点","請先選取一個或多個 MeshInstance3D 節點","先に MeshInstance3D ノードを選択してください。","Сначала выберите один или несколько узлов MeshInstance3D."
+"Select the FMOD Core Android SDK root folder or archive.","","请选择 FMOD Core Android SDK 根目录或压缩包","請選取 FMOD Core Android SDK 根目錄或封存檔","FMOD Core Android SDK のルートフォルダーまたはアーカイブを選択してください。","Выберите корневую папку или архив FMOD Core Android SDK."
+"Select the extracted FMOD Core Android SDK folder, or the downloaded .tar.gz/.tgz archive.
+The tool will configure the installed Godot Android build template for FMOD Core.","","选择解压后的 FMOD Core Android SDK 文件夹或下载的 .tar.gz/.tgz 压缩包。
+工具将为已安装的 Godot Android 构建模板配置 FMOD Core。","選取解壓縮後的 FMOD Core Android SDK 資料夾或下載的 .tar.gz/.tgz 封存檔。
+工具將為已安裝的 Godot Android 建置範本設定 FMOD Core。","展開した FMOD Core Android SDK のフォルダー、またはダウンロードした .tar.gz/.tgz アーカイブを選択してください。
+インストール済みの Godot Android ビルドテンプレートに FMOD Core を設定します。","Выберите распакованную папку FMOD Core Android SDK или скачанный архив .tar.gz/.tgz.
+Инструмент настроит FMOD Core в установленном шаблоне сборки Godot для Android."
+"Set as Default","","设为默认","設為預設","既定に設定","Сделать схемой по умолчанию"
+"Source","","原文","原文","原文","Исходный текст"
+"Source repository (required for extraction)","","源码仓库路径（提取原文时需要）","原始碼儲存庫路徑（擷取時需要）","ソースリポジトリ（抽出に必要）","Репозиторий исходников (для извлечения)"
+"Speakers","","扬声器","揚聲器","スピーカー","Колонки"
+"Spectrum of this analyzer instance in the editor process. L uses the accent color; R uses the text color. Attach the resource to a bus to receive audio. The annotation shows FFT frequency resolution.","","编辑器进程中此分析器实例的频谱。左声道使用强调色，右声道使用文字色，将资源连接到总线后可接收音频，标注显示 FFT 频率分辨率","編輯器程序中此分析器實例的頻譜。左聲道使用強調色，右聲道使用文字色，將資源連接到匯流排後可接收音訊，標註顯示 FFT 頻率解析度","エディタープロセス内のこのアナライザーのスペクトルです。L はアクセント色、R は文字色です。リソースをバスに接続して音声を受信します。注記は FFT の周波数分解能です。","Спектр этого экземпляра анализатора в процессе редактора. L использует цвет акцента, R — цвет текста. Подключите ресурс к шине для получения звука. Подпись показывает частотное разрешение FFT."
+"Spline","","样条插值","樣條插值","スプライン補間","Сплайн-интерполяция"
+"Static input/output curve including Gain and Mix. Drag the round node horizontally for threshold, the square node vertically for ratio. Attack/release timing is not shown.","","包含增益和混合的静态输入/输出曲线，水平拖动圆形节点调整阈值，垂直拖动方形节点调整压缩比，不显示启动与释放时间变化","包含增益與混合的靜態輸入／輸出曲線，水平拖曳圓形節點調整閾值，垂直拖曳方形節點調整壓縮比，不顯示啟動與釋放時間變化","ゲインとミックスを含む静的な入出力曲線です。丸いノードを左右に動かすとしきい値、四角いノードを上下に動かすと圧縮比を調整できます。アタックとリリースの時間変化は表示しません。","Статическая входная/выходная кривая с усилением и смешиванием. Круглый узел по горизонтали меняет порог, квадратный по вертикали — степень сжатия. Временная динамика атаки и восстановления не показана."
+"Steady-state input/output amplitude curve. Drag vertically for Drive (Pre Gain in Overdrive mode); Shift + drag for Pre Gain; Ctrl + drag for Post Gain. The vertical scale fits the output. Keep HF controls the audio crossover; Oversample is stored only.","","稳态输入/输出振幅曲线。垂直拖动调整驱动（过载模式中为前置增益），Shift + 拖动调整前置增益，Ctrl + 拖动调整后置增益。纵轴适应输出幅度，保留高频控制音频分频，过采样值仅保存","穩態輸入／輸出振幅曲線。垂直拖曳調整驅動（過載模式中為前置增益），Shift + 拖曳調整前置增益，Ctrl + 拖曳調整後置增益。縱軸適應輸出振幅，保留高頻控制音訊分頻，過取樣值僅儲存","定常状態の入出力振幅曲線です。上下のドラッグで Drive（Overdrive では Pre Gain）、Shift + ドラッグで Pre Gain、Ctrl + ドラッグで Post Gain を調整します。縦軸は出力に合わせます。Keep HF はクロスオーバーを制御し、Oversample は保存のみです。","Установившаяся кривая входной/выходной амплитуды. Вертикаль — Drive (Pre Gain в режиме Overdrive); Shift + перетаскивание — Pre Gain; Ctrl + перетаскивание — Post Gain. Масштаб подстраивается под выход. Keep HF управляет разделением частот; Oversample только сохраняется."
+"Steady-state input/output limiting curve. Drag the round node vertically for Pre Gain and the square node for Ceiling. Release controls recovery time.","","稳态限幅输入/输出曲线，垂直拖动圆形节点调整前置增益，方形节点调整上限，释放参数控制恢复时间","穩態限幅輸入／輸出曲線，垂直拖曳圓形節點調整前置增益，方形節點調整上限，釋放參數控制恢復時間","定常状態のリミッター入出力曲線です。丸いノードを上下に動かして Pre Gain、四角いノードで Ceiling を調整します。Release は回復時間です。","Установившаяся входная/выходная кривая лимитера. Круглый узел по вертикали меняет Pre Gain, квадратный — Ceiling. Release задаёт время восстановления."
+"Stream","","流","流","ストリーム","Поток"
+"Stream (Low memory)","","流式播放（较低解码内存）","串流播放（較低解碼記憶體）","ストリーム（デコードメモリ節約）","Поток (меньше памяти декодирования)"
+"Synchronizing with Godot Audio Buses. Edit the source layout in the Godot Audio panel.","","正在同步 Godot 音频总线。请在 Godot 音频面板中编辑源布局","正在同步 Godot 音訊匯流排。請在 Godot 音訊面板編輯來源配置","Godot のオーディオバスと同期中です。Godot のオーディオパネルで編集してください。","Синхронизация с аудиошинами Godot. Редактируйте исходную схему в панели аудио Godot."
+"Tap","","抽头","抽頭","タップ","Отвод"
+"Temporary extraction folder:
+  ","","临时解压目录：
+  ","暫存解壓縮目錄：
+  ","展開用の一時フォルダー:
+  ","Временная папка распаковки:
+  "
+"The Android build template was not fully configured.","","Android 构建模板未能完成全部配置","Android 建置範本未能完成所有設定","Android ビルドテンプレートの設定が完了していません。","Шаблон сборки Android настроен не полностью."
+"The default FMOD bus layout could not be loaded. Create or open a valid layout before saving.","","无法加载默认 FMOD 总线布局。请创建或打开有效布局后再保存","無法載入預設 FMOD 匯流排配置。請建立或開啟有效配置後再儲存","既定の FMOD バスレイアウトを読み込めません。有効なレイアウトを作成または開いてください。","Не удалось загрузить схему шин FMOD по умолчанию. Создайте или откройте корректную схему перед сохранением."
+"The file changed on disk. Reload it before saving.","","文件已被外部修改，请重新加载后再保存","檔案已被外部修改，請重新載入後再儲存","ファイルが外部で変更されました。再読み込みしてから保存してください。","Файл изменён на диске. Перезагрузите его перед сохранением."
+"The project does not have an installed Android build template.","","项目尚未安装 Android 构建模板","專案尚未安裝 Android 建置範本","プロジェクトに Android ビルドテンプレートがインストールされていません。","В проекте не установлен шаблон сборки Android."
+"The selected path is not a directory or a supported .tar.gz/.tgz archive:
+","","所选路径不是目录或支持的 .tar.gz/.tgz 压缩包：
+","所選路徑不是目錄或支援的 .tar.gz/.tgz 封存檔：
+","選択したパスはフォルダーまたは対応する .tar.gz/.tgz アーカイブではありません:
+","Выбранный путь не является папкой или поддерживаемым архивом .tar.gz/.tgz:
+"
+"This operation is idempotent: existing matching lines will not be duplicated, and copied files will be overwritten.","","匹配的现有配置行会保留，复制的文件会覆盖目标文件。","相符的現有設定行會保留，複製的檔案會覆寫目標檔案。","一致する既存の設定行は保持し、コピー先のファイルは上書きします。","Совпадающие строки настроек сохраняются, копируемые файлы заменяют существующие."
+"Threshold","","阈值","閾值","しきい値","Порог"
+"Time range","","时间范围","時間範圍","時間範囲","Диапазон времени"
+"Translation","","译文","譯文","翻訳","Перевод"
+"USER","","USER","USER","USER","USER"
+"Unknown","","未知","未知","不明","Unknown (Неизвестный)"
+"Unsaved changes","","有未保存的修改","有尚未儲存的修改","未保存の変更があります","Есть несохранённые изменения"
+"Unsupported Godot effects were skipped:
+%s","","已跳过不支持的 Godot 效果器：
+%s","已略過不支援的 Godot 效果器：
+%s","未対応の Godot エフェクトをスキップしました:
+%s","Пропущены неподдерживаемые эффекты Godot:
+%s"
+"Untranslated or Fuzzy","","未翻译或待复核","未翻譯或待複核","未翻訳・要確認","Без перевода или на проверке"
+"VORBIS","","VORBIS","VORBIS","VORBIS","VORBIS"
+"WAV","","WAV","WAV","WAV","WAV"
+"Waiting for captured audio","","等待采集音频","等待擷取音訊","キャプチャ音声を待機中","Ожидание захваченного звука"
+"Windows: fmod.dll
+Linux: libfmodL.so.15 / libfmod.so.15
+macOS: libfmod.dylib","","Windows：fmod.dll
+Linux：libfmodL.so.15 / libfmod.so.15
+macOS：libfmod.dylib","Windows：fmod.dll
+Linux：libfmodL.so.15 / libfmod.so.15
+macOS：libfmod.dylib","Windows: fmod.dll
+Linux: libfmodL.so.15 / libfmod.so.15
+macOS: libfmod.dylib","Windows: fmod.dll
+Linux: libfmodL.so.15 / libfmod.so.15
+macOS: libfmod.dylib"
+"XM","","XM","XM","XM","XM"
+"XMA","","XMA","XMA","XMA","XMA"

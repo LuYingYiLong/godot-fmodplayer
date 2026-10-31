@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_eq_preview.h"
 
 #include "core/fmod_server.h"
@@ -44,6 +45,7 @@ namespace godot {
 		set_draw_background(false);
 		set_clip_contents(true);
 		set_custom_minimum_size(Vector2(0.0f, 160.0f * _scale()));
+		fmod_set_editor_tooltip(this, "Approximate EQ response. Drag band nodes horizontally to adjust frequency; drag vertically to adjust gain for peaking and shelf filters. Scroll over a node to adjust Q.");
 	}
 
 	float FmodAudioEffectEQPreview::_scale() const {
@@ -98,6 +100,10 @@ namespace godot {
 
 	void FmodAudioEffectEQPreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			break;
@@ -163,7 +169,7 @@ namespace godot {
 		if (_uses_gain(selected_band)) {
 			EditorUndoRedoManager* undo_redo = EditorInterface::get_singleton()->get_editor_undo_redo();
 			// 提前指定资源历史，避免检查器将两个属性分别提交为独立操作
-			undo_redo->create_action(tr("Move EQ band") + String(" ") + String::num_int64(selected_band + 1), UndoRedo::MERGE_ENDS, effect.ptr());
+			undo_redo->create_action(fmod_editor_translate("Move EQ band") + String(" ") + String::num_int64(selected_band + 1), UndoRedo::MERGE_ENDS, effect.ptr());
 			PackedStringArray properties;
 			properties.push_back(prefix + String("frequency"));
 			properties.push_back(prefix + String("gain"));

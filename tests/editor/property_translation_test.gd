@@ -17,6 +17,7 @@ const REMAINING_EFFECTS_TEST: Script = preload("uid://c47pw9yt2fn8k")
 const STREAM_WAVEFORM_TEST: Script = preload("uid://bws4h8t2gr7n5")
 const BUS_DOCK_TEST: Script = preload("uid://bm4q1s8vz9d6e")
 const DOCUMENTATION_TEST: Script = preload("uid://d170o8ibcsgsb")
+const LOCALIZATION_TEST: Script = preload("uid://c6m5gu6m5ogp4")
 
 const EXPECTED: Dictionary = {
 	"Show Startup Banner": "显示启动横幅",
@@ -91,6 +92,12 @@ func _run() -> void:
 	passed = await STREAM_WAVEFORM_TEST.new().run(output_dir, tree) and passed
 	passed = await BUS_DOCK_TEST.new().run(output_dir, tree) and passed
 	passed = await DOCUMENTATION_TEST.new().run(output_dir, tree) and passed
+	passed = await LOCALIZATION_TEST.new().run(output_dir, tree) and passed
+	# 在 FMOD 系统退出前释放测试历史和检查器持有的音频资源
+	EditorInterface.edit_resource(Resource.new())
+	EditorInterface.get_editor_undo_redo().clear_history()
+	await tree.process_frame
+	await tree.process_frame
 	if passed:
 		print("TESTS_PASSED output=", output_dir)
 	else:

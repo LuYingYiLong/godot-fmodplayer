@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_hard_limiter_preview.h"
 
 #include <godot_cpp/classes/editor_interface.hpp>
@@ -16,7 +17,7 @@ namespace godot {
 		set_draw_background(false);
 		set_clip_contents(true);
 		set_custom_minimum_size(Vector2(0.0f, 160.0f * _scale()));
-		set_tooltip_text(tr("Steady-state input/output limiting curve. Drag the round node vertically for Pre Gain and the square node for Ceiling. Release controls recovery time."));
+		fmod_set_editor_tooltip(this, "Steady-state input/output limiting curve. Drag the round node vertically for Pre Gain and the square node for Ceiling. Release controls recovery time.");
 	}
 
 	float FmodAudioEffectHardLimiterPreview::_scale() const {
@@ -69,6 +70,10 @@ namespace godot {
 
 	void FmodAudioEffectHardLimiterPreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			break;

@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_importer.h"
 #include "audio/fmod_audio_stream.h"
 
@@ -20,7 +21,17 @@ namespace godot {
 		option["name"] = p_name;
 		option["default_value"] = p_default_value;
 		option["property_hint"] = p_hint;
-		option["hint_string"] = p_hint_string;
+		String hint = p_hint_string;
+		if (p_hint == PROPERTY_HINT_ENUM || p_hint == PROPERTY_HINT_FLAGS) {
+			PackedStringArray choices = hint.split(",", true);
+			for (int i = 0; i < choices.size(); ++i) {
+				const int separator = choices[i].find(":");
+				const String label = separator >= 0 ? choices[i].substr(0, separator) : choices[i];
+				choices[i] = fmod_editor_translate(label) + (separator >= 0 ? choices[i].substr(separator) : String());
+			}
+			hint = String(",").join(choices);
+		}
+		option["hint_string"] = hint;
 		option["usage"] = p_usage;
 		r_options.append(option);
 	}
@@ -39,7 +50,7 @@ namespace godot {
 	}
 
 	String AudioImporterFmod::_get_visible_name() const {
-		return "FMOD Audio";
+		return fmod_editor_translate("FMOD Audio");
 	}
 
 	PackedStringArray AudioImporterFmod::_get_recognized_extensions() const {
@@ -101,13 +112,13 @@ namespace godot {
 	String AudioImporterFmod::_get_preset_name(int32_t p_preset_index) const {
 		switch (p_preset_index) {
 			case 0:
-				return "Stream (Low memory)";
+				return fmod_editor_translate("Stream (Low memory)");
 			case 1:
-				return "Sample (High quality)";
+				return fmod_editor_translate("Sample (High quality)");
 			case 2:
-				return "Loop Sample";
+				return fmod_editor_translate("Loop Sample");
 			default:
-				return "Default";
+				return fmod_editor_translate("Default");
 		}
 	}
 

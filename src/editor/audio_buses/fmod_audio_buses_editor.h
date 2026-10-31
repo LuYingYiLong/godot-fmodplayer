@@ -2,6 +2,7 @@
 #define FMOD_AUDIO_BUSES_EDITOR_H
 
 #include "mixer/fmod_audio_bus_layout.h"
+#include "editor/fmod_editor_translation.h"
 #include <godot_cpp/classes/accept_dialog.hpp>
 #include <godot_cpp/classes/config_file.hpp>
 #include <godot_cpp/classes/editor_dock.hpp>
@@ -29,7 +30,6 @@
 #include <set>
 
 namespace godot {
-	String fmod_editor_translate(const String& text);
 	float fmod_bus_db_to_position(float db);
 	float fmod_bus_position_to_db(float value);
 	class FmodAudioBusesDock;

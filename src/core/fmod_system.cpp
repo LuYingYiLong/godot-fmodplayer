@@ -429,6 +429,7 @@ namespace godot {
 		ERR_FAIL_COND_MSG(system != nullptr, "FmodSystem is already bound to an FMOD System");
 
 		system = p_system;
+		sound_lifetime = std::make_shared<std::atomic_bool>(true);
 		owns_system = true;
 		system->setUserData(this);
 	}
@@ -481,8 +482,10 @@ namespace godot {
 		if (had_userdata) {
 			system->setUserData(nullptr);
 		}
+		const bool sounds_were_alive = sound_lifetime->exchange(false);
 		FMOD_RESULT result = system->release();
 		if (result != FMOD_OK) {
+			sound_lifetime->store(sounds_were_alive);
 			ERR_PRINT(vformat("Failed to release FMOD System: %s", FMOD_ErrorString(result)));
 			if (had_userdata) {
 				FMOD_ERR_CHECK(system->setUserData(this));
@@ -1066,7 +1069,7 @@ namespace godot {
 		Ref<FmodSound> fmod_sound;
 		fmod_sound.instantiate();
 		ERR_FAIL_NULL_V(sound_ptr, Ref<FmodSound>());
-		fmod_sound->setup(sound_ptr);
+		fmod_sound->setup(sound_ptr, true, sound_lifetime);
 		return fmod_sound;
 	}
 
@@ -1095,7 +1098,7 @@ namespace godot {
 		), Ref<FmodSound>());
 
 		ERR_FAIL_NULL_V(sound_ptr, Ref<FmodSound>());
-		sound->setup(sound_ptr);
+		sound->setup(sound_ptr, true, sound_lifetime);
 		return sound;
 	}
 
@@ -1153,7 +1156,7 @@ namespace godot {
 			), Ref<FmodSound>());
 
 			ERR_FAIL_NULL_V(sound_ptr, Ref<FmodSound>());
-			sound->setup(sound_ptr);
+			sound->setup(sound_ptr, true, sound_lifetime);
 			return sound;
 		}
 
@@ -1177,7 +1180,7 @@ namespace godot {
 		Ref<FmodSound> sound;
 		sound.instantiate();
 		ERR_FAIL_NULL_V(sound_ptr, Ref<FmodSound>());
-		sound->setup(sound_ptr);
+		sound->setup(sound_ptr, true, sound_lifetime);
 		sound->file_path = p_path;
 		return sound;
 	}

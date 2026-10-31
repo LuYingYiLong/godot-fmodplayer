@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_pitch_shift_preview.h"
 
 #include <cmath>
@@ -81,13 +82,17 @@ namespace godot {
 	void FmodAudioEffectPitchShiftPreview::_on_effect_changed() {
 		if (effect.is_valid()) {
 			set_tooltip_text(String::num(_semitones(), 2).pad_decimals(2) + " st (" + String::num(effect->get_pitch_scale(), 4) + "x)\n" +
-				tr("Drag along the dial to adjust pitch. Scroll: 1 semitone; Shift + scroll: 0.1 semitone. The scale expands beyond two octaves."));
+				fmod_editor_translate("Drag along the dial to adjust pitch. Scroll: 1 semitone; Shift + scroll: 0.1 semitone. The scale expands beyond two octaves."));
 		}
 		queue_redraw();
 	}
 
 	void FmodAudioEffectPitchShiftPreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			break;

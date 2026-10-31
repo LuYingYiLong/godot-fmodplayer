@@ -65,6 +65,19 @@ For GDScript:
 - Write complete floating-point literals, such as `0.0` and `1.0`, and omit redundant default initialization values.
 - Omit the final Chinese full stop in Chinese comments.
 
+## Editor localization
+
+Open **Project > Tools > FMOD Translations** to edit the plugin catalogs. The panel manages property names (`godot.properties`), editor UI (`godot.editor`), and API help (`godot.documentation`). Property and UI CSV files are loaded directly; saving refreshes translations without generating GDScript data. Keep Simplified Chinese, Traditional Chinese, Japanese, and Russian UI translations complete.
+
+The panel supports search, untranslated/review filters, message context, multiline text, source locations, and PO review flags. PO editing and source extraction use Python with Babel; configure its executable and the source repository in the panel. Property extraction uses the loaded ClassDB. Settings are stored per project in `user://fmod_localization.cfg`. CSV source text remains exact, including quoted multiline fields. Keep `%s` and other format placeholders in translations.
+
+`fmod_check.gd` starts the shared GDScript translation service before checking the FMOD runtime. C++ editor text uses `src/editor/fmod_editor_translation.h`. Use `fmod_editor_translate()` for dynamic UI text and `FMOD_EDITOR_TEXT()` for literal menu keys that Godot translates automatically. Preserve runtime identifiers, resource names, file paths, and enum values.
+
+```sh
+python -m pip install -r tools/requirements-docs.txt
+python tools/check_localization.py --report tests/logs/localization_catalogs.json
+```
+
 ## Documentation
 
 Maintain English API descriptions in `doc_classes/*.xml`. These files supply both Godot's built-in help and the generated website class reference. Keep signatures, defaults, enums, return values, units, and threading behavior aligned with the implementation.

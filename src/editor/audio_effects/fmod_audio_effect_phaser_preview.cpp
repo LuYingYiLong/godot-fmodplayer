@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_phaser_preview.h"
 
 #include "core/fmod_server.h"
@@ -26,7 +27,7 @@ namespace godot {
 		set_draw_background(false);
 		set_clip_contents(true);
 		set_custom_minimum_size(Vector2(0.0f, 160.0f * _scale()));
-		set_tooltip_text(tr("Output gain (solid, dB) and filtered-path phase (faint, degrees) at the sweep midpoint. The shaded range shows the LFO limits; drag its edges to adjust. Depth and Feedback shape the output response; Rate controls sweep speed."));
+		fmod_set_editor_tooltip(this, "Output gain (solid, dB) and filtered-path phase (faint, degrees) at the sweep midpoint. The shaded range shows the LFO limits; drag its edges to adjust. Depth and Feedback shape the output response; Rate controls sweep speed.");
 	}
 
 	float FmodAudioEffectPhaserPreview::_scale() const {
@@ -82,6 +83,10 @@ namespace godot {
 
 	void FmodAudioEffectPhaserPreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			break;

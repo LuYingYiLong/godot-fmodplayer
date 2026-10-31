@@ -123,7 +123,9 @@ namespace godot {
 	}
 
 	FmodSound::~FmodSound() {
-		if (sound) {
+		// Cached resources can outlive their native system, including system resets.
+		// System::release() reclaims its sounds, so expired handles must not be queried.
+		if (sound && (!system_lifetime || system_lifetime->load())) {
 			void* userdata = nullptr;
 			if (owns_sound && sound->getUserData(&userdata) == FMOD_OK && userdata == this) {
 				sound->setUserData(nullptr);
@@ -131,8 +133,8 @@ namespace godot {
 			if (owns_sound && sound->release() != FMOD_OK) {
 				ERR_PRINT("Failed to release Sound while destroying FmodSound");
 			}
-			sound = nullptr;
 		}
+		sound = nullptr;
 		sync_points.clear();
 	}
 
@@ -148,12 +150,13 @@ namespace godot {
 		return sound == nullptr;
 	}
 
-	void FmodSound::setup(FMOD::Sound* p_sound, bool p_owns_sound) {
+	void FmodSound::setup(FMOD::Sound* p_sound, bool p_owns_sound, std::shared_ptr<std::atomic_bool> p_system_lifetime) {
 		ERR_FAIL_COND_MSG(!p_sound, "Sound pointer is null");
 		ERR_FAIL_COND_MSG(sound != nullptr, "FmodSound is already bound to an FMOD Sound");
 
 		sound = p_sound;
 		owns_sound = p_owns_sound;
+		system_lifetime = std::move(p_system_lifetime);
 		if (owns_sound) {
 			FMOD_ERR_CHECK(sound->setUserData(this));
 		}

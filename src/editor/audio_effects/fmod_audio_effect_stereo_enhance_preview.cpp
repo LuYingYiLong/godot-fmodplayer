@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_stereo_enhance_preview.h"
 
 #include <cmath>
@@ -79,7 +80,7 @@ namespace godot {
 	void FmodAudioEffectStereoEnhancePreview::_on_effect_changed() {
 		geometry_dirty = true;
 		if (effect.is_valid()) {
-			set_tooltip_text(tr("Parameter illustration: fan angle shows Pan Pullout, the inner arc shows Time Pullout, and fill strength shows Surround. Drag the radar to adjust Pan Pullout.") +
+			set_tooltip_text(fmod_editor_translate("Parameter illustration: fan angle shows Pan Pullout, the inner arc shows Time Pullout, and fill strength shows Surround. Drag the radar to adjust Pan Pullout.") +
 				"\nPan Pullout: " + String::num(effect->get_pan_pullout(), 2) + "x\nTime Pullout: " + String::num(effect->get_time_pullout(), 2) + " ms\nSurround: " + String::num(effect->get_surround() * 100.0f, 0) + "%");
 		}
 		queue_redraw();
@@ -87,6 +88,10 @@ namespace godot {
 
 	void FmodAudioEffectStereoEnhancePreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			break;

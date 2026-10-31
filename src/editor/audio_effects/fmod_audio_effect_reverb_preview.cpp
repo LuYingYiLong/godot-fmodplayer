@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_reverb_preview.h"
 
 #include <godot_cpp/classes/editor_interface.hpp>
@@ -18,7 +19,7 @@ namespace godot {
 		set_draw_background(false);
 		set_clip_contents(true);
 		set_custom_minimum_size(Vector2(0.0f, 160.0f * _scale()));
-		set_tooltip_text(tr("Reverb parameter illustration. Drag either outer node horizontally to adjust Spread between the L/R reflection rings. Room Size shapes each ring group; Damping fades reflections, Wet controls their brightness, and Dry controls the central source."));
+		fmod_set_editor_tooltip(this, "Reverb parameter illustration. Drag either outer node horizontally to adjust Spread between the L/R reflection rings. Room Size shapes each ring group; Damping fades reflections, Wet controls their brightness, and Dry controls the central source.");
 	}
 
 	float FmodAudioEffectReverbPreview::_scale() const {
@@ -86,6 +87,10 @@ namespace godot {
 
 	void FmodAudioEffectReverbPreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			break;

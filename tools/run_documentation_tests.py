@@ -14,6 +14,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--godot', required=True)
     parser.add_argument('--output-dir', required=True, type=Path)
+    parser.add_argument('--missing-runtime', action='store_true')
     args = parser.parse_args()
     output = args.output_dir.resolve()
     if not output.is_relative_to(ROOT / 'tests/logs'):
@@ -23,10 +24,12 @@ def main() -> None:
     source = ROOT / 'tests/addons/fmod_player'
     if not (source / 'bin/fmod.dll').is_file():
         raise ValueError('Deploy the complete test addon first with tools/run_tests.ps1 -PrepareOnly')
-    shutil.copytree(source, project / 'addons/fmod_player', dirs_exist_ok=True)
+    shutil.copytree(source, project / 'addons/fmod_player', dirs_exist_ok=True,
+                    ignore=shutil.ignore_patterns('__pycache__', '*.pyc', *(['bin'] if args.missing_runtime else [])))
     editor = project / 'editor'
     editor.mkdir(exist_ok=True)
     shutil.copy2(ROOT / 'tests/editor/documentation_translation_test.gd', editor)
+    shutil.copy2(ROOT / 'tests/editor/localization_tools_test.gd', editor)
     raw_messages = []
     for file in sorted((ROOT / 'doc_classes').glob('*.xml')):
         root = ET.parse(file).getroot()
@@ -52,9 +55,13 @@ func _enter_tree() -> void:
 func _run() -> void:
     while EditorInterface.get_resource_filesystem().is_scanning():
         await get_tree().process_frame
-    var test: RefCounted = load("res://editor/documentation_translation_test.gd").new()
     var output_dir: String = ProjectSettings.globalize_path("res://..").simplify_path()
-    var passed: bool = await test.run(output_dir, get_tree())
+    var passed: bool = true
+    if ClassDB.class_exists("FmodAudioBus"):
+        var test: RefCounted = load("res://editor/documentation_translation_test.gd").new()
+        passed = await test.run(output_dir, get_tree())
+    var tools_test: RefCounted = load("res://editor/localization_tools_test.gd").new()
+    passed = await tools_test.run(output_dir, get_tree()) and passed
     print("TESTS_PASSED" if passed else "TESTS_FAILED")
     get_tree().quit(0 if passed else 1)
 ''', encoding='utf-8', newline='\n')

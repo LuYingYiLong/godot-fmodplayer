@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_spectrum_analyzer_preview.h"
 
 #include "core/fmod_server.h"
@@ -16,7 +17,7 @@ namespace godot {
 		set_draw_background(false);
 		set_clip_contents(true);
 		set_custom_minimum_size(Vector2(0.0f, 160.0f * _scale()));
-		set_tooltip_text(tr("Spectrum of this analyzer instance in the editor process. L uses the accent color; R uses the text color. Attach the resource to a bus to receive audio. The annotation shows FFT frequency resolution."));
+		fmod_set_editor_tooltip(this, "Spectrum of this analyzer instance in the editor process. L uses the accent color; R uses the text color. Attach the resource to a bus to receive audio. The annotation shows FFT frequency resolution.");
 		refresh_timer = memnew(Timer);
 		refresh_timer->set_wait_time(0.1);
 		refresh_timer->connect("timeout", callable_mp(this, &FmodAudioEffectSpectrumAnalyzerPreview::_refresh_snapshot));
@@ -69,6 +70,10 @@ namespace godot {
 
 	void FmodAudioEffectSpectrumAnalyzerPreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			callable_mp(this, &FmodAudioEffectSpectrumAnalyzerPreview::_update_refresh_timer).call_deferred();

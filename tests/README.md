@@ -171,7 +171,15 @@ python tools/compare_reverb.py "tests/logs/runs/<优化前目录>" "tests/logs/r
 python tools/run_documentation_tests.py --godot "C:/path/to/Godot_console.exe" --output-dir "tests/logs/runs/documentation"
 ```
 
-测试覆盖中文帮助显示、英文回退、语言切换、翻译域重载和插件翻译清理。Python 文档工具测试使用 `python tools/test_documentation_translations.py`，先安装 `tools/requirements-docs.txt`。
+测试覆盖离线帮助、三个翻译域、四种界面语言、CSV/PO 编辑保存、空译文和占位符校验、语言切换及卸载清理。加上 `--missing-runtime` 可验证没有 FMOD 二进制时的引导和工具面板。
+
+完整编辑器回归可使用干净的隔离项目，结果和导入缓存也会保存在指定目录：
+
+```powershell
+python tools/run_editor_tests.py --godot "C:/path/to/Godot_console.exe" --output-dir "tests/logs/runs/editor" --isolated
+```
+
+先安装 `tools/requirements-docs.txt`，再运行 `python tools/check_localization.py --report tests/logs/localization_catalogs.json` 检查四种语言及源码文案覆盖。文档工具测试使用 `python tools/test_documentation_translations.py`。
 
 | 内容 | 位置 |
 |------|------|

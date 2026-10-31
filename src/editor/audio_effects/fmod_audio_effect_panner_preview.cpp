@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_panner_preview.h"
 
 #include <godot_cpp/classes/editor_interface.hpp>
@@ -24,6 +25,7 @@ namespace godot {
 		set_draw_background(false);
 		set_clip_contents(true);
 		set_custom_minimum_size(Vector2(0.0f, 160.0f * get_preview_scale()));
+		fmod_set_editor_tooltip(this, "Click or drag horizontally to adjust pan: left (-1), center (0), right (1).");
 	}
 
 	void FmodAudioEffectPannerPreview::set_effect(const Ref<FmodAudioEffectPanner>& p_effect) {
@@ -57,6 +59,10 @@ namespace godot {
 
 	void FmodAudioEffectPannerPreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			break;

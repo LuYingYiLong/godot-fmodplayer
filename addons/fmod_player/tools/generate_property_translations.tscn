@@ -1,275 +1,240 @@
-[gd_scene format=3 uid="uid://dccdv74ostt1m"]
+[gd_scene load_steps=2 format=3 uid="uid://dccdv74ostt1m"]
 
-[ext_resource type="Script" uid="uid://d0kuv1nbjadnf" path="res://addons/fmod_player/tools/generate_property_translations_scene.gd" id="1_generator"]
+[ext_resource type="Script" uid="uid://c5l4ft7l6nfo3" path="res://addons/fmod_player/tools/translation_editor.gd" id="1"]
 
-[sub_resource type="SystemFont" id="SystemFont_yrcs3"]
-font_names = PackedStringArray("Arial")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gnlfp"]
-content_margin_left = 8.0
-content_margin_top = 4.0
-content_margin_right = 8.0
-content_margin_bottom = 4.0
-bg_color = Color(1, 1, 1, 0.039215688)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.646029, 0.646029, 0.646029, 1)
-border_blend = true
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_36xym"]
-content_margin_left = 8.0
-content_margin_top = 4.0
-content_margin_right = 8.0
-content_margin_bottom = 4.0
-bg_color = Color(1, 1, 1, 0.11764706)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 1)
-border_blend = true
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o8edu"]
-content_margin_left = 8.0
-content_margin_top = 4.0
-content_margin_right = 8.0
-content_margin_bottom = 4.0
-bg_color = Color(1, 1, 1, 0.11764706)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 1)
-border_blend = true
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fbc3x"]
-content_margin_left = 8.0
-content_margin_top = 4.0
-content_margin_right = 8.0
-content_margin_bottom = 4.0
-bg_color = Color(1, 1, 1, 0.11764706)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 1)
-border_blend = true
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x8suf"]
-content_margin_left = 8.0
-content_margin_top = 4.0
-content_margin_right = 8.0
-content_margin_bottom = 4.0
-bg_color = Color(1, 1, 1, 0.078431375)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_blend = true
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2skom"]
-content_margin_left = 8.0
-content_margin_top = 4.0
-content_margin_right = 8.0
-content_margin_bottom = 4.0
-bg_color = Color(1, 1, 1, 0.078431375)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_blend = true
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v62he"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(1, 1, 1, 0.75)
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-corner_detail = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w6a20"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.1, 0.1, 0.1, 0.6)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 2
-border_color = Color(1, 1, 1, 0.6)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yrcs3"]
-bg_color = Color(0.101960786, 0.101960786, 0.101960786, 1)
-
-[sub_resource type="SystemFont" id="SystemFont_w6a20"]
-font_names = PackedStringArray("Arial")
-
-[sub_resource type="SystemFont" id="SystemFont_36xym"]
-font_names = PackedStringArray("Arial")
-font_weight = 600
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g2l13"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0, 0, 0, 0.49019608)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_detail = 5
-
-[sub_resource type="Theme" id="Theme_x8suf"]
-Button/fonts/font = SubResource("SystemFont_yrcs3")
-Button/styles/disabled = SubResource("StyleBoxFlat_gnlfp")
-Button/styles/focus = SubResource("StyleBoxFlat_36xym")
-Button/styles/hover = SubResource("StyleBoxFlat_o8edu")
-Button/styles/hover_pressed = SubResource("StyleBoxFlat_fbc3x")
-Button/styles/normal = SubResource("StyleBoxFlat_x8suf")
-Button/styles/pressed = SubResource("StyleBoxFlat_2skom")
-Label/fonts/font = SubResource("SystemFont_yrcs3")
-LineEdit/fonts/font = SubResource("SystemFont_yrcs3")
-LineEdit/styles/focus = SubResource("StyleBoxFlat_v62he")
-LineEdit/styles/normal = SubResource("StyleBoxFlat_w6a20")
-PanelContainer/styles/panel = SubResource("StyleBoxFlat_yrcs3")
-Tree/fonts/font = SubResource("SystemFont_w6a20")
-Tree/fonts/title_button_font = SubResource("SystemFont_36xym")
-Tree/styles/title_button_hover = SubResource("StyleBoxFlat_g2l13")
-Tree/styles/title_button_normal = SubResource("StyleBoxFlat_g2l13")
-Tree/styles/title_button_pressed = SubResource("StyleBoxFlat_g2l13")
-
-[sub_resource type="SystemFont" id="SystemFont_g2l13"]
-font_names = PackedStringArray("Arial")
-font_weight = 600
-
-[node name="GeneratePropertyTranslations" type="Control" unique_id=745919819]
-layout_mode = 3
+[node name="FmodTranslations" type="VBoxContainer"]
+custom_minimum_size = Vector2(900, 600)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = SubResource("Theme_x8suf")
-script = ExtResource("1_generator")
+translation_domain = &"godot.editor"
+script = ExtResource("1")
 
-[node name="PanelContainer" type="PanelContainer" parent="." unique_id=2096591614]
-layout_mode = 1
+[node name="Toolbar" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Catalog" type="OptionButton" parent="Toolbar"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 3
+selected = 0
+popup/item_0/text = "Properties"
+popup/item_0/id = 0
+popup/item_1/text = "Editor Interface"
+popup/item_1/id = 1
+popup/item_2/text = "API Documentation"
+popup/item_2/id = 2
+
+[node name="Language" type="OptionButton" parent="Toolbar"]
+unique_name_in_owner = true
+layout_mode = 2
+auto_translate_mode = 2
+
+[node name="AddEntry" type="Button" parent="Toolbar"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Add Entry"
+
+[node name="DeleteEntry" type="Button" parent="Toolbar"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Delete Entry"
+
+[node name="Save" type="Button" parent="Toolbar"]
+layout_mode = 2
+text = "Save"
+
+[node name="Reload" type="Button" parent="Toolbar"]
+layout_mode = 2
+text = "Reload"
+
+[node name="ExtractSources" type="Button" parent="Toolbar"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Extract Sources"
+
+[node name="LanguageBar" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Locale" type="LineEdit" parent="LanguageBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+auto_translate_mode = 2
+placeholder_text = "Locale, e.g. ja or zh_Hant"
+
+[node name="AddLanguage" type="Button" parent="LanguageBar"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Add Language"
+
+[node name="Search" type="LineEdit" parent="LanguageBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Search source or translation"
+
+[node name="MissingOnly" type="CheckButton" parent="LanguageBar"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Untranslated or Fuzzy"
+
+[node name="Content" type="HSplitContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Entries" type="Tree" parent="Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+auto_translate_mode = 2
+columns = 2
+column_titles_visible = true
+hide_root = true
+
+[node name="Detail" type="VBoxContainer" parent="Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Locations" type="Label" parent="Content/Detail"]
+unique_name_in_owner = true
+layout_mode = 2
+auto_translate_mode = 2
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="Context" type="LineEdit" parent="Content/Detail"]
+unique_name_in_owner = true
+layout_mode = 2
+auto_translate_mode = 2
+placeholder_text = "Context"
+
+[node name="Source" type="TextEdit" parent="Content/Detail"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+auto_translate_mode = 2
+placeholder_text = "Source"
+
+[node name="Translation" type="TextEdit" parent="Content/Detail"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+auto_translate_mode = 2
+placeholder_text = "Translation"
+
+[node name="Fuzzy" type="CheckBox" parent="Content/Detail"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Fuzzy: translation needs review"
+
+[node name="SourceOptions" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="SourceRoot" type="LineEdit" parent="SourceOptions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+auto_translate_mode = 2
+placeholder_text = "Source repository (required for extraction)"
+
+[node name="Python" type="LineEdit" parent="SourceOptions"]
+unique_name_in_owner = true
+layout_mode = 2
+auto_translate_mode = 2
+tooltip_text = "Python executable with Babel installed"
+text = "python"
+
+[node name="Status" type="Label" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+auto_translate_mode = 2
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 3
+
+[node name="FilterTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.15
+one_shot = true
+
+[node name="UnsavedDialog" type="Window" parent="."]
+unique_name_in_owner = true
+title = "Unsaved changes"
+size = Vector2i(560, 160)
+visible = false
+unresizable = true
+transient = true
+exclusive = true
+wrap_controls = true
+
+[node name="Panel" type="PanelContainer" parent="UnsavedDialog"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"PopupPanel"
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=1360072116]
+[node name="Margin" type="MarginContainer" parent="UnsavedDialog/Panel"]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=982415643]
+[node name="Content" type="VBoxContainer" parent="UnsavedDialog/Panel/Margin"]
 layout_mode = 2
+theme_override_constants/separation = 16
 
-[node name="TitleLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=467435182]
-layout_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_g2l13")
-theme_override_font_sizes/font_size = 32
-text = "FMOD Property Translation Generator"
-
-[node name="CSVLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=260461912]
-unique_name_in_owner = true
-layout_mode = 2
-text = "CSV"
-
-[node name="CSVToolbar" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=882781108]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="AddRowButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/CSVToolbar" unique_id=166043344]
-layout_mode = 2
-text = "Insert Row"
-
-[node name="LocaleLineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer/CSVToolbar" unique_id=17046578]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "new_locale"
-placeholder_text = "Locale, e.g. ja or zh_TW"
-
-[node name="AddColumnButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/CSVToolbar" unique_id=2119259823]
-layout_mode = 2
-text = "Add Column"
-
-[node name="DeleteRowButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/CSVToolbar" unique_id=357052768]
-layout_mode = 2
-text = "Delete Row"
-
-[node name="DeleteColumnButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/CSVToolbar" unique_id=1125527835]
-layout_mode = 2
-text = "Delete Last Column"
-
-[node name="CSVEditTree" type="Tree" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=430379667]
-unique_name_in_owner = true
+[node name="Message" type="Label" parent="UnsavedDialog/Panel/Margin/Content"]
+custom_minimum_size = Vector2(480, 0)
 layout_mode = 2
 size_flags_vertical = 3
-column_titles_visible = true
-hide_root = true
+text = "Save changes before switching catalogs?"
+autowrap_mode = 3
 
-[node name="OutputLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=373731399]
+[node name="Actions" type="HBoxContainer" parent="UnsavedDialog/Panel/Margin/Content"]
+layout_mode = 2
+alignment = 2
+
+[node name="SaveChanges" type="Button" parent="UnsavedDialog/Panel/Margin/Content/Actions"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Output"
+text = "Save"
 
-[node name="StatusLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1753339380]
-unique_name_in_owner = true
+[node name="Discard" type="Button" parent="UnsavedDialog/Panel/Margin/Content/Actions"]
 layout_mode = 2
-text = "Status"
+text = "Discard"
 
-[node name="GenerateButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=517527042]
-unique_name_in_owner = true
+[node name="Cancel" type="Button" parent="UnsavedDialog/Panel/Margin/Content/Actions"]
 layout_mode = 2
-text = "Save & Generate"
+text = "Cancel"
 
-[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/CSVToolbar/AddRowButton" to="." method="_on_add_row_button_pressed"]
-[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/CSVToolbar/AddColumnButton" to="." method="_on_add_column_button_pressed"]
-[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/CSVToolbar/DeleteRowButton" to="." method="_on_delete_row_button_pressed"]
-[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/CSVToolbar/DeleteColumnButton" to="." method="_on_delete_column_button_pressed"]
-[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/GenerateButton" to="." method="_on_generate_button_pressed"]
+[connection signal="item_selected" from="Toolbar/Catalog" to="." method="_catalog_selected"]
+[connection signal="item_selected" from="Toolbar/Language" to="." method="_language_selected"]
+[connection signal="pressed" from="Toolbar/AddEntry" to="." method="_add_entry"]
+[connection signal="pressed" from="Toolbar/DeleteEntry" to="." method="_delete_entry"]
+[connection signal="pressed" from="Toolbar/Save" to="." method="save"]
+[connection signal="pressed" from="Toolbar/Reload" to="." method="_reload_requested"]
+[connection signal="pressed" from="Toolbar/ExtractSources" to="." method="_extract_sources"]
+[connection signal="pressed" from="LanguageBar/AddLanguage" to="." method="_add_language"]
+[connection signal="text_changed" from="LanguageBar/Search" to="." method="_search_text_changed"]
+[connection signal="toggled" from="LanguageBar/MissingOnly" to="." method="_missing_only_toggled"]
+[connection signal="item_selected" from="Content/Entries" to="." method="_entry_selected"]
+[connection signal="text_changed" from="Content/Detail/Context" to="." method="_context_text_changed"]
+[connection signal="text_changed" from="Content/Detail/Source" to="." method="_entry_changed"]
+[connection signal="text_changed" from="Content/Detail/Translation" to="." method="_entry_changed"]
+[connection signal="toggled" from="Content/Detail/Fuzzy" to="." method="_fuzzy_toggled"]
+[connection signal="text_changed" from="SourceOptions/SourceRoot" to="." method="_source_root_text_changed"]
+[connection signal="timeout" from="FilterTimer" to="." method="_rebuild_tree"]
+[connection signal="close_requested" from="UnsavedDialog" to="UnsavedDialog" method="hide"]
+[connection signal="window_input" from="UnsavedDialog" to="." method="_unsaved_dialog_input"]
+[connection signal="pressed" from="UnsavedDialog/Panel/Margin/Content/Actions/SaveChanges" to="." method="_save_before_switch"]
+[connection signal="pressed" from="UnsavedDialog/Panel/Margin/Content/Actions/Discard" to="." method="_discard_before_switch"]
+[connection signal="pressed" from="UnsavedDialog/Panel/Margin/Content/Actions/Cancel" to="UnsavedDialog" method="hide"]

@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_delay_preview.h"
 
 #include "core/fmod_utils.hpp"
@@ -112,13 +113,13 @@ namespace godot {
 	void FmodAudioEffectDelayPreview::_on_effect_changed() {
 		geometry_dirty = true;
 		if (effect.is_valid()) {
-			String tooltip = tr("Delay tap layout: radius shows time, angle shows pan, and brightness shows level. Drag a node to edit time and pan. Alt + click selects an overlapping tap.");
-			tooltip += "\n" + tr("Time range") + ": 0 - " + String::num(_time_range(), 0) + " ms";
+			String tooltip = fmod_editor_translate("Delay tap layout: radius shows time, angle shows pan, and brightness shows level. Drag a node to edit time and pan. Alt + click selects an overlapping tap.");
+			tooltip += "\n" + fmod_editor_translate("Time range") + ": 0 - " + String::num(_time_range(), 0) + " ms";
 			for (int i = 0; i < 2; i++) {
 				const Tap tap = _tap(i);
-				tooltip += "\nTap " + String::num_int64(i + 1) + ": " + (tap.active ? String::num(tap.time, 1) + " ms, " + String::num(tap.level, 1) + " dB, Pan " + String::num(tap.pan, 2) : tr("Disabled"));
+				tooltip += String("\n") + fmod_editor_translate("Tap") + " " + String::num_int64(i + 1) + ": " + (tap.active ? String::num(tap.time, 1) + " ms, " + String::num(tap.level, 1) + String(" dB, ") + fmod_editor_translate("Pan") + " " + String::num(tap.pan, 2) : fmod_editor_translate("Disabled"));
 			}
-			if (effect->is_feedback_active()) tooltip += "\n" + tr("Feedback rings show repeat timing and gain before low-pass filtering.");
+			if (effect->is_feedback_active()) tooltip += "\n" + fmod_editor_translate("Feedback rings show repeat timing and gain before low-pass filtering.");
 			set_tooltip_text(tooltip);
 		}
 		queue_redraw();
@@ -126,6 +127,10 @@ namespace godot {
 
 	void FmodAudioEffectDelayPreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			break;
@@ -198,7 +203,7 @@ namespace godot {
 		if (Math::is_equal_approx(time, tap.time) && Math::is_equal_approx(pan, tap.pan) && (p_changing || !gesture_changed)) return;
 		gesture_changed = true;
 		EditorUndoRedoManager* undo_redo = EditorInterface::get_singleton()->get_editor_undo_redo();
-		undo_redo->create_action(tr("Move delay tap") + " " + String::num_int64(selected_tap + 1), UndoRedo::MERGE_ENDS, effect.ptr());
+		undo_redo->create_action(fmod_editor_translate("Move delay tap") + " " + String::num_int64(selected_tap + 1), UndoRedo::MERGE_ENDS, effect.ptr());
 		PackedStringArray properties;
 		const String prefix = selected_tap == 0 ? "tap1_" : "tap2_";
 		properties.push_back(prefix + String("delay_ms"));

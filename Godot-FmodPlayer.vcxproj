@@ -181,6 +181,7 @@
     <ClInclude Include="src\editor\fmod_audio_preview_inspector.h" />
     <ClInclude Include="src\editor\fmod_audio_preview_property.h" />
     <ClInclude Include="src\editor\fmod_audio_stream_player_3d_gizmo_plugin.h" />
+    <ClInclude Include="src\editor\fmod_editor_translation.h" />
     <ClInclude Include="src\editor\fmod_reverb_zone_3d_gizmo_plugin.h" />
     <ClInclude Include="src\editor\modify_android_build_template_plugin.h" />
     <ClInclude Include="src\geometry\fmod_geometry.h" />

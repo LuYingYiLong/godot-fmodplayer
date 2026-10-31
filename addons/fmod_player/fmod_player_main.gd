@@ -1,8 +1,6 @@
 @tool
 extends EditorPlugin
 
-const FmodPropertyTranslations: Script = preload("res://addons/fmod_player/translations/fmod_property_translations.gd")
-
 # This is the main plugin that actually uses GDExtension classes.
 # It will only be loaded after confirming fmod.dll exists.
 
@@ -13,10 +11,7 @@ var fmod_reverb_zone_3d_gizmo_plugin: EditorNode3DGizmoPlugin
 var fmod_geometry_mesh_tools_plugin: EditorPlugin
 var android_build_template_plugin: EditorPlugin
 var _editor_interface: EditorInterface
-var _fmod_property_translations: Array[Translation]
-var _fmod_editor_translations: Array[Translation]
-var _fmod_documentation_translations: Array[Translation]
-var _translations_update_queued: bool
+
 
 
 func set_editor_interface(iface: EditorInterface) -> void:
@@ -56,20 +51,9 @@ func _enter_tree() -> void:
 		android_build_template_plugin = ClassDB.instantiate("ModifyAndroidBuildTemplatePlugin")
 		add_child(android_build_template_plugin)
 
-	var editor_settings: EditorSettings = get_editor_interface().get_editor_settings()
-	if editor_settings and not editor_settings.settings_changed.is_connected(_queue_fmod_translations_update):
-		editor_settings.settings_changed.connect(_queue_fmod_translations_update)
-
-	_queue_fmod_translations_update()
 
 
 func _exit_tree() -> void:
-	var editor_settings: EditorSettings = get_editor_interface().get_editor_settings() if get_editor_interface() else null
-	if editor_settings and editor_settings.settings_changed.is_connected(_queue_fmod_translations_update):
-		editor_settings.settings_changed.disconnect(_queue_fmod_translations_update)
-
-	_remove_fmod_translations()
-
 	if fmod_geometry_mesh_tools_plugin:
 		fmod_geometry_mesh_tools_plugin.queue_free()
 		fmod_geometry_mesh_tools_plugin = null
@@ -88,94 +72,3 @@ func _exit_tree() -> void:
 	if fmod_reverb_zone_3d_gizmo_plugin:
 		remove_node_3d_gizmo_plugin(fmod_reverb_zone_3d_gizmo_plugin)
 		fmod_reverb_zone_3d_gizmo_plugin = null
-
-
-func _queue_fmod_translations_update() -> void:
-	if _translations_update_queued or not is_inside_tree():
-		return
-	_translations_update_queued = true
-	_add_fmod_translations.call_deferred()
-
-
-func _add_fmod_translations() -> void:
-	_translations_update_queued = false
-	if not is_inside_tree():
-		return
-	_ensure_fmod_property_translations()
-	_ensure_fmod_documentation_translations()
-
-	var domain: TranslationDomain = TranslationServer.get_or_add_domain(&"godot.properties")
-	for translation: Translation in _fmod_property_translations:
-		domain.remove_translation(translation)
-		domain.add_translation(translation)
-	var editor_domain: TranslationDomain = TranslationServer.get_or_add_domain(&"godot.editor")
-	for translation: Translation in _fmod_editor_translations:
-		editor_domain.remove_translation(translation)
-		editor_domain.add_translation(translation)
-	var documentation_domain: TranslationDomain = TranslationServer.get_or_add_domain(&"godot.documentation")
-	for translation: Translation in _fmod_documentation_translations:
-		documentation_domain.remove_translation(translation)
-		documentation_domain.add_translation(translation)
-
-	_notify_fmod_property_translations_changed()
-
-
-func _remove_fmod_translations() -> void:
-	var domain: TranslationDomain = TranslationServer.get_or_add_domain(&"godot.properties")
-	for translation: Translation in _fmod_property_translations:
-		domain.remove_translation(translation)
-	_fmod_property_translations.clear()
-	var editor_domain: TranslationDomain = TranslationServer.get_or_add_domain(&"godot.editor")
-	for translation: Translation in _fmod_editor_translations:
-		editor_domain.remove_translation(translation)
-	_fmod_editor_translations.clear()
-	var documentation_domain: TranslationDomain = TranslationServer.get_or_add_domain(&"godot.documentation")
-	for translation: Translation in _fmod_documentation_translations:
-		documentation_domain.remove_translation(translation)
-	_fmod_documentation_translations.clear()
-
-	_notify_fmod_property_translations_changed()
-
-
-func _ensure_fmod_documentation_translations() -> void:
-	if not _fmod_documentation_translations.is_empty():
-		return
-	var directory: String = "res://addons/fmod_player/translations/documentation"
-	for filename: String in DirAccess.get_files_at(directory):
-		if filename.get_extension() != "po":
-			continue
-		var translation: Translation = load(directory.path_join(filename)) as Translation
-		if translation == null:
-			push_error("Cannot load FMOD documentation translation: %s" % filename)
-			continue
-		_fmod_documentation_translations.append(translation)
-
-
-func _ensure_fmod_property_translations() -> void:
-	if not _fmod_property_translations.is_empty():
-		return
-
-	_fmod_property_translations = FmodPropertyTranslations.create_translations()
-	# CSV 使用 keep 导入，保持可直接读取的插件翻译源
-	var file: FileAccess = FileAccess.open("res://addons/fmod_player/translations/fmod_editor_translations.csv", FileAccess.READ)
-	if file == null:
-		push_error("Cannot open FMOD editor translations")
-		return
-	var header: PackedStringArray = file.get_csv_line()
-	for column: int in range(1, header.size()):
-		var translation: Translation = Translation.new()
-		translation.locale = header[column]
-		_fmod_editor_translations.append(translation)
-	while not file.eof_reached():
-		var row: PackedStringArray = file.get_csv_line()
-		if row.is_empty() or row[0].is_empty():
-			continue
-		for column: int in range(1, mini(row.size(), header.size())):
-			if not row[column].is_empty():
-				_fmod_editor_translations[column - 1].add_message(StringName(row[0].c_unescape()), StringName(row[column].c_unescape()))
-
-
-func _notify_fmod_property_translations_changed() -> void:
-	var tree: SceneTree = get_tree()
-	if tree and tree.root:
-		tree.root.propagate_notification(MainLoop.NOTIFICATION_TRANSLATION_CHANGED)

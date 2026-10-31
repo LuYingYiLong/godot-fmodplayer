@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_amplify_preview.h"
 
 #include <godot_cpp/classes/editor_interface.hpp>
@@ -75,7 +76,7 @@ namespace godot {
 
 	void FmodAudioEffectAmplifyPreview::_on_effect_changed() {
 		if (effect.is_valid()) {
-			set_tooltip_text(tr("Gain") + ": " + String::num(effect->get_volume_db(), 2) + " dB (" + String::num(effect->get_volume_linear(), 4) + "x)\n" + tr("Parameter illustration with a 0 dB reference input. Drag the output line vertically to adjust gain."));
+			set_tooltip_text(fmod_editor_translate("Gain") + ": " + String::num(effect->get_volume_db(), 2) + " dB (" + String::num(effect->get_volume_linear(), 4) + "x)\n" + fmod_editor_translate("Parameter illustration with a 0 dB reference input. Drag the output line vertically to adjust gain."));
 		}
 		_update_cursor();
 		queue_redraw();
@@ -83,6 +84,10 @@ namespace godot {
 
 	void FmodAudioEffectAmplifyPreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			break;

@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_distortion_preview.h"
 
 #include "core/fmod_utils.hpp"
@@ -18,7 +19,7 @@ namespace godot {
 		set_draw_background(false);
 		set_clip_contents(true);
 		set_custom_minimum_size(Vector2(0.0f, 160.0f * _scale()));
-		set_tooltip_text(tr("Steady-state input/output amplitude curve. Drag vertically for Drive (Pre Gain in Overdrive mode); Shift + drag for Pre Gain; Ctrl + drag for Post Gain. The vertical scale fits the output. Keep HF controls the audio crossover; Oversample is stored only."));
+		fmod_set_editor_tooltip(this, "Steady-state input/output amplitude curve. Drag vertically for Drive (Pre Gain in Overdrive mode); Shift + drag for Pre Gain; Ctrl + drag for Post Gain. The vertical scale fits the output. Keep HF controls the audio crossover; Oversample is stored only.");
 	}
 
 	float FmodAudioEffectDistortionPreview::_scale() const {
@@ -60,6 +61,10 @@ namespace godot {
 
 	void FmodAudioEffectDistortionPreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			break;

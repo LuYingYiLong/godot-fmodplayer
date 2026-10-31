@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_capture_preview.h"
 
 #include "core/fmod_server.h"
@@ -15,7 +16,7 @@ namespace godot {
 		set_draw_background(false);
 		set_clip_contents(true);
 		set_custom_minimum_size(Vector2(0.0f, 160.0f * _scale()));
-		set_tooltip_text(tr("Peak ranges of unread stereo frames in this editor instance. Attach Capture to an FMOD bus to receive audio."));
+		fmod_set_editor_tooltip(this, "Peak ranges of unread stereo frames in this editor instance. Attach Capture to an FMOD bus to receive audio.");
 		refresh_timer = memnew(Timer);
 		refresh_timer->set_wait_time(0.1);
 		refresh_timer->connect("timeout", callable_mp(this, &FmodAudioEffectCapturePreview::_refresh_snapshot));
@@ -77,6 +78,10 @@ namespace godot {
 
 	void FmodAudioEffectCapturePreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			// 检查器重挂接时不会再次触发 READY，等待 Timer 子节点入树后恢复刷新
@@ -149,7 +154,7 @@ namespace godot {
 		const Ref<Font> font = get_theme_default_font();
 		const int font_size = get_theme_default_font_size();
 		if (last_frames == 0) {
-			draw_string(font, Vector2(plot.position.x, plot.get_center().y + font->get_ascent(font_size) * 0.4f), tr("Waiting for captured audio"), HORIZONTAL_ALIGNMENT_CENTER, plot.size.x, font_size, muted);
+			draw_string(font, Vector2(plot.position.x, plot.get_center().y + font->get_ascent(font_size) * 0.4f), fmod_editor_translate("Waiting for captured audio"), HORIZONTAL_ALIGNMENT_CENTER, plot.size.x, font_size, muted);
 			return;
 		}
 		const double step = fmod_capture_preview::time_step(duration, CLAMP(int(plot.size.x / (48.0f * scale)), 1, 10));

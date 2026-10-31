@@ -1,3 +1,4 @@
+#include "editor/fmod_editor_translation.h"
 #include "fmod_audio_effect_chorus_preview.h"
 
 #include <godot_cpp/classes/editor_interface.hpp>
@@ -15,7 +16,7 @@ namespace godot {
 		set_draw_background(false);
 		set_clip_contents(true);
 		set_custom_minimum_size(Vector2(0.0f, 160.0f * _scale()));
-		set_tooltip_text(tr("One-second chorus modulation overview. Vertical position represents pan; rate and depth shape each voice. Curves begin at the base delay."));
+		fmod_set_editor_tooltip(this, "One-second chorus modulation overview. Vertical position represents pan; rate and depth shape each voice. Curves begin at the base delay.");
 	}
 
 	float FmodAudioEffectChorusPreview::_scale() const {
@@ -66,6 +67,10 @@ namespace godot {
 
 	void FmodAudioEffectChorusPreview::_notification(int p_what) {
 		switch (p_what) {
+		case NOTIFICATION_TRANSLATION_CHANGED:
+			fmod_refresh_editor_control(this);
+			_on_effect_changed();
+			break;
 		case NOTIFICATION_ENTER_TREE:
 			_connect_effect();
 			break;

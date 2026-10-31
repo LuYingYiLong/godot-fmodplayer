@@ -250,6 +250,8 @@ func _test_decode(output_dir: String, tree: SceneTree) -> void:
 		var editor: Control = _stream_editor()
 		await _capture(editor, output_dir.path_join("stream_mp3.png"), tree)
 		EditorInterface.edit_resource(Resource.new())
+		# 导入器缓存会持有此测试资源，退出前先释放它的运行时 Sound
+		stream.clear()
 		await _settle(tree)
 		player.free()
 	host.free()

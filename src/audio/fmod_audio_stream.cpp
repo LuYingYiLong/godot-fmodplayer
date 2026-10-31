@@ -259,7 +259,7 @@ namespace godot {
 		), Ref<FmodSound>());
 
 		ERR_FAIL_NULL_V(sound_ptr, Ref<FmodSound>());
-		fmod_sound->setup(sound_ptr);
+		fmod_sound->setup(sound_ptr, true, system->sound_lifetime);
 		return fmod_sound;
 	}
 

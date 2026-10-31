@@ -20,9 +20,6 @@
 #include <godot_cpp/variant/callable_method_pointer.hpp>
 
 namespace godot {
-	String fmod_editor_translate(const String& text) {
-		return TranslationServer::get_singleton()->get_or_add_domain("godot.editor")->translate(text);
-	}
 
 	static float scale() {
 		return EditorInterface::get_singleton()->get_editor_scale();
