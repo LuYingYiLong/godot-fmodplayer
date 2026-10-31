@@ -49,7 +49,7 @@
 |----------|--------|
 | Windows x86_64 | Supported |
 | Linux x86_64 | Tested on Ubuntu 26.04 |
-| Android | arm64 builds; other ABIs available through `build_android.bat` |
+| Android | arm64 builds; other ABIs available through SCons `arch` |
 | macOS / iOS | Experimental; requires local SDK and linking setup |
 
 ## Building From Source
@@ -78,10 +78,12 @@ Place your SDK's `fmod.dll` in the project's `addons/fmod_player/bin` folder.
 Use the FMOD **Linux** Core SDK 2.04 with GCC or Clang and SCons:
 
 ```sh
-FMOD_LINUX_SDK=/path/to/fmodstudioapi20400linux bash build_linux.sh debug_symbols=no
+export FMOD_LINUX_SDK=/path/to/fmodstudioapi20400linux
+scons platform=linux target=template_debug arch=x86_64 debug_symbols=no -j2
+scons platform=linux target=template_release arch=x86_64 debug_symbols=no -j2
 ```
 
-The script builds x86_64 Debug and Release extensions under `addons/fmod_player/bin`, with logs in `tests/logs`. Set `JOBS` to change the default of two compile jobs. `fmod_linux_sdk` also accepts an `api/core` folder through `custom.py` or the SCons command line; its default is `src/thirdparty/fmod/linux`.
+These commands build x86_64 Debug and Release extensions under `addons/fmod_player/bin`. Set `-j` to change the number of compile jobs. `fmod_linux_sdk` also accepts an `api/core` folder through `custom.py` or the SCons command line; its default is `src/thirdparty/fmod/linux`.
 
 Place `libfmodL.so.15` (Debug) and `libfmod.so.15` (Release) beside the extension. Copy the SDK's symlink targets as regular files with these names, or keep the versioned files and symlinks together. The extension uses `$ORIGIN` to find its runtime libraries.
 
@@ -98,10 +100,11 @@ fmod_android_sdk = r"C:\path\to\FMOD Android SDK"
 `fmod_android_sdk` accepts the full SDK root or its `api/core` folder. The default location is `src/thirdparty/fmod/android`, containing `inc/` and `lib/<ABI>/`.
 
 ```bat
-build_android.bat
+scons platform=android target=template_debug arch=arm64 -j16
+scons platform=android target=template_release arch=arm64 -j16
 ```
 
-This builds arm64 Debug and Release libraries. Pass `arch=x86_64`, `arch=x86_32`, or `arch=arm32` for another architecture, and add its library entries to `fmod_player.gdextension`. `build_all_platform.bat` builds Windows and Android.
+These commands build arm64 Debug and Release libraries. Use `arch=x86_64`, `arch=x86_32`, or `arch=arm32` for another architecture, and add its library entries to `fmod_player.gdextension`.
 
 For APK export, install Godot's Android build template and run **Configure FMOD Android Export** with the same FMOD Android SDK to include the Java and native runtime files.
 
@@ -134,11 +137,13 @@ See the [FMOD 2.04 changes](https://www.fmod.com/docs/2.04/api/welcome-whats-new
 From the repository root:
 
 ```powershell
-.\build_debug_to_test.bat
+scons platform=windows target=template_debug arch=x86_64 optimize=speed_trace debug_symbols=yes copy_to_tests=yes -j16
 .\tools\run_tests.ps1 -Suite regression
 ```
 
-The build script copies the complete addon into `tests/addons/fmod_player`. Test runs go to `tests/logs/runs`, build logs to `tests/logs/builds`, and comparison reports to `tests/logs/comparisons`.
+`copy_to_tests=yes` copies the complete addon into `tests/addons/fmod_player` after a successful build, including script-only changes when the binary is already up to date. Windows copies the matching PDB when symbols are enabled. Windows and Linux also copy the local SDK runtime; `fmod_runtime=/path/to/runtime` overrides its location. The option defaults to `no` and can be set in `custom.py`.
+
+SCons writes a synchronization report to `tests/logs/builds`. Use `-Import` with the test runner to refresh Godot imports. Test runs go to `tests/logs/runs`, saved build output to `tests/logs/builds`, and comparison reports to `tests/logs/comparisons`.
 
 Open `tests/project.godot` and press F5 for the manual test menu. Automated tests use a separate offline process. See [tests/README.md](tests/README.md) for individual suites, editor and native checks, and performance comparisons.
 

@@ -66,7 +66,7 @@ SpectrumAnalyzer 检查器：选中 `manual/spectrum_analyzer_preview.tres`，�
 电平回归先检查首次检查器试听、首次展开面板、隐藏后恢复及 Dock 重新进入场景树，再检查连续调参、短峰值、计量开关恢复、效果器增删与旁路，以及 1.5 秒峰值保持和 60 像素/秒回落。`-Realtime` 使用无声输出的后台混音线程；默认使用离线混音。渐变、tint、字体和刻度截图与原生 Audio 面板对照，结果写入同次日志目录。
 
 ```powershell
-.\build_debug_to_test.bat
+scons platform=windows target=template_debug arch=x86_64 optimize=speed_trace debug_symbols=yes copy_to_tests=yes -j16
 .\tools\run_tests.ps1 -Suite regression
 .\tools\run_tests.ps1 -Suite routing
 .\tools\run_tests.ps1 -Suite spatial
@@ -99,7 +99,9 @@ python tools/run_native_tests.py
 
 `spatial` 使用启用了 `CHANNEL_DISTANCEFILTER` 的离线系统，保存双音 WAV、角度往返场景和 `spatial_audio_regression.json` 到本次日志目录。完整套件随后重建常规离线系统，其他回归和性能测量保持原有初始化参数。手动测试项目也已启用 `audio/fmod/init_flags/channel_distance_filter`；实际项目需启用此设置并重新运行，距离滤波才会生效。
 
-构建脚本将完整插件复制到 `tests/addons/fmod_player`，并从本机 SDK 补入 `fmod.dll`。已有构建可用 `.\tools\run_tests.ps1 -PrepareOnly` 同步；`-Import` 刷新导入缓存。首次导入时脚本临时使用主场景资源路径，结束后恢复项目配置中的 UID。
+SCons 的 `copy_to_tests=yes` 在构建成功后将完整插件同步到 `tests/addons/fmod_player`，当前构建的二进制与 PDB 保存在其 `bin/` 下。Windows、Linux 会从本机 SDK 补入对应运行库，可用 `fmod_runtime="运行库路径"` 覆盖来源。参数默认为 `no`；二进制已是最新时仍会同步脚本、翻译和资源。同步报告保存在 `tests/logs/builds/`。
+
+SCons 不启动 Godot。已有构建也可用 `.\tools\run_tests.ps1 -PrepareOnly` 同步；加 `-Import` 刷新导入缓存。首次导入时测试脚本临时使用主场景资源路径，结束后恢复项目配置中的 UID。
 
 通过 `-GodotPath "Godot 可执行文件路径"` 和 `-FmodRuntime "SDK 的 fmod.dll 路径"` 指定本机环境。`-Quick` 缩短性能测量时长，回归检查保持相同用例；性能对比使用默认计时。
 
@@ -143,7 +145,7 @@ python3 tools/run_native_tests.py
 ```powershell
 .\tools\run_tests.ps1 -Suite capture -CaptureBaseline -ExtensionBin "tests/logs/baseline_bin" -Label capture_before
 # 修改代码后重新编译
-.\build_debug_to_test.bat
+scons platform=windows target=template_debug arch=x86_64 optimize=speed_trace debug_symbols=yes copy_to_tests=yes -j16
 .\tools\run_tests.ps1 -Suite capture -Label capture_after
 python tools/compare_capture.py "tests/logs/runs/<优化前目录>" "tests/logs/runs/<优化后目录>"
 ```
@@ -155,7 +157,7 @@ python tools/compare_capture.py "tests/logs/runs/<优化前目录>" "tests/logs/
 ```powershell
 .\tools\run_tests.ps1 -Suite reverb -ExtensionBin "tests/logs/baseline_bin" -Label reverb_before
 # 修改代码后重新编译
-.\build_debug_to_test.bat
+scons platform=windows target=template_debug arch=x86_64 optimize=speed_trace debug_symbols=yes copy_to_tests=yes -j16
 .\tools\run_tests.ps1 -Suite reverb -Label reverb_after
 python tools/compare_reverb.py "tests/logs/runs/<优化前目录>" "tests/logs/runs/<优化后目录>"
 ```

@@ -1,8 +1,14 @@
 #!/usr/bin/env python
+import filecmp
+import hashlib
+import json
 import os
+from pathlib import Path
+import shutil
 import sys
 
 from SCons.Errors import UserError
+from SCons.Variables import BoolVariable
 
 build_options = Variables("custom.py", ARGUMENTS)
 build_options.Add(
@@ -15,12 +21,22 @@ build_options.Add(
     "FMOD Linux Core SDK directory containing inc/ and lib/ (or the full SDK root)",
     os.environ.get("FMOD_LINUX_SDK", "src/thirdparty/fmod/linux"),
 )
+build_options.Add(BoolVariable(
+    "copy_to_tests",
+    "Copy the complete addon and local FMOD runtime to tests after a successful build",
+    False,
+))
+build_options.Add(
+    "fmod_runtime",
+    "Override the FMOD runtime copied to tests (defaults to the Windows/Linux SDK runtime)",
+    "",
+)
 build_config = Environment(tools=[])
 build_options.Update(build_config)
 Help(build_options.GenerateHelpText(build_config))
-# This option belongs to the extension, rather than godot-cpp.
-ARGUMENTS.pop("fmod_android_sdk", None)
-ARGUMENTS.pop("fmod_linux_sdk", None)
+# These options belong to the extension, rather than godot-cpp.
+for option in ("fmod_android_sdk", "fmod_linux_sdk", "copy_to_tests", "fmod_runtime"):
+    ARGUMENTS.pop(option, None)
 # godot-cpp resolves custom.py relative to its own directory. Forward the
 # remaining root configuration options without forwarding our FMOD option.
 for key, value in build_options.UnknownVariables().items():
@@ -180,4 +196,82 @@ else:
         source=sources,
     )
 
-Default(library)
+if build_config["copy_to_tests"]:
+    def copy_test_addon(target, source, env):
+        root = Path(Dir("#").abspath)
+        addon = root / "addons/fmod_player"
+        destination = root / "tests/addons/fmod_player"
+        if not destination.resolve().is_relative_to(root / "tests"):
+            raise UserError("Test addon destination must stay inside this repository's tests directory.")
+        binary = Path(source[0].abspath)
+        symbols = binary.with_suffix(".pdb")
+        has_pdb = env["platform"] == "windows" and env.get("is_msvc", False) and env["debug_symbols"]
+        if has_pdb and not symbols.is_file():
+            raise UserError("Matching PDB missing: " + str(symbols) + ". Rebuild the extension before copying it.")
+
+        runtime = None
+        runtime_name = ""
+        if env["platform"] == "windows":
+            runtime = root / "src/thirdparty/fmod/lib/x64/fmod.dll"
+            runtime_name = "fmod.dll"
+        elif env["platform"] == "linux":
+            runtime_name = "lib" + fmod_library_name + ".so.15"
+            runtime = Path(fmod_lib_path) / runtime_name
+            if not runtime.is_file():
+                runtime = Path(fmod_lib_path) / ("lib" + fmod_library_name + ".so")
+        if build_config["fmod_runtime"]:
+            runtime = Path(Dir("#").abspath, build_config["fmod_runtime"])
+            runtime_name = runtime_name or runtime.name
+        if runtime is not None and not runtime.is_file():
+            raise UserError("FMOD runtime missing: " + str(runtime) + ". Set fmod_runtime to your local SDK runtime file.")
+
+        copied = []
+        skipped_pdb = symbols.relative_to(addon) if env["platform"] == "windows" and not has_pdb else None
+
+        def copy_file(original, relative):
+            staged = destination / relative
+            if not staged.resolve().is_relative_to(destination.resolve()):
+                raise UserError("Test addon file escaped its destination: " + str(staged))
+            if staged.is_file() and filecmp.cmp(original, staged, shallow=False):
+                return
+            staged.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(original, staged)
+            copied.append(relative.as_posix())
+
+        for directory, directories, filenames in os.walk(addon):
+            directories[:] = [name for name in directories if name != "__pycache__"]
+            for filename in filenames:
+                original = Path(directory) / filename
+                relative = original.relative_to(addon)
+                if original.suffix in (".pyc", ".pyo", ".tmp", ".lib", ".exp", ".ilk") or relative == skipped_pdb:
+                    continue
+                copy_file(original, relative)
+        if skipped_pdb is not None:
+            (destination / skipped_pdb).unlink(missing_ok=True)
+        if runtime is not None:
+            copy_file(runtime, Path("bin") / runtime_name)
+
+        def digest(path):
+            return hashlib.sha256(path.read_bytes()).hexdigest()
+
+        report = {
+            "platform": env["platform"], "target": env["target"], "arch": env["arch"],
+            "binary": binary.name, "binary_sha256": digest(binary),
+            "pdb_sha256": digest(symbols) if has_pdb else None,
+            "runtime": runtime_name or None,
+            "runtime_sha256": digest(runtime) if runtime is not None else None,
+            "copied": copied,
+        }
+        log_directory = root / "tests/logs/builds"
+        log_directory.mkdir(parents=True, exist_ok=True)
+        report_path = log_directory / ("copy_to_tests.{platform}.{target}.{arch}.json".format(**report))
+        report_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8", newline="\n")
+        print("Test addon synchronized: tests/addons/fmod_player (" + str(len(copied)) + " files updated)")
+        return 0
+
+    # A link post-action would miss script-only edits and up-to-date builds.
+    deployment = env.Alias("copy_to_tests", library, Action(copy_test_addon, "Synchronizing FMOD addon to tests ..."))
+    env.AlwaysBuild(deployment)
+    Default(deployment)
+else:
+    Default(library)

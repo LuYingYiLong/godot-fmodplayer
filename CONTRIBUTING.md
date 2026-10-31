@@ -24,11 +24,11 @@ Run commands from the repository root. On Windows, set the paths for your machin
 $godot = "C:\path\to\Godot.exe"
 $runtime = "C:\path\to\FMOD\api\core\lib\x64\fmod.dll"
 
-.\build_debug_to_test.bat -GodotPath $godot -FmodRuntime $runtime
-.\tools\run_tests.ps1 -Suite regression -GodotPath $godot -FmodRuntime $runtime
+scons platform=windows target=template_debug arch=x86_64 optimize=speed_trace debug_symbols=yes copy_to_tests=yes "fmod_runtime=$runtime" -j16
+.\tools\run_tests.ps1 -Suite regression -Import -GodotPath $godot -FmodRuntime $runtime
 ```
 
-The build script creates an optimized `template_debug` extension with matching PDB symbols, copies the complete addon to `tests/addons/fmod_player`, and refreshes Godot imports. Staged extension binaries belong in `tests/addons/fmod_player/bin`; test logs and reports belong in `tests/logs`.
+This SCons command creates an optimized `template_debug` extension with matching PDB symbols. `copy_to_tests=yes` copies the complete addon and local runtime to `tests/addons/fmod_player`, including script-only changes when the binary is up to date. The test runner's `-Import` flag refreshes Godot imports. Staged extension binaries belong in `tests/addons/fmod_player/bin`; test logs and reports belong in `tests/logs`.
 
 Run the suite relevant to your change: `smoke`, `capture`, `spectrum`, `reverb`, or `profile`. The `regression` suite runs correctness checks; `all -Quick` keeps the combined regression and benchmark workflow. Use `-Suite editor` for property translations and `python tools/run_native_tests.py` for the C++ ring-buffer tests. For interactive checks, open `tests/project.godot` and press F5 for the test menu.
 
@@ -37,7 +37,8 @@ For Linux, build with the Linux SDK and run the test script:
 ```sh
 export FMOD_LINUX_SDK=/path/to/fmodstudioapi20400linux
 export GODOT_BIN=/path/to/Godot
-bash build_linux.sh
+scons platform=linux target=template_debug arch=x86_64 copy_to_tests=yes -j2
+scons platform=linux target=template_release arch=x86_64 -j2
 bash tools/run_tests_linux.sh --suite=regression
 ```
 
