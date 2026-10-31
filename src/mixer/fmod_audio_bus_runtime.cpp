@@ -419,7 +419,7 @@ Ref<FmodAudioBusLayout> FmodAudioBusRuntime::import_godot(PackedStringArray *ski
 	}
 	std::map<StringName, int64_t> ids;
 	for (int i = 0; i < server->get_bus_count(); i++) {
-		StringName name = i == 0 ? StringName("Master") : server->get_bus_name(i);
+		StringName name = i == 0 ? StringName("Master") : StringName(server->get_bus_name(i));
 		int64_t id = i == 0 ? 0 : result->add_bus(name);
 		ids[name] = id;
 		int64_t stable = observe && layout.is_valid() ? layout->find_bus_id(name) : id;
@@ -435,7 +435,7 @@ Ref<FmodAudioBusLayout> FmodAudioBusRuntime::import_godot(PackedStringArray *ski
 		stable_ids[id] = i == 0 ? 0 : stable;
 	}
 	for (int i = 0; i < server->get_bus_count(); i++) {
-		StringName name = i == 0 ? StringName("Master") : server->get_bus_name(i);
+		StringName name = i == 0 ? StringName("Master") : StringName(server->get_bus_name(i));
 		const int64_t id = ids[name];
 		const StringName send = server->get_bus_send(i);
 		if (i && ids.count(send) && result->can_send_to(id, ids[send])) {

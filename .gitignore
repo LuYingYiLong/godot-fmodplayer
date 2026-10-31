@@ -386,7 +386,6 @@ src/thirdparty/fmod/
 .vscode/
 compile_commands.json
 custom.py
-AGENTS.md
 
 # Godot imports, caches and locally staged test binaries
 .godot/
@@ -402,6 +401,3 @@ AGENTS.md
 # Local profiling sessions and reports
 *.diagsession
 /profiling_*.json
-
-# Local maintenance archives
-/.local/

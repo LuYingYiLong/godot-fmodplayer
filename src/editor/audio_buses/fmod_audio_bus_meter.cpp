@@ -224,7 +224,7 @@ namespace godot {
 				channel.hold->start();
 			}
 			channel.peak_style->set_bg_color(active_gradient->sample(normalized));
-			channel.bar->set_over_texture(active ? Ref<Texture2D>() : inactive_texture);
+			channel.bar->set_over_texture(active ? Ref<Texture2D>() : Ref<Texture2D>(inactive_texture));
 			channel.peak->set_visible(active || y <= range - 2.0f);
 		}
 		std::fill(std::begin(pending_peaks), std::end(pending_peaks), 0.0f);
