@@ -11,8 +11,14 @@ tap1_pan = 0.7486682
 tap2_delay_ms = 921.4123
 tap2_pan = 0.82778585
 
+[sub_resource type="FmodAudioEffectCapture" id="FmodAudioEffectCapture_drfan"]
+buffer_length = 10.0
+
+[sub_resource type="FmodAudioEffectRecord" id="FmodAudioEffectRecord_drfan"]
+
 [resource]
-next_slot_id = 9
+next_bus_id = 2
+next_slot_id = 11
 bus/0/effect/0/id = 1
 bus/0/effect/0/effect = SubResource("FmodAudioEffectReverb_drfan")
 bus/0/effect/0/enabled = false
@@ -22,3 +28,16 @@ bus/0/effect/1/enabled = true
 bus/0/effect/2/id = 7
 bus/0/effect/2/effect = SubResource("FmodAudioEffectDelay_drfan")
 bus/0/effect/2/enabled = false
+bus/0/effect/3/id = 9
+bus/0/effect/3/effect = SubResource("FmodAudioEffectCapture_drfan")
+bus/0/effect/3/enabled = true
+bus/1/id = 1
+bus/1/name = &"New Bus"
+bus/1/send_id = 0
+bus/1/volume_db = 0.0
+bus/1/solo = false
+bus/1/mute = false
+bus/1/bypass_fx = false
+bus/1/effect/0/id = 10
+bus/1/effect/0/effect = SubResource("FmodAudioEffectRecord_drfan")
+bus/1/effect/0/enabled = true
