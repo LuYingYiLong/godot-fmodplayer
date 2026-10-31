@@ -1907,9 +1907,7 @@ msgid ""
 "Enables memory allocation tracking. Currently only useful when using the Studio API. Increases "
 "memory usage and reduces performance."
 msgstr ""
-"启用内存分配追踪。目前仅在使用 Studio API 时有效。增加内存占用并降低性能。该标志由 [code]FMOD_STUDIO_INIT_MEMORY_TRACKING "
-"<https://www.fmod.com/docs/2.02/api/studio-api-"
-"system.html#fmod_studio_init_memory_tracking>[/code] 隐含"
+"启用内存分配追踪。目前仅在使用 Studio API 时有效。增加内存占用并降低性能。该标志由 [code]FMOD_STUDIO_INIT_MEMORY_TRACKING[/code] 隐含"
 
 #. FmodDSP/methods:3/method:set_metering_enabled/description:3
 msgid "Enables or disables metering for input and output signals."
@@ -9336,8 +9334,7 @@ msgstr "用户定义的数据参数类型。"
 #. FmodSound/constants:6/constant:FMOD_TAG_TYPE_USER
 msgid "User-supplied metadata."
 msgstr ""
-"对于编解码器开发者来说，这种标签类型可以配合 [code]FMOD_CODEC_METADATA_FUNC <https://www.fmod.com/docs/2.02/api/plugin-"
-"api-codec.html#fmod_codec_metadata_func>[/code] 生成自定义元数据"
+"对于编解码器开发者来说，这种标签类型可以配合 [code]FMOD_CODEC_METADATA_FUNC[/code] 生成自定义元数据"
 
 #. FmodAudioStreamPlayer3D/constants:6/constant:ATTENUATION_INVERSE_SQUARE_DISTANCE
 msgid ""
