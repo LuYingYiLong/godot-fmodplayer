@@ -1,5 +1,7 @@
 #include "fmod_audio_preview_property.h"
 
+#include <godot_cpp/classes/editor_interface.hpp>
+#include <godot_cpp/classes/font.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/classes/rendering_server.hpp>
@@ -17,7 +19,9 @@ namespace godot {
 	}
 
 	FmodAudioPreviewProperty::FmodAudioPreviewProperty() {
-		set_custom_minimum_size(Vector2(1, 100));
+		EditorInterface* editor = EditorInterface::get_singleton();
+		const float editor_scale = editor ? editor->get_editor_scale() : 1.0f;
+		set_custom_minimum_size(Vector2(1.0f, 100.0f) * editor_scale);
 		set_process(false);
 
 		_player = memnew(FmodAudioStreamPlayer);
@@ -65,7 +69,6 @@ namespace godot {
 		hbox->add_child(_current_label);
 
 		_duration_label = memnew(Label);
-		_duration_label->set_modulate(Color(1, 1, 1, 0.5));
 		hbox->add_child(_duration_label);
 
 		_update_time_labels();
@@ -77,6 +80,10 @@ namespace godot {
 	void FmodAudioPreviewProperty::_notification(int p_what) {
 		switch (p_what) {
 			case NOTIFICATION_THEME_CHANGED: {
+				const Ref<Font> font = get_theme_font("status_source", "EditorFonts");
+				_current_label->add_theme_font_override("font", font);
+				_duration_label->add_theme_font_override("font", font);
+
 				if (_play_button) {
 					_play_button->set_button_icon(FmodUtils::get_editor_theme_icon(is_playing ? "Pause" : "MainPlay"));
 				}
@@ -204,7 +211,9 @@ namespace godot {
 		Ref<Texture2D> icon = FmodUtils::get_editor_theme_icon("TimelineIndicator");
 
 		RID canvas_item = _indicator->get_canvas_item();
-		RenderingServer::get_singleton()->canvas_item_add_line(canvas_item, Point2(ofs_x, 0), Point2(ofs_x, size.height), color, 2.0f);
+		EditorInterface* editor = EditorInterface::get_singleton();
+		const float editor_scale = editor ? editor->get_editor_scale() : 1.0f;
+		RenderingServer::get_singleton()->canvas_item_add_line(canvas_item, Point2(ofs_x, 0), Point2(ofs_x, size.height), color, std::round(2.0f * editor_scale));
 
 		if (icon.is_valid()) {
 			RenderingServer::get_singleton()->canvas_item_add_texture_rect(
