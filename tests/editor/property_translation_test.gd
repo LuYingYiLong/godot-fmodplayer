@@ -16,6 +16,7 @@ const DELAY_TEST: Script = preload("uid://b57gm8xq3nf2w")
 const REMAINING_EFFECTS_TEST: Script = preload("uid://c47pw9yt2fn8k")
 const STREAM_WAVEFORM_TEST: Script = preload("uid://bws4h8t2gr7n5")
 const BUS_DOCK_TEST: Script = preload("uid://bm4q1s8vz9d6e")
+const DOCUMENTATION_TEST: Script = preload("uid://d170o8ibcsgsb")
 
 const EXPECTED: Dictionary = {
 	"Show Startup Banner": "显示启动横幅",
@@ -89,6 +90,7 @@ func _run() -> void:
 	passed = await CAPTURE_TEST.new().run(output_dir, tree) and passed
 	passed = await STREAM_WAVEFORM_TEST.new().run(output_dir, tree) and passed
 	passed = await BUS_DOCK_TEST.new().run(output_dir, tree) and passed
+	passed = await DOCUMENTATION_TEST.new().run(output_dir, tree) and passed
 	if passed:
 		print("TESTS_PASSED output=", output_dir)
 	else:

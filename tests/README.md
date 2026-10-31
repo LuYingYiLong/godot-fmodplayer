@@ -164,6 +164,15 @@ python tools/compare_reverb.py "tests/logs/runs/<优化前目录>" "tests/logs/r
 
 ## 日志与报告
 
+离线帮助翻译可单独在隔离的编辑器项目中验证，不修改测试项目或个人编辑器设置：
+
+```powershell
+.\tools\run_tests.ps1 -PrepareOnly
+python tools/run_documentation_tests.py --godot "C:/path/to/Godot_console.exe" --output-dir "tests/logs/runs/documentation"
+```
+
+测试覆盖中文帮助显示、英文回退、语言切换、翻译域重载和插件翻译清理。Python 文档工具测试使用 `python tools/test_documentation_translations.py`，先安装 `tools/requirements-docs.txt`。
+
 | 内容 | 位置 |
 |------|------|
 | Godot、编辑器和原生测试日志与结果 | `logs/runs/<标签>_<时间>/` |

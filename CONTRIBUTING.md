@@ -69,7 +69,22 @@ For GDScript:
 
 Maintain English API descriptions in `doc_classes/*.xml`. These files supply both Godot's built-in help and the generated website class reference. Keep signatures, defaults, enums, return values, units, and threading behavior aligned with the implementation.
 
-Website guides, Chinese PO translations, and the generation tools live in the separate [documentation repository](https://github.com/LuYingYiLong/godot-fmodplayer-docs). Generated class RST files and category pages are script outputs.
+Maintain Chinese API descriptions in `addons/fmod_player/translations/documentation/zh_CN.po`. Each message matches an entire XML description after Godot removes indentation and surrounding whitespace. Preserve documentation tags such as `[param frames]` and `[method get_buffer]`. Class names, signatures, and reference targets remain unchanged. The plugin registers this catalog in `godot.documentation`; both editor help and the website use it.
+
+Install the catalog tools and refresh messages after editing XML:
+
+```sh
+python -m pip install -r tools/requirements-docs.txt
+python tools/documentation_translations.py extract
+python tools/documentation_translations.py update
+# Review fuzzy entries and translate new messages in the PO.
+python tools/documentation_translations.py check --strict
+python tools/test_documentation_translations.py
+```
+
+Empty or fuzzy translations fall back to English. `check --strict` requires complete translations and checks documentation references and markup. Translation-only edits need addon deployment; they do not require rebuilding the extension. See `tests/README.md` for the isolated offline-help regression command.
+
+Website guides and generation tools live in the separate [documentation repository](https://github.com/LuYingYiLong/godot-fmodplayer-docs). Its `classref/translations` directory contains a checked snapshot of the plugin PO. Generated class RST files, translated XML, and snapshot files are script outputs.
 
 For API changes, rebuild and deploy the extension to the test project, then follow the documentation repository's README to export ClassDB metadata, synchronize the XML snapshot, and refresh translations. From that repository, build both languages with:
 
