@@ -14,6 +14,7 @@ var _failed: bool
 
 func run(output_dir: String) -> bool:
 	_system = FmodServer.get_main_system()
+	_check_listener_sync()
 	_system.set_3d_listener_attributes(
 		0, Vector3.ZERO, Vector3.ZERO, Vector3(0.0, 0.0, 1.0), Vector3.UP
 	)
@@ -122,6 +123,74 @@ func run(output_dir: String) -> bool:
 		"distance_filter_init_enabled": true,
 	}, "\t"))
 	return not _failed
+
+
+func _check_listener_sync() -> void:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	var viewport: Viewport = tree.root
+	var previous_camera: Camera3D = viewport.get_camera_3d()
+	var previous_listener: AudioListener3D = viewport.get_audio_listener_3d()
+	var server: Object = Engine.get_singleton("FmodServer")
+	var fixture: Node3D = Node3D.new()
+	viewport.add_child(fixture)
+	var camera: Camera3D = Camera3D.new()
+	fixture.add_child(camera)
+	camera.position = Vector3(4.0, 2.0, -6.0)
+	camera.rotation = Vector3(0.1, 0.4, 0.0)
+	camera.h_offset = 1.5
+	camera.v_offset = 0.5
+	camera.make_current()
+	server.call(&"_update_fmod")
+	_check_listener_transform(camera.get_camera_transform(), "Camera fallback includes offsets")
+	var listener: AudioListener3D = AudioListener3D.new()
+	fixture.add_child(listener)
+	listener.position = Vector3(-3.0, 1.0, 5.0)
+	listener.rotation = Vector3(0.2, -0.7, 0.1)
+	listener.scale = Vector3(2.0, 3.0, 0.5)
+	listener.set(&"current", true)
+	server.call(&"_update_fmod")
+	_check_listener_transform(listener.get_listener_transform(), "Current listener overrides camera")
+	listener.position = Vector3(8.0, -2.0, 1.0)
+	listener.rotation = Vector3(-0.3, 1.1, -0.2)
+	server.call(&"_update_fmod")
+	_check_listener_transform(listener.get_listener_transform(), "Listener movement and rotation synchronize")
+	var other: AudioListener3D = AudioListener3D.new()
+	fixture.add_child(other)
+	other.position = Vector3(1.0, 7.0, -4.0)
+	other.rotation = Vector3(0.0, 0.5, 0.0)
+	other.make_current()
+	server.call(&"_update_fmod")
+	_check_listener_transform(other.get_listener_transform(), "Switching current listener synchronizes")
+	listener.set(&"current", true)
+	server.call(&"_update_fmod")
+	_check_listener_transform(listener.get_listener_transform(), "Current property switches back")
+	listener.free()
+	server.call(&"_update_fmod")
+	_expect(viewport.get_audio_listener_3d() == other, "Removing current listener selects the remaining listener")
+	_check_listener_transform(other.get_listener_transform(), "Removed listener is not retained")
+	other.clear_current()
+	server.call(&"_update_fmod")
+	_check_listener_transform(camera.get_camera_transform(), "Clearing current listener restores camera")
+	other.make_current()
+	camera.free()
+	server.call(&"_update_fmod")
+	_check_listener_transform(other.get_listener_transform(), "Listener synchronizes without a camera")
+	fixture.free()
+	if is_instance_valid(previous_camera):
+		previous_camera.make_current()
+	if is_instance_valid(previous_listener):
+		previous_listener.make_current()
+
+
+func _check_listener_transform(expected: Transform3D, label: String) -> void:
+	var attributes: Dictionary = _system.get_3d_listener_attributes(0)
+	var position: Vector3 = attributes["position"]
+	var forward: Vector3 = attributes["forward"]
+	var up: Vector3 = attributes["up"]
+	var basis: Basis = expected.basis.orthonormalized()
+	_expect(position.is_equal_approx(expected.origin), label + ": position")
+	_expect(forward.is_equal_approx(-basis.z), label + ": forward")
+	_expect(up.is_equal_approx(basis.y), label + ": up")
 
 
 func _create_stream(output_dir: String) -> FmodAudioStream:

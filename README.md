@@ -12,9 +12,6 @@
   <a href="https://github.com/LuYingYiLong/Godot-FmodPlayer/releases">
     <img src="https://img.shields.io/github/v/release/LuYingYiLong/Godot-FmodPlayer?include_prereleases&style=flat-square" alt="Release" />
   </a>
-  <a href="#platform-support">
-    <img src="https://img.shields.io/badge/platform-Windows%20%7C%20Android-blue?style=flat-square" alt="Platform" />
-  </a>
   <a href="LICENSE.txt">
     <img src="https://img.shields.io/github/license/LuYingYiLong/Godot-FmodPlayer?style=flat-square" alt="License" />
   </a>

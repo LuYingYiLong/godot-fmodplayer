@@ -9,6 +9,7 @@
 #include "playback/fmod_channel_group.h"
 
 #include <godot_cpp/classes/audio_server.hpp>
+#include <godot_cpp/classes/audio_listener3d.hpp>
 #include <godot_cpp/classes/camera2d.hpp>
 #include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/editor_interface.hpp>
@@ -517,25 +518,26 @@ namespace godot {
 
 			// 运行时或编辑器中未找到编辑器相机，使用游戏视口
 			if (viewport) {
+				AudioListener3D* listener_3d = viewport->get_audio_listener_3d();
 				Camera3D* camera_3d = viewport->get_camera_3d();
-				if (camera_3d) {
-					Vector3 position = camera_3d->get_global_position();
-					Vector3 forward = -camera_3d->get_global_transform().get_basis().get_column(2).normalized();
-					Vector3 up = camera_3d->get_global_transform().get_basis().get_column(1).normalized();
+				if (listener_3d || camera_3d) {
+					Transform3D listener_transform = listener_3d
+						? listener_3d->get_listener_transform()
+						: camera_3d->get_camera_transform();
+					Basis listener_basis = listener_transform.get_basis().orthonormalized();
 					main_system->set_3d_listener_attributes(
 						0,
-						position,
+						listener_transform.origin,
 						Vector3(0, 0, 0),
-						forward,
-						up
+						-listener_basis.get_column(2),
+						listener_basis.get_column(1)
 					);
 				}
-				else {
-					Camera2D* camera_2d = viewport->get_camera_2d();
-					if (camera_2d) {
-						camera_2d_pos = camera_2d->get_global_position();
-						camera_2d_rot = camera_2d->get_global_rotation();
-					}
+
+				Camera2D* camera_2d = viewport->get_camera_2d();
+				if (camera_2d) {
+					camera_2d_pos = camera_2d->get_global_position();
+					camera_2d_rot = camera_2d->get_global_rotation();
 				}
 			}
 		}
