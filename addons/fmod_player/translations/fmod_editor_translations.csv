@@ -454,3 +454,16 @@ Linux: libfmodL.so.15 / libfmod.so.15
 macOS: libfmod.dylib"
 "XM","","XM","XM","XM","XM"
 "XMA","","XMA","XMA","XMA","XMA"
+"- Failed to copy Android library: ","","- 复制 Android 库失败：","- 複製 Android 程式庫失敗：","- Android ライブラリをコピーできませんでした: ","- Не удалось скопировать библиотеку Android: "
+"- Cannot update a customized FMOD runtime block in GodotApp.java.
+","","- 无法更新 GodotApp.java 中经过自定义修改的 FMOD 加载代码，请先检查该代码段
+","- 無法更新 GodotApp.java 中經過自訂修改的 FMOD 載入程式碼，請先檢查該程式碼區塊
+","- GodotApp.java のカスタマイズされた FMOD ランタイムブロックを更新できません
+","- Не удалось обновить изменённый блок загрузки FMOD в GodotApp.java.
+"
+"      Initialize the FMOD Java component before Godot starts.
+","","      在 Godot 启动前初始化 FMOD Java 组件
+","      在 Godot 啟動前初始化 FMOD Java 元件
+","      Godot の起動前に FMOD Java コンポーネントを初期化します
+","      Инициализация Java-компонента FMOD перед запуском Godot.
+"

@@ -389,6 +389,7 @@ custom.py
 
 # Godot imports, caches and locally staged test binaries
 .godot/
+/tests/android/
 *.import
 !/addons/fmod_player/translations/*.csv.import
 !/tests/assets/audio/*.import

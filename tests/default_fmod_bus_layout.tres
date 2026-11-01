@@ -12,7 +12,6 @@ tap2_delay_ms = 921.4123
 tap2_pan = 0.82778585
 
 [sub_resource type="FmodAudioEffectCapture" id="FmodAudioEffectCapture_drfan"]
-buffer_length = 10.0
 
 [sub_resource type="FmodAudioEffectRecord" id="FmodAudioEffectRecord_drfan"]
 

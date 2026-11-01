@@ -14,6 +14,8 @@
 #include <godot_cpp/classes/line_edit.hpp>
 #include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
+#include <godot_cpp/classes/reg_ex.hpp>
+#include <godot_cpp/classes/reg_ex_match.hpp>
 #include <godot_cpp/classes/rich_text_label.hpp>
 #include <godot_cpp/classes/time.hpp>
 #include <godot_cpp/classes/v_box_container.hpp>
@@ -317,6 +319,12 @@ namespace godot {
 		if (FileAccess::file_exists(direct.path_join("fmod.jar"))) {
 			return direct;
 		}
+		if (FileAccess::file_exists(normalized_root.path_join("lib/fmod.jar"))) {
+			return normalized_root.path_join("lib");
+		}
+		if (FileAccess::file_exists(normalized_root.path_join("fmod.jar"))) {
+			return normalized_root;
+		}
 
 		Ref<DirAccess> dir = DirAccess::open(normalized_root);
 		if (dir.is_null()) {
@@ -371,6 +379,7 @@ namespace godot {
 		summary += fmod_editor_translate("      Ensure implementation files(\"libs/fmod.jar\") is present.\n");
 		summary += "  - res://android/build/src/main/java/com/godot/game/GodotApp.java\n";
 		summary += fmod_editor_translate("      Ensure FMOD is loaded before Godot starts.\n");
+		summary += fmod_editor_translate("      Initialize the FMOD Java component before Godot starts.\n");
 		summary += fmod_editor_translate("      Debug/dev builds load fmodL; release builds load fmod.\n\n");
 
 		summary += fmod_editor_translate("Files to copy:\n");
@@ -441,13 +450,25 @@ namespace godot {
 			String source_release = p_core_lib_path.path_join(abi).path_join("libfmod.so");
 
 			if (FileAccess::file_exists(source_debug)) {
-				_copy_file(source_debug, template_path.path_join("libs/debug").path_join(abi).path_join("libfmodL.so"));
-				_copy_file(source_debug, template_path.path_join("libs/dev").path_join(abi).path_join("libfmodL.so"));
-				r_report += fmod_editor_translate("- Copied debug/dev FMOD runtime for ") + abi + ".\n";
+				Error debug_err = _copy_file(source_debug, template_path.path_join("libs/debug").path_join(abi).path_join("libfmodL.so"));
+				Error dev_err = _copy_file(source_debug, template_path.path_join("libs/dev").path_join(abi).path_join("libfmodL.so"));
+				if (debug_err == OK && dev_err == OK) {
+					r_report += fmod_editor_translate("- Copied debug/dev FMOD runtime for ") + abi + ".\n";
+				}
+				else {
+					r_report += fmod_editor_translate("- Failed to copy Android library: ") + source_debug + "\n";
+					result = debug_err != OK ? debug_err : dev_err;
+				}
 			}
 			if (FileAccess::file_exists(source_release)) {
-				_copy_file(source_release, template_path.path_join("libs/release").path_join(abi).path_join("libfmod.so"));
-				r_report += fmod_editor_translate("- Copied release FMOD runtime for ") + abi + ".\n";
+				Error release_err = _copy_file(source_release, template_path.path_join("libs/release").path_join(abi).path_join("libfmod.so"));
+				if (release_err == OK) {
+					r_report += fmod_editor_translate("- Copied release FMOD runtime for ") + abi + ".\n";
+				}
+				else {
+					r_report += fmod_editor_translate("- Failed to copy Android library: ") + source_release + "\n";
+					result = release_err;
+				}
 			}
 		}
 
@@ -462,7 +483,9 @@ namespace godot {
 		if (FileAccess::file_exists(debug_src)) {
 			Error err = _copy_file(debug_src, template_path.path_join("libs/debug/arm64-v8a/libfmod_player.android.template_debug.arm64.so"));
 			if (err == OK) {
-				_copy_file(debug_src, template_path.path_join("libs/dev/arm64-v8a/libfmod_player.android.template_debug.arm64.so"));
+				err = _copy_file(debug_src, template_path.path_join("libs/dev/arm64-v8a/libfmod_player.android.template_debug.arm64.so"));
+			}
+			if (err == OK) {
 				r_report += fmod_editor_translate("- Copied FMOD GDExtension debug/dev Android library for arm64-v8a.\n");
 			}
 			else {
@@ -531,19 +554,21 @@ namespace godot {
 			return FAILED;
 		}
 
-		if (text.contains("implementation files(\"libs/fmod.jar\")") || text.contains("implementation files('libs/fmod.jar')")) {
+		Ref<RegEx> dependency = RegEx::create_from_string("(?m)^[\\t ]*implementation[\\t ]+files\\([\\t ]*[\"']libs/fmod\\.jar[\"'][\\t ]*\\)");
+		if (dependency->search(text).is_valid()) {
 			r_report += fmod_editor_translate("- build.gradle already includes fmod.jar.\n");
 			return OK;
 		}
 
-		String needle = "\n}\n\nandroid {";
-		int idx = text.find(needle);
-		if (idx < 0) {
+		Ref<RegEx> dependencies = RegEx::create_from_string("(?m)^[\\t ]*dependencies[\\t ]*\\{");
+		Ref<RegExMatch> block = dependencies->search(text);
+		if (block.is_null()) {
 			r_report += fmod_editor_translate("- Failed to locate the dependencies block in build.gradle.\n");
 			return FAILED;
 		}
 
-		text = text.substr(0, idx) + "\n\n" + FMOD_JAR_GRADLE_LINE + text.substr(idx);
+		int idx = block->get_end();
+		text = text.substr(0, idx) + "\n" + FMOD_JAR_GRADLE_LINE + text.substr(idx);
 		if (!_write_text_file(path, text)) {
 			r_report += fmod_editor_translate("- Failed to update build.gradle.\n");
 			return FAILED;
@@ -560,24 +585,31 @@ namespace godot {
 			return FAILED;
 		}
 
-		if (text.contains(FMOD_JAVA_MARKER)) {
-			r_report += fmod_editor_translate("- GodotApp.java already contains the FMOD Android runtime loader.\n");
-			return OK;
-		}
-
-		String load_block =
+		String legacy_load_block =
 			"\t\t// FMOD Android runtime.\n"
 			"\t\tif (BuildConfig.DEBUG) {\n"
 			"\t\t\tSystem.loadLibrary(\"fmodL\");\n"
 			"\t\t} else {\n"
 			"\t\t\tSystem.loadLibrary(\"fmod\");\n"
 			"\t\t}\n";
+		String load_block = legacy_load_block + "\t\torg.fmod.FMOD.init(this);\n";
+		if (text.contains(load_block)) {
+			r_report += fmod_editor_translate("- GodotApp.java already contains the FMOD Android runtime loader.\n");
+			return OK;
+		}
+
+		text = text.replace(legacy_load_block, "");
+		if (text.contains(FMOD_JAVA_MARKER)) {
+			r_report += fmod_editor_translate("- Cannot update a customized FMOD runtime block in GodotApp.java.\n");
+			return FAILED;
+		}
 
 		PackedStringArray lines = text.split("\n", true);
 		String cleaned;
 		for (int i = 0; i < lines.size(); i++) {
 			String line = lines[i];
-			if (line.contains("System.loadLibrary(\"fmod\")") || line.contains("System.loadLibrary(\"fmodL\")") || line.contains(FMOD_JAVA_MARKER)) {
+			String statement = line.strip_edges();
+			if (statement == "System.loadLibrary(\"fmod\");" || statement == "System.loadLibrary(\"fmodL\");" || statement == "org.fmod.FMOD.init(this);") {
 				continue;
 			}
 			cleaned += line;
@@ -586,17 +618,14 @@ namespace godot {
 			}
 		}
 
-		String anchor = "\t\tSplashScreen.installSplashScreen(this);";
-		int idx = cleaned.find(anchor);
-		if (idx < 0) {
-			anchor = "\t\tsuper.onCreate(savedInstanceState);";
-			idx = cleaned.find(anchor);
-		}
-		if (idx < 0) {
+		Ref<RegEx> on_create = RegEx::create_from_string("(?m)^[\\t ]*super\\.onCreate\\([\\t ]*savedInstanceState[\\t ]*\\);");
+		Ref<RegExMatch> startup = on_create->search(cleaned);
+		if (startup.is_null()) {
 			r_report += fmod_editor_translate("- Failed to locate GodotApp.onCreate insertion point.\n");
 			return FAILED;
 		}
 
+		int idx = startup->get_start();
 		cleaned = cleaned.substr(0, idx) + load_block + cleaned.substr(idx);
 		if (!_write_text_file(path, cleaned)) {
 			r_report += fmod_editor_translate("- Failed to update GodotApp.java.\n");
@@ -619,9 +648,10 @@ namespace godot {
 		ERR_FAIL_COND_V_MSG(dst.is_null(), FAILED, "Cannot create destination file: " + p_to);
 
 		PackedByteArray buffer = src->get_buffer(src->get_length());
+		ERR_FAIL_COND_V_MSG(buffer.size() != src->get_length(), FAILED, "Cannot read source file: " + p_from);
 		dst->store_buffer(buffer);
 		dst->flush();
-		return OK;
+		return dst->get_error();
 	}
 
 	Error ModifyAndroidBuildTemplatePlugin::_ensure_dir_exists(const String& p_path) const {
@@ -636,7 +666,7 @@ namespace godot {
 		}
 		file->store_string(p_text);
 		file->flush();
-		return true;
+		return file->get_error() == OK;
 	}
 
 	String ModifyAndroidBuildTemplatePlugin::_read_text_file(const String& p_path) const {
@@ -644,6 +674,6 @@ namespace godot {
 		if (file.is_null()) {
 			return String();
 		}
-		return file->get_as_text();
+		return file->get_as_text().replace("\r\n", "\n");
 	}
 }
