@@ -1,0 +1,169 @@
+[gd_scene format=3 uid="uid://bjdfnydi6fe8h"]
+
+[ext_resource type="Script" uid="uid://ff0sdi2siy1g" path="res://manual/doppler_test.gd" id="1_controls"]
+[ext_resource type="Material" uid="uid://c0abjll72woxs" path="res://assets/materials/dashed_grid.tres" id="2_wmpvc"]
+[ext_resource type="Script" uid="uid://py17r5dqhu3o" path="res://manual/return_menu.gd" id="3_navigation"]
+[ext_resource type="FmodAudioStream" uid="uid://ci3x38wx6kmal" path="res://assets/audio/651687__pureheartstories__train-sound.wav" id="3_wmpvc"]
+[ext_resource type="PackedScene" uid="uid://74fkloc4eqc8" path="res://scenes/player.tscn" id="5_bbfgy"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_bbfgy"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_21gqa"]
+sky_material = SubResource("ProceduralSkyMaterial_bbfgy")
+
+[sub_resource type="Environment" id="Environment_mtccr"]
+background_mode = 2
+sky = SubResource("Sky_21gqa")
+
+[sub_resource type="PlaneMesh" id="Mesh_floor"]
+size = Vector2(100, 34)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_bbfgy"]
+data = PackedVector3Array(50, 0, 17, -50, 0, 17, 50, 0, -17, -50, 0, 17, -50, 0, -17, 50, 0, -17)
+
+[sub_resource type="StandardMaterial3D" id="Material_track"]
+shading_mode = 0
+albedo_color = Color(0.3, 0.4, 0.55, 1)
+
+[sub_resource type="BoxMesh" id="Mesh_track"]
+size = Vector3(82, 0.15, 0.5)
+
+[sub_resource type="SphereMesh" id="Mesh_source"]
+radius = 1.2
+height = 2.4
+
+[node name="DopplerTest" type="Node3D" unique_id=1759052899]
+process_physics_priority = -10
+script = ExtResource("1_controls")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2138506661]
+environment = SubResource("Environment_mtccr")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=974742720]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Floor" type="MeshInstance3D" parent="." unique_id=520104215]
+material_override = ExtResource("2_wmpvc")
+mesh = SubResource("Mesh_floor")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor" unique_id=1654186119]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D" unique_id=396643167]
+shape = SubResource("ConcavePolygonShape3D_bbfgy")
+
+[node name="Track" type="MeshInstance3D" parent="." unique_id=253865175]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -5)
+material_override = SubResource("Material_track")
+mesh = SubResource("Mesh_track")
+
+[node name="Source" type="FmodAudioStreamPlayer3D" parent="." unique_id=1674643283]
+stream = ExtResource("3_wmpvc")
+max_distance = 100.0
+doppler_tracking = 2
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 1.5, -5)
+
+[node name="Marker" type="MeshInstance3D" parent="Source" unique_id=1759698677]
+material_override = ExtResource("2_wmpvc")
+mesh = SubResource("Mesh_source")
+
+[node name="Label" type="Label3D" parent="Source" unique_id=1953611837]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+billboard = 1
+modulate = Color(1, 0.7, 0.3, 1)
+text = "移动声源"
+font_size = 48
+
+[node name="Navigation" type="CanvasLayer" parent="." unique_id=991398812]
+script = ExtResource("3_navigation")
+instructions = "橙色声源沿轨道往返，绿色监听器保持固定
+循环播放 440 Hz 测试音；用开关和速度滑块比较多普勒效果"
+
+[node name="Interface" type="Control" parent="Navigation" unique_id=1294961085]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Navigation/Interface" unique_id=1590420166]
+layout_mode = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -190.0
+offset_right = 650.0
+offset_bottom = -16.0
+grow_vertical = 0
+
+[node name="Margin" type="MarginContainer" parent="Navigation/Interface/Panel" unique_id=1096724384]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="Options" type="VBoxContainer" parent="Navigation/Interface/Panel/Margin" unique_id=1832190145]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Buttons" type="HBoxContainer" parent="Navigation/Interface/Panel/Margin/Options" unique_id=1664872647]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Start" type="Button" parent="Navigation/Interface/Panel/Margin/Options/Buttons" unique_id=817425421]
+layout_mode = 2
+text = "开始 / 重来"
+
+[node name="Stop" type="Button" parent="Navigation/Interface/Panel/Margin/Options/Buttons" unique_id=733362476]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "停止"
+
+[node name="Doppler" type="CheckButton" parent="Navigation/Interface/Panel/Margin/Options/Buttons" unique_id=1270614576]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+text = "启用多普勒"
+
+[node name="SpeedRow" type="HBoxContainer" parent="Navigation/Interface/Panel/Margin/Options" unique_id=235418658]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label" type="Label" parent="Navigation/Interface/Panel/Margin/Options/SpeedRow" unique_id=304780206]
+layout_mode = 2
+text = "速度（米/秒）"
+
+[node name="Speed" type="HSlider" parent="Navigation/Interface/Panel/Margin/Options/SpeedRow" unique_id=452547929]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 10.0
+step = 5.0
+value = 40.0
+
+[node name="SpeedValue" type="Label" parent="Navigation/Interface/Panel/Margin/Options/SpeedRow" unique_id=219832130]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "40 m/s"
+
+[node name="Status" type="Label" parent="Navigation/Interface/Panel/Margin/Options" unique_id=1304679053]
+unique_name_in_owner = true
+layout_mode = 2
+text = "点击「开始 / 重来」试听"
+autowrap_mode = 3
+
+[node name="Player" parent="." unique_id=282633476 instance=ExtResource("5_bbfgy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+
+[connection signal="pressed" from="Navigation/Interface/Panel/Margin/Options/Buttons/Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Navigation/Interface/Panel/Margin/Options/Buttons/Stop" to="." method="_on_stop_pressed"]
+[connection signal="toggled" from="Navigation/Interface/Panel/Margin/Options/Buttons/Doppler" to="." method="_on_doppler_toggled"]
+[connection signal="value_changed" from="Navigation/Interface/Panel/Margin/Options/SpeedRow/Speed" to="." method="_on_speed_value_changed"]

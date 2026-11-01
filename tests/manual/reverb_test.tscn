@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://bto84iuntkj2l"]
 
+[ext_resource type="PackedScene" uid="uid://74fkloc4eqc8" path="res://scenes/player.tscn" id="1_kyyd6"]
 [ext_resource type="Material" uid="uid://c0abjll72woxs" path="res://assets/materials/dashed_grid.tres" id="1_v1ufe"]
 [ext_resource type="FmodAudioStream" uid="uid://cngt7pbf4svfk" path="res://assets/audio/fmod_playback.wav" id="2_2fai1"]
 [ext_resource type="AudioStream" uid="uid://beg02dhxm6bad" path="res://assets/audio/folk_guitar.wav" id="3_hk1pi"]
@@ -16,62 +17,6 @@ sky_material = SubResource("ProceduralSkyMaterial_6bcqh")
 background_mode = 2
 sky = SubResource("Sky_v1ufe")
 glow_enabled = true
-
-[sub_resource type="GDScript" id="GDScript_ifow5"]
-resource_name = "player"
-script/source = "extends CharacterBody3D
-
-
-const SPEED: float = 10.0
-const JUMP_VELOCITY: float = 4.5
-const CAMERA_SENSITIVITY: float = 0.002
-const CAMERA_PITCH_LIMIT: float = PI * 0.49
-
-@onready var _camera_pivot: Node3D = %Near
-
-
-func _ready() -> void:
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-			get_viewport().set_input_as_handled()
-	elif event is InputEventKey:
-		if event.keycode == KEY_ESCAPE and event.pressed:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-			get_viewport().set_input_as_handled()
-	elif event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		# 水平转动玩家，垂直转动相机支点
-		rotate_y(-event.screen_relative.x * CAMERA_SENSITIVITY)
-		_camera_pivot.rotation.x = clampf(
-			_camera_pivot.rotation.x - event.screen_relative.y * CAMERA_SENSITIVITY,
-			-CAMERA_PITCH_LIMIT,
-			CAMERA_PITCH_LIMIT,
-		)
-		get_viewport().set_input_as_handled()
-
-
-func _physics_process(delta: float) -> void:
-	if not is_on_floor():
-		velocity += get_gravity() * delta
-
-	if Input.is_action_just_pressed(\"ui_accept\") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
-
-	var input_direction: Vector2 = Input.get_vector(&\"left\", &\"right\", &\"forward\", &\"back\")
-	var direction: Vector3 = transform.basis * Vector3(input_direction.x, 0.0, input_direction.y)
-	velocity.x = direction.x * SPEED
-	velocity.z = direction.z * SPEED
-
-	move_and_slide()
-"
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wvhbo"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_wvhbo"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_wvhbo"]
 size = Vector2(100, 100)
@@ -108,22 +53,8 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=871217253]
 environment = SubResource("Environment_gaq2e")
 
-[node name="Player" type="CharacterBody3D" parent="." unique_id=608202817]
+[node name="Player" parent="." unique_id=282633476 instance=ExtResource("1_kyyd6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-script = SubResource("GDScript_ifow5")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1806654231]
-shape = SubResource("CapsuleShape3D_wvhbo")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Player" unique_id=2024548343]
-mesh = SubResource("CapsuleMesh_wvhbo")
-
-[node name="Near" type="Node3D" parent="Player" unique_id=1373470161]
-unique_name_in_owner = true
-
-[node name="Camera3D" type="Camera3D" parent="Player/Near" unique_id=445664949]
-unique_name_in_owner = true
-current = true
 
 [node name="Floor" type="MeshInstance3D" parent="." unique_id=1151454288]
 material_override = ExtResource("1_v1ufe")

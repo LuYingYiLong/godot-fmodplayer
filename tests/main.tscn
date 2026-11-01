@@ -38,6 +38,10 @@ text = "空间音频、混响与几何遮挡"
 layout_mode = 2
 text = "FMOD / Godot 2D 播放对比"
 
+[node name="Doppler" type="Button" parent="Center/Options"]
+layout_mode = 2
+text = "3D 多普勒试听"
+
 [node name="RunRegression" type="Button" parent="Center/Options" unique_id=415252122]
 unique_name_in_owner = true
 layout_mode = 2
@@ -60,6 +64,7 @@ wait_time = 0.25
 
 [connection signal="pressed" from="Center/Options/Reverb" to="." method="_on_reverb_pressed"]
 [connection signal="pressed" from="Center/Options/Playback" to="." method="_on_playback_pressed"]
+[connection signal="pressed" from="Center/Options/Doppler" to="." method="_on_doppler_pressed"]
 [connection signal="pressed" from="Center/Options/RunRegression" to="." method="_on_regression_pressed"]
 [connection signal="pressed" from="Center/Options/Logs" to="." method="_on_logs_pressed"]
 [connection signal="timeout" from="ProcessPoll" to="." method="_on_process_poll_timeout"]

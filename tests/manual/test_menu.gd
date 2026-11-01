@@ -2,6 +2,7 @@ extends Control
 
 const REVERB_SCENE: PackedScene = preload("uid://bto84iuntkj2l")
 const PLAYBACK_SCENE: PackedScene = preload("uid://jxwo0eyc6poh")
+const DOPPLER_SCENE: PackedScene = preload("uid://bjdfnydi6fe8h")
 const AUTOMATED_SCENE: PackedScene = preload("uid://bq2vsmn68g7k3")
 const REGRESSION_TIMEOUT_MSEC: int = 120000
 
@@ -17,6 +18,7 @@ var _output_dir: String
 @onready var _scene_buttons: Array[Button] = [
 	$Center/Options/Reverb,
 	$Center/Options/Playback,
+	$Center/Options/Doppler,
 ]
 @onready var _process_poll: Timer = $ProcessPoll
 
@@ -41,6 +43,10 @@ func _on_reverb_pressed() -> void:
 
 func _on_playback_pressed() -> void:
 	_open_scene(PLAYBACK_SCENE)
+
+
+func _on_doppler_pressed() -> void:
+	_open_scene(DOPPLER_SCENE)
 
 
 func _on_regression_pressed() -> void:
