@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Godot-FmodPlayer API 1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/LuYingYiLong/godot-fmodplayer/issues\n"
-"POT-Creation-Date: 2026-10-31 12:31+0800\n"
+"POT-Creation-Date: 2026-11-25 19:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: LuYingYiLong\n"
 "Language: zh_CN\n"
@@ -1550,10 +1550,6 @@ msgstr "三次插值重采样"
 msgid "Current playback state. Can be set to start/stop playback."
 msgstr "设置为 [code]true[/code] 开始播放，设置为 [code]false[/code] 停止播放"
 
-#. FmodAudioPreviewProperty/brief_description:0
-msgid "Custom property editor control for previewing FMOD audio streams in the editor."
-msgstr "用于在编辑器中预览 FMOD 音频流的自定义属性控件。"
-
 #. FmodReverbZone3D/constants:6/constant:PRESET_CUSTOM
 msgid "Custom user-edited reverb properties."
 msgstr "自定义参数"
@@ -1649,23 +1645,6 @@ msgstr "断开当前 DSP 的所有输入和／或输出连接。"
 #. FmodDSP/methods:3/method:disconnect_from/description:3
 msgid "Disconnects this DSP from the specified target DSP."
 msgstr "断开当前 DSP 与指定目标 DSP 的连接。"
-
-#. FmodAudioPreviewProperty/description:1
-msgid ""
-"Displays an audio waveform, playback controls, a position indicator, and time labels for "
-"[FmodAudioStream] in the inspector. Clicking the waveform seeks playback.\n"
-"Shares waveform cache data with the [code]stream[/code] property previews on "
-"[FmodAudioStreamPlayer], [FmodAudioStreamPlayer2D], and [FmodAudioStreamPlayer3D]. Waveform "
-"generation is deferred to a later main-thread call.\n"
-"Inspector audition uses an internal [FmodAudioStreamPlayer] routed to [code]Master[/code]. In "
-"independent bus mode, its levels appear in the visible FMOD Audio Dock. The Dock does not display"
-" levels from a separate running game process."
-msgstr ""
-"在检查器中为 [FmodAudioStream] 显示波形、播放控件、位置指示器和时间标签。点击波形可跳转播放位置。\n"
-"与 [FmodAudioStreamPlayer]、[FmodAudioStreamPlayer2D] 和 [FmodAudioStreamPlayer3D] 的 "
-"[code]stream[/code] 属性预览共享波形缓存。波形生成延迟到之后的主线程调用。\n"
-"检查器试听通过内部 [FmodAudioStreamPlayer] 播放，发送到 [code]Master[/code]。独立总线模式下，可在展开的 FMOD Audio "
-"面板查看其电平；独立运行游戏进程的电平暂未接入。"
 
 #. FmodAudioStreamPlayer3D/members:4/member:attenuation_model
 msgid "Distance attenuation model. See [enum AttenuationModel]."
@@ -1906,8 +1885,7 @@ msgstr ""
 msgid ""
 "Enables memory allocation tracking. Currently only useful when using the Studio API. Increases "
 "memory usage and reduces performance."
-msgstr ""
-"启用内存分配追踪。目前仅在使用 Studio API 时有效。增加内存占用并降低性能。该标志由 [code]FMOD_STUDIO_INIT_MEMORY_TRACKING[/code] 隐含"
+msgstr "启用内存分配追踪。目前仅在使用 Studio API 时有效。增加内存占用并降低性能。该标志由 [code]FMOD_STUDIO_INIT_MEMORY_TRACKING[/code] 隐含"
 
 #. FmodDSP/methods:3/method:set_metering_enabled/description:3
 msgid "Enables or disables metering for input and output signals."
@@ -3261,11 +3239,6 @@ msgstr ""
 msgid "Integer value."
 msgstr "整数"
 
-#. FmodAudioPreviewProperty/methods:3/method:_draw_indicator/description:1
-#. FmodAudioPreviewProperty/methods:3/method:_on_indicator_gui_input/description:2
-#. FmodAudioPreviewProperty/methods:3/method:_play/description:1
-#. FmodAudioPreviewProperty/methods:3/method:_stop/description:1
-#. FmodAudioPreviewProperty/methods:3/method:_on_finished/description:1
 #. FmodGeometryMeshToolsPlugin/methods:3/method:_on_menu_id_pressed/description:2
 #. FmodServer/methods:3/method:_connect_update/description:1
 #. FmodServer/methods:3/method:_update_fmod/description:1
@@ -5342,10 +5315,6 @@ msgstr ""
 "返回当前设置的音频流 （参见 [FmodAudioStream] ）\n"
 "未设置音频流时返回 [code]null[/code] 。"
 
-#. FmodAudioPreviewProperty/methods:3/method:get_stream/description:1
-msgid "Returns the [FmodAudioStream] currently being previewed."
-msgstr "返回当前正在预览的 [FmodAudioStream] 。"
-
 #. FmodAudioBus/methods:3/method:get_bus/description:1
 msgid ""
 "Returns the [FmodChannelGroup] used by this bus for audio routing.\n"
@@ -7340,12 +7309,6 @@ msgstr ""
 "设置 FMOD Profiler 监听端口。\n"
 "与 [constant FMOD_INIT_FLAG_PROFILE_ENABLE] 配合启用性能分析。"
 
-#. FmodAudioPreviewProperty/methods:3/method:set_stream/description:2
-msgid ""
-"Sets the [FmodAudioStream] to preview, stops any current audition, and requests its waveform from"
-" the shared cache."
-msgstr "设置要预览的 [FmodAudioStream]，停止当前试听，并从共享缓存请求波形。"
-
 #. FmodAudioStreamPlayer2D/methods:3/method:set_attenuation/description:2
 msgid ""
 "Sets the attenuation factor controlling how quickly sound fades with distance.\n"
@@ -9333,8 +9296,7 @@ msgstr "用户定义的数据参数类型。"
 
 #. FmodSound/constants:6/constant:FMOD_TAG_TYPE_USER
 msgid "User-supplied metadata."
-msgstr ""
-"对于编解码器开发者来说，这种标签类型可以配合 [code]FMOD_CODEC_METADATA_FUNC[/code] 生成自定义元数据"
+msgstr "对于编解码器开发者来说，这种标签类型可以配合 [code]FMOD_CODEC_METADATA_FUNC[/code] 生成自定义元数据"
 
 #. FmodAudioStreamPlayer3D/constants:6/constant:ATTENUATION_INVERSE_SQUARE_DISTANCE
 msgid ""

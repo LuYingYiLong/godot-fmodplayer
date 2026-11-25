@@ -159,7 +159,7 @@ void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 
 		GDREGISTER_CLASS(AudioImporterFmod);
 		GDREGISTER_CLASS(FmodAudioPreviewInspector);
-		GDREGISTER_CLASS(FmodAudioPreviewProperty);
+		GDREGISTER_INTERNAL_CLASS(FmodAudioPreviewProperty);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioWaveform);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioWaveformCache);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioWaveformView);

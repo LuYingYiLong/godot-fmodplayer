@@ -30,29 +30,29 @@ namespace godot {
 
 	void ModifyAndroidBuildTemplatePlugin::_notification(int p_what) {
 		switch (p_what) {
-            case NOTIFICATION_TRANSLATION_CHANGED: {
-                if (sdk_select_dialog) {
-                    bool visible = sdk_select_dialog->is_visible();
-                    if (file_path) selected_fmod_path = file_path->get_text();
-                    _free_sdk_select_dialog();
-                    _create_sdk_select_dialog();
-                    if (visible) sdk_select_dialog->popup_centered();
-                }
-                if (review_dialog) {
-                    bool visible = review_dialog->is_visible();
-                    _create_review_dialog(_build_review_summary(pending_sdk));
-                    if (visible) review_dialog->popup_centered();
-                }
-            } break;
-			case NOTIFICATION_ENTER_TREE: {
-				add_tool_menu_item(TOOL_MENU_NAME, callable_mp(this, &ModifyAndroidBuildTemplatePlugin::_open_configure_dialog));
-			} break;
-
-			case NOTIFICATION_EXIT_TREE: {
-				remove_tool_menu_item(TOOL_MENU_NAME);
+		case NOTIFICATION_TRANSLATION_CHANGED: {
+			if (sdk_select_dialog) {
+				bool visible = sdk_select_dialog->is_visible();
+				if (file_path) selected_fmod_path = file_path->get_text();
 				_free_sdk_select_dialog();
-				_free_review_dialog();
-			} break;
+				_create_sdk_select_dialog();
+				if (visible) sdk_select_dialog->popup_centered();
+			}
+			if (review_dialog) {
+				bool visible = review_dialog->is_visible();
+				_create_review_dialog(_build_review_summary(pending_sdk));
+				if (visible) review_dialog->popup_centered();
+			}
+		} break;
+		case NOTIFICATION_ENTER_TREE: {
+			add_tool_menu_item(TOOL_MENU_NAME, callable_mp(this, &ModifyAndroidBuildTemplatePlugin::_open_configure_dialog));
+		} break;
+
+		case NOTIFICATION_EXIT_TREE: {
+			remove_tool_menu_item(TOOL_MENU_NAME);
+			_free_sdk_select_dialog();
+			_free_review_dialog();
+		} break;
 		}
 	}
 
@@ -74,7 +74,8 @@ namespace godot {
 
 		sdk_select_dialog = memnew(ConfirmationDialog);
 		sdk_select_dialog->set_title(fmod_editor_translate("Configure FMOD Android Export"));
-		sdk_select_dialog->set_min_size(Vector2(820, 220));
+		sdk_select_dialog->set_min_size(Vector2(820, 0));
+		sdk_select_dialog->set_size(Vector2i(820, 0));
 		sdk_select_dialog->get_ok_button()->set_text(fmod_editor_translate("Review Changes"));
 
 		VBoxContainer* main_vbox = memnew(VBoxContainer);
@@ -301,7 +302,7 @@ namespace godot {
 				output_text = String(output[0]);
 			}
 			r_error = fmod_editor_translate("Failed to extract the FMOD archive. Extract it manually and select the extracted folder.")
-                + "\n" + p_archive_path + "\n\n" + output_text;
+				+ "\n" + p_archive_path + "\n\n" + output_text;
 			return false;
 		}
 
@@ -355,7 +356,7 @@ namespace godot {
 
 		for (int i = 0; i < abis.size(); i++) {
 			if (FileAccess::file_exists(p_core_lib_path.path_join(abis[i]).path_join("libfmod.so")) ||
-					FileAccess::file_exists(p_core_lib_path.path_join(abis[i]).path_join("libfmodL.so"))) {
+				FileAccess::file_exists(p_core_lib_path.path_join(abis[i]).path_join("libfmodL.so"))) {
 				return true;
 			}
 		}

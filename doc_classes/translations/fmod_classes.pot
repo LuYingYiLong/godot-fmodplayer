@@ -1413,10 +1413,6 @@ msgstr ""
 msgid "Current playback state. Can be set to start/stop playback."
 msgstr ""
 
-#. FmodAudioPreviewProperty/brief_description:0
-msgid "Custom property editor control for previewing FMOD audio streams in the editor."
-msgstr ""
-
 #. FmodReverbZone3D/constants:6/constant:PRESET_CUSTOM
 msgid "Custom user-edited reverb properties."
 msgstr ""
@@ -1507,18 +1503,6 @@ msgstr ""
 
 #. FmodDSP/methods:3/method:disconnect_from/description:3
 msgid "Disconnects this DSP from the specified target DSP."
-msgstr ""
-
-#. FmodAudioPreviewProperty/description:1
-msgid ""
-"Displays an audio waveform, playback controls, a position indicator, and time labels for "
-"[FmodAudioStream] in the inspector. Clicking the waveform seeks playback.\n"
-"Shares waveform cache data with the [code]stream[/code] property previews on "
-"[FmodAudioStreamPlayer], [FmodAudioStreamPlayer2D], and [FmodAudioStreamPlayer3D]. Waveform "
-"generation is deferred to a later main-thread call.\n"
-"Inspector audition uses an internal [FmodAudioStreamPlayer] routed to [code]Master[/code]. In "
-"independent bus mode, its levels appear in the visible FMOD Audio Dock. The Dock does not display"
-" levels from a separate running game process."
 msgstr ""
 
 #. FmodAudioStreamPlayer3D/members:4/member:attenuation_model
@@ -2902,11 +2886,6 @@ msgstr ""
 msgid "Integer value."
 msgstr ""
 
-#. FmodAudioPreviewProperty/methods:3/method:_draw_indicator/description:1
-#. FmodAudioPreviewProperty/methods:3/method:_on_indicator_gui_input/description:2
-#. FmodAudioPreviewProperty/methods:3/method:_play/description:1
-#. FmodAudioPreviewProperty/methods:3/method:_stop/description:1
-#. FmodAudioPreviewProperty/methods:3/method:_on_finished/description:1
 #. FmodGeometryMeshToolsPlugin/methods:3/method:_on_menu_id_pressed/description:2
 #. FmodServer/methods:3/method:_connect_update/description:1
 #. FmodServer/methods:3/method:_update_fmod/description:1
@@ -4779,10 +4758,6 @@ msgid ""
 "Returns [code]null[/code] if no stream is set."
 msgstr ""
 
-#. FmodAudioPreviewProperty/methods:3/method:get_stream/description:1
-msgid "Returns the [FmodAudioStream] currently being previewed."
-msgstr ""
-
 #. FmodAudioBus/methods:3/method:get_bus/description:1
 msgid ""
 "Returns the [FmodChannelGroup] used by this bus for audio routing.\n"
@@ -6543,12 +6518,6 @@ msgstr ""
 msgid ""
 "Sets the TCP port for FMOD Profiler connections.\n"
 "Use with [constant FMOD_INIT_FLAG_PROFILE_ENABLE] to enable profiling."
-msgstr ""
-
-#. FmodAudioPreviewProperty/methods:3/method:set_stream/description:2
-msgid ""
-"Sets the [FmodAudioStream] to preview, stops any current audition, and requests its waveform from"
-" the shared cache."
 msgstr ""
 
 #. FmodAudioStreamPlayer2D/methods:3/method:set_attenuation/description:2

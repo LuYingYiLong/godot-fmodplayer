@@ -167,7 +167,7 @@ namespace godot {
 			arc.resize(ARC_SEGMENTS + 1);
 			for (int i = 0; i <= ARC_SEGMENTS; i++) arc.set(i, center + offsets[i] * p_radius);
 			return arc;
-		};
+			};
 		for (int i = 0; i < int(grid_arcs.size()); i++) grid_arcs[i] = make_arc(_radius() * float(i + 1) / float(grid_arcs.size()));
 		for (int i = 0; i < 2; i++) {
 			const Tap tap = _tap(i);
@@ -185,7 +185,7 @@ namespace godot {
 				if (time > _time_range() || gain < 0.003f) break;
 				echoes.push_back({ make_arc(_time_radius(time)), gain });
 			}
-		};
+			};
 		add_echoes(0.0f, effect->get_dry());
 		for (int i = 0; i < 2; i++) {
 			const Tap tap = _tap(i);
