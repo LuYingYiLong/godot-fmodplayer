@@ -1,0 +1,638 @@
+# FMOD Player properties translations.
+# Distributed under the project license.
+msgid ""
+msgstr ""
+"Project-Id-Version: Godot-FmodPlayer 1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/LuYingYiLong/Godot-FmodPlayer/issues\n"
+"POT-Creation-Date: 2026-11-27 00:00+0800\n"
+"PO-Revision-Date: 2026-11-27 00:00+0800\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+msgid "3d"
+msgstr "3D"
+
+msgid "3d Custom Rolloff"
+msgstr "3D カスタム減衰曲線"
+
+msgid "3d Doppler Level"
+msgstr "3D ドップラー強度"
+
+msgid "3d Level"
+msgstr "3D ミックス量"
+
+msgid "3d Max Distance"
+msgstr "3D 最大距離"
+
+msgid "3d Max World Size"
+msgstr "3D ワールド最大サイズ"
+
+msgid "3d Min Distance"
+msgstr "3D 最小距離"
+
+msgid "3d Num Listeners"
+msgstr "3D リスナー数"
+
+msgid "3d Right Handed"
+msgstr "3D 右手座標系"
+
+msgid "3d Spread"
+msgstr "3D スプレッド角"
+
+msgid "Active"
+msgstr "有効"
+
+msgid "Area Mask"
+msgstr "エリアマスク"
+
+msgid "Asio Num Channels"
+msgstr "ASIO チャンネル数"
+
+msgid "Attack Us"
+msgstr "アタック時間（μs）"
+
+msgid "Attenuation"
+msgstr "減衰量"
+
+msgid "Attenuation Filter Cutoff Hz"
+msgstr "減衰フィルターのカットオフ（Hz）"
+
+msgid "Attenuation Filter Db"
+msgstr "減衰フィルターのゲイン（dB）"
+
+msgid "Attenuation Model"
+msgstr "減衰モデル"
+
+msgid "Audio Data"
+msgstr "音声データ"
+
+msgid "Auto Play"
+msgstr "自動再生"
+
+msgid "Auto Rebuild"
+msgstr "自動再構築"
+
+msgid "Autoplay"
+msgstr "自動再生"
+
+msgid "Behavior"
+msgstr "ビヘイビア"
+
+msgid "Buffer Length"
+msgstr "バッファサイズ"
+
+msgid "Bus"
+msgstr "バス"
+
+msgid "Bypass"
+msgstr "バイパス"
+
+msgid "Ceiling Db"
+msgstr "上限レベル（dB）"
+
+msgid "Channel Distance Filter"
+msgstr "チャンネル距離フィルタ"
+
+msgid "Channel Group"
+msgstr "チャンネルグループ"
+
+msgid "Channel Low-pass"
+msgstr "チャンネルローパス"
+
+msgid "Clip Output"
+msgstr "クリップ出力"
+
+msgid "Create Info"
+msgstr "作成情報"
+
+msgid "Cutoff Hz"
+msgstr "カットオフ周波数"
+
+msgid "Damping"
+msgstr "ダンピング"
+
+msgid "Db"
+msgstr "dB"
+
+msgid "Decay Time"
+msgstr "減衰時間"
+
+msgid "Decode Buffer Size"
+msgstr "デコードバッファサイズ"
+
+msgid "Default Bus Layout"
+msgstr "既定のバスレイアウト"
+
+msgid "Default Decode Buffer Size"
+msgstr "デフォルトデコードバッファサイズ"
+
+msgid "Default Frequency"
+msgstr "既定周波数"
+
+msgid "Delay Ms"
+msgstr "ディレイ（ms）"
+
+msgid "Density"
+msgstr "密度"
+
+msgid "Depth"
+msgstr "Depth(深度/奥行)"
+
+msgid "Depth Ms"
+msgstr "深さ（ms）"
+
+msgid "Diffusion"
+msgstr "拡散"
+
+msgid "Direct Occlusion"
+msgstr "直接音オクルージョン"
+
+msgid "Distance Factor"
+msgstr "距離係数"
+
+msgid "Distance Filter Center Freq"
+msgstr "距離フィルタ中心周波数"
+
+msgid "Dls Name"
+msgstr "DLS 名"
+
+msgid "Doppler Scale"
+msgstr "ドップラースケール"
+
+msgid "Doppler Tracking"
+msgstr "ドップラートラッキング"
+
+msgid "Double Sided"
+msgstr "両面"
+
+msgid "Drive"
+msgstr "ドライブ"
+
+msgid "Dry"
+msgstr "ドライ"
+
+msgid "Dsp Buffer Count"
+msgstr "DSP バッファ数"
+
+msgid "Dsp Buffer Pool Size"
+msgstr "DSP バッファプールサイズ"
+
+msgid "Dsp Buffer Size"
+msgstr "DSP バッファサイズ"
+
+msgid "Early Delay"
+msgstr "初期反射遅延"
+
+msgid "Early Late Mix"
+msgstr "初期/後期ミックス"
+
+msgid "Emission Angle"
+msgstr "放出角度"
+
+msgid "Emission Angle Enabled"
+msgstr "放射角を有効化"
+
+msgid "Emission Angle Filter Attenuation Db"
+msgstr "放射角フィルターの減衰（dB）"
+
+msgid "Enable Profile"
+msgstr "プロファイルを有効化"
+
+msgid "Encryption Key"
+msgstr "暗号化キー"
+
+msgid "Feedback"
+msgstr "フィードバック"
+
+msgid "Feedback Active"
+msgstr "フィードバックを有効化"
+
+msgid "Feedback Delay Ms"
+msgstr "フィードバックディレイ（ms）"
+
+msgid "Feedback Level Db"
+msgstr "フィードバックレベル（dB）"
+
+msgid "Feedback Lowpass"
+msgstr "フィードバックのローパス周波数"
+
+msgid "Fft Size"
+msgstr "FFT サイズ"
+
+msgid "File Offset"
+msgstr "ファイルオフセット"
+
+msgid "Fmod"
+msgstr "FMOD"
+
+msgid "Format"
+msgstr "フォーマット"
+
+msgid "Frequency"
+msgstr "周波数"
+
+msgid "Gain"
+msgstr "ゲイン"
+
+msgid "Gain Db"
+msgstr "ゲイン（dB）"
+
+msgid "Geometry Max Fade Time"
+msgstr "ジオメトリ最大フェード時間"
+
+msgid "Geometry Use Closest"
+msgstr "ジオメトリ最近面使用"
+
+msgid "Hf Decay Ratio"
+msgstr "高域減衰率"
+
+msgid "Hf Reference"
+msgstr "高域基準周波数"
+
+msgid "High Cut"
+msgstr "ハイカット"
+
+msgid "Hipass"
+msgstr "ハイパス周波数"
+
+msgid "Ignore Set File System"
+msgstr "ファイルシステム設定を無視"
+
+msgid "Immediate Mode"
+msgstr "即時モード"
+
+msgid "Inclusion List"
+msgstr "インクルージョンリスト"
+
+msgid "Init Flags"
+msgstr "初期化フラグ"
+
+msgid "Initial Seek Position"
+msgstr "初期シーク位置"
+
+msgid "Initial Seek Postype"
+msgstr "初期シーク位置タイプ"
+
+msgid "Initial Subsound"
+msgstr "初期サブサウンド"
+
+msgid "Keep Hf Hz"
+msgstr "高域保持周波数（Hz）"
+
+msgid "Late Delay"
+msgstr "後期反射遅延"
+
+msgid "Length Override"
+msgstr "長さオーバーライド"
+
+msgid "Level Db"
+msgstr "レベル（dB）"
+
+msgid "Loop Count"
+msgstr "ループ回数"
+
+msgid "Low Shelf Frequency"
+msgstr "ローシェルフ周波数"
+
+msgid "Low Shelf Gain"
+msgstr "ローシェルフゲイン"
+
+msgid "Max Adpcm Codecs"
+msgstr "最大 ADPCM コーデック数"
+
+msgid "Max At 9 Codecs"
+msgstr "最大 AT9 コーデック数"
+
+msgid "Max Audible"
+msgstr "最大可聴音数"
+
+msgid "Max Channels"
+msgstr "最大チャンネル数"
+
+msgid "Max Convolution Threads"
+msgstr "最大畳み込みスレッド数"
+
+msgid "Max Distance"
+msgstr "最大距離"
+
+msgid "Max Fadpcm Codecs"
+msgstr "最大 FADPCM コーデック数"
+
+msgid "Max Mpeg Codecs"
+msgstr "最大 MPEG コーデック数"
+
+msgid "Max Opus Codecs"
+msgstr "最大 Opus コーデック数"
+
+msgid "Max Polyphony"
+msgstr "最大ポリフォニー"
+
+msgid "Max Software Channels"
+msgstr "ソフトウェアチャンネル最大数"
+
+msgid "Max Spatial Objects"
+msgstr "最大空間オブジェクト数"
+
+msgid "Max Vorbis Codecs"
+msgstr "最大 Vorbis コーデック数"
+
+msgid "Max Xma Codecs"
+msgstr "最大 XMA コーデック数"
+
+msgid "Memory Tracking"
+msgstr "メモリトラッキング"
+
+msgid "Mesh"
+msgstr "メッシュ"
+
+msgid "Min Distance"
+msgstr "最小距離"
+
+msgid "Mix"
+msgstr "ミックス"
+
+msgid "Mix From Update"
+msgstr "アップデートからミックス"
+
+msgid "Mix Target"
+msgstr "ミックス先"
+
+msgid "Mode"
+msgstr "モード"
+
+msgid "Mode Flags"
+msgstr "モードフラグ"
+
+msgid "Mute"
+msgstr "ミュート"
+
+msgid "Mute Fade Speed"
+msgstr "ミュートのフェード速度"
+
+msgid "Network Proxy"
+msgstr "ネットワークプロキシ"
+
+msgid "Network Timeout"
+msgstr "ネットワークタイムアウト"
+
+msgid "Num Channels"
+msgstr "チャンネル数"
+
+msgid "Num Listeners"
+msgstr "リスナー数"
+
+msgid "Num Raw Speakers"
+msgstr "生スピーカー数"
+
+msgid "Num Subsounds"
+msgstr "サブサウンド数"
+
+msgid "Output Type"
+msgstr "出力タイプ"
+
+msgid "Oversample"
+msgstr "オーバーサンプル"
+
+msgid "Oversampling"
+msgstr "オーバーサンプリング"
+
+msgid "Pan"
+msgstr "パン"
+
+msgid "Pan Pullout"
+msgstr "パンの拡張"
+
+msgid "Panning Strength"
+msgstr "パンの強さ"
+
+msgid "Paused"
+msgstr "一時停止"
+
+msgid "Pitch"
+msgstr "ピッチ"
+
+msgid "Pitch Scale"
+msgstr "ピッチスケール"
+
+msgid "Playing"
+msgstr "実行中"
+
+msgid "Position"
+msgstr "位置"
+
+msgid "Post Gain"
+msgstr "ポストゲイン"
+
+msgid "Pre Gain"
+msgstr "プリゲイン"
+
+msgid "Pre Gain Db"
+msgstr "プリゲイン（dB）"
+
+msgid "Predelay Feedback"
+msgstr "プリディレイのフィードバック"
+
+msgid "Predelay Msec"
+msgstr "プリディレイ（ms）"
+
+msgid "Prefer Dolby Downmix"
+msgstr "Dolby ダウンミックス優先"
+
+msgid "Preload On Set Stream"
+msgstr "ストリーム設定時にプリロード"
+
+msgid "Preload on Set Stream"
+msgstr "ストリーム設定時にプリロード"
+
+msgid "Preset"
+msgstr "プリセット"
+
+msgid "Primitive Segments"
+msgstr "プリミティブ分割数"
+
+msgid "Priority"
+msgstr "優先順位"
+
+msgid "Profile Meter All"
+msgstr "全プロファイルメーター"
+
+msgid "Profile Port"
+msgstr "プロファイルポート"
+
+msgid "Random Seed"
+msgstr "ランダムシード"
+
+msgid "Range Max Hz"
+msgstr "周波数上限（Hz）"
+
+msgid "Range Min Hz"
+msgstr "周波数下限（Hz）"
+
+msgid "Rate Hz"
+msgstr "レート (Hz)"
+
+msgid "Ratio"
+msgstr "圧縮比"
+
+msgid "Raw PCM"
+msgstr "生 PCM"
+
+msgid "Recording Active"
+msgstr "録音を有効化"
+
+msgid "Recursive Source Scan"
+msgstr "ソースを再帰スキャン"
+
+msgid "Release"
+msgstr "リリース"
+
+msgid "Release Ms"
+msgstr "リリース時間（ms）"
+
+msgid "Resampler Method"
+msgstr "リサンプリング方式"
+
+msgid "Resonance"
+msgstr "反響"
+
+msgid "Reverb 3d Instance"
+msgstr "3D リバーブインスタンス"
+
+msgid "Reverb Occlusion"
+msgstr "リバーブオクルージョン"
+
+msgid "Reverb Properties"
+msgstr "リバーブプロパティ"
+
+msgid "Rolloff Scale"
+msgstr "ロールオフスケール"
+
+msgid "Room Size"
+msgstr "部屋の大きさ"
+
+msgid "Rotation"
+msgstr "回転"
+
+msgid "Scale"
+msgstr "スケール"
+
+msgid "Show Debug Gizmo"
+msgstr "デバッグギズモを表示"
+
+msgid "Show Startup Banner"
+msgstr "スタートアップバナーを表示"
+
+msgid "Sidechain"
+msgstr "サイドチェーン"
+
+msgid "Software Channels"
+msgstr "ソフトウェアチャンネル数"
+
+msgid "Software Sample Rate"
+msgstr "ソフトウェアサンプリングレート"
+
+msgid "Solo"
+msgstr "ソロ"
+
+msgid "Source Mode"
+msgstr "ソースモード"
+
+msgid "Source Node Path"
+msgstr "ソースノードパス"
+
+msgid "Speaker Mode"
+msgstr "スピーカーモード"
+
+msgid "Spread"
+msgstr "広がり"
+
+msgid "Stream"
+msgstr "ストリーム"
+
+msgid "Stream Buffer Size"
+msgstr "ストリームバッファサイズ"
+
+msgid "Stream From Update"
+msgstr "アップデートからストリーム"
+
+msgid "Stream Paused"
+msgstr "ストリームの一時停止"
+
+msgid "Suggested Sound Type"
+msgstr "推奨サウンドタイプ"
+
+msgid "Surround"
+msgstr "サラウンド"
+
+msgid "Sync Godot Audio Buses"
+msgstr "Godot オーディオバスを同期"
+
+msgid "Sync Transform"
+msgstr "トランスフォーム同期"
+
+msgid "Tap 1 Active"
+msgstr "タップ 1 有効"
+
+msgid "Tap 1 Delay Ms"
+msgstr "タップ 1 ディレイ（ms）"
+
+msgid "Tap 1 Level Db"
+msgstr "タップ 1 レベル（dB）"
+
+msgid "Tap 1 Pan"
+msgstr "タップ 1 パン"
+
+msgid "Tap 2 Active"
+msgstr "タップ 2 有効"
+
+msgid "Tap 2 Delay Ms"
+msgstr "タップ 2 ディレイ（ms）"
+
+msgid "Tap 2 Level Db"
+msgstr "タップ 2 レベル（dB）"
+
+msgid "Tap 2 Pan"
+msgstr "タップ 2 パン"
+
+msgid "Thread Unsafe"
+msgstr "スレッド非安全"
+
+msgid "Threshold Db"
+msgstr "しきい値（dB）"
+
+msgid "Time Pullout Ms"
+msgstr "時間の拡張（ms）"
+
+msgid "Unit Size"
+msgstr "単位サイズ"
+
+msgid "Voice Count"
+msgstr "ボイス数"
+
+msgid "Vol 0 Becomes Virtual"
+msgstr "音量0で仮想化"
+
+msgid "Vol 0 Virtual Vol"
+msgstr "音量0仮想音量"
+
+msgid "Volume"
+msgstr "ボリューム"
+
+msgid "Volume Db"
+msgstr "音量（dB）"
+
+msgid "Volume Linear"
+msgstr "リニア音量"
+
+msgid "Volume Ramp"
+msgstr "音量ランプ"
+
+msgid "Wet"
+msgstr "ウェット"
+
+msgid "Wet Level"
+msgstr "ウェットレベル"

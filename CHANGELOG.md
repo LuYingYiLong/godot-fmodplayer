@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-27 — PO Translation Catalogs
+
+- Replaced property and editor UI CSV catalogs with PO files, preserving all four interface languages.
+- Added a native editor plugin to register property, editor UI, and API help catalogs in their translation domains. Removed the translation tools panel and GDScript catalog service.
+
 ## 2026-11-01 — Audio Bus Editing and Inspector Previews
 
 Changes from `a800d06` to `2ef9a0e` (35 commits). [Full comparison](https://github.com/LuYingYiLong/Godot-FmodPlayer/compare/a800d06c23894fe15699b12b2f9ffa2050e8fb32...2ef9a0e105f89bf5d0d9919d1e9ae392e6154696)

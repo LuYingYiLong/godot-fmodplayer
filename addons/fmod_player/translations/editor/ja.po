@@ -1,0 +1,806 @@
+# FMOD Player editor translations.
+# Distributed under the project license.
+msgid ""
+msgstr ""
+"Project-Id-Version: Godot-FmodPlayer 1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/LuYingYiLong/Godot-FmodPlayer/issues\n"
+"POT-Creation-Date: 2026-11-27 00:00+0800\n"
+"PO-Revision-Date: 2026-11-27 00:00+0800\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+msgid ""
+"      Debug/dev builds load fmodL; release builds load fmod.\n"
+"\n"
+msgstr ""
+"      debug/dev は fmodL、release は fmod を読み込みます。\n"
+"\n"
+
+msgid "      Ensure FMOD is loaded before Godot starts.\n"
+msgstr "      Godot の起動前に FMOD を読み込みます。\n"
+
+msgid "      Ensure android.overridePathCheck=true.\n"
+msgstr "      android.overridePathCheck=true を設定します。\n"
+
+msgid "      Ensure implementation files(\"libs/fmod.jar\") is present.\n"
+msgstr "      implementation files(\"libs/fmod.jar\") を追加します。\n"
+
+msgid "      Initialize the FMOD Java component before Godot starts.\n"
+msgstr "      Godot の起動前に FMOD Java コンポーネントを初期化します\n"
+
+msgid "- Cannot update a customized FMOD runtime block in GodotApp.java.\n"
+msgstr "- GodotApp.java のカスタマイズされた FMOD ランタイムブロックを更新できません\n"
+
+msgid "- Copied FMOD GDExtension debug/dev Android library for arm64-v8a.\n"
+msgstr "- arm64-v8a 用の FMOD GDExtension debug/dev Android ライブラリをコピーしました。\n"
+
+msgid "- Copied FMOD GDExtension release Android library for arm64-v8a.\n"
+msgstr "- arm64-v8a 用の FMOD GDExtension release Android ライブラリをコピーしました。\n"
+
+msgid "- Copied debug/dev FMOD runtime for "
+msgstr "- debug/dev FMOD ランタイムをコピーしました。ABI: "
+
+msgid "- Copied fmod.jar.\n"
+msgstr "- fmod.jar をコピーしました。\n"
+
+msgid "- Copied release FMOD runtime for "
+msgstr "- release FMOD ランタイムをコピーしました。ABI: "
+
+msgid "- Failed to copy Android library: "
+msgstr "- Android ライブラリをコピーできませんでした: "
+
+msgid "- Failed to copy FMOD GDExtension debug Android library.\n"
+msgstr "- FMOD GDExtension debug Android library をコピーすることができません。\n"
+
+msgid "- Failed to copy FMOD GDExtension release Android library.\n"
+msgstr "- FMOD GDExtension release Android library をコピーすることができません。\n"
+
+msgid "- Failed to copy fmod.jar.\n"
+msgstr "- fmod.jar をコピーすることができません。\n"
+
+msgid "- Failed to create res://android/build/libs.\n"
+msgstr "- res://android/build/libs を作成することができません。\n"
+
+msgid "- Failed to locate GodotApp.onCreate insertion point.\n"
+msgstr "- GodotApp.onCreate の挿入位置が見つかりません。\n"
+
+msgid "- Failed to locate the dependencies block in build.gradle.\n"
+msgstr "- build.gradle に dependencies ブロックが見つかりません。\n"
+
+msgid "- Failed to read GodotApp.java.\n"
+msgstr "- GodotApp.java を読み込むことができません。\n"
+
+msgid "- Failed to read build.gradle.\n"
+msgstr "- build.gradle を読み込むことができません。\n"
+
+msgid "- Failed to read gradle.properties.\n"
+msgstr "- gradle.properties を読み込むことができません。\n"
+
+msgid "- Failed to update GodotApp.java.\n"
+msgstr "- GodotApp.java を更新することができません。\n"
+
+msgid "- Failed to update build.gradle.\n"
+msgstr "- build.gradle を更新することができません。\n"
+
+msgid "- Failed to update gradle.properties.\n"
+msgstr "- gradle.properties を更新することができません。\n"
+
+msgid "- GodotApp.java already contains the FMOD Android runtime loader.\n"
+msgstr "- GodotApp.java には FMOD Android ランタイムの読み込み処理があります。\n"
+
+msgid "- Skipped FMOD GDExtension debug Android library; source file was not found.\n"
+msgstr "- 元のファイルがないため FMOD GDExtension debug Android ライブラリをスキップしました。\n"
+
+msgid "- Skipped FMOD GDExtension release Android library; source file was not found.\n"
+msgstr "- 元のファイルがないため FMOD GDExtension release Android ライブラリをスキップしました。\n"
+
+msgid "- Updated GodotApp.java to load FMOD before Godot starts.\n"
+msgstr "- Godot の起動前に FMOD を読み込むよう GodotApp.java を更新しました。\n"
+
+msgid "- Updated build.gradle with fmod.jar dependency.\n"
+msgstr "- build.gradle に fmod.jar の依存関係を追加しました。\n"
+
+msgid "- Updated gradle.properties.\n"
+msgstr "- gradle.properties を更新しました。\n"
+
+msgid "- build.gradle already includes fmod.jar.\n"
+msgstr "- build.gradle には fmod.jar が含まれています。\n"
+
+msgid "- gradle.properties already enables android.overridePathCheck.\n"
+msgstr "- gradle.properties で android.overridePathCheck は有効です。\n"
+
+msgid "2D"
+msgstr "2D"
+
+msgid "3D"
+msgstr "3D"
+
+msgid "AIFF"
+msgstr "AIFF"
+
+msgid "API Documentation"
+msgstr "API ドキュメント"
+
+msgid "ASF"
+msgstr "ASF"
+
+msgid "AT9"
+msgstr "AT9"
+
+msgid "AUDIOQUEUE"
+msgstr "AUDIOQUEUE"
+
+msgid "Add Effect"
+msgstr "Effectを追加"
+
+msgid "Add Entry"
+msgstr "項目を追加"
+
+msgid "Add Language"
+msgstr "言語を追加"
+
+msgid "All files"
+msgstr "すべてのファイル"
+
+msgid "Android Build Template Missing"
+msgstr "Android ビルドテンプレートがありません"
+
+msgid ""
+"Android build template:\n"
+"  "
+msgstr ""
+"Android ビルドテンプレート:\n"
+"  "
+
+msgid "Apply Changes"
+msgstr "変更を適用"
+
+msgid ""
+"Approximate EQ response. Drag band nodes horizontally to adjust frequency; drag vertically to "
+"adjust gain for peaking and shelf filters. Scroll over a node to adjust Q."
+msgstr ""
+"EQ の近似応答。バンドのノードを左右にドラッグすると周波数を調整できます。ピーキング／シェルビングフィルターは上下のドラッグでゲインも調整できます。ノード上でホイールを回すと Q "
+"値を調整できます。"
+
+msgid ""
+"Approximate low-pass response. The cutoff node stays on the 0 dB reference line. Drag "
+"horizontally to adjust cutoff, vertically to adjust resonance relative to its starting value "
+"(12/18/24 dB)."
+msgstr "ローパスの近似応答です。カットオフノードは 0 dB 基準線上にあります。左右でカットオフ、上下で初期値に対するレゾナンスを調整します（12/18/24 dB）。"
+
+msgid "At least one language is required."
+msgstr "少なくとも 1 つの言語が必要です。"
+
+msgid "Bitstream"
+msgstr "ビットストリーム"
+
+msgid "Browse..."
+msgstr "参照…"
+
+#, python-format
+msgid "CSV column count does not match the header: %s"
+msgstr "CSV の列数がヘッダーと一致しません: %s"
+
+msgid "CSV header must start with source."
+msgstr "CSV ヘッダーの先頭は source にしてください。"
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+msgid "Cannot find FMOD native libraries under:\n"
+msgstr "次の場所に FMOD ネイティブライブラリがありません:\n"
+
+msgid "Cannot find api/core/lib/fmod.jar under:\n"
+msgstr "次の場所に api/core/lib/fmod.jar がありません:\n"
+
+#, python-format
+msgid "Cannot load FMOD bus layout: %s"
+msgstr "FMOD バスレイアウトを読み込めません: %s"
+
+msgid "Cannot load the default FMOD bus layout."
+msgstr "既定の FMOD バスレイアウトを読み込めません。"
+
+#, python-format
+msgid "Cannot open file: %s"
+msgstr "ファイルを開けません: %s"
+
+#, python-format
+msgid "Cannot save FMOD bus layout: %s"
+msgstr "FMOD バスレイアウトを保存できません: %s"
+
+#, python-format
+msgid "Cannot save file: %s"
+msgstr "ファイルを保存できません: %s"
+
+msgid "Click or drag horizontally to adjust pan: left (-1), center (0), right (1)."
+msgstr "クリックまたは水平方向のドラッグでパンを調整：左（-1）、中央（0）、右（1）。"
+
+msgid "Configure FMOD Android Export"
+msgstr "FMOD Android エクスポートを設定"
+
+msgid "Context"
+msgstr "コンテキスト"
+
+msgid "Could not create FMOD geometry from the selected MeshInstance3D nodes."
+msgstr "選択した MeshInstance3D から FMOD ジオメトリを作成できませんでした。"
+
+msgid "Create Bounding Box Occluder"
+msgstr "境界ボックスオクルーダーを作成"
+
+msgid "Create FMOD Bounding Box Occluder"
+msgstr "FMOD 境界ボックスオクルーダーを作成"
+
+msgid "Create FMOD Convex Occluder"
+msgstr "FMOD 凸形状オクルーダーを作成"
+
+msgid "Create FMOD Geometry Occluder"
+msgstr "FMOD ジオメトリオクルーダーを作成"
+
+msgid "Create FMOD Layout from Godot"
+msgstr "Godot から FMOD レイアウトを作成"
+
+msgid "Create FMOD Mesh Resource Occluder"
+msgstr "FMOD メッシュリソースオクルーダーを作成"
+
+msgid "Create FMOD Simplified Convex Occluder"
+msgstr "FMOD 簡略化凸形状オクルーダーを作成"
+
+msgid "Create FMOD Trimesh Occluder"
+msgstr "FMOD 三角形メッシュオクルーダーを作成"
+
+msgid "Create FMOD occlusion geometry from the selected MeshInstance3D."
+msgstr "選択した MeshInstance3D から FMOD 遮蔽ジオメトリを作成します。"
+
+msgid "Create Mesh Resource Occluder"
+msgstr "メッシュリソースオクルーダーを作成"
+
+msgid "Create Simplified Convex Occluder"
+msgstr "簡略化凸形状オクルーダーを作成"
+
+msgid "Create Single Convex Occluder"
+msgstr "単一凸形状オクルーダーを作成"
+
+msgid "Create Trimesh Occluder"
+msgstr "三角形メッシュオクルーダーを作成"
+
+msgid "Cubic"
+msgstr "キュービック"
+
+msgid "DLS"
+msgstr "DLS"
+
+msgid "Default"
+msgstr "デフォルト"
+
+msgid ""
+"Delay tap layout: radius shows time, angle shows pan, and brightness shows level. Drag a node to "
+"edit time and pan. Alt + click selects an overlapping tap."
+msgstr "ディレイタップの配置です。半径は時間、角度はパン、明るさはレベルを示します。ノードをドラッグして時間とパンを調整し、Alt + クリックで重なるタップを選択します。"
+
+msgid "Delete Entry"
+msgstr "項目を削除"
+
+msgid "Disable Godot bus synchronization and reload the project to edit an FMOD layout."
+msgstr "FMOD レイアウトを編集するには Godot バス同期を無効にしてプロジェクトを再読み込みしてください。"
+
+msgid "Disabled"
+msgstr "無効"
+
+msgid "Discard"
+msgstr "破棄"
+
+msgid ""
+"Drag along the dial to adjust pitch. Scroll: 1 semitone; Shift + scroll: 0.1 semitone. The scale "
+"expands beyond two octaves."
+msgstr "ダイヤルをドラッグしてピッチを調整します。ホイールは 1 半音、Shift + ホイールは 0.1 半音刻みです。2 オクターブを超えると目盛りが拡張されます。"
+
+msgid "Drag down to increase compression, up to decrease."
+msgstr "下へドラッグすると圧縮が強く、上へドラッグすると弱くなります。"
+
+msgid "Drag horizontally for threshold, vertically for ratio."
+msgstr "左右のドラッグでしきい値、上下のドラッグで圧縮比を調整します。"
+
+msgid "Drag horizontally to adjust."
+msgstr "左右にドラッグして調整します。"
+
+msgid "Duplicate Bus Effect"
+msgstr "バスエフェクトを複製"
+
+msgid "Duplicate Effect"
+msgstr "エフェクトを複製"
+
+#, python-format
+msgid "Duplicate locale: %s"
+msgstr "言語コードが重複しています: %s"
+
+msgid "Editor Interface"
+msgstr "エディター UI"
+
+#, python-format
+msgid "Empty or duplicate source: %s"
+msgstr "原文が空または重複しています: %s"
+
+msgid "Expected ABI folders: arm64-v8a, armeabi-v7a, x86, x86_64."
+msgstr "必要な ABI フォルダー: arm64-v8a、armeabi-v7a、x86、x86_64"
+
+msgid "Extract Sources"
+msgstr "原文を抽出"
+
+msgid "Extracted sources. Review new entries before saving."
+msgstr "原文を抽出しました。新しい項目を確認して保存してください。"
+
+msgid "FADPCM"
+msgstr "FADPCM"
+
+msgid "FLAC"
+msgstr "FLAC"
+
+msgid "FMOD Android Export Configured"
+msgstr "FMOD Android エクスポート設定完了"
+
+msgid "FMOD Android Export Setup Failed"
+msgstr "FMOD Android エクスポートの設定に失敗"
+
+msgid "FMOD Android archive"
+msgstr "FMOD Android アーカイブ"
+
+msgid "FMOD Android export setup completed successfully."
+msgstr "FMOD Android エクスポートの設定が完了しました。"
+
+msgid ""
+"FMOD Android export setup will apply the following changes.\n"
+"\n"
+msgstr ""
+"FMOD Android エクスポートの設定で次の変更を適用します。\n"
+"\n"
+
+msgid "FMOD Audio"
+msgstr "FMOD オーディオ"
+
+msgid "FMOD Bus Layout"
+msgstr "FMOD バスレイアウト"
+
+msgid ""
+"FMOD Core Android SDK source:\n"
+"  "
+msgstr ""
+"FMOD Core Android SDK の場所:\n"
+"  "
+
+msgid "FMOD Geometry"
+msgstr "FMOD ジオメトリ"
+
+msgid "FMOD Runtime Missing"
+msgstr "FMOD ランタイムが見つかりません"
+
+msgid "FMOD Translations"
+msgstr "FMOD ローカライズ"
+
+msgid "FMOD runtime library was not detected."
+msgstr "FMOD ランタイムライブラリが見つかりません。"
+
+msgid "FSB"
+msgstr "FSB"
+
+msgid "Failed to create temporary extraction directory:\n"
+msgstr "展開用の一時フォルダーを作成できません:\n"
+
+msgid "Failed to extract the FMOD archive. Extract it manually and select the extracted folder."
+msgstr "FMOD アーカイブを展開できません。手動で展開し、そのフォルダーを選択してください。"
+
+msgid "Feedback rings show repeat timing and gain before low-pass filtering."
+msgstr "フィードバックリングはローパス処理前の反復時間とゲインを示します。"
+
+msgid "Files to copy:\n"
+msgstr "コピーするファイル:\n"
+
+msgid "Files to modify:\n"
+msgstr "変更するファイル:\n"
+
+msgid "Fuzzy: translation needs review"
+msgstr "要確認: 翻訳の確認が必要"
+
+msgid "Gain"
+msgstr "ゲイン"
+
+msgid "Godot Audio Buses"
+msgstr "Godot オーディオバス"
+
+msgid "IT"
+msgstr "IT"
+
+msgid "Install Later"
+msgstr "後でインストール"
+
+msgid "Install it from: Project > Install Android Build Template..."
+msgstr "「プロジェクト > Android ビルドテンプレートのインストール…」からインストールしてください。"
+
+msgid ""
+"Install the FMOD Core SDK 2.04, copy the matching runtime library to addons/fmod_player/bin/, "
+"then restart Godot."
+msgstr "FMOD Core SDK 2.04 をインストールし、対応するランタイムを addons/fmod_player/bin/ にコピーして Godot を再起動してください。"
+
+msgid "Invalid FMOD Android SDK"
+msgstr "無効な FMOD Android SDK"
+
+#, python-format
+msgid "Invalid locale: %s"
+msgstr "無効な言語コード: %s"
+
+msgid "Linear"
+msgstr "リニア"
+
+msgid "Load FMOD Bus Layout"
+msgstr "FMOD バスレイアウトを読み込む"
+
+msgid "Locale, e.g. ja or zh_Hant"
+msgstr "言語コード（例: ja、zh_Hant）"
+
+msgid "Localization backend failed. Install Python and Babel, then check the source repository path."
+msgstr "ローカライズ処理に失敗しました。Python と Babel、およびソースリポジトリのパスを確認してください。"
+
+msgid "Loop"
+msgstr "ループ"
+
+msgid "Loop Bidi"
+msgstr "双方向ループ"
+
+msgid "Loop Sample"
+msgstr "サンプルをループ"
+
+msgid "MAX"
+msgstr "MAX"
+
+msgid "MEDIACODEC"
+msgstr "MEDIACODEC"
+
+msgid "MIDI"
+msgstr "MIDI"
+
+msgid "MOD"
+msgstr "MOD"
+
+msgid "MOD Order"
+msgstr "MOD オーダー"
+
+msgid "MOD Pattern"
+msgstr "MOD パターン"
+
+msgid "MOD Row"
+msgstr "MOD 行"
+
+msgid "MPEG"
+msgstr "MPEG"
+
+msgid "MS"
+msgstr "MS"
+
+msgid "Max"
+msgstr "最大値"
+
+msgid "Missing required Android build template file:\n"
+msgstr "必要な Android ビルドテンプレートのファイルがありません:\n"
+
+msgid "Move EQ band"
+msgstr "EQ バンドを移動"
+
+msgid "Move delay tap"
+msgstr "ディレイタップを移動"
+
+msgid "Move filter cutoff"
+msgstr "フィルターのカットオフを移動"
+
+msgid "No Interpolation"
+msgstr "補間なし"
+
+msgid "No edited scene root is available."
+msgstr "編集中のシーンのルートがありません。"
+
+msgid "No translation files found."
+msgstr "翻訳ファイルが見つかりません。"
+
+msgid "None"
+msgstr "None"
+
+msgid "OGGVORBIS"
+msgstr "OGGVORBIS"
+
+msgid "OPUS"
+msgstr "OPUS"
+
+msgid ""
+"One-second chorus modulation overview. Vertical position represents pan; rate and depth shape "
+"each voice. Curves begin at the base delay."
+msgstr "1 秒間のコーラス変調です。縦位置はパン、レートと深さは各ボイスの形状を示します。曲線は基本ディレイから始まります。"
+
+msgid "Open FMOD Download Page"
+msgstr "FMOD ダウンロードページを開く"
+
+msgid "Open Godot Audio Panel"
+msgstr "Godot のオーディオパネルを開く"
+
+msgid ""
+"Output gain (solid, dB) and filtered-path phase (faint, degrees) at the sweep midpoint. The "
+"shaded range shows the LFO limits; drag its edges to adjust. Depth and Feedback shape the output "
+"response; Rate controls sweep speed."
+msgstr ""
+"スイープ中央での出力ゲイン（実線、dB）とフィルター経路の位相（半透明、度）です。影は LFO 範囲を示し、端をドラッグして調整します。Depth と Feedback は応答形状、Rate "
+"はスイープ速度を制御します。"
+
+msgid "PCM"
+msgstr "PCM"
+
+msgid "PCM Bytes"
+msgstr "PCM バイト"
+
+msgid "PCM Fraction"
+msgstr "PCM 小数部"
+
+msgid "PCM16"
+msgstr "PCM16"
+
+msgid "PCM24"
+msgstr "PCM24"
+
+msgid "PCM32"
+msgstr "PCM32"
+
+msgid "PCM8"
+msgstr "PCM8"
+
+msgid "PCMFloat"
+msgstr "浮動小数点 PCM"
+
+msgid "PLAYLIST"
+msgstr "PLAYLIST"
+
+msgid "Pan"
+msgstr "パン"
+
+msgid ""
+"Parameter illustration with a 0 dB reference input. Drag the output line vertically to adjust "
+"gain."
+msgstr "0 dB の入力を基準にしたパラメーター図です。出力線を上下にドラッグしてゲインを調整します。"
+
+msgid ""
+"Parameter illustration: fan angle shows Pan Pullout, the inner arc shows Time Pullout, and fill "
+"strength shows Surround. Drag the radar to adjust Pan Pullout."
+msgstr "扇の角度は Pan Pullout、内側の弧は Time Pullout、塗りの強さは Surround を示します。レーダーをドラッグして Pan Pullout を調整します。"
+
+msgid "Path Required"
+msgstr "パスが必要です"
+
+msgid "Path to FMOD Core Android SDK folder or archive..."
+msgstr "FMOD Core Android SDK のフォルダーまたはアーカイブのパス…"
+
+msgid ""
+"Peak ranges of unread stereo frames in this editor instance. Attach Capture to an FMOD bus to "
+"receive audio."
+msgstr "このエディターインスタンスの未読ステレオフレームのピーク範囲です。Capture を FMOD バスに接続して音声を受信します。"
+
+#, python-format
+msgid "Placeholder mismatch (%s): %s"
+msgstr "プレースホルダーが一致しません（%s）: %s"
+
+msgid "Please select the FMOD Core Android SDK folder or archive."
+msgstr "FMOD Core Android SDK のフォルダーまたはアーカイブを選択してください。"
+
+msgid "Properties"
+msgstr "プロパティ"
+
+msgid "Python executable with Babel installed"
+msgstr "Babel がインストールされた Python 実行ファイル"
+
+msgid "RAW"
+msgstr "RAW"
+
+msgid "Ratio"
+msgstr "圧縮比"
+
+msgid "Raw Bytes"
+msgstr "生バイト"
+
+msgid "Reload"
+msgstr "再読み込み"
+
+msgid ""
+"Resolved FMOD Core library folder:\n"
+"  "
+msgstr ""
+"検出した FMOD Core ライブラリフォルダー:\n"
+"  "
+
+msgid ""
+"Reverb parameter illustration. Drag either outer node horizontally to adjust Spread between the "
+"L/R reflection rings. Room Size shapes each ring group; Damping fades reflections, Wet controls "
+"their brightness, and Dry controls the central source."
+msgstr ""
+"リバーブのパラメーター図です。外側のノードを左右にドラッグして L/R 反射リングの Spread を調整します。Room Size は形状、Damping は減衰、Wet は明るさ、Dry "
+"は中央の音源を制御します。"
+
+msgid "Review Changes"
+msgstr "変更を確認"
+
+msgid "Review FMOD Android Export Changes"
+msgstr "FMOD Android エクスポートの変更を確認"
+
+msgid "S3M"
+msgstr "S3M"
+
+msgid "Sample"
+msgstr "サンプル"
+
+msgid "Sample (High quality)"
+msgstr "サンプル（全体をデコード）"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Save FMOD Bus Layout"
+msgstr "FMOD バスレイアウトを保存"
+
+msgid "Save changes before extracting sources."
+msgstr "原文を抽出する前に変更を保存してください。"
+
+msgid "Save changes before switching catalogs?"
+msgstr "カタログを切り替える前に変更を保存しますか？"
+
+msgid "Save or reload changes before changing the PO file."
+msgstr "PO ファイルを切り替える前に保存または再読み込みしてください。"
+
+msgid "Saved and reloaded translations."
+msgstr "翻訳を保存して再読み込みしました。"
+
+msgid "Search source or translation"
+msgstr "原文または翻訳を検索"
+
+msgid "Select FMOD Core Android SDK"
+msgstr "FMOD Core Android SDK を選択"
+
+msgid "Select one or more MeshInstance3D nodes first."
+msgstr "先に MeshInstance3D ノードを選択してください。"
+
+msgid "Select the FMOD Core Android SDK root folder or archive."
+msgstr "FMOD Core Android SDK のルートフォルダーまたはアーカイブを選択してください。"
+
+msgid ""
+"Select the extracted FMOD Core Android SDK folder, or the downloaded .tar.gz/.tgz archive.\n"
+"The tool will configure the installed Godot Android build template for FMOD Core."
+msgstr ""
+"展開した FMOD Core Android SDK のフォルダー、またはダウンロードした .tar.gz/.tgz アーカイブを選択してください。\n"
+"インストール済みの Godot Android ビルドテンプレートに FMOD Core を設定します。"
+
+msgid "Set as Default"
+msgstr "既定に設定"
+
+msgid "Source"
+msgstr "原文"
+
+msgid "Source repository (required for extraction)"
+msgstr "ソースリポジトリ（抽出に必要）"
+
+msgid "Speakers"
+msgstr "スピーカー"
+
+msgid ""
+"Spectrum of this analyzer instance in the editor process. L uses the accent color; R uses the "
+"text color. Attach the resource to a bus to receive audio. The annotation shows FFT frequency "
+"resolution."
+msgstr "エディタープロセス内のこのアナライザーのスペクトルです。L はアクセント色、R は文字色です。リソースをバスに接続して音声を受信します。注記は FFT の周波数分解能です。"
+
+msgid "Spline"
+msgstr "スプライン補間"
+
+msgid ""
+"Static input/output curve including Gain and Mix. Drag the round node horizontally for threshold,"
+" the square node vertically for ratio. Attack/release timing is not shown."
+msgstr "ゲインとミックスを含む静的な入出力曲線です。丸いノードを左右に動かすとしきい値、四角いノードを上下に動かすと圧縮比を調整できます。アタックとリリースの時間変化は表示しません。"
+
+msgid ""
+"Steady-state input/output amplitude curve. Drag vertically for Drive (Pre Gain in Overdrive "
+"mode); Shift + drag for Pre Gain; Ctrl + drag for Post Gain. The vertical scale fits the output. "
+"Keep HF controls the audio crossover; Oversample is stored only."
+msgstr ""
+"定常状態の入出力振幅曲線です。上下のドラッグで Drive（Overdrive では Pre Gain）、Shift + ドラッグで Pre Gain、Ctrl + ドラッグで Post "
+"Gain を調整します。縦軸は出力に合わせます。Keep HF はクロスオーバーを制御し、Oversample は保存のみです。"
+
+msgid ""
+"Steady-state input/output limiting curve. Drag the round node vertically for Pre Gain and the "
+"square node for Ceiling. Release controls recovery time."
+msgstr "定常状態のリミッター入出力曲線です。丸いノードを上下に動かして Pre Gain、四角いノードで Ceiling を調整します。Release は回復時間です。"
+
+msgid "Stream"
+msgstr "ストリーム"
+
+msgid "Stream (Low memory)"
+msgstr "ストリーム（デコードメモリ節約）"
+
+msgid "Synchronizing with Godot Audio Buses. Edit the source layout in the Godot Audio panel."
+msgstr "Godot のオーディオバスと同期中です。Godot のオーディオパネルで編集してください。"
+
+msgid "Tap"
+msgstr "タップ"
+
+msgid ""
+"Temporary extraction folder:\n"
+"  "
+msgstr ""
+"展開用の一時フォルダー:\n"
+"  "
+
+msgid "The Android build template was not fully configured."
+msgstr "Android ビルドテンプレートの設定が完了していません。"
+
+msgid "The default FMOD bus layout could not be loaded. Create or open a valid layout before saving."
+msgstr "既定の FMOD バスレイアウトを読み込めません。有効なレイアウトを作成または開いてください。"
+
+msgid "The file changed on disk. Reload it before saving."
+msgstr "ファイルが外部で変更されました。再読み込みしてから保存してください。"
+
+msgid "The project does not have an installed Android build template."
+msgstr "プロジェクトに Android ビルドテンプレートがインストールされていません。"
+
+msgid "The selected path is not a directory or a supported .tar.gz/.tgz archive:\n"
+msgstr "選択したパスはフォルダーまたは対応する .tar.gz/.tgz アーカイブではありません:\n"
+
+msgid ""
+"This operation is idempotent: existing matching lines will not be duplicated, and copied files "
+"will be overwritten."
+msgstr "一致する既存の設定行は保持し、コピー先のファイルは上書きします。"
+
+msgid "Threshold"
+msgstr "しきい値"
+
+msgid "Time range"
+msgstr "時間範囲"
+
+msgid "Translation"
+msgstr "翻訳"
+
+msgid "USER"
+msgstr "USER"
+
+msgid "Unknown"
+msgstr "不明"
+
+msgid "Unsaved changes"
+msgstr "未保存の変更があります"
+
+#, python-format
+msgid ""
+"Unsupported Godot effects were skipped:\n"
+"%s"
+msgstr ""
+"未対応の Godot エフェクトをスキップしました:\n"
+"%s"
+
+msgid "Untranslated or Fuzzy"
+msgstr "未翻訳・要確認"
+
+msgid "VORBIS"
+msgstr "VORBIS"
+
+msgid "WAV"
+msgstr "WAV"
+
+msgid "Waiting for captured audio"
+msgstr "キャプチャ音声を待機中"
+
+msgid ""
+"Windows: fmod.dll\n"
+"Linux: libfmodL.so.15 / libfmod.so.15\n"
+"macOS: libfmod.dylib"
+msgstr ""
+"Windows: fmod.dll\n"
+"Linux: libfmodL.so.15 / libfmod.so.15\n"
+"macOS: libfmod.dylib"
+
+msgid "XM"
+msgstr "XM"
+
+msgid "XMA"
+msgstr "XMA"

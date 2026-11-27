@@ -1,0 +1,638 @@
+# FMOD Player properties translations.
+# Distributed under the project license.
+msgid ""
+msgstr ""
+"Project-Id-Version: Godot-FmodPlayer 1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/LuYingYiLong/Godot-FmodPlayer/issues\n"
+"POT-Creation-Date: 2026-11-27 00:00+0800\n"
+"PO-Revision-Date: 2026-11-27 00:00+0800\n"
+"Language: zh_Hans\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+msgid "3d"
+msgstr "3D"
+
+msgid "3d Custom Rolloff"
+msgstr "3D 自定义衰减曲线"
+
+msgid "3d Doppler Level"
+msgstr "3D 多普勒强度"
+
+msgid "3d Level"
+msgstr "3D 混合量"
+
+msgid "3d Max Distance"
+msgstr "3D 最大距离"
+
+msgid "3d Max World Size"
+msgstr "3D 最大世界尺寸"
+
+msgid "3d Min Distance"
+msgstr "3D 最小距离"
+
+msgid "3d Num Listeners"
+msgstr "3D 监听器数量"
+
+msgid "3d Right Handed"
+msgstr "3D 右手坐标系"
+
+msgid "3d Spread"
+msgstr "3D 扩散角度"
+
+msgid "Active"
+msgstr "启用"
+
+msgid "Area Mask"
+msgstr "区域遮罩"
+
+msgid "Asio Num Channels"
+msgstr "ASIO 通道数"
+
+msgid "Attack Us"
+msgstr "启动时间（μs）"
+
+msgid "Attenuation"
+msgstr "衰减"
+
+msgid "Attenuation Filter Cutoff Hz"
+msgstr "衰减滤波截止频率（Hz）"
+
+msgid "Attenuation Filter Db"
+msgstr "衰减滤波增益（dB）"
+
+msgid "Attenuation Model"
+msgstr "衰减模型"
+
+msgid "Audio Data"
+msgstr "音频数据"
+
+msgid "Auto Play"
+msgstr "自动播放"
+
+msgid "Auto Rebuild"
+msgstr "自动重建"
+
+msgid "Autoplay"
+msgstr "自动播放"
+
+msgid "Behavior"
+msgstr "行为"
+
+msgid "Buffer Length"
+msgstr "缓冲长度"
+
+msgid "Bus"
+msgstr "总线"
+
+msgid "Bypass"
+msgstr "旁通"
+
+msgid "Ceiling Db"
+msgstr "电平上限（dB）"
+
+msgid "Channel Distance Filter"
+msgstr "通道距离滤波"
+
+msgid "Channel Group"
+msgstr "通道组"
+
+msgid "Channel Low-pass"
+msgstr "通道低通"
+
+msgid "Clip Output"
+msgstr "裁剪输出"
+
+msgid "Create Info"
+msgstr "创建信息"
+
+msgid "Cutoff Hz"
+msgstr "截频 Hz"
+
+msgid "Damping"
+msgstr "阻尼"
+
+msgid "Db"
+msgstr "dB"
+
+msgid "Decay Time"
+msgstr "衰减时间"
+
+msgid "Decode Buffer Size"
+msgstr "解码缓冲区大小"
+
+msgid "Default Bus Layout"
+msgstr "默认总线布局"
+
+msgid "Default Decode Buffer Size"
+msgstr "默认解码缓冲区大小"
+
+msgid "Default Frequency"
+msgstr "默认频率"
+
+msgid "Delay Ms"
+msgstr "延迟（ms）"
+
+msgid "Density"
+msgstr "密度"
+
+msgid "Depth"
+msgstr "深度"
+
+msgid "Depth Ms"
+msgstr "深度（ms）"
+
+msgid "Diffusion"
+msgstr "扩散"
+
+msgid "Direct Occlusion"
+msgstr "直达声遮挡"
+
+msgid "Distance Factor"
+msgstr "距离系数"
+
+msgid "Distance Filter Center Freq"
+msgstr "距离滤波中心频率"
+
+msgid "Dls Name"
+msgstr "DLS 名称"
+
+msgid "Doppler Scale"
+msgstr "多普勒缩放"
+
+msgid "Doppler Tracking"
+msgstr "多普勒跟踪"
+
+msgid "Double Sided"
+msgstr "双面"
+
+msgid "Drive"
+msgstr "驱动；盘；驾驶"
+
+msgid "Dry"
+msgstr "干"
+
+msgid "Dsp Buffer Count"
+msgstr "DSP 缓冲区数量"
+
+msgid "Dsp Buffer Pool Size"
+msgstr "DSP 缓冲池大小"
+
+msgid "Dsp Buffer Size"
+msgstr "DSP 缓冲区大小"
+
+msgid "Early Delay"
+msgstr "早期延迟"
+
+msgid "Early Late Mix"
+msgstr "早期后期混合"
+
+msgid "Emission Angle"
+msgstr "发射角"
+
+msgid "Emission Angle Enabled"
+msgstr "启用发射角度"
+
+msgid "Emission Angle Filter Attenuation Db"
+msgstr "发射角滤波衰减（dB）"
+
+msgid "Enable Profile"
+msgstr "启用 Profile"
+
+msgid "Encryption Key"
+msgstr "加密密钥"
+
+msgid "Feedback"
+msgstr "反馈"
+
+msgid "Feedback Active"
+msgstr "启用反馈"
+
+msgid "Feedback Delay Ms"
+msgstr "反馈延迟（ms）"
+
+msgid "Feedback Level Db"
+msgstr "反馈电平（dB）"
+
+msgid "Feedback Lowpass"
+msgstr "反馈低通频率"
+
+msgid "Fft Size"
+msgstr "FFT 大小"
+
+msgid "File Offset"
+msgstr "文件偏移"
+
+msgid "Fmod"
+msgstr "FMOD"
+
+msgid "Format"
+msgstr "格式"
+
+msgid "Frequency"
+msgstr "频率"
+
+msgid "Gain"
+msgstr "增益"
+
+msgid "Gain Db"
+msgstr "增益（dB）"
+
+msgid "Geometry Max Fade Time"
+msgstr "几何遮挡最大淡化时间"
+
+msgid "Geometry Use Closest"
+msgstr "几何体使用最近面"
+
+msgid "Hf Decay Ratio"
+msgstr "高频衰减比"
+
+msgid "Hf Reference"
+msgstr "高频参考"
+
+msgid "High Cut"
+msgstr "高频截止"
+
+msgid "Hipass"
+msgstr "高通频率"
+
+msgid "Ignore Set File System"
+msgstr "忽略设置文件系统"
+
+msgid "Immediate Mode"
+msgstr "即时模式"
+
+msgid "Inclusion List"
+msgstr "包含列表"
+
+msgid "Init Flags"
+msgstr "初始化标志"
+
+msgid "Initial Seek Position"
+msgstr "初始寻道"
+
+msgid "Initial Seek Postype"
+msgstr "初始寻道位置类型"
+
+msgid "Initial Subsound"
+msgstr "初始子声音"
+
+msgid "Keep Hf Hz"
+msgstr "保留高频（Hz）"
+
+msgid "Late Delay"
+msgstr "后期延迟"
+
+msgid "Length Override"
+msgstr "长度覆盖"
+
+msgid "Level Db"
+msgstr "电平（dB）"
+
+msgid "Loop Count"
+msgstr "循环次数"
+
+msgid "Low Shelf Frequency"
+msgstr "低架频率"
+
+msgid "Low Shelf Gain"
+msgstr "低架增益"
+
+msgid "Max Adpcm Codecs"
+msgstr "最大 ADPCM 解码器数"
+
+msgid "Max At 9 Codecs"
+msgstr "最大 AT9 解码器数"
+
+msgid "Max Audible"
+msgstr "最大可听声音数"
+
+msgid "Max Channels"
+msgstr "最大通道数"
+
+msgid "Max Convolution Threads"
+msgstr "最大卷积线程数"
+
+msgid "Max Distance"
+msgstr "最大距离"
+
+msgid "Max Fadpcm Codecs"
+msgstr "最大 FADPCM 解码器数"
+
+msgid "Max Mpeg Codecs"
+msgstr "最大 MPEG 解码器数"
+
+msgid "Max Opus Codecs"
+msgstr "最大 Opus 解码器数"
+
+msgid "Max Polyphony"
+msgstr "最大复音数"
+
+msgid "Max Software Channels"
+msgstr "最大软件通道数"
+
+msgid "Max Spatial Objects"
+msgstr "最大空间对象数"
+
+msgid "Max Vorbis Codecs"
+msgstr "最大 Vorbis 解码器数"
+
+msgid "Max Xma Codecs"
+msgstr "最大 XMA 解码器数"
+
+msgid "Memory Tracking"
+msgstr "内存跟踪"
+
+msgid "Mesh"
+msgstr "网格"
+
+msgid "Min Distance"
+msgstr "最小距离"
+
+msgid "Mix"
+msgstr "混合"
+
+msgid "Mix From Update"
+msgstr "在更新线程中混音"
+
+msgid "Mix Target"
+msgstr "混音目标"
+
+msgid "Mode"
+msgstr "模式"
+
+msgid "Mode Flags"
+msgstr "模式标志"
+
+msgid "Mute"
+msgstr "静音"
+
+msgid "Mute Fade Speed"
+msgstr "静音淡出速度"
+
+msgid "Network Proxy"
+msgstr "网络代理"
+
+msgid "Network Timeout"
+msgstr "网络超时"
+
+msgid "Num Channels"
+msgstr "通道数"
+
+msgid "Num Listeners"
+msgstr "监听器数量"
+
+msgid "Num Raw Speakers"
+msgstr "原始扬声器数量"
+
+msgid "Num Subsounds"
+msgstr "子声音数量"
+
+msgid "Output Type"
+msgstr "输出类型"
+
+msgid "Oversample"
+msgstr "过采样"
+
+msgid "Oversampling"
+msgstr "过采样"
+
+msgid "Pan"
+msgstr "声像"
+
+msgid "Pan Pullout"
+msgstr "声像扩展"
+
+msgid "Panning Strength"
+msgstr "声像强度"
+
+msgid "Paused"
+msgstr "暂停"
+
+msgid "Pitch"
+msgstr "音高"
+
+msgid "Pitch Scale"
+msgstr "音高缩放"
+
+msgid "Playing"
+msgstr "正在播放"
+
+msgid "Position"
+msgstr "位置"
+
+msgid "Post Gain"
+msgstr "后增益"
+
+msgid "Pre Gain"
+msgstr "预增益"
+
+msgid "Pre Gain Db"
+msgstr "前置增益（dB）"
+
+msgid "Predelay Feedback"
+msgstr "预延迟反馈"
+
+msgid "Predelay Msec"
+msgstr "预延迟（ms）"
+
+msgid "Prefer Dolby Downmix"
+msgstr "优先 Dolby 下混"
+
+msgid "Preload On Set Stream"
+msgstr "设置音频流时预加载"
+
+msgid "Preload on Set Stream"
+msgstr "设置流时预加载"
+
+msgid "Preset"
+msgstr "预设"
+
+msgid "Primitive Segments"
+msgstr "基础体分段数"
+
+msgid "Priority"
+msgstr "优先级"
+
+msgid "Profile Meter All"
+msgstr "统计全部 Profile 指标"
+
+msgid "Profile Port"
+msgstr "Profile 端口"
+
+msgid "Random Seed"
+msgstr "随机种子"
+
+msgid "Range Max Hz"
+msgstr "最高频率（Hz）"
+
+msgid "Range Min Hz"
+msgstr "最低频率（Hz）"
+
+msgid "Rate Hz"
+msgstr "频率 Hz"
+
+msgid "Ratio"
+msgstr "压缩比"
+
+msgid "Raw PCM"
+msgstr "原始 PCM"
+
+msgid "Recording Active"
+msgstr "启用录音"
+
+msgid "Recursive Source Scan"
+msgstr "递归扫描源"
+
+msgid "Release"
+msgstr "发布"
+
+msgid "Release Ms"
+msgstr "释放时间（ms）"
+
+msgid "Resampler Method"
+msgstr "重采样方法"
+
+msgid "Resonance"
+msgstr "共振"
+
+msgid "Reverb 3d Instance"
+msgstr "3D 混响实例"
+
+msgid "Reverb Occlusion"
+msgstr "混响遮挡"
+
+msgid "Reverb Properties"
+msgstr "混响属性"
+
+msgid "Rolloff Scale"
+msgstr "衰减缩放"
+
+msgid "Room Size"
+msgstr "房间大小"
+
+msgid "Rotation"
+msgstr "旋转"
+
+msgid "Scale"
+msgstr "缩放"
+
+msgid "Show Debug Gizmo"
+msgstr "显示调试 Gizmo"
+
+msgid "Show Startup Banner"
+msgstr "显示启动横幅"
+
+msgid "Sidechain"
+msgstr "支链"
+
+msgid "Software Channels"
+msgstr "软件通道数"
+
+msgid "Software Sample Rate"
+msgstr "软件采样率"
+
+msgid "Solo"
+msgstr "独奏"
+
+msgid "Source Mode"
+msgstr "源模式"
+
+msgid "Source Node Path"
+msgstr "源节点路径"
+
+msgid "Speaker Mode"
+msgstr "扬声器模式"
+
+msgid "Spread"
+msgstr "发散"
+
+msgid "Stream"
+msgstr "流"
+
+msgid "Stream Buffer Size"
+msgstr "流缓冲区大小"
+
+msgid "Stream From Update"
+msgstr "在更新线程中流式读取"
+
+msgid "Stream Paused"
+msgstr "暂停流"
+
+msgid "Suggested Sound Type"
+msgstr "建议的声音类型"
+
+msgid "Surround"
+msgstr "环绕"
+
+msgid "Sync Godot Audio Buses"
+msgstr "同步 Godot 音频总线"
+
+msgid "Sync Transform"
+msgstr "同步变换"
+
+msgid "Tap 1 Active"
+msgstr "抽头 1 启用"
+
+msgid "Tap 1 Delay Ms"
+msgstr "抽头 1 延迟（ms）"
+
+msgid "Tap 1 Level Db"
+msgstr "抽头 1 电平（dB）"
+
+msgid "Tap 1 Pan"
+msgstr "抽头 1 声像"
+
+msgid "Tap 2 Active"
+msgstr "抽头 2 启用"
+
+msgid "Tap 2 Delay Ms"
+msgstr "抽头 2 延迟（ms）"
+
+msgid "Tap 2 Level Db"
+msgstr "抽头 2 电平（dB）"
+
+msgid "Tap 2 Pan"
+msgstr "抽头 2 声像"
+
+msgid "Thread Unsafe"
+msgstr "非线程安全"
+
+msgid "Threshold Db"
+msgstr "阈值（dB）"
+
+msgid "Time Pullout Ms"
+msgstr "时间扩展（ms）"
+
+msgid "Unit Size"
+msgstr "单位大小"
+
+msgid "Voice Count"
+msgstr "声部数量"
+
+msgid "Vol 0 Becomes Virtual"
+msgstr "音量为零时虚拟化"
+
+msgid "Vol 0 Virtual Vol"
+msgstr "音量为零时虚拟音量"
+
+msgid "Volume"
+msgstr "体积"
+
+msgid "Volume Db"
+msgstr "音量（dB）"
+
+msgid "Volume Linear"
+msgstr "线性音量"
+
+msgid "Volume Ramp"
+msgstr "音量渐变"
+
+msgid "Wet"
+msgstr "湿"
+
+msgid "Wet Level"
+msgstr "湿声电平"

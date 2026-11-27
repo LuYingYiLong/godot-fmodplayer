@@ -1,0 +1,839 @@
+# FMOD Player editor translations.
+# Distributed under the project license.
+msgid ""
+msgstr ""
+"Project-Id-Version: Godot-FmodPlayer 1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/LuYingYiLong/Godot-FmodPlayer/issues\n"
+"POT-Creation-Date: 2026-11-27 00:00+0800\n"
+"PO-Revision-Date: 2026-11-27 00:00+0800\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || "
+"n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+msgid ""
+"      Debug/dev builds load fmodL; release builds load fmod.\n"
+"\n"
+msgstr ""
+"      Сборки debug/dev загружают fmodL, release — fmod.\n"
+"\n"
+
+msgid "      Ensure FMOD is loaded before Godot starts.\n"
+msgstr "      Загружать FMOD перед запуском Godot.\n"
+
+msgid "      Ensure android.overridePathCheck=true.\n"
+msgstr "      Установить android.overridePathCheck=true.\n"
+
+msgid "      Ensure implementation files(\"libs/fmod.jar\") is present.\n"
+msgstr "      Добавить implementation files(\"libs/fmod.jar\").\n"
+
+msgid "      Initialize the FMOD Java component before Godot starts.\n"
+msgstr "      Инициализация Java-компонента FMOD перед запуском Godot.\n"
+
+msgid "- Cannot update a customized FMOD runtime block in GodotApp.java.\n"
+msgstr "- Не удалось обновить изменённый блок загрузки FMOD в GodotApp.java.\n"
+
+msgid "- Copied FMOD GDExtension debug/dev Android library for arm64-v8a.\n"
+msgstr "- Скопирована библиотека FMOD GDExtension debug/dev Android для arm64-v8a.\n"
+
+msgid "- Copied FMOD GDExtension release Android library for arm64-v8a.\n"
+msgstr "- Скопирована библиотека FMOD GDExtension release Android для arm64-v8a.\n"
+
+msgid "- Copied debug/dev FMOD runtime for "
+msgstr "- Скопирована библиотека FMOD debug/dev для "
+
+msgid "- Copied fmod.jar.\n"
+msgstr "- fmod.jar скопирован.\n"
+
+msgid "- Copied release FMOD runtime for "
+msgstr "- Скопирована библиотека FMOD release для "
+
+msgid "- Failed to copy Android library: "
+msgstr "- Не удалось скопировать библиотеку Android: "
+
+msgid "- Failed to copy FMOD GDExtension debug Android library.\n"
+msgstr "- Не удалось скопировать FMOD GDExtension debug Android library.\n"
+
+msgid "- Failed to copy FMOD GDExtension release Android library.\n"
+msgstr "- Не удалось скопировать FMOD GDExtension release Android library.\n"
+
+msgid "- Failed to copy fmod.jar.\n"
+msgstr "- Не удалось скопировать fmod.jar.\n"
+
+msgid "- Failed to create res://android/build/libs.\n"
+msgstr "- Не удалось создать res://android/build/libs.\n"
+
+msgid "- Failed to locate GodotApp.onCreate insertion point.\n"
+msgstr "- Не найдена точка вставки в GodotApp.onCreate.\n"
+
+msgid "- Failed to locate the dependencies block in build.gradle.\n"
+msgstr "- В build.gradle не найден блок dependencies.\n"
+
+msgid "- Failed to read GodotApp.java.\n"
+msgstr "- Не удалось прочитать GodotApp.java.\n"
+
+msgid "- Failed to read build.gradle.\n"
+msgstr "- Не удалось прочитать build.gradle.\n"
+
+msgid "- Failed to read gradle.properties.\n"
+msgstr "- Не удалось прочитать gradle.properties.\n"
+
+msgid "- Failed to update GodotApp.java.\n"
+msgstr "- Не удалось обновить GodotApp.java.\n"
+
+msgid "- Failed to update build.gradle.\n"
+msgstr "- Не удалось обновить build.gradle.\n"
+
+msgid "- Failed to update gradle.properties.\n"
+msgstr "- Не удалось обновить gradle.properties.\n"
+
+msgid "- GodotApp.java already contains the FMOD Android runtime loader.\n"
+msgstr "- GodotApp.java уже содержит загрузчик FMOD для Android.\n"
+
+msgid "- Skipped FMOD GDExtension debug Android library; source file was not found.\n"
+msgstr "- Библиотека FMOD GDExtension debug Android пропущена: исходный файл не найден.\n"
+
+msgid "- Skipped FMOD GDExtension release Android library; source file was not found.\n"
+msgstr "- Библиотека FMOD GDExtension release Android пропущена: исходный файл не найден.\n"
+
+msgid "- Updated GodotApp.java to load FMOD before Godot starts.\n"
+msgstr "- GodotApp.java обновлён для загрузки FMOD перед Godot.\n"
+
+msgid "- Updated build.gradle with fmod.jar dependency.\n"
+msgstr "- В build.gradle добавлена зависимость fmod.jar.\n"
+
+msgid "- Updated gradle.properties.\n"
+msgstr "- gradle.properties обновлён.\n"
+
+msgid "- build.gradle already includes fmod.jar.\n"
+msgstr "- build.gradle уже содержит fmod.jar.\n"
+
+msgid "- gradle.properties already enables android.overridePathCheck.\n"
+msgstr "- В gradle.properties уже включён android.overridePathCheck.\n"
+
+msgid "2D"
+msgstr "2D"
+
+msgid "3D"
+msgstr "3D"
+
+msgid "AIFF"
+msgstr "AIFF"
+
+msgid "API Documentation"
+msgstr "Документация API"
+
+msgid "ASF"
+msgstr "ASF"
+
+msgid "AT9"
+msgstr "AT9"
+
+msgid "AUDIOQUEUE"
+msgstr "AUDIOQUEUE"
+
+msgid "Add Effect"
+msgstr "Добавить эффект"
+
+msgid "Add Entry"
+msgstr "Добавить запись"
+
+msgid "Add Language"
+msgstr "Добавить язык"
+
+msgid "All files"
+msgstr "Все файлы"
+
+msgid "Android Build Template Missing"
+msgstr "Отсутствует шаблон сборки Android"
+
+msgid ""
+"Android build template:\n"
+"  "
+msgstr ""
+"Шаблон сборки Android:\n"
+"  "
+
+msgid "Apply Changes"
+msgstr "Применить изменения"
+
+msgid ""
+"Approximate EQ response. Drag band nodes horizontally to adjust frequency; drag vertically to "
+"adjust gain for peaking and shelf filters. Scroll over a node to adjust Q."
+msgstr ""
+"Аппроксимация АЧХ эквалайзера. Перетаскивайте узлы полос по горизонтали для изменения частоты; "
+"для пиковых и полочных фильтров перетаскивание по вертикали меняет усиление. Колесо мыши над "
+"узлом регулирует добротность Q."
+
+msgid ""
+"Approximate low-pass response. The cutoff node stays on the 0 dB reference line. Drag "
+"horizontally to adjust cutoff, vertically to adjust resonance relative to its starting value "
+"(12/18/24 dB)."
+msgstr ""
+"Приблизительная характеристика ФНЧ. Узел среза остаётся на линии 0 дБ. Горизонталь меняет срез, "
+"вертикаль — резонанс относительно начального значения (12/18/24 дБ)."
+
+msgid "At least one language is required."
+msgstr "Требуется хотя бы один язык."
+
+msgid "Bitstream"
+msgstr "Битовый поток"
+
+msgid "Browse..."
+msgstr "Обзор…"
+
+#, python-format
+msgid "CSV column count does not match the header: %s"
+msgstr "Число столбцов CSV не совпадает с заголовком: %s"
+
+msgid "CSV header must start with source."
+msgstr "Заголовок CSV должен начинаться с source."
+
+msgid "Cancel"
+msgstr "Отмена"
+
+msgid "Cannot find FMOD native libraries under:\n"
+msgstr "Не найдены нативные библиотеки FMOD в:\n"
+
+msgid "Cannot find api/core/lib/fmod.jar under:\n"
+msgstr "Не найден api/core/lib/fmod.jar в:\n"
+
+#, python-format
+msgid "Cannot load FMOD bus layout: %s"
+msgstr "Не удалось загрузить схему шин FMOD: %s"
+
+msgid "Cannot load the default FMOD bus layout."
+msgstr "Не удалось загрузить схему шин FMOD по умолчанию."
+
+#, python-format
+msgid "Cannot open file: %s"
+msgstr "Не удалось открыть файл: %s"
+
+#, python-format
+msgid "Cannot save FMOD bus layout: %s"
+msgstr "Не удалось сохранить схему шин FMOD: %s"
+
+#, python-format
+msgid "Cannot save file: %s"
+msgstr "Не удалось сохранить файл: %s"
+
+msgid "Click or drag horizontally to adjust pan: left (-1), center (0), right (1)."
+msgstr ""
+"Щёлкните или перетащите по горизонтали, чтобы настроить панораму: влево (-1), центр (0), вправо "
+"(1)."
+
+msgid "Configure FMOD Android Export"
+msgstr "Настроить экспорт FMOD для Android"
+
+msgid "Context"
+msgstr "Контекст"
+
+msgid "Could not create FMOD geometry from the selected MeshInstance3D nodes."
+msgstr "Не удалось создать геометрию FMOD из выбранных узлов MeshInstance3D."
+
+msgid "Create Bounding Box Occluder"
+msgstr "Создать окклюдер ограничивающего параллелепипеда"
+
+msgid "Create FMOD Bounding Box Occluder"
+msgstr "Создать окклюдер FMOD ограничивающего параллелепипеда"
+
+msgid "Create FMOD Convex Occluder"
+msgstr "Создать окклюдер FMOD выпуклой формы"
+
+msgid "Create FMOD Geometry Occluder"
+msgstr "Создать окклюдер FMOD геометрии"
+
+msgid "Create FMOD Layout from Godot"
+msgstr "Создать схему FMOD из Godot"
+
+msgid "Create FMOD Mesh Resource Occluder"
+msgstr "Создать окклюдер FMOD ресурса сетки"
+
+msgid "Create FMOD Simplified Convex Occluder"
+msgstr "Создать окклюдер FMOD упрощённой выпуклой формы"
+
+msgid "Create FMOD Trimesh Occluder"
+msgstr "Создать окклюдер FMOD треугольной сетки"
+
+msgid "Create FMOD occlusion geometry from the selected MeshInstance3D."
+msgstr "Создать геометрию перекрытия FMOD из выбранного MeshInstance3D."
+
+msgid "Create Mesh Resource Occluder"
+msgstr "Создать окклюдер ресурса сетки"
+
+msgid "Create Simplified Convex Occluder"
+msgstr "Создать окклюдер упрощённой выпуклой формы"
+
+msgid "Create Single Convex Occluder"
+msgstr "Создать окклюдер единой выпуклой формы"
+
+msgid "Create Trimesh Occluder"
+msgstr "Создать окклюдер треугольной сетки"
+
+msgid "Cubic"
+msgstr "Кубический"
+
+msgid "DLS"
+msgstr "DLS"
+
+msgid "Default"
+msgstr "По умолчанию"
+
+msgid ""
+"Delay tap layout: radius shows time, angle shows pan, and brightness shows level. Drag a node to "
+"edit time and pan. Alt + click selects an overlapping tap."
+msgstr ""
+"Схема отводов задержки: радиус — время, угол — панорама, яркость — уровень. Перетаскивайте узел "
+"для изменения времени и панорамы. Alt + щелчок выбирает перекрывающийся отвод."
+
+msgid "Delete Entry"
+msgstr "Удалить запись"
+
+msgid "Disable Godot bus synchronization and reload the project to edit an FMOD layout."
+msgstr "Для редактирования схемы FMOD отключите синхронизацию шин Godot и перезагрузите проект."
+
+msgid "Disabled"
+msgstr "Отключено"
+
+msgid "Discard"
+msgstr "Сброс"
+
+msgid ""
+"Drag along the dial to adjust pitch. Scroll: 1 semitone; Shift + scroll: 0.1 semitone. The scale "
+"expands beyond two octaves."
+msgstr ""
+"Перетаскивайте по шкале для настройки высоты. Колесо: 1 полутон; Shift + колесо: 0,1 полутона. "
+"Шкала расширяется за пределами двух октав."
+
+msgid "Drag down to increase compression, up to decrease."
+msgstr "Вниз — усилить сжатие, вверх — ослабить."
+
+msgid "Drag horizontally for threshold, vertically for ratio."
+msgstr "Горизонтальное перетаскивание меняет порог, вертикальное — степень сжатия."
+
+msgid "Drag horizontally to adjust."
+msgstr "Перетаскивайте по горизонтали для настройки."
+
+msgid "Duplicate Bus Effect"
+msgstr "Дублировать эффект шины"
+
+msgid "Duplicate Effect"
+msgstr "Дублировать эффект"
+
+#, python-format
+msgid "Duplicate locale: %s"
+msgstr "Повторяющийся код языка: %s"
+
+msgid "Editor Interface"
+msgstr "Интерфейс редактора"
+
+#, python-format
+msgid "Empty or duplicate source: %s"
+msgstr "Пустой или повторяющийся исходный текст: %s"
+
+msgid "Expected ABI folders: arm64-v8a, armeabi-v7a, x86, x86_64."
+msgstr "Ожидаемые папки ABI: arm64-v8a, armeabi-v7a, x86, x86_64."
+
+msgid "Extract Sources"
+msgstr "Извлечь строки"
+
+msgid "Extracted sources. Review new entries before saving."
+msgstr "Строки извлечены. Проверьте новые записи перед сохранением."
+
+msgid "FADPCM"
+msgstr "FADPCM"
+
+msgid "FLAC"
+msgstr "FLAC"
+
+msgid "FMOD Android Export Configured"
+msgstr "Экспорт FMOD для Android настроен"
+
+msgid "FMOD Android Export Setup Failed"
+msgstr "Ошибка настройки экспорта FMOD для Android"
+
+msgid "FMOD Android archive"
+msgstr "Архив FMOD Android"
+
+msgid "FMOD Android export setup completed successfully."
+msgstr "Настройка экспорта FMOD для Android завершена."
+
+msgid ""
+"FMOD Android export setup will apply the following changes.\n"
+"\n"
+msgstr ""
+"Настройка экспорта FMOD для Android применит следующие изменения.\n"
+"\n"
+
+msgid "FMOD Audio"
+msgstr "Аудио FMOD"
+
+msgid "FMOD Bus Layout"
+msgstr "Схема шин FMOD"
+
+msgid ""
+"FMOD Core Android SDK source:\n"
+"  "
+msgstr ""
+"Источник FMOD Core Android SDK:\n"
+"  "
+
+msgid "FMOD Geometry"
+msgstr "Геометрия FMOD"
+
+msgid "FMOD Runtime Missing"
+msgstr "Отсутствует библиотека FMOD"
+
+msgid "FMOD Translations"
+msgstr "Локализация FMOD"
+
+msgid "FMOD runtime library was not detected."
+msgstr "Библиотека FMOD не обнаружена."
+
+msgid "FSB"
+msgstr "FSB"
+
+msgid "Failed to create temporary extraction directory:\n"
+msgstr "Не удалось создать временную папку для распаковки:\n"
+
+msgid "Failed to extract the FMOD archive. Extract it manually and select the extracted folder."
+msgstr "Не удалось распаковать архив FMOD. Распакуйте его вручную и выберите полученную папку."
+
+msgid "Feedback rings show repeat timing and gain before low-pass filtering."
+msgstr "Кольца обратной связи показывают время повторов и усиление до ФНЧ."
+
+msgid "Files to copy:\n"
+msgstr "Копируемые файлы:\n"
+
+msgid "Files to modify:\n"
+msgstr "Изменяемые файлы:\n"
+
+msgid "Fuzzy: translation needs review"
+msgstr "Требуется проверка перевода"
+
+msgid "Gain"
+msgstr "Усиление"
+
+msgid "Godot Audio Buses"
+msgstr "Аудиошины Godot"
+
+msgid "IT"
+msgstr "IT"
+
+msgid "Install Later"
+msgstr "Установить позже"
+
+msgid "Install it from: Project > Install Android Build Template..."
+msgstr "Установите его через «Проект > Установить шаблон сборки Android…»."
+
+msgid ""
+"Install the FMOD Core SDK 2.04, copy the matching runtime library to addons/fmod_player/bin/, "
+"then restart Godot."
+msgstr ""
+"Установите FMOD Core SDK 2.04, скопируйте соответствующую библиотеку в addons/fmod_player/bin/ и "
+"перезапустите Godot."
+
+msgid "Invalid FMOD Android SDK"
+msgstr "Недопустимый FMOD Android SDK"
+
+#, python-format
+msgid "Invalid locale: %s"
+msgstr "Недопустимый код языка: %s"
+
+msgid "Linear"
+msgstr "Линейный"
+
+msgid "Load FMOD Bus Layout"
+msgstr "Загрузить схему шин FMOD"
+
+msgid "Locale, e.g. ja or zh_Hant"
+msgstr "Код языка, например ja или zh_Hant"
+
+msgid "Localization backend failed. Install Python and Babel, then check the source repository path."
+msgstr "Ошибка инструмента локализации. Установите Python и Babel и проверьте путь к исходникам."
+
+msgid "Loop"
+msgstr "Зациклить"
+
+msgid "Loop Bidi"
+msgstr "Двунаправленный цикл"
+
+msgid "Loop Sample"
+msgstr "Зацикленный сэмпл"
+
+msgid "MAX"
+msgstr "MAX"
+
+msgid "MEDIACODEC"
+msgstr "MEDIACODEC"
+
+msgid "MIDI"
+msgstr "MIDI"
+
+msgid "MOD"
+msgstr "MOD"
+
+msgid "MOD Order"
+msgstr "Порядок MOD"
+
+msgid "MOD Pattern"
+msgstr "Паттерн MOD"
+
+msgid "MOD Row"
+msgstr "Строка MOD"
+
+msgid "MPEG"
+msgstr "MPEG"
+
+msgid "MS"
+msgstr "MS"
+
+msgid "Max"
+msgstr "Макс"
+
+msgid "Missing required Android build template file:\n"
+msgstr "Отсутствует обязательный файл шаблона сборки Android:\n"
+
+msgid "Move EQ band"
+msgstr "Переместить полосу эквалайзера"
+
+msgid "Move delay tap"
+msgstr "Переместить отвод задержки"
+
+msgid "Move filter cutoff"
+msgstr "Изменить частоту среза фильтра"
+
+msgid "No Interpolation"
+msgstr "Без интерполяции"
+
+msgid "No edited scene root is available."
+msgstr "Нет корневого узла редактируемой сцены."
+
+msgid "No translation files found."
+msgstr "Файлы переводов не найдены."
+
+msgid "None"
+msgstr "Нет"
+
+msgid "OGGVORBIS"
+msgstr "OGGVORBIS"
+
+msgid "OPUS"
+msgstr "OPUS"
+
+msgid ""
+"One-second chorus modulation overview. Vertical position represents pan; rate and depth shape "
+"each voice. Curves begin at the base delay."
+msgstr ""
+"Обзор модуляции хоруса за секунду. Вертикаль показывает панораму; частота и глубина задают кривую"
+" каждого голоса. Кривые начинаются с базовой задержки."
+
+msgid "Open FMOD Download Page"
+msgstr "Открыть страницу загрузки FMOD"
+
+msgid "Open Godot Audio Panel"
+msgstr "Открыть панель аудио Godot"
+
+msgid ""
+"Output gain (solid, dB) and filtered-path phase (faint, degrees) at the sweep midpoint. The "
+"shaded range shows the LFO limits; drag its edges to adjust. Depth and Feedback shape the output "
+"response; Rate controls sweep speed."
+msgstr ""
+"Выходное усиление (сплошная линия, дБ) и фаза фильтрующей ветви (полупрозрачная, градусы) в "
+"середине развёртки. Затенение — пределы LFO; перетаскивайте края для настройки. Depth и Feedback "
+"задают форму, Rate — скорость."
+
+msgid "PCM"
+msgstr "PCM"
+
+msgid "PCM Bytes"
+msgstr "Байты PCM"
+
+msgid "PCM Fraction"
+msgstr "Дробная часть PCM"
+
+msgid "PCM16"
+msgstr "PCM16"
+
+msgid "PCM24"
+msgstr "PCM24"
+
+msgid "PCM32"
+msgstr "PCM32"
+
+msgid "PCM8"
+msgstr "PCM8"
+
+msgid "PCMFloat"
+msgstr "PCM с плавающей точкой"
+
+msgid "PLAYLIST"
+msgstr "PLAYLIST"
+
+msgid "Pan"
+msgstr "Панорама"
+
+msgid ""
+"Parameter illustration with a 0 dB reference input. Drag the output line vertically to adjust "
+"gain."
+msgstr ""
+"Схема параметров при входе 0 дБ. Перетаскивайте выходную линию по вертикали для настройки "
+"усиления."
+
+msgid ""
+"Parameter illustration: fan angle shows Pan Pullout, the inner arc shows Time Pullout, and fill "
+"strength shows Surround. Drag the radar to adjust Pan Pullout."
+msgstr ""
+"Угол сектора показывает Pan Pullout, внутренняя дуга — Time Pullout, насыщенность заливки — "
+"Surround. Перетаскивайте радар для настройки Pan Pullout."
+
+msgid "Path Required"
+msgstr "Требуется путь"
+
+msgid "Path to FMOD Core Android SDK folder or archive..."
+msgstr "Путь к папке или архиву FMOD Core Android SDK…"
+
+msgid ""
+"Peak ranges of unread stereo frames in this editor instance. Attach Capture to an FMOD bus to "
+"receive audio."
+msgstr ""
+"Диапазоны пиков непрочитанных стереокадров этого экземпляра редактора. Подключите Capture к шине "
+"FMOD для получения звука."
+
+#, python-format
+msgid "Placeholder mismatch (%s): %s"
+msgstr "Несовпадение подстановок (%s): %s"
+
+msgid "Please select the FMOD Core Android SDK folder or archive."
+msgstr "Выберите папку или архив FMOD Core Android SDK."
+
+msgid "Properties"
+msgstr "Свойства"
+
+msgid "Python executable with Babel installed"
+msgstr "Исполняемый файл Python с установленным Babel"
+
+msgid "RAW"
+msgstr "RAW"
+
+msgid "Ratio"
+msgstr "Степень сжатия"
+
+msgid "Raw Bytes"
+msgstr "Необработанные байты"
+
+msgid "Reload"
+msgstr "Перезагрузить"
+
+msgid ""
+"Resolved FMOD Core library folder:\n"
+"  "
+msgstr ""
+"Найденная папка библиотек FMOD Core:\n"
+"  "
+
+msgid ""
+"Reverb parameter illustration. Drag either outer node horizontally to adjust Spread between the "
+"L/R reflection rings. Room Size shapes each ring group; Damping fades reflections, Wet controls "
+"their brightness, and Dry controls the central source."
+msgstr ""
+"Схема параметров реверберации. Перетаскивайте внешний узел по горизонтали для настройки Spread "
+"между кольцами L/R. Room Size задаёт форму, Damping — затухание, Wet — яркость отражений, Dry — "
+"центральный источник."
+
+msgid "Review Changes"
+msgstr "Просмотреть изменения"
+
+msgid "Review FMOD Android Export Changes"
+msgstr "Изменения экспорта FMOD для Android"
+
+msgid "S3M"
+msgstr "S3M"
+
+msgid "Sample"
+msgstr "Сэмпл"
+
+msgid "Sample (High quality)"
+msgstr "Сэмпл (полное декодирование)"
+
+msgid "Save"
+msgstr "Сохранить"
+
+msgid "Save FMOD Bus Layout"
+msgstr "Сохранить схему шин FMOD"
+
+msgid "Save changes before extracting sources."
+msgstr "Сохраните изменения перед извлечением строк."
+
+msgid "Save changes before switching catalogs?"
+msgstr "Сохранить изменения перед переключением каталога?"
+
+msgid "Save or reload changes before changing the PO file."
+msgstr "Перед сменой PO-файла сохраните изменения или перезагрузите файл."
+
+msgid "Saved and reloaded translations."
+msgstr "Переводы сохранены и перезагружены."
+
+msgid "Search source or translation"
+msgstr "Поиск по оригиналу или переводу"
+
+msgid "Select FMOD Core Android SDK"
+msgstr "Выбрать FMOD Core Android SDK"
+
+msgid "Select one or more MeshInstance3D nodes first."
+msgstr "Сначала выберите один или несколько узлов MeshInstance3D."
+
+msgid "Select the FMOD Core Android SDK root folder or archive."
+msgstr "Выберите корневую папку или архив FMOD Core Android SDK."
+
+msgid ""
+"Select the extracted FMOD Core Android SDK folder, or the downloaded .tar.gz/.tgz archive.\n"
+"The tool will configure the installed Godot Android build template for FMOD Core."
+msgstr ""
+"Выберите распакованную папку FMOD Core Android SDK или скачанный архив .tar.gz/.tgz.\n"
+"Инструмент настроит FMOD Core в установленном шаблоне сборки Godot для Android."
+
+msgid "Set as Default"
+msgstr "Сделать схемой по умолчанию"
+
+msgid "Source"
+msgstr "Исходный текст"
+
+msgid "Source repository (required for extraction)"
+msgstr "Репозиторий исходников (для извлечения)"
+
+msgid "Speakers"
+msgstr "Колонки"
+
+msgid ""
+"Spectrum of this analyzer instance in the editor process. L uses the accent color; R uses the "
+"text color. Attach the resource to a bus to receive audio. The annotation shows FFT frequency "
+"resolution."
+msgstr ""
+"Спектр этого экземпляра анализатора в процессе редактора. L использует цвет акцента, R — цвет "
+"текста. Подключите ресурс к шине для получения звука. Подпись показывает частотное разрешение "
+"FFT."
+
+msgid "Spline"
+msgstr "Сплайн-интерполяция"
+
+msgid ""
+"Static input/output curve including Gain and Mix. Drag the round node horizontally for threshold,"
+" the square node vertically for ratio. Attack/release timing is not shown."
+msgstr ""
+"Статическая входная/выходная кривая с усилением и смешиванием. Круглый узел по горизонтали меняет"
+" порог, квадратный по вертикали — степень сжатия. Временная динамика атаки и восстановления не "
+"показана."
+
+msgid ""
+"Steady-state input/output amplitude curve. Drag vertically for Drive (Pre Gain in Overdrive "
+"mode); Shift + drag for Pre Gain; Ctrl + drag for Post Gain. The vertical scale fits the output. "
+"Keep HF controls the audio crossover; Oversample is stored only."
+msgstr ""
+"Установившаяся кривая входной/выходной амплитуды. Вертикаль — Drive (Pre Gain в режиме "
+"Overdrive); Shift + перетаскивание — Pre Gain; Ctrl + перетаскивание — Post Gain. Масштаб "
+"подстраивается под выход. Keep HF управляет разделением частот; Oversample только сохраняется."
+
+msgid ""
+"Steady-state input/output limiting curve. Drag the round node vertically for Pre Gain and the "
+"square node for Ceiling. Release controls recovery time."
+msgstr ""
+"Установившаяся входная/выходная кривая лимитера. Круглый узел по вертикали меняет Pre Gain, "
+"квадратный — Ceiling. Release задаёт время восстановления."
+
+msgid "Stream"
+msgstr "Поток"
+
+msgid "Stream (Low memory)"
+msgstr "Поток (меньше памяти декодирования)"
+
+msgid "Synchronizing with Godot Audio Buses. Edit the source layout in the Godot Audio panel."
+msgstr "Синхронизация с аудиошинами Godot. Редактируйте исходную схему в панели аудио Godot."
+
+msgid "Tap"
+msgstr "Отвод"
+
+msgid ""
+"Temporary extraction folder:\n"
+"  "
+msgstr ""
+"Временная папка распаковки:\n"
+"  "
+
+msgid "The Android build template was not fully configured."
+msgstr "Шаблон сборки Android настроен не полностью."
+
+msgid "The default FMOD bus layout could not be loaded. Create or open a valid layout before saving."
+msgstr ""
+"Не удалось загрузить схему шин FMOD по умолчанию. Создайте или откройте корректную схему перед "
+"сохранением."
+
+msgid "The file changed on disk. Reload it before saving."
+msgstr "Файл изменён на диске. Перезагрузите его перед сохранением."
+
+msgid "The project does not have an installed Android build template."
+msgstr "В проекте не установлен шаблон сборки Android."
+
+msgid "The selected path is not a directory or a supported .tar.gz/.tgz archive:\n"
+msgstr "Выбранный путь не является папкой или поддерживаемым архивом .tar.gz/.tgz:\n"
+
+msgid ""
+"This operation is idempotent: existing matching lines will not be duplicated, and copied files "
+"will be overwritten."
+msgstr "Совпадающие строки настроек сохраняются, копируемые файлы заменяют существующие."
+
+msgid "Threshold"
+msgstr "Порог"
+
+msgid "Time range"
+msgstr "Диапазон времени"
+
+msgid "Translation"
+msgstr "Перевод"
+
+msgid "USER"
+msgstr "USER"
+
+msgid "Unknown"
+msgstr "Unknown (Неизвестный)"
+
+msgid "Unsaved changes"
+msgstr "Есть несохранённые изменения"
+
+#, python-format
+msgid ""
+"Unsupported Godot effects were skipped:\n"
+"%s"
+msgstr ""
+"Пропущены неподдерживаемые эффекты Godot:\n"
+"%s"
+
+msgid "Untranslated or Fuzzy"
+msgstr "Без перевода или на проверке"
+
+msgid "VORBIS"
+msgstr "VORBIS"
+
+msgid "WAV"
+msgstr "WAV"
+
+msgid "Waiting for captured audio"
+msgstr "Ожидание захваченного звука"
+
+msgid ""
+"Windows: fmod.dll\n"
+"Linux: libfmodL.so.15 / libfmod.so.15\n"
+"macOS: libfmod.dylib"
+msgstr ""
+"Windows: fmod.dll\n"
+"Linux: libfmodL.so.15 / libfmod.so.15\n"
+"macOS: libfmod.dylib"
+
+msgid "XM"
+msgstr "XM"
+
+msgid "XMA"
+msgstr "XMA"

@@ -287,6 +287,9 @@
     <ClInclude Include="src\editor\fmod_editor_translation.h">
       <Filter>Header Files\editor</Filter>
     </ClInclude>
+    <ClInclude Include="src\editor\fmod_editor_translations.h">
+      <Filter>Header Files\editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\fmod_server.cpp">
@@ -383,6 +386,9 @@
       <Filter>Source Files\editor</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\fmod_audio_preview_inspector.cpp">
+      <Filter>Source Files\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\fmod_editor_translations.cpp">
       <Filter>Source Files\editor</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\fmod_audio_preview_property.cpp">

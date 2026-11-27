@@ -182,6 +182,7 @@
     <ClInclude Include="src\editor\fmod_audio_preview_property.h" />
     <ClInclude Include="src\editor\fmod_audio_stream_player_3d_gizmo_plugin.h" />
     <ClInclude Include="src\editor\fmod_editor_translation.h" />
+    <ClInclude Include="src\editor\fmod_editor_translations.h" />
     <ClInclude Include="src\editor\fmod_reverb_zone_3d_gizmo_plugin.h" />
     <ClInclude Include="src\editor\modify_android_build_template_plugin.h" />
     <ClInclude Include="src\geometry\fmod_geometry.h" />
@@ -246,6 +247,7 @@
     <ClCompile Include="src\editor\audio_effects\fmod_audio_effect_spectrum_analyzer_preview.cpp" />
     <ClCompile Include="src\editor\fmod_audio_importer.cpp" />
     <ClCompile Include="src\editor\fmod_audio_preview_inspector.cpp" />
+    <ClCompile Include="src\editor\fmod_editor_translations.cpp" />
     <ClCompile Include="src\editor\fmod_audio_preview_property.cpp" />
     <ClCompile Include="src\editor\fmod_audio_stream_player_3d_gizmo_plugin.cpp" />
     <ClCompile Include="src\editor\fmod_reverb_zone_3d_gizmo_plugin.cpp" />

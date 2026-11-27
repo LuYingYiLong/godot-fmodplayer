@@ -34,6 +34,7 @@
 #include "editor/fmod_reverb_zone_3d_gizmo_plugin.h"
 #include "editor/modify_android_build_template_plugin.h"
 #ifdef TOOLS_ENABLED
+#include "editor/fmod_editor_translations.h"
 #include "editor/audio_buses/fmod_audio_buses_editor.h"
 #include "editor/audio_effects/fmod_audio_effect_inspector.h"
 #include "editor/audio_effects/fmod_audio_effect_panner_preview.h"
@@ -169,6 +170,8 @@ void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(FmodReverbZone3DGizmoPlugin);
 		GDREGISTER_CLASS(ModifyAndroidBuildTemplatePlugin);
 #ifdef TOOLS_ENABLED
+		GDREGISTER_INTERNAL_CLASS(FmodEditorTranslationPlugin);
+		EditorPlugins::add_by_type<FmodEditorTranslationPlugin>();
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectPannerPreview);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectEQPreview);
 		GDREGISTER_INTERNAL_CLASS(FmodAudioEffectFilterPreview);
@@ -258,6 +261,12 @@ void initialize_fmod_player_module(ModuleInitializationLevel p_level) {
 }
 
 void uninitialize_fmod_player_module(ModuleInitializationLevel p_level) {
+	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
+#ifdef TOOLS_ENABLED
+		EditorPlugins::remove_by_type<FmodEditorTranslationPlugin>();
+#endif
+		return;
+	}
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
 		if (fmod_server_instance) {
 			Engine::get_singleton()->unregister_singleton("FmodServer");

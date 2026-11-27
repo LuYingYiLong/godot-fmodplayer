@@ -6,20 +6,13 @@ extends EditorPlugin
 
 const FMOD_DOWNLOAD_URL: String = "https://www.fmod.com/download"
 const FMOD_DOCS_URL: String = "https://github.com/LuYingYiLong/Godot-FmodPlayer#quick-start"
-# 引导依赖在 UID 缓存建立前解析
-const TranslationService: Script = preload("res://addons/fmod_player/translations/fmod_translation_service.gd")
 
 var warning_dialog: AcceptDialog
 var main_plugin: EditorPlugin
-var _translation_service: Node
-var _translation_dialog: AcceptDialog
 
 
 func _enter_tree() -> void:
-	_translation_service = TranslationService.new()
-	add_child(_translation_service)
 	set_translation_domain(&"godot.editor")
-	add_tool_menu_item("FMOD Translations", _open_translation_tools)
 	# Check if FMOD runtime library exists
 	if not _check_fmod_runtime():
 		_show_fmod_missing_warning()
@@ -30,9 +23,6 @@ func _enter_tree() -> void:
 
 
 func _exit_tree() -> void:
-	remove_tool_menu_item("FMOD Translations")
-	if _translation_dialog:
-		_translation_dialog.queue_free()
 	_unload_main_plugin()
 	if warning_dialog:
 		warning_dialog.queue_free()
@@ -85,17 +75,6 @@ func _show_fmod_missing_warning() -> void:
 
 func _get_warning_text() -> String:
 	return tr("Install the FMOD Core SDK 2.04, copy the matching runtime library to addons/fmod_player/bin/, then restart Godot.") + "\n\n" + tr("Windows: fmod.dll\nLinux: libfmodL.so.15 / libfmod.so.15\nmacOS: libfmod.dylib")
-
-
-func _open_translation_tools() -> void:
-	if _translation_dialog == null:
-		_translation_dialog = AcceptDialog.new()
-		_translation_dialog.title = "FMOD Translations"
-		_translation_dialog.set_translation_domain(&"godot.editor")
-		var scene: PackedScene = load("uid://dccdv74ostt1m") as PackedScene
-		_translation_dialog.add_child(scene.instantiate())
-		EditorInterface.get_base_control().add_child(_translation_dialog)
-	_translation_dialog.popup_centered(Vector2i(1080, 720) * EditorInterface.get_editor_scale())
 
 
 func _show_dialog_deferred() -> void:

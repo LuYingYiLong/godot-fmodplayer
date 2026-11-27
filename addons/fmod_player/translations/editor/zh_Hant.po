@@ -1,0 +1,798 @@
+# FMOD Player editor translations.
+# Distributed under the project license.
+msgid ""
+msgstr ""
+"Project-Id-Version: Godot-FmodPlayer 1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/LuYingYiLong/Godot-FmodPlayer/issues\n"
+"POT-Creation-Date: 2026-11-27 00:00+0800\n"
+"PO-Revision-Date: 2026-11-27 00:00+0800\n"
+"Language: zh_Hant\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+msgid ""
+"      Debug/dev builds load fmodL; release builds load fmod.\n"
+"\n"
+msgstr ""
+"      debug/dev 建置載入 fmodL，release 建置載入 fmod。\n"
+"\n"
+
+msgid "      Ensure FMOD is loaded before Godot starts.\n"
+msgstr "      在 Godot 啟動前載入 FMOD。\n"
+
+msgid "      Ensure android.overridePathCheck=true.\n"
+msgstr "      設定 android.overridePathCheck=true。\n"
+
+msgid "      Ensure implementation files(\"libs/fmod.jar\") is present.\n"
+msgstr "      加入 implementation files(\"libs/fmod.jar\")。\n"
+
+msgid "      Initialize the FMOD Java component before Godot starts.\n"
+msgstr "      在 Godot 啟動前初始化 FMOD Java 元件\n"
+
+msgid "- Cannot update a customized FMOD runtime block in GodotApp.java.\n"
+msgstr "- 無法更新 GodotApp.java 中經過自訂修改的 FMOD 載入程式碼，請先檢查該程式碼區塊\n"
+
+msgid "- Copied FMOD GDExtension debug/dev Android library for arm64-v8a.\n"
+msgstr "- 已複製 arm64-v8a 的 FMOD GDExtension debug/dev Android 程式庫。\n"
+
+msgid "- Copied FMOD GDExtension release Android library for arm64-v8a.\n"
+msgstr "- 已複製 arm64-v8a 的 FMOD GDExtension release Android 程式庫。\n"
+
+msgid "- Copied debug/dev FMOD runtime for "
+msgstr "- 已複製 debug/dev FMOD 執行階段程式庫，ABI："
+
+msgid "- Copied fmod.jar.\n"
+msgstr "- 已複製 fmod.jar。\n"
+
+msgid "- Copied release FMOD runtime for "
+msgstr "- 已複製 release FMOD 執行階段程式庫，ABI："
+
+msgid "- Failed to copy Android library: "
+msgstr "- 複製 Android 程式庫失敗："
+
+msgid "- Failed to copy FMOD GDExtension debug Android library.\n"
+msgstr "- 無法複製 FMOD GDExtension debug Android library。\n"
+
+msgid "- Failed to copy FMOD GDExtension release Android library.\n"
+msgstr "- 無法複製 FMOD GDExtension release Android library。\n"
+
+msgid "- Failed to copy fmod.jar.\n"
+msgstr "- 無法複製 fmod.jar。\n"
+
+msgid "- Failed to create res://android/build/libs.\n"
+msgstr "- 無法建立 res://android/build/libs。\n"
+
+msgid "- Failed to locate GodotApp.onCreate insertion point.\n"
+msgstr "- 找不到 GodotApp.onCreate 插入位置。\n"
+
+msgid "- Failed to locate the dependencies block in build.gradle.\n"
+msgstr "- 在 build.gradle 中找不到 dependencies 區塊。\n"
+
+msgid "- Failed to read GodotApp.java.\n"
+msgstr "- 無法讀取 GodotApp.java。\n"
+
+msgid "- Failed to read build.gradle.\n"
+msgstr "- 無法讀取 build.gradle。\n"
+
+msgid "- Failed to read gradle.properties.\n"
+msgstr "- 無法讀取 gradle.properties。\n"
+
+msgid "- Failed to update GodotApp.java.\n"
+msgstr "- 無法更新 GodotApp.java。\n"
+
+msgid "- Failed to update build.gradle.\n"
+msgstr "- 無法更新 build.gradle。\n"
+
+msgid "- Failed to update gradle.properties.\n"
+msgstr "- 無法更新 gradle.properties。\n"
+
+msgid "- GodotApp.java already contains the FMOD Android runtime loader.\n"
+msgstr "- GodotApp.java 已包含 FMOD Android 執行階段程式庫載入程式碼。\n"
+
+msgid "- Skipped FMOD GDExtension debug Android library; source file was not found.\n"
+msgstr "- 找不到來源檔案，已略過 FMOD GDExtension debug Android 程式庫。\n"
+
+msgid "- Skipped FMOD GDExtension release Android library; source file was not found.\n"
+msgstr "- 找不到來源檔案，已略過 FMOD GDExtension release Android 程式庫。\n"
+
+msgid "- Updated GodotApp.java to load FMOD before Godot starts.\n"
+msgstr "- 已更新 GodotApp.java，在 Godot 啟動前載入 FMOD。\n"
+
+msgid "- Updated build.gradle with fmod.jar dependency.\n"
+msgstr "- 已在 build.gradle 中加入 fmod.jar 相依性。\n"
+
+msgid "- Updated gradle.properties.\n"
+msgstr "- 已更新 gradle.properties。\n"
+
+msgid "- build.gradle already includes fmod.jar.\n"
+msgstr "- build.gradle 已包含 fmod.jar。\n"
+
+msgid "- gradle.properties already enables android.overridePathCheck.\n"
+msgstr "- gradle.properties 已啟用 android.overridePathCheck。\n"
+
+msgid "2D"
+msgstr "2D"
+
+msgid "3D"
+msgstr "3D"
+
+msgid "AIFF"
+msgstr "AIFF"
+
+msgid "API Documentation"
+msgstr "API 文件"
+
+msgid "ASF"
+msgstr "ASF"
+
+msgid "AT9"
+msgstr "AT9"
+
+msgid "AUDIOQUEUE"
+msgstr "AUDIOQUEUE"
+
+msgid "Add Effect"
+msgstr "新增效果"
+
+msgid "Add Entry"
+msgstr "新增項目"
+
+msgid "Add Language"
+msgstr "新增語言"
+
+msgid "All files"
+msgstr "所有檔案"
+
+msgid "Android Build Template Missing"
+msgstr "缺少 Android 建置範本"
+
+msgid ""
+"Android build template:\n"
+"  "
+msgstr ""
+"Android 建置範本：\n"
+"  "
+
+msgid "Apply Changes"
+msgstr "套用修改"
+
+msgid ""
+"Approximate EQ response. Drag band nodes horizontally to adjust frequency; drag vertically to "
+"adjust gain for peaking and shelf filters. Scroll over a node to adjust Q."
+msgstr "等化器近似響應。水平拖曳頻段節點以調整頻率；峰值與棚架濾波器也可透過垂直拖曳調整增益。將游標移至節點上並捲動滾輪可調整 Q 值。"
+
+msgid ""
+"Approximate low-pass response. The cutoff node stays on the 0 dB reference line. Drag "
+"horizontally to adjust cutoff, vertically to adjust resonance relative to its starting value "
+"(12/18/24 dB)."
+msgstr "近似低通響應。截止節點保持在 0 dB 參考線上，水平拖曳調整截止頻率，垂直拖曳調整相對起始值的共振（12/18/24 dB）"
+
+msgid "At least one language is required."
+msgstr "至少需要一種語言"
+
+msgid "Bitstream"
+msgstr "位元串流"
+
+msgid "Browse..."
+msgstr "瀏覽…"
+
+#, python-format
+msgid "CSV column count does not match the header: %s"
+msgstr "CSV 欄數與標頭不符：%s"
+
+msgid "CSV header must start with source."
+msgstr "CSV 標頭必須以 source 開頭"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Cannot find FMOD native libraries under:\n"
+msgstr "在下列位置找不到 FMOD 原生程式庫：\n"
+
+msgid "Cannot find api/core/lib/fmod.jar under:\n"
+msgstr "在下列位置找不到 api/core/lib/fmod.jar：\n"
+
+#, python-format
+msgid "Cannot load FMOD bus layout: %s"
+msgstr "無法載入 FMOD 匯流排配置：%s"
+
+msgid "Cannot load the default FMOD bus layout."
+msgstr "無法載入預設 FMOD 匯流排配置"
+
+#, python-format
+msgid "Cannot open file: %s"
+msgstr "無法開啟檔案：%s"
+
+#, python-format
+msgid "Cannot save FMOD bus layout: %s"
+msgstr "無法儲存 FMOD 匯流排配置：%s"
+
+#, python-format
+msgid "Cannot save file: %s"
+msgstr "無法儲存檔案：%s"
+
+msgid "Click or drag horizontally to adjust pan: left (-1), center (0), right (1)."
+msgstr "按一下或水平拖曳以調整聲像：左聲道（-1）、中央（0）、右聲道（1）。"
+
+msgid "Configure FMOD Android Export"
+msgstr "設定 FMOD Android 匯出"
+
+msgid "Context"
+msgstr "上下文"
+
+msgid "Could not create FMOD geometry from the selected MeshInstance3D nodes."
+msgstr "無法從選取的 MeshInstance3D 節點建立 FMOD 幾何體"
+
+msgid "Create Bounding Box Occluder"
+msgstr "建立 邊界框遮擋體"
+
+msgid "Create FMOD Bounding Box Occluder"
+msgstr "建立 FMOD 邊界框遮擋體"
+
+msgid "Create FMOD Convex Occluder"
+msgstr "建立 FMOD 凸形遮擋體"
+
+msgid "Create FMOD Geometry Occluder"
+msgstr "建立 FMOD 幾何體遮擋體"
+
+msgid "Create FMOD Layout from Godot"
+msgstr "從 Godot 建立 FMOD 配置"
+
+msgid "Create FMOD Mesh Resource Occluder"
+msgstr "建立 FMOD 網格資源遮擋體"
+
+msgid "Create FMOD Simplified Convex Occluder"
+msgstr "建立 FMOD 簡化凸形遮擋體"
+
+msgid "Create FMOD Trimesh Occluder"
+msgstr "建立 FMOD 三角網格遮擋體"
+
+msgid "Create FMOD occlusion geometry from the selected MeshInstance3D."
+msgstr "從選取的 MeshInstance3D 建立 FMOD 遮擋幾何體"
+
+msgid "Create Mesh Resource Occluder"
+msgstr "建立 網格資源遮擋體"
+
+msgid "Create Simplified Convex Occluder"
+msgstr "建立 簡化凸形遮擋體"
+
+msgid "Create Single Convex Occluder"
+msgstr "建立 單一凸形遮擋體"
+
+msgid "Create Trimesh Occluder"
+msgstr "建立 三角網格遮擋體"
+
+msgid "Cubic"
+msgstr "立方"
+
+msgid "DLS"
+msgstr "DLS"
+
+msgid "Default"
+msgstr "預設"
+
+msgid ""
+"Delay tap layout: radius shows time, angle shows pan, and brightness shows level. Drag a node to "
+"edit time and pan. Alt + click selects an overlapping tap."
+msgstr "延遲抽頭配置：半徑表示時間，角度表示聲像，亮度表示電平。拖曳節點調整時間與聲像，Alt + 點擊選取重疊抽頭"
+
+msgid "Delete Entry"
+msgstr "刪除項目"
+
+msgid "Disable Godot bus synchronization and reload the project to edit an FMOD layout."
+msgstr "關閉 Godot 匯流排同步並重新載入專案後即可編輯 FMOD 配置"
+
+msgid "Disabled"
+msgstr "停用"
+
+msgid "Discard"
+msgstr "放棄"
+
+msgid ""
+"Drag along the dial to adjust pitch. Scroll: 1 semitone; Shift + scroll: 0.1 semitone. The scale "
+"expands beyond two octaves."
+msgstr "沿錶盤拖曳調整音高，滾輪每次調整 1 個半音，Shift + 滾輪每次調整 0.1 個半音，超出兩個八度範圍時刻度會擴展"
+
+msgid "Drag down to increase compression, up to decrease."
+msgstr "向下拖曳增強壓縮，向上拖曳減弱壓縮"
+
+msgid "Drag horizontally for threshold, vertically for ratio."
+msgstr "水平拖曳調整閾值，垂直拖曳調整壓縮比"
+
+msgid "Drag horizontally to adjust."
+msgstr "水平拖曳調整"
+
+msgid "Duplicate Bus Effect"
+msgstr "複製匯流排效果器"
+
+msgid "Duplicate Effect"
+msgstr "複製效果器"
+
+#, python-format
+msgid "Duplicate locale: %s"
+msgstr "重複的語言代碼：%s"
+
+msgid "Editor Interface"
+msgstr "編輯器介面"
+
+#, python-format
+msgid "Empty or duplicate source: %s"
+msgstr "原文為空或重複：%s"
+
+msgid "Expected ABI folders: arm64-v8a, armeabi-v7a, x86, x86_64."
+msgstr "需要的 ABI 資料夾：arm64-v8a、armeabi-v7a、x86、x86_64"
+
+msgid "Extract Sources"
+msgstr "擷取原文"
+
+msgid "Extracted sources. Review new entries before saving."
+msgstr "已擷取原文，請複核新增項目後儲存"
+
+msgid "FADPCM"
+msgstr "FADPCM"
+
+msgid "FLAC"
+msgstr "FLAC"
+
+msgid "FMOD Android Export Configured"
+msgstr "FMOD Android 匯出已設定"
+
+msgid "FMOD Android Export Setup Failed"
+msgstr "FMOD Android 匯出設定失敗"
+
+msgid "FMOD Android archive"
+msgstr "FMOD Android 封存檔"
+
+msgid "FMOD Android export setup completed successfully."
+msgstr "FMOD Android 匯出設定完成"
+
+msgid ""
+"FMOD Android export setup will apply the following changes.\n"
+"\n"
+msgstr ""
+"FMOD Android 匯出設定將套用下列修改。\n"
+"\n"
+
+msgid "FMOD Audio"
+msgstr "FMOD 音訊"
+
+msgid "FMOD Bus Layout"
+msgstr "FMOD 匯流排配置"
+
+msgid ""
+"FMOD Core Android SDK source:\n"
+"  "
+msgstr ""
+"FMOD Core Android SDK 來源：\n"
+"  "
+
+msgid "FMOD Geometry"
+msgstr "FMOD 幾何遮擋"
+
+msgid "FMOD Runtime Missing"
+msgstr "缺少 FMOD 執行階段程式庫"
+
+msgid "FMOD Translations"
+msgstr "FMOD 本地化"
+
+msgid "FMOD runtime library was not detected."
+msgstr "未偵測到 FMOD 執行階段程式庫"
+
+msgid "FSB"
+msgstr "FSB"
+
+msgid "Failed to create temporary extraction directory:\n"
+msgstr "無法建立暫存解壓縮目錄：\n"
+
+msgid "Failed to extract the FMOD archive. Extract it manually and select the extracted folder."
+msgstr "FMOD 封存檔解壓縮失敗，請手動解壓縮並選取解壓縮後的資料夾"
+
+msgid "Feedback rings show repeat timing and gain before low-pass filtering."
+msgstr "回授環表示低通濾波前的重複時間與增益"
+
+msgid "Files to copy:\n"
+msgstr "將複製的檔案：\n"
+
+msgid "Files to modify:\n"
+msgstr "將修改的檔案：\n"
+
+msgid "Fuzzy: translation needs review"
+msgstr "待複核：譯文需要確認"
+
+msgid "Gain"
+msgstr "增益"
+
+msgid "Godot Audio Buses"
+msgstr "Godot 音訊匯流排"
+
+msgid "IT"
+msgstr "IT"
+
+msgid "Install Later"
+msgstr "稍後安裝"
+
+msgid "Install it from: Project > Install Android Build Template..."
+msgstr "請透過「專案 > 安裝 Android 建置範本…」安裝"
+
+msgid ""
+"Install the FMOD Core SDK 2.04, copy the matching runtime library to addons/fmod_player/bin/, "
+"then restart Godot."
+msgstr "安裝 FMOD Core SDK 2.04，將相符的執行階段程式庫複製到 addons/fmod_player/bin/，然後重新啟動 Godot"
+
+msgid "Invalid FMOD Android SDK"
+msgstr "無效的 FMOD Android SDK"
+
+#, python-format
+msgid "Invalid locale: %s"
+msgstr "無效的語言代碼：%s"
+
+msgid "Linear"
+msgstr "線性"
+
+msgid "Load FMOD Bus Layout"
+msgstr "載入 FMOD 匯流排配置"
+
+msgid "Locale, e.g. ja or zh_Hant"
+msgstr "語言代碼，例如 ja 或 zh_Hant"
+
+msgid "Localization backend failed. Install Python and Babel, then check the source repository path."
+msgstr "本地化工具執行失敗，請安裝 Python 和 Babel，並檢查原始碼儲存庫路徑"
+
+msgid "Loop"
+msgstr "迴圈"
+
+msgid "Loop Bidi"
+msgstr "雙向循環"
+
+msgid "Loop Sample"
+msgstr "循環取樣"
+
+msgid "MAX"
+msgstr "MAX"
+
+msgid "MEDIACODEC"
+msgstr "MEDIACODEC"
+
+msgid "MIDI"
+msgstr "MIDI"
+
+msgid "MOD"
+msgstr "MOD"
+
+msgid "MOD Order"
+msgstr "MOD 順序"
+
+msgid "MOD Pattern"
+msgstr "MOD 樣式"
+
+msgid "MOD Row"
+msgstr "MOD 列"
+
+msgid "MPEG"
+msgstr "MPEG"
+
+msgid "MS"
+msgstr "MS"
+
+msgid "Max"
+msgstr "最大"
+
+msgid "Missing required Android build template file:\n"
+msgstr "缺少必要的 Android 建置範本檔案：\n"
+
+msgid "Move EQ band"
+msgstr "移動 EQ 頻段"
+
+msgid "Move delay tap"
+msgstr "移動延遲抽頭"
+
+msgid "Move filter cutoff"
+msgstr "移動濾波截止頻率"
+
+msgid "No Interpolation"
+msgstr "無插值"
+
+msgid "No edited scene root is available."
+msgstr "沒有正在編輯的場景根節點"
+
+msgid "No translation files found."
+msgstr "找不到翻譯檔案"
+
+msgid "None"
+msgstr "無"
+
+msgid "OGGVORBIS"
+msgstr "OGGVORBIS"
+
+msgid "OPUS"
+msgstr "OPUS"
+
+msgid ""
+"One-second chorus modulation overview. Vertical position represents pan; rate and depth shape "
+"each voice. Curves begin at the base delay."
+msgstr "顯示一秒內的合唱調變，垂直位置表示聲像，速率與深度控制各聲部曲線，曲線從基礎延遲處開始"
+
+msgid "Open FMOD Download Page"
+msgstr "開啟 FMOD 下載頁面"
+
+msgid "Open Godot Audio Panel"
+msgstr "開啟 Godot 音訊面板"
+
+msgid ""
+"Output gain (solid, dB) and filtered-path phase (faint, degrees) at the sweep midpoint. The "
+"shaded range shows the LFO limits; drag its edges to adjust. Depth and Feedback shape the output "
+"response; Rate controls sweep speed."
+msgstr "顯示掃描中點的輸出增益（實線，dB）與濾波支路相位（半透明線，度）。陰影表示 LFO 範圍，可拖曳邊緣調整；深度與回授控制響應形狀，速率控制掃描速度"
+
+msgid "PCM"
+msgstr "PCM"
+
+msgid "PCM Bytes"
+msgstr "PCM 位元組"
+
+msgid "PCM Fraction"
+msgstr "PCM 小數部分"
+
+msgid "PCM16"
+msgstr "PCM16"
+
+msgid "PCM24"
+msgstr "PCM24"
+
+msgid "PCM32"
+msgstr "PCM32"
+
+msgid "PCM8"
+msgstr "PCM8"
+
+msgid "PCMFloat"
+msgstr "浮點 PCM"
+
+msgid "PLAYLIST"
+msgstr "PLAYLIST"
+
+msgid "Pan"
+msgstr "聲像"
+
+msgid ""
+"Parameter illustration with a 0 dB reference input. Drag the output line vertically to adjust "
+"gain."
+msgstr "以 0 dB 輸入為基準顯示參數，垂直拖曳輸出線調整增益"
+
+msgid ""
+"Parameter illustration: fan angle shows Pan Pullout, the inner arc shows Time Pullout, and fill "
+"strength shows Surround. Drag the radar to adjust Pan Pullout."
+msgstr "參數示意：扇形角度表示聲像擴展，內弧表示時間擴展，填色強度表示環繞，拖曳雷達調整聲像擴展"
+
+msgid "Path Required"
+msgstr "需要指定路徑"
+
+msgid "Path to FMOD Core Android SDK folder or archive..."
+msgstr "FMOD Core Android SDK 資料夾或封存檔路徑…"
+
+msgid ""
+"Peak ranges of unread stereo frames in this editor instance. Attach Capture to an FMOD bus to "
+"receive audio."
+msgstr "顯示編輯器實例中未讀取立體聲影格的峰值範圍，將 Capture 連接到 FMOD 匯流排後可接收音訊"
+
+#, python-format
+msgid "Placeholder mismatch (%s): %s"
+msgstr "預留位置不符（%s）：%s"
+
+msgid "Please select the FMOD Core Android SDK folder or archive."
+msgstr "請選取 FMOD Core Android SDK 資料夾或封存檔"
+
+msgid "Properties"
+msgstr "屬性"
+
+msgid "Python executable with Babel installed"
+msgstr "已安裝 Babel 的 Python 執行檔"
+
+msgid "RAW"
+msgstr "RAW"
+
+msgid "Ratio"
+msgstr "壓縮比"
+
+msgid "Raw Bytes"
+msgstr "原始位元組"
+
+msgid "Reload"
+msgstr "重新載入"
+
+msgid ""
+"Resolved FMOD Core library folder:\n"
+"  "
+msgstr ""
+"找到的 FMOD Core 程式庫目錄：\n"
+"  "
+
+msgid ""
+"Reverb parameter illustration. Drag either outer node horizontally to adjust Spread between the "
+"L/R reflection rings. Room Size shapes each ring group; Damping fades reflections, Wet controls "
+"their brightness, and Dry controls the central source."
+msgstr "殘響參數示意：水平拖曳任一外側節點，調整左右聲道反射環之間的擴散。房間大小控制環組形狀，阻尼控制反射衰減，濕聲控制亮度，乾聲控制中央聲源"
+
+msgid "Review Changes"
+msgstr "預覽修改"
+
+msgid "Review FMOD Android Export Changes"
+msgstr "預覽 FMOD Android 匯出修改"
+
+msgid "S3M"
+msgstr "S3M"
+
+msgid "Sample"
+msgstr "取樣"
+
+msgid "Sample (High quality)"
+msgstr "取樣（完整解碼）"
+
+msgid "Save"
+msgstr "儲存"
+
+msgid "Save FMOD Bus Layout"
+msgstr "儲存 FMOD 匯流排配置"
+
+msgid "Save changes before extracting sources."
+msgstr "擷取原文前請儲存修改"
+
+msgid "Save changes before switching catalogs?"
+msgstr "切換翻譯目錄前儲存修改嗎？"
+
+msgid "Save or reload changes before changing the PO file."
+msgstr "切換 PO 檔案前請儲存或重新載入修改"
+
+msgid "Saved and reloaded translations."
+msgstr "已儲存並重新載入翻譯"
+
+msgid "Search source or translation"
+msgstr "搜尋原文或譯文"
+
+msgid "Select FMOD Core Android SDK"
+msgstr "選取 FMOD Core Android SDK"
+
+msgid "Select one or more MeshInstance3D nodes first."
+msgstr "請先選取一個或多個 MeshInstance3D 節點"
+
+msgid "Select the FMOD Core Android SDK root folder or archive."
+msgstr "請選取 FMOD Core Android SDK 根目錄或封存檔"
+
+msgid ""
+"Select the extracted FMOD Core Android SDK folder, or the downloaded .tar.gz/.tgz archive.\n"
+"The tool will configure the installed Godot Android build template for FMOD Core."
+msgstr ""
+"選取解壓縮後的 FMOD Core Android SDK 資料夾或下載的 .tar.gz/.tgz 封存檔。\n"
+"工具將為已安裝的 Godot Android 建置範本設定 FMOD Core。"
+
+msgid "Set as Default"
+msgstr "設為預設"
+
+msgid "Source"
+msgstr "原文"
+
+msgid "Source repository (required for extraction)"
+msgstr "原始碼儲存庫路徑（擷取時需要）"
+
+msgid "Speakers"
+msgstr "揚聲器"
+
+msgid ""
+"Spectrum of this analyzer instance in the editor process. L uses the accent color; R uses the "
+"text color. Attach the resource to a bus to receive audio. The annotation shows FFT frequency "
+"resolution."
+msgstr "編輯器程序中此分析器實例的頻譜。左聲道使用強調色，右聲道使用文字色，將資源連接到匯流排後可接收音訊，標註顯示 FFT 頻率解析度"
+
+msgid "Spline"
+msgstr "樣條插值"
+
+msgid ""
+"Static input/output curve including Gain and Mix. Drag the round node horizontally for threshold,"
+" the square node vertically for ratio. Attack/release timing is not shown."
+msgstr "包含增益與混合的靜態輸入／輸出曲線，水平拖曳圓形節點調整閾值，垂直拖曳方形節點調整壓縮比，不顯示啟動與釋放時間變化"
+
+msgid ""
+"Steady-state input/output amplitude curve. Drag vertically for Drive (Pre Gain in Overdrive "
+"mode); Shift + drag for Pre Gain; Ctrl + drag for Post Gain. The vertical scale fits the output. "
+"Keep HF controls the audio crossover; Oversample is stored only."
+msgstr "穩態輸入／輸出振幅曲線。垂直拖曳調整驅動（過載模式中為前置增益），Shift + 拖曳調整前置增益，Ctrl + 拖曳調整後置增益。縱軸適應輸出振幅，保留高頻控制音訊分頻，過取樣值僅儲存"
+
+msgid ""
+"Steady-state input/output limiting curve. Drag the round node vertically for Pre Gain and the "
+"square node for Ceiling. Release controls recovery time."
+msgstr "穩態限幅輸入／輸出曲線，垂直拖曳圓形節點調整前置增益，方形節點調整上限，釋放參數控制恢復時間"
+
+msgid "Stream"
+msgstr "流"
+
+msgid "Stream (Low memory)"
+msgstr "串流播放（較低解碼記憶體）"
+
+msgid "Synchronizing with Godot Audio Buses. Edit the source layout in the Godot Audio panel."
+msgstr "正在同步 Godot 音訊匯流排。請在 Godot 音訊面板編輯來源配置"
+
+msgid "Tap"
+msgstr "抽頭"
+
+msgid ""
+"Temporary extraction folder:\n"
+"  "
+msgstr ""
+"暫存解壓縮目錄：\n"
+"  "
+
+msgid "The Android build template was not fully configured."
+msgstr "Android 建置範本未能完成所有設定"
+
+msgid "The default FMOD bus layout could not be loaded. Create or open a valid layout before saving."
+msgstr "無法載入預設 FMOD 匯流排配置。請建立或開啟有效配置後再儲存"
+
+msgid "The file changed on disk. Reload it before saving."
+msgstr "檔案已被外部修改，請重新載入後再儲存"
+
+msgid "The project does not have an installed Android build template."
+msgstr "專案尚未安裝 Android 建置範本"
+
+msgid "The selected path is not a directory or a supported .tar.gz/.tgz archive:\n"
+msgstr "所選路徑不是目錄或支援的 .tar.gz/.tgz 封存檔：\n"
+
+msgid ""
+"This operation is idempotent: existing matching lines will not be duplicated, and copied files "
+"will be overwritten."
+msgstr "相符的現有設定行會保留，複製的檔案會覆寫目標檔案。"
+
+msgid "Threshold"
+msgstr "閾值"
+
+msgid "Time range"
+msgstr "時間範圍"
+
+msgid "Translation"
+msgstr "譯文"
+
+msgid "USER"
+msgstr "USER"
+
+msgid "Unknown"
+msgstr "未知"
+
+msgid "Unsaved changes"
+msgstr "有尚未儲存的修改"
+
+#, python-format
+msgid ""
+"Unsupported Godot effects were skipped:\n"
+"%s"
+msgstr ""
+"已略過不支援的 Godot 效果器：\n"
+"%s"
+
+msgid "Untranslated or Fuzzy"
+msgstr "未翻譯或待複核"
+
+msgid "VORBIS"
+msgstr "VORBIS"
+
+msgid "WAV"
+msgstr "WAV"
+
+msgid "Waiting for captured audio"
+msgstr "等待擷取音訊"
+
+msgid ""
+"Windows: fmod.dll\n"
+"Linux: libfmodL.so.15 / libfmod.so.15\n"
+"macOS: libfmod.dylib"
+msgstr ""
+"Windows：fmod.dll\n"
+"Linux：libfmodL.so.15 / libfmod.so.15\n"
+"macOS：libfmod.dylib"
+
+msgid "XM"
+msgstr "XM"
+
+msgid "XMA"
+msgstr "XMA"

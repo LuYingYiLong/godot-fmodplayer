@@ -52,13 +52,19 @@ For GDScript:
 
 ## Editor localization
 
-Open **Project > Tools > FMOD Translations** to edit the plugin catalogs. The panel manages property names (`godot.properties`), editor UI (`godot.editor`), and API help (`godot.documentation`). Property and UI CSV files are loaded directly; saving refreshes translations without generating GDScript data. Keep Simplified Chinese, Traditional Chinese, Japanese, and Russian UI translations complete.
+Edit the PO catalogs directly:
 
-The panel supports search, untranslated/review filters, message context, multiline text, source locations, and PO review flags. PO editing and source extraction use Python with Babel; configure its executable and the source repository in the panel. Property extraction uses the loaded ClassDB. Settings are stored per project in `user://fmod_localization.cfg`. CSV source text remains exact, including quoted multiline fields. Keep `%s` and other format placeholders in translations.
+| Content | Translation domain | Catalogs |
+|---------|--------------------|----------|
+| Property names | `godot.properties` | `addons/fmod_player/translations/properties/<locale>.po` |
+| Editor UI | `godot.editor` | `addons/fmod_player/translations/editor/<locale>.po` |
+| API help | `godot.documentation` | `addons/fmod_player/translations/documentation/zh_CN.po` |
 
-`fmod_check.gd` starts the shared GDScript translation service before checking the FMOD runtime. C++ editor text uses `src/editor/fmod_editor_translation.h`. Use `fmod_editor_translate()` for dynamic UI text and `FMOD_EDITOR_TEXT()` for literal menu keys that Godot translates automatically. Preserve runtime identifiers, resource names, file paths, and enum values.
+The internal `FmodEditorTranslationPlugin` discovers PO files in these directories, registers them when entering the editor, reapplies cached catalogs after editor settings change, and removes its own translations on exit. Reopen the editor after changing PO files; translation-only edits do not require rebuilding the extension.
 
-Check language switching, placeholder preservation, and saved catalog changes directly in the Godot editor.
+Preserve `msgid`, `msgctxt`, multiline text, and format placeholders such as `%s`. To add a language, create its PO in the appropriate directory and set the `Language` header. Keep the Simplified Chinese, Traditional Chinese, Japanese, and Russian property and UI catalogs complete. Add source messages and translations to the catalogs when introducing new UI text or property labels.
+
+C++ editor text uses `src/editor/fmod_editor_translation.h`: call `fmod_editor_translate()` for dynamic UI text and `FMOD_EDITOR_TEXT()` for literal menu keys that Godot translates automatically. Preserve runtime identifiers, resource names, file paths, and enum values. Check language switching and translated text directly in Godot.
 
 ## Documentation
 
@@ -66,7 +72,7 @@ Maintain English API descriptions in `doc_classes/*.xml`. These files supply bot
 
 Maintain Chinese API descriptions in `addons/fmod_player/translations/documentation/zh_CN.po`. Each message matches an entire XML description after Godot removes indentation and surrounding whitespace. Preserve documentation tags such as `[param frames]` and `[method get_buffer]`. Class names, signatures, and reference targets remain unchanged. The plugin registers this catalog in `godot.documentation`; both editor help and the website use it.
 
-Use **Project > Tools > FMOD Translations** to extract and review messages after editing XML. Empty or fuzzy translations fall back to English. Translation-only edits need addon deployment; they do not require rebuilding the extension. Verify the result in Godot's built-in class help.
+Use the documentation repository's `scripts/documentation_translations.py` to update and check the API PO after editing XML. Review fuzzy entries before publishing; empty or fuzzy translations fall back to English. Translation-only edits need addon deployment but do not require rebuilding the extension. Reopen Godot and verify the result in its built-in class help.
 
 Website guides and generation tools live in the separate [documentation repository](https://github.com/LuYingYiLong/godot-fmodplayer-docs). Its `classref/translations` directory contains a checked snapshot of the plugin PO. Generated class RST files, translated XML, and snapshot files are script outputs.
 
